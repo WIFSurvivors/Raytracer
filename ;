@@ -52,46 +52,20 @@ struct Shader {
     glShaderSource(shaderID, 1, &shaderChar, NULL);
     glCompileShader(shaderID);
     
-    if(!checkCompileStatus(shaderID, ShaderPath.second)) return;
+    if(checkCompileStatus(shaderID, ShaderPath.second) == GL_FALSE) return;
     
     GLuint programID = glCreateProgram();
     glad_glAttachShader(programID, shaderID);
     glad_glLinkProgram(programID);
-    
-    //Yuck TODO better
-    if(!checkProgramStatus(programID,shaderID)) return;
-
     glad_glDetachShader(programID,shaderID);
     glad_glDeleteShader(shaderID);
-
-    shaderIDs[ShaderPath.first] = programID;
-
     
-  }
-
-  bool checkProgramStatus(GLuint programID, GLuint shaderID){
-    GLint success = 0;
-    glad_glGetProgramiv(programID, GL_LINK_STATUS, &success);
-    if(!success){
-      GLint logSize = 0;
-      glad_glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &logSize);
-      std::vector<GLchar> errorLog(logSize);
-      glad_glGetProgramInfoLog(programID, logSize, &logSize, &errorLog[0]);
-
-      std::cerr << "Error log: " << std::string(errorLog.begin(),errorLog.end()) << std::endl;
-
-      glad_glDeleteProgram(programID);
-      glad_glDeleteShader(shaderID);
-
-    }
-
-    return success;
   }
 
   bool checkCompileStatus(GLuint shaderID, const char* path){
     GLint success = 0;
     glad_glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
-    if(!success){
+    if(success == GL_FALSE){
       std::cout << "Shader Compilation for shader: " << path << std::endl;
 
       GLint logSize = 0;
