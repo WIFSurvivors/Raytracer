@@ -2,6 +2,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include "ShaderCompiler.h"
 
 
 
@@ -15,6 +16,7 @@ struct WindowEngine{
   uint32_t SCR_WIDTH = 800;
 
   GLFWwindow* window;
+  GLuint VBO;
 
   void initializeEngine(){
     if (!initGLFW()) throw std::runtime_error{"Failed to Initialize Engine"};
@@ -28,6 +30,26 @@ struct WindowEngine{
   }
 
   void render_loop(){
+
+    unsigned int VAO;
+    glGenVertexArrays(1,&VAO);
+    glGenBuffers(1,&VBO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    
+    float vertices[] = {
+    -0.5f, -0.5f, 0.0f,
+     0.5f, -0.5f, 0.0f,
+     0.0f,  0.5f, 0.0f
+    };  
+    
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    Shader simpleShader{std::make_pair(GL_VERTEX_SHADER, "../shaders/vertexshader.glsl"), std::make_pair(GL_FRAGMENT_SHADER, "../shaders/fragmentshader.glsl")};
+    simpleShader.activateShader();
+
     while (!glfwWindowShouldClose(window))
     {
         // input
@@ -38,6 +60,8 @@ struct WindowEngine{
         // ------
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
+
+        glDrawArrays(GL_TRIANGLES,0,3);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------

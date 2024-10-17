@@ -11,14 +11,21 @@
 struct Shader {
     
   std::unordered_map<GLenum, GLuint> shaderIDs;
+  GLuint programID;
 
   template<typename... Args>
   Shader(Args... paths){
     //GLenum shaderType
-    static_assert((std::is_same_v<Args, std::pair<GLenum, const char*>> && ...), "Failed: Arguments of ShaderCompiler not of type char*");
+    static_assert((std::is_same_v<Args, std::pair<int, const char*>> && ...), "Failed: Arguments of ShaderCompiler not of type char*");
     glCreateShader(GL_VERTEX_SHADER);
     loadFiles(paths...);
+    shaderLinker();
   }
+
+  void activateShader(){
+    glUseProgram(programID);
+  }
+
   
   private:
   
@@ -54,22 +61,32 @@ struct Shader {
     
     if(!checkCompileStatus(shaderID, ShaderPath.second)) return;
     
-    GLuint programID = glCreateProgram();
-    glad_glAttachShader(programID, shaderID);
+    shaderIDs[ShaderPath.first] = shaderID;
+
+  }
+  void shaderLinker(){
+    programID = glCreateProgram();
+    
+    for (const auto& pair: shaderIDs){
+      glad_glAttachShader(programID, pair.second);
+    }
+
     glad_glLinkProgram(programID);
     
     //Yuck TODO better
-    if(!checkProgramStatus(programID,shaderID)) return;
-
-    glad_glDetachShader(programID,shaderID);
-    glad_glDeleteShader(shaderID);
-
-    shaderIDs[ShaderPath.first] = programID;
+    if(!checkProgramStatus(programID)) return;
+    
+    
+    for (const auto& pair: shaderIDs){
+      glad_glDetachShader(programID,pair.second);
+      glad_glDeleteShader(pair.second);
+    }
 
     
+  
   }
 
-  bool checkProgramStatus(GLuint programID, GLuint shaderID){
+  bool checkProgramStatus(GLuint programID){
     GLint success = 0;
     glad_glGetProgramiv(programID, GL_LINK_STATUS, &success);
     if(!success){
@@ -81,7 +98,9 @@ struct Shader {
       std::cerr << "Error log: " << std::string(errorLog.begin(),errorLog.end()) << std::endl;
 
       glad_glDeleteProgram(programID);
-      glad_glDeleteShader(shaderID);
+      for (const auto& pair: shaderIDs){
+        glad_glDeleteShader(pair.second);
+      }
 
     }
 
