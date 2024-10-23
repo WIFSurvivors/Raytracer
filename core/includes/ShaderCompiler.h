@@ -26,6 +26,10 @@ struct Shader {
     glUseProgram(programID);
   }
 
+  const GLuint getID(){
+    return programID;
+  }
+
   
   private:
   
