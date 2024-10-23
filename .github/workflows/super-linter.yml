@@ -40,4 +40,4 @@ jobs:
           FIX_YAML_PRETTIER: true
           VALIDATE_CHECKOV: false
           CPP_LINTER_RULES: .github/linters/CCPLINT.cfg
-          CPP_FILE_NAME: "CCPLINT.cfg"
+          CPP_FILE_NAME: ""
