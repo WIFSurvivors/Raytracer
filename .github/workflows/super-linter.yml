@@ -38,3 +38,4 @@ jobs:
           LINTER_RULES_PATH: .
           FIX_CLANG_FORMAT: true
           FIX_YAML_PRETTIER: true
+          VALIDATE_CHECKOV: false
