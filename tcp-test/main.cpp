@@ -7,7 +7,6 @@ using boost::asio::ip::tcp;
 // sudo apt update
 // sudo apt install netcat
 // -- send tcp messages on port 51234 like this:
-// echo "Hewwo :3" | nc 127.0.0.1 51234
 
 int main(){
     try{
