@@ -1,10 +1,9 @@
 #include "WindowEngine.h"
 
-int main()
-{
+#include <print>
+
+int main() {
+  std::print("Hi!");
   WindowEngine engine;
   engine.initializeEngine();
 }
-
-
-

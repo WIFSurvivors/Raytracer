@@ -1,7 +1,7 @@
 #include "component.hpp"
 
-void component::init(){}
+void component::init() {}
 
-void component::update(float dt){}
+void component::update(float dt) {}
 
-void component::destroy(){}
+void component::destroy() {}

@@ -1,17 +1,13 @@
 #pragma once
+#include "component.hpp"
+#include <glm/glm.hpp>
 #include <vector>
 
-//#include <glm/glm.hpp>
+struct entity {
+  entity();
 
-struct component;
+  std::vector<component> &get_components(component c);
 
-struct entity
-{
-	entity();
-
-	std::vector<component>& get_components(component c);
-
-private:	
-	std::vector<component> _components{1};
+private:
+  std::vector<component> _components{};
 };
-
