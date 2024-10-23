@@ -1,5 +1,5 @@
-#include <iostream>
 #include <boost/asio.hpp>
+#include <iostream>
 
 using boost::asio::ip::tcp;
 
@@ -10,30 +10,33 @@ using boost::asio::ip::tcp;
 // echo "Hewwo :3" | nc 127.0.0.1 51234
 
 int main(){
-    try{
-        boost::asio::io_context io_context;
-        tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 51234));
-        std::cout << "-- waiting for incoming connections...\n";
+  try{
+    boost::asio::io_context io_context;
+    
 
-        tcp::socket socket(io_context);
-        acceptor.accept(socket);
-        std::cout << "-- connection accepted\n";
+    tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 51234));
+    
 
-        char buffer[1024];
-        boost::system::error_code error;
-        size_t length = socket.read_some(boost::asio::buffer(buffer), error);
-        if(!error){
-            std::cout << "Data received: " << std::string(buffer, length) << std::endl;
-        }
-        else{
-            std::cout << "Receive failed: " << error.message() << std::endl;
-        }
+    std::cout << "-- waiting for incoming connections...\n";
 
-        socket.close();
-    }
-    catch(std::exception& e){
-        std::cerr << "-- exception: " << e.what() << std::endl;
+    tcp::socket socket(io_context);
+    acceptor.accept(socket);
+    std::cout << "-- connection accepted\n";
+
+    char buffer[1024];
+    boost::system::error_code error;
+    size_t length = socket.read_some(boost::asio::buffer(buffer), error);
+    if (!error) {
+      std::cout << "Data received: " << std::string(buffer, length)
+                << std::endl;
+    } else {
+      std::cout << "Receive failed: " << error.message() << std::endl;
     }
 
-    return 0;
+    socket.close();
+  } catch (std::exception &e) {
+    std::cerr << "-- exception: " << e.what() << std::endl;
+  }
+
+  return 0;
 }
