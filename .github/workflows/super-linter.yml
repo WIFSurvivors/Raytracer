@@ -37,3 +37,4 @@ jobs:
           SAVE_SUPER_LINTER_SUMMARY: true
           LINTER_RULES_PATH: .github/linters
           FIX_CLANG_FORMAT: true
+          FIX_YAML_PRETTIER: true
