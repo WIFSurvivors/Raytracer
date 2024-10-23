@@ -35,6 +35,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
           SAVE_SUPER_LINTER_SUMMARY: true
-          LINTER_RULES_PATH: .github/linters
+          LINTER_RULES_PATH: .
           FIX_CLANG_FORMAT: true
           FIX_YAML_PRETTIER: true
