@@ -15,6 +15,10 @@ int main() {
 
     // test
 
+    int x;
+
+    // bla
+
     tcp::acceptor acceptor(io_context, tcp::endpoint(tcp::v4(), 51234));
     std::cout << "-- waiting for incoming connections...\n";
 
