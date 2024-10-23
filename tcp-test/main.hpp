@@ -1,10 +1,10 @@
 #pragma once
 
-struct main.h
-{
-	main.h();
+#include <iostream>
+#include <string>
+#include <boost/asio.hpp>
 
-private:
+int main();
 
-};
+
 
