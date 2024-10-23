@@ -1,5 +1,5 @@
-#include <iostream>
 #include <boost/asio.hpp>
+#include <iostream>
 
 using boost::asio::ip::tcp;
 
@@ -36,7 +36,7 @@ int main(){
     }
 
 
-    
+
     catch(std::exception& e){
         std::cerr << "-- exception: " << e.what() << std::endl;
     }
