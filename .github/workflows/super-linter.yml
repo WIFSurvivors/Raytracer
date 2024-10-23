@@ -39,3 +39,4 @@ jobs:
           FIX_CLANG_FORMAT: true
           FIX_YAML_PRETTIER: true
           VALIDATE_CHECKOV: false
+          CPP_LINTER_RULES: CCPLINT.cfg
