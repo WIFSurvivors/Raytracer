@@ -100,6 +100,7 @@ struct WindowEngine {
       glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
       glClear(GL_COLOR_BUFFER_BIT);
       computeShader.activateShader();
+      glUniform1f(glGetUniformLocation(computeShader.programID,"time"), glfwGetTime());
       glDispatchCompute(SCR_WIDTH, SCR_HEIGHT, 1);
       glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
       simpleShader.activateShader();
