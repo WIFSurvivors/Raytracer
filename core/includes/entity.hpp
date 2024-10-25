@@ -5,7 +5,7 @@
 struct entity {
   entity();
 
-  std::vector<component> &get_components(component c);
+  std::vector<component> &get_components();
 
 private:
   std::vector<component> _components{};

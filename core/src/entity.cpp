@@ -1,7 +1,7 @@
 #include "entity.hpp"
 
+#include <vector>
+
 entity::entity() {}
 
-std::vector<component> &entity::get_components(component c) {
-  return _components;
-}
+std::vector<component> &entity::get_components() { return _components; }
