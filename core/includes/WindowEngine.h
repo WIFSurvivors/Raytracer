@@ -102,7 +102,7 @@ struct WindowEngine {
     return 1;
   }
 
- private:
+  private:
 };
 
 // process all input: query GLFW whether relevant keys are pressed/released this

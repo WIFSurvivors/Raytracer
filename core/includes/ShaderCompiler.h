@@ -24,7 +24,7 @@ struct Shader {
 
   void activateShader() { glUseProgram(programID); }
 
- private:
+  private:
   template <typename... Args> void loadFiles(Args... paths) {
     (..., loadFile(paths));
   }
