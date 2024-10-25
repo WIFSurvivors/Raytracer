@@ -1,4 +1,5 @@
 #pragma once
+
 #include "ShaderCompiler.h"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
@@ -19,6 +20,7 @@ struct WindowEngine {
   void initializeEngine() {
     if (!initGLFW())
       throw std::runtime_error{"Failed to Initialize Engine"};
+    
     render_loop();
     terminate();
   }

@@ -66,7 +66,7 @@ struct Shader {
     }
 
     glad_glLinkProgram(programID);
-
+    
     // Yuck TODO better
     if (!checkProgramStatus(programID))
       return;
@@ -85,7 +85,6 @@ struct Shader {
       glad_glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &logSize);
       std::vector<GLchar> errorLog(logSize);
       glad_glGetProgramInfoLog(programID, logSize, &logSize, &errorLog[0]);
-
       std::cerr << "Error log: "
                 << std::string(errorLog.begin(), errorLog.end()) << std::endl;
 
@@ -109,7 +108,6 @@ struct Shader {
       std::vector<GLchar> errorLog(logSize);
       glad_glGetShaderInfoLog(shaderID, logSize, &logSize, &errorLog[0]);
       glad_glDeleteShader(shaderID);
-
       std::cerr << "Error log: "
                 << std::string(errorLog.begin(), errorLog.end()) << std::endl;
     }
