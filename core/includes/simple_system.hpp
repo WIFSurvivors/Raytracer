@@ -1,9 +1,8 @@
 #pragma once
 
-#include <concepts>
+#include <memory>
 #include <set>
 
-#include "component.hpp"
 #include "simple_component.hpp"
 
 // template<class T> requires
@@ -36,19 +35,18 @@
 //     std::vector<derived<component>> _components;
 // };
 
-template <class T>
 struct simple_system //: system
 {
-  simple_system();
+  simple_component *create_component();
+  simple_component *create_component(int value);
 
-  bool add_component(simple_component<T> &c);
-  bool remove_component(simple_component<T> &c);
+  // bool remove_component(simple_component *c);
 
-  inline const std::set<simple_component<T>> &get_components() {
-    return _components;
-  }
+  inline const auto &get_components() { return _components; }
+
+  void print_all_components();
 
 private:
-  // std::set<derived<component>> _components;
-  std::set<simple_component<T>> _components{};
+  std::set<std::unique_ptr<simple_component>>
+      _components{}; // make set instead?
 };
