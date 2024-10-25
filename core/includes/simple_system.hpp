@@ -3,6 +3,7 @@
 #include <memory>
 #include <set>
 
+#include "entity.hpp"
 #include "simple_component.hpp"
 
 // template<class T> requires
@@ -37,8 +38,8 @@
 
 struct simple_system //: system
 {
-  simple_component *create_component();
-  simple_component *create_component(int value);
+  simple_component *create_component(entity &e);
+  simple_component *create_component(entity &e, int value);
 
   // bool remove_component(simple_component *c);
 
