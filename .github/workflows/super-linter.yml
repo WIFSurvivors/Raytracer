@@ -31,7 +31,7 @@ jobs:
         uses: super-linter/super-linter@v7.1.0
         env:
           VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: "Integrate_CI_on_main"
+          DEFAULT_BRANCH: "main"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ENABLE_GITHUB_ACTIONS_STEP_SUMMARY: true
           SAVE_SUPER_LINTER_SUMMARY: true
