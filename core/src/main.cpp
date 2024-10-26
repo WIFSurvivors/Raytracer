@@ -1,9 +1,9 @@
-#include "WindowEngine.h"
+#include "Engine.h"
 
 int main()
 {
-  WindowEngine engine;
-  engine.initializeEngine();
+	core::Engine engine;
+	engine.init();
 }
 
 
