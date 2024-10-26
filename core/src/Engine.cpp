@@ -100,7 +100,7 @@ namespace core{
 		GLuint Tex_VBO;
 		glGenBuffers(1, &Tex_VBO);
 		glBindBuffer(GL_ARRAY_BUFFER, Tex_VBO);
-		glBufferData(GL_ARRAY_BUFFER, textureCoords.size() * sizeof(glm::vec2), textureCoords.data(), GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, UV.size() * sizeof(glm::vec2), UV.data(), GL_STATIC_DRAW);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0);
 		glEnableVertexAttribArray(1);
 
