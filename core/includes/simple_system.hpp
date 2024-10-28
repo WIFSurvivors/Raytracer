@@ -45,9 +45,14 @@ struct simple_system //: system
 
   inline const auto &get_components() { return _components; }
 
-  void print_all_components();
+  void print_all_components(bool print_new_line = false);
+
+  // const correctness might be logically wrong here?
+  // need to double check const again
+  void init() const;
+  void update(const float dt) const;
+  void destroy() const;
 
 private:
-  std::set<std::unique_ptr<simple_component>>
-      _components{}; // make set instead?
+  std::set<std::unique_ptr<simple_component>> _components{};
 };

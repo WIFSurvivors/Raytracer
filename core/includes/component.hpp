@@ -19,10 +19,8 @@ struct component {
   /// @brief Use the constructor to internally deconstruct the object
   virtual ~component() = default;
 
-  bool operator<(const simple_component &right) const {
-    return _uuid < right._uuid;
-  }
+  bool operator<(const component &right) const { return _uuid < right._uuid; }
 
-private:
+protected:
   int _uuid;
 };

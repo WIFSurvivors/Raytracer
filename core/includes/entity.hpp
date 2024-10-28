@@ -3,10 +3,14 @@
 #include <vector>
 
 struct entity {
-  entity();
-
-  std::vector<component> &get_components();
+  std::vector<component *> &get_components();
+  void add_component(component *c);
+  // bool add_component(int128_t uuid);
 
 private:
-  std::vector<component> _components{};
+  // add name
+  // add entity uuid
+
+  // replace with component uuid vector / map
+  std::vector<component *> _components{};
 };
