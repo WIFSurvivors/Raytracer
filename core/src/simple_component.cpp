@@ -14,16 +14,18 @@ simple_component::simple_component(int value, bool show_log)
   std::cout << "\n";
 }
 
-void simple_component::init() { std::cout << "dummy_component: init\n"; }
+void simple_component::init() { std::cout << "--- dummy_component: init\n"; }
 
 void simple_component::update(float dt) {
   std::cout << "dummy_component: update\n";
 }
 
-void simple_component::destroy() { std::cout << "dummy_component: init\n"; }
+void simple_component::destroy() {
+  std::cout << "--- dummy_component: destroy\n";
+}
 
 simple_component::~simple_component() {
-  std::cout << "dummy_component: init\n";
+  std::cout << "-- simple_component: destructor\n";
 }
 
 void simple_component::set_update_log(bool show_log) { _show_log = show_log; }
