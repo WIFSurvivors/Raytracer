@@ -1,4 +1,5 @@
 #include "ShaderCompiler.h"
+#include "glm/ext/matrix_transform.hpp"
 #include "Engine.h"
 
 
@@ -14,7 +15,8 @@ namespace core{
 	 *	  - e.g. Call it something else
 	 *	  - Separate other functionality to the functions
 	 *	- Refactor init
-	 *
+	 *	- Move calculation of model matrix to the more appropriate place
+	 *	- Think about projection clipping space
 	 */
 	void Engine::processInput(GLFWwindow *window) {
 		if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -66,6 +68,33 @@ namespace core{
 	}
 
 	void Engine::render_loop() {
+
+		// Calculation for the Model Matrix
+		TranslationMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 0.0f));
+		ScaleMatrix = glm::scale(glm::mat4(1), glm::vec3(1, 1, 1));
+		
+		glm::vec3 rotationAxis = glm::vec3(1.0f, 1.0f, 0.0f);
+		float angle = 130.0f; 
+		RotationMatrix = glm::rotate(glm::mat4(1), glm::radians(angle), rotationAxis);
+		ModelMatrix = TranslationMatrix * RotationMatrix * ScaleMatrix;
+
+		// Calculation for the Camera
+		glm::vec3 cameraPosition = glm::vec3(0.0f, 2.0f, 4.0f);
+		glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0f, 0.0f);
+		viewMatrix = glm::lookAt(cameraPosition, cameraDirection, glm::vec3(0,1,0));
+
+		float FoV = 60.0f;
+		projectionMatrix = glm::perspective(glm::radians(FoV), 4.0f/3.0f, 0.1f, 100.0f);
+		
+		for (int i = 0; i < 4; i++) {
+			std::cout << "[";
+			for (int j = 0; j < 4; j++) {
+				std::cout << TranslationMatrix[i][j] << " ,";
+			}
+			std::cout << "]\n";
+		}
+
+		glm::mat4 MVP = projectionMatrix * viewMatrix * TranslationMatrix;
 		glGenVertexArrays(1, &VAO);
 		glGenBuffers(1, &VBO);
 
@@ -94,7 +123,9 @@ namespace core{
 		simpleShader.activateShader();
 
 		// Specifies Uniform Buffer Location "text" where the sahder info could be found  
-		glUniform1i(glGetUniformLocation(simpleShader.programID, "text"), 0);
+		
+		GLuint textUniformID = glGetUniformLocation(simpleShader.programID, "text");
+		GLuint mvpUniformID = glGetUniformLocation(simpleShader.programID, "MVP");
 		
 		// The same as vertex VBO but for textures
 		GLuint Tex_VBO;
@@ -105,7 +136,7 @@ namespace core{
 		glEnableVertexAttribArray(1);
 
 		Shader computeShader {
-			std::make_pair(GL_COMPUTE_SHADER, "../shaders/computeshader.glsl")
+			std::make_pair(GL_COMPUTE_SHADER, "../shaders/computeshader02.glsl")
 		};
 		
 		// RENDER LOOP
@@ -132,8 +163,14 @@ namespace core{
 			// Dispateches the compute shader with SCR_WIDTH*SCR_HEIGHT*1 = number of work groups
 			glDispatchCompute(SCR_WIDTH, SCR_HEIGHT, 1);
 			glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+
+			
+
 			simpleShader.activateShader();
-			glDrawArrays(GL_TRIANGLES, 0, 3);
+			glUniform1i(textUniformID,  0);
+			// GL_FALSE is for transpose
+			glUniformMatrix4fv(mvpUniformID, 1, GL_FALSE, &MVP[0][0]);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
 
 			// glfw: swap buffers and poll IO events (keys pressed/released, mouse
 			// moved etc.)
