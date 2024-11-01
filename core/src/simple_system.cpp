@@ -4,14 +4,15 @@
 
 simple_component *simple_system::create_component(entity &e) {
   auto s = std::make_unique<simple_component>();
-  _components.insert(std::move(s));
+  _components[1] = std::move(s);
+  // _components.insert(1, std::move(s));
   return s.get();
 }
 
 simple_component *simple_system::create_component(entity &e, int value) {
   auto s = std::make_unique<simple_component>(value);
-  e.add_component(s.get());
-  _components.insert(std::move(s));
+  // e.add_component(s.get());
+  _components[1] = std::move(s);
   return s.get();
 }
 

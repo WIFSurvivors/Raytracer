@@ -1,7 +1,7 @@
 #pragma once
 
+#include <map>
 #include <memory>
-#include <set>
 
 #include "entity.hpp"
 #include "simple_component.hpp"
@@ -54,5 +54,5 @@ struct simple_system //: system
   void destroy() const;
 
 private:
-  std::set<std::unique_ptr<simple_component>> _components{};
+  std::map<long, std::unique_ptr<simple_component>> _components{};
 };
