@@ -21,6 +21,8 @@ struct component {
 
   bool operator<(const component &right) const { return _uuid < right._uuid; }
 
+  long get_uuid();
+
 protected:
-  int _uuid;
+  long _uuid;
 };

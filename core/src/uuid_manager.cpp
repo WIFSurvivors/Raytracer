@@ -1,7 +1,3 @@
 #include "uuid_manager.hpp"
 
-uuid_manager::uuid_manager()
-{
-
-}
-
+int uuid_manager::getNewUUID() { return _uuid_counter++; }
