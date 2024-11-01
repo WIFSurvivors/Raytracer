@@ -21,14 +21,15 @@ simple_component *simple_system::create_component(entity &e, int value) {
 // }
 
 void simple_system::update(const float dt) const {
+
   for (auto &&c : _components) {
-    c->update(dt);
+    c.second->update(dt);
   }
 }
 
 void simple_system::print_all_components(bool print_new_line) {
   for (auto &&c : _components) {
-    std::cout << c->get_value() << " ";
+    std::cout << c.second->get_value() << " ";
   }
   if (print_new_line)
     std::cout << "\n";
@@ -36,12 +37,12 @@ void simple_system::print_all_components(bool print_new_line) {
 
 void simple_system::init() const {
   for (auto &&c : _components) {
-    c->init();
+    c.second->init();
   }
 }
 
 void simple_system::destroy() const {
   for (auto &&c : _components) {
-    c->destroy();
+    c.second->destroy();
   }
 }
