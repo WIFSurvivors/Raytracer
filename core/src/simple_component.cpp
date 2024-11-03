@@ -1,41 +1,49 @@
 #include "simple_component.hpp"
-
 #include <iostream>
 #include <string>
 
-simple_component::simple_component() : component{} {
-  std::cout << "-- dummy component constructed without parameter \n";
-}
-
-simple_component::simple_component(int value, bool show_log)
-    : component{}, _value{value}, _show_log{show_log} {
-  std::cout << "-- dummy component constructed with parameter ";
-  print_class_content();
+simple_component::simple_component(std::weak_ptr<entity> e) : component{e} {
+  std::cout << "--- constructor | ";
+  print();
   std::cout << "\n";
 }
 
-void simple_component::init() { std::cout << "--- dummy_component: init\n"; }
+simple_component::simple_component(std::weak_ptr<entity> e, int value)
+    : component{e}, _value{value} {
+  std::cout << "--- constructor | ";
+  print();
+  std::cout << "\n";
+}
+
+void simple_component::init() {
+  std::cout << "--- init | ";
+  print();
+  std::cout << "\n";
+}
 
 void simple_component::update(float dt) {
-  std::cout << "dummy_component: update\n";
+  std::cout << "--- update | ";
+  print();
+  std::cout << "\n";
 }
 
 void simple_component::destroy() {
-  std::cout << "--- dummy_component: destroy\n";
+  std::cout << "--- destroy | ";
+  print();
+  std::cout << "\n";
 }
 
 simple_component::~simple_component() {
-  std::cout << "-- simple_component: destructor\n";
+  std::cout << "--- destructor | ";
+  print();
+  std::cout << "\n";
 }
-
-void simple_component::set_update_log(bool show_log) { _show_log = show_log; }
-
-bool simple_component::get_update_log() { return _show_log; }
 
 void simple_component::set_value(int value) { _value = value; }
 
 int simple_component::get_value() { return _value; }
 
-void simple_component::print_class_content() {
-  std::cout << "simple_component: " << std::to_string(_value);
+void simple_component::print() {
+  std::cout << "c:" << _uuid << " | value: " << _value
+            << " | entity:" << _entity.lock()->get_uuid();
 }

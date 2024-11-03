@@ -1,10 +1,16 @@
 #pragma once
 
+#include <memory>
+// #include "entity.hpp"
+struct entity;
+
+static long component_count = 1000;
+
 struct component {
   // Life cycle of a component:
 
   /// @brief Use the constructor to internally initialize the object
-  component() = default;
+  component(std::weak_ptr<entity> e);
 
   /// @brief Appendum to consturctor for referencing external objects
   virtual void init();
@@ -22,7 +28,9 @@ struct component {
   bool operator<(const component &right) const { return _uuid < right._uuid; }
 
   long get_uuid();
+  virtual void print() = 0;
 
 protected:
   long _uuid;
+  std::weak_ptr<entity> _entity;
 };

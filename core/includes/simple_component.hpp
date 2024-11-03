@@ -1,10 +1,11 @@
 #pragma once
 
 #include "component.hpp"
+#include "entity.hpp"
 
 struct simple_component : component {
-  simple_component();
-  simple_component(int value, bool show_log = true);
+  simple_component(std::weak_ptr<entity> e);
+  simple_component(std::weak_ptr<entity> e, int value);
   virtual void init() override;
   virtual void update(float dt) override;
   virtual void destroy() override;
@@ -13,12 +14,10 @@ struct simple_component : component {
   void set_value(int value);
   int get_value();
 
-  void set_update_log(bool show_log);
-  bool get_update_log();
+  void print() override;
 
 private:
   int _value{};
-  bool _show_log{true};
 
   void print_class_content();
 };
