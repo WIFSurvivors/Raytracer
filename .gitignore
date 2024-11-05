@@ -19,6 +19,5 @@
 */build/*
 .cache/*
 
-# GUI binary & .vs
+# GUI binary
 */RaytracerGUI/bin/*
-*/RaytracerGUI/.vs/*

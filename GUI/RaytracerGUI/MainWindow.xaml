@@ -1,0 +1,61 @@
+﻿<Window x:Class="RaytracerGUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:RaytracerGUI"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="720" Width="1280">
+    <Grid>
+        <Grid Width="450" HorizontalAlignment="Left">
+            <Menu Background="{StaticResource WindowPrimaryColor}" Foreground="White" VerticalAlignment="Top" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="3"  Margin="10,10,-61,0">
+                <MenuItem Header="File" Width="165">
+                    <MenuItem Header="Open" Click="clickOpen"/>
+                    <MenuItem Header="Save" Click="clickSave"/>
+                    <MenuItem Header="Exit" Click="clickExit" />
+                </MenuItem>
+                <MenuItem Header="View" Width="165">
+                    <MenuItem Header="Reset" />
+                </MenuItem>
+                <MenuItem Header="Settings" Width="165">
+                    <MenuItem Header="Preferences" />
+                    <MenuItem Header="About" />
+                </MenuItem>
+            </Menu>
+            <Border BorderBrush="{StaticResource ComponentPrimaryColor}" BorderThickness="5" CornerRadius="5" Padding="5" Margin="619,50,-789,271">
+                <Image Source="/images/preview.png" Margin="0,0,0,0" />
+            </Border>
+            <TreeView Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="5" Margin="10,50,225,24">
+                <TreeViewItem Header="xyz 1">
+                    <TreeViewItem Header="xyz 1.1" />
+                    <TreeViewItem Header="xyz 1.2">
+                        <TreeViewItem Header="xyz 1.2.1" />
+                    </TreeViewItem>
+                </TreeViewItem>
+                <TreeViewItem Header="xyz 2" />
+            </TreeView>
+            <ListBox Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="5" Margin="274,50,-61,24">
+                
+            </ListBox>
+                
+        </Grid>
+        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="600,350,50,30">
+            <Image Source="/images/arrow-right.png" Width="50" Height="50"/>
+        </Button>
+        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="250,350,50,30">
+            <Image Source="/images/arrow-left.png" Width="50" Height="50"/>
+        </Button>
+        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="1000,375,50,30">
+            <Image Source="/images/arrow-up.png" Width="50" Height="50"/>
+        </Button>
+        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="1000,525,50,30">
+            <Image Source="/images/arrow-down.png" Width="50" Height="50"/>
+        </Button>
+        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="600,550,50,30">
+            <Image Source="/images/arrow-rotate-x.png" Width="50" Height="50"/>
+        </Button>
+        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="250,550,50,30">
+            <Image Source="/images/arrow-rotate-y.png" Width="50" Height="50"/>
+        </Button>
+    </Grid>
+</Window>
