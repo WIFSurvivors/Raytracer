@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <ApplicationIcon>Raytracer.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="images\arrow-down.png" />
+    <None Remove="images\arrow-left.png" />
+    <None Remove="images\arrow-right.png" />
+    <None Remove="images\arrow-rotate-x.png" />
+    <None Remove="images\arrow-rotate-y.png" />
+    <None Remove="images\arrow-up.png" />
+    <None Remove="images\preview.png" />
+    <None Remove="images\right-arrow.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Raytracer.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="images\arrow-down.png" />
+    <Resource Include="images\arrow-left.png" />
+    <Resource Include="images\arrow-right.png" />
+    <Resource Include="images\arrow-rotate-x.png" />
+    <Resource Include="images\arrow-rotate-y.png" />
+    <Resource Include="images\arrow-up.png" />
+    <Resource Include="images\preview.png" />
+  </ItemGroup>
+
+</Project>
