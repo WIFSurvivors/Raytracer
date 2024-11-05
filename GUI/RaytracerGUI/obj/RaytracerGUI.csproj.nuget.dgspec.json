@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\RaytracerGUI.csproj": {}
+    "C:\\Users\\Ale\\source\\repos\\Raytracer\\GUI\\RaytracerGUI\\RaytracerGUI.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\RaytracerGUI.csproj": {
+    "C:\\Users\\Ale\\source\\repos\\Raytracer\\GUI\\RaytracerGUI\\RaytracerGUI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\RaytracerGUI.csproj",
+        "projectUniqueName": "C:\\Users\\Ale\\source\\repos\\Raytracer\\GUI\\RaytracerGUI\\RaytracerGUI.csproj",
         "projectName": "RaytracerGUI",
-        "projectPath": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\RaytracerGUI.csproj",
+        "projectPath": "C:\\Users\\Ale\\source\\repos\\Raytracer\\GUI\\RaytracerGUI\\RaytracerGUI.csproj",
         "packagesPath": "C:\\Users\\Ale\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\obj\\",
+        "outputPath": "C:\\Users\\Ale\\source\\repos\\Raytracer\\GUI\\RaytracerGUI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Ale\\AppData\\Roaming\\NuGet\\NuGet.Config",

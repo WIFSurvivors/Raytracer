@@ -3,16 +3,16 @@
   "WorkspaceRootPath": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|c:\\users\\ale\\source\\repos\\raytracergui\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|c:\\users\\ale\\source\\repos\\raytracergui\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|c:\\users\\ale\\source\\repos\\raytracergui\\globalstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|solutionrelative:globalstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|c:\\users\\ale\\source\\repos\\raytracergui\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|c:\\users\\ale\\source\\repos\\raytracergui\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
@@ -26,7 +26,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 3,
           "Children": [
             {
               "$type": "Document",
@@ -42,7 +42,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "GlobalStyles.xaml",
               "DocumentMoniker": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\GlobalStyles.xaml",
               "RelativeDocumentMoniker": "GlobalStyles.xaml",
@@ -54,7 +54,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "MainWindow.xaml",
               "DocumentMoniker": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\MainWindow.xaml",
               "RelativeDocumentMoniker": "MainWindow.xaml",
@@ -66,13 +66,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",
               "ToolTip": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\MainWindow.xaml.cs",
               "RelativeToolTip": "MainWindow.xaml.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAACAAAAAOAAAAAAAAAA==",
+              "ViewState": "AgIAABkAAAAAAAAAAAAgwDkAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-10-25T13:35:23.931Z",
               "EditorCaption": ""
