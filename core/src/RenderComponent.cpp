@@ -8,7 +8,7 @@ namespace core {
 	
 	void RenderComponent::init(GLuint programID) {
 		// TODO:
-		// - Understand the index of the generic vertex attribute
+		// - Understand the index of the generic vertex attribute (glVertexAttribPointer())
 		// - If we gonna have more render components index has to be different for each right???
 		// - Move glENableVertexAttribArray to the update() may be
 		// - Do we really need a vertex buffer for UVs
@@ -40,8 +40,7 @@ namespace core {
 
 	void RenderComponent::update() {
 		// TODO:
-		// - Better MVP calculation
-	
+		// - Better MVP calculation (e.g. we don't need to call glm::mat4(1) every time)
 		// Calculation for the Model Matrix
 		_translationMatrix = glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 0.0f));
 		_scaleMatrix = glm::scale(glm::mat4(1), glm::vec3(1, 1, 1));
@@ -69,6 +68,8 @@ namespace core {
 	void RenderComponent::destroy() {
 		glDisableVertexAttribArray(0);
 		glDisableVertexAttribArray(1);
+		glDeleteBuffers(1, &_vbo);
+		glDeleteBuffers(1, &_uvVBO);
 	}
 
 	void RenderComponent::setTextures() {

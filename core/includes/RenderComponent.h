@@ -15,6 +15,7 @@ namespace core {
 	 *	- implement beter set Texture
 	 *  - Do we need _uvVBO and UV??? 
 	 *  - Where do we define the Uniforms??? (I dont like it that it is in the RenderComponent)
+	 *  - implement better way to store number of vertices
 	 */
 	class RenderComponent{
 	private:
@@ -27,8 +28,8 @@ namespace core {
 		glm::mat4 _scaleMatrix;
 		glm::mat4 _modelMatrix;
 
-		glm::mat4 _viewMatrix;
-		glm::mat4 _projectionMatrix;
+		glm::mat4 _viewMatrix;	// shouldn't be here	
+		glm::mat4 _projectionMatrix;	// shouldn't be here
 
 		std::vector<glm::vec3> vertices = {
 			glm::vec3{-1.0f, -1.0f, 0.0f},
@@ -39,7 +40,7 @@ namespace core {
 			glm::vec3{-1.0f, 1.0f, 0.0f}
 		};
 		
-		int nvertices = 6;
+		int nvertices = 6;	// Number of vertices
 
 		std::vector<glm::vec2> UV = {
 			glm::vec2{0.0f, 0.0f},
@@ -52,8 +53,8 @@ namespace core {
 
 		GLuint textUniformID;
 		GLuint mvpUniformID;
-		// for now does nothing but later here we can load an object
-		void setVertices();
+
+		void setVertices();	// for now does nothing but later here we can load an object
 		void setTextures();
 	public:
 		void init(GLuint programID);
