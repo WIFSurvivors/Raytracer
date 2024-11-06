@@ -8,9 +8,11 @@ name: Lint Code Base
 
 on:
   push:
-    branches: [ "main" ]
+
+    branches: [ "ci-integration" ]
   pull_request:
-    branches: [ "main" ]
+    branches: [ "ci-integration" ]
+
 jobs:
   run-lint:
     runs-on: ubuntu-latest
@@ -39,4 +41,6 @@ jobs:
           FIX_CLANG_FORMAT: true
           FIX_YAML_PRETTIER: true
           VALIDATE_CHECKOV: false
+
           CPP_LINTER_RULES: CPPLINT.cfg
+
