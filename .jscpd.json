@@ -1,6 +1,6 @@
 {
     "ignore": [
-       "**/bin/**",
-        "**/obj/**"
+       "GUI/RaytracerGUI/bin/**",
+        "GUI/RaytracerGUI/obj/**"
     ],
 }
