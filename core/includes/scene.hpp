@@ -5,22 +5,19 @@
 
 struct entity;
 
-static int entity_counter = 0;
+static int64_t entity_counter = 0;
 
 struct scene {
   scene();
-  ~scene();
-
-  //   std::shared_ptr<entity> add_new_entity();
-  //   bool remove_entity(std::shared_ptr<entity> e);
 
   std::weak_ptr<entity> get_root();
 
   std::shared_ptr<entity> create_entity(std::string name);
+  std::shared_ptr<entity> create_entity(std::string name, int64_t uuid);
   std::shared_ptr<entity> create_entity(std::string name,
                                         std::shared_ptr<entity> parent);
-  std::shared_ptr<entity>
-  create_entity(std::string name, std::shared_ptr<entity> parent, long uuid);
+  std::shared_ptr<entity> create_entity(std::string name, int64_t uuid,
+                                        std::shared_ptr<entity> parent);
 
   void print();
 

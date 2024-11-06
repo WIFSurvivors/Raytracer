@@ -23,11 +23,11 @@ struct component {
   virtual void destroy();
 
   /// @brief Use the constructor to internally deconstruct the object
-  virtual ~component();
+  // virtual ~component();
 
   bool operator<(const component &right) const { return _uuid < right._uuid; }
 
-  long get_uuid();
+  int64_t get_uuid();
   virtual void print() = 0;
 
   std::weak_ptr<entity> _entity;

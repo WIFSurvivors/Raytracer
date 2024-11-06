@@ -1,72 +1,50 @@
 #include "entity.hpp"
-
 #include <iostream>
+#include <memory>
+#include <string>
 
 entity::entity() : _name{"root"}, _uuid{-123} {}
-
-/*
-entity::entity(std::string name, std::shared_ptr<entity> parent, long uuid)
-    : _name{name}, _parent{parent}, _uuid{uuid} {
-
-  // std::cout << "~eh1()\n";
-  // auto this_shared = shared_from_this();
-  // std::cout << "~eh2()\n";
-  // parent->add_child_entity(this_shared);
-  // std::cout << "~eh3()\n";
-
-  parent->add_child_entity(get_ptr());
-  std::cout << "E-" << _name << "(" << _uuid << ")->"
-            << (_parent.lock()->_uuid);
-  std::cout << "\n";
-}
-*/
-
-entity::~entity() {
-  _components.clear();
-  std::cout << "~entity()\n";
-}
-
-entity::entity(std::string name, long uuid) : _name{name}, _uuid{uuid} {}
-entity::entity(std::string name, long uuid, std::shared_ptr<entity> parent)
+entity::entity(std::string name, int64_t uuid) : _name{name}, _uuid{uuid} {}
+entity::entity(std::string name, int64_t uuid, std::shared_ptr<entity> parent)
     : _name{name}, _uuid{uuid}, _parent{parent} {}
 
-// entity::entity(Private) {}
-
-std::shared_ptr<entity> entity::create(std::string name, long uuid) {
-  auto e = std::make_shared<entity>(name, uuid);
-  // e->_name = name;
-  // e->_uuid = uuid;
-  return e;
+std::shared_ptr<entity> entity::create(std::string name, int64_t uuid) {
+  return std::make_shared<entity>(name, uuid);
 }
 
-std::shared_ptr<entity> entity::create(std::string name, long uuid,
+std::shared_ptr<entity> entity::create(std::string name, int64_t uuid,
                                        std::shared_ptr<entity> parent) {
   auto e = std::make_shared<entity>(name, uuid);
   parent->add_child_entity(e->get_ptr());
   return e;
 }
 
-bool entity::get_component(long uuid, component &c) {
+bool entity::get_component(int64_t uuid, component &c) {
   auto it =
       std::find_if(_components.begin(), _components.end(),
                    [uuid](component *c) { return c->get_uuid() == uuid; });
   c = *(*it); // get value from iterator (*it), then turn it into a value type
-              // (**it)
+              // (*(*it))
   return true;
 }
 
-void entity::add_component(component *c) { _components.push_back(c); }
+void entity::add_component(component *c) {
+  // check if component is already in list
+  _components.push_back(c);
+}
 
 void entity::remove_component(component *c) {
   auto it = std::find(_components.begin(), _components.end(), c);
   _components.erase(it);
-};
+  // add boolean return type
+}
 
-void entity::remove_component(long uuid) {
+void entity::remove_component(int64_t uuid) {
   auto it =
       std::find_if(_components.begin(), _components.end(),
                    [uuid](component *c) { return c->get_uuid() == uuid; });
   _components.erase(it);
+  // add boolean return type
 }
 
 void entity::add_child_entity(std::shared_ptr<entity> e) {
@@ -75,6 +53,7 @@ void entity::add_child_entity(std::shared_ptr<entity> e) {
 
 std::weak_ptr<entity> entity::get_parent_entity() { return _parent; }
 
+// remove magic number
 void entity::print() { print(4); }
 
 void entity::print(int indent) {

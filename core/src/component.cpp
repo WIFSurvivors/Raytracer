@@ -9,8 +9,8 @@ void component::update(float dt) {}
 
 void component::destroy() {}
 
-component::~component() { std::cout << "~component()\n"; }
+// component::~component() { std::cout << "~component()\n"; }
 
-long component::get_uuid() { return _uuid; }
+int64_t component::get_uuid() { return _uuid; }
 
 void component::print() { std::cout << "c:ad " << _uuid; }

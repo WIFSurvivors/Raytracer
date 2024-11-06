@@ -5,10 +5,9 @@
 
 struct scene_manager {
   scene_manager();
-  ~scene_manager();
 
   void load_example_scene();
 
 private:
-  // simple_system s_sys{};
+  simple_system simple_sys{};
 };

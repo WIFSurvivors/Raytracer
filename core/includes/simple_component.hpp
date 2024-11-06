@@ -9,7 +9,7 @@ struct simple_component : component {
   virtual void init() override;
   virtual void update(float dt) override;
   virtual void destroy() override;
-  virtual ~simple_component() override;
+  // virtual ~simple_component() override;
 
   void set_value(int value);
   int get_value();

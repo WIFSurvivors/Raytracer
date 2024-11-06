@@ -33,11 +33,11 @@ void simple_component::destroy() {
   std::cout << "\n";
 }
 
-simple_component::~simple_component() {
-  std::cout << "--- destructor | ";
-  print();
-  std::cout << "\n";
-}
+// simple_component::~simple_component() {
+//   std::cout << "--- destructor | ";
+//   print();
+//   std::cout << "\n";
+// }
 
 void simple_component::set_value(int value) { _value = value; }
 

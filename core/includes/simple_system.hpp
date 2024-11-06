@@ -38,25 +38,22 @@
 
 struct simple_system //: system
 {
+  simple_component *create_component(long e) { return nullptr; }
+  simple_component *create_component(long e, int value) { return nullptr; }
   simple_component *create_component(std::shared_ptr<entity> e);
   simple_component *create_component(std::shared_ptr<entity> e, int value);
 
-  ~simple_system();
-
   void clear();
-  // bool remove_component(simple_component *c);
 
-  inline const auto &get_components() { return _components; }
+  inline const auto &get_components() const { return _components; }
+  // bool remove_component(simple_component *c);
 
   void print_all_components();
 
-  // const correctness might be logically wrong here?
-  // need to double check const again
   // void init() const;
-  void update(const float dt) const;
+  void update(const float dt);
   // void destroy() const;
 
 private:
-  // <uuid, component>
   std::map<long, std::unique_ptr<simple_component>> _components{};
 };
