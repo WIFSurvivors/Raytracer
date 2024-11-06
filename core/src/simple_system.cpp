@@ -5,19 +5,32 @@
 #include <utility>
 
 simple_component *simple_system::create_component(std::shared_ptr<entity> e) {
-  auto s = std::make_unique<simple_component>(e);
-  _components[component_count++] = std::move(s);
-  // _components.insert(1, std::move(s));
-  return s.get();
+  std::cout << "create 1\n";
+  _components[component_count] = std::make_unique<simple_component>(e);
+  e->add_component(_components[component_count].get());
+  return _components[component_count++].get();
 }
 
 simple_component *simple_system::create_component(std::shared_ptr<entity> e,
                                                   int value) {
-  auto s = std::make_unique<simple_component>(e, value);
+  std::cout << "create 2\n";
+  _components[component_count] = std::make_unique<simple_component>(e, value);
+  e->add_component(_components[component_count].get());
+  return _components[component_count++].get();
+}
 
-  // e.add_component(s.get());
-  _components[component_count++] = std::move(s);
-  return s.get();
+simple_system::~simple_system() {
+  std::cout << "~simple_system() 1\n";
+  print_all_components();
+  // _components.clear();
+  // print_all_components();
+  std::cout << "~simple_system() 2\n";
+}
+
+void simple_system::clear() {
+  std::cout << "clear!\n";
+
+  _components.clear();
 }
 
 // bool simple_system::remove_component(simple_component *c) {
@@ -33,7 +46,9 @@ void simple_system::update(const float dt) const {
 void simple_system::print_all_components() {
   std::cout << "SIMPLE SYSTEM COMPONENTS:\n";
   for (auto &&c : _components) {
-    std::cout << "- " << c.first << " | " << c.second->get_value() << "\n";
+    std::cout << "- " << c.first << " | " << c.second << " | "
+              << c.second->get_value() << " | e: " << (c.second->_entity.lock())
+              << "\n";
   }
 }
 

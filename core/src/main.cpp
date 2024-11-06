@@ -7,10 +7,10 @@
 void example_ecs();
 
 int main() {
-  {
-    scene_manager sm{};
-    sm.load_example_scene();
-  }
+  // {
+  scene_manager sm{};
+  sm.load_example_scene();
+  // }
 
   WindowEngine engine;
   engine.initializeEngine();

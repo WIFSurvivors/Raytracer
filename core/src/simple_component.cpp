@@ -44,6 +44,6 @@ void simple_component::set_value(int value) { _value = value; }
 int simple_component::get_value() { return _value; }
 
 void simple_component::print() {
-  std::cout << "c:" << _uuid << " | value: " << _value
+  std::cout << "c:" << _uuid << " (adr: " << this << ") | value: " << _value
             << " | entity:" << _entity.lock()->get_uuid();
 }

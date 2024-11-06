@@ -4,18 +4,54 @@
 
 entity::entity() : _name{"root"}, _uuid{-123} {}
 
-entity::entity(std::string name, std::weak_ptr<entity> parent, long uuid)
+/*
+entity::entity(std::string name, std::shared_ptr<entity> parent, long uuid)
     : _name{name}, _parent{parent}, _uuid{uuid} {
+
+  // std::cout << "~eh1()\n";
+  // auto this_shared = shared_from_this();
+  // std::cout << "~eh2()\n";
+  // parent->add_child_entity(this_shared);
+  // std::cout << "~eh3()\n";
+
+  parent->add_child_entity(get_ptr());
   std::cout << "E-" << _name << "(" << _uuid << ")->"
             << (_parent.lock()->_uuid);
   std::cout << "\n";
+}
+*/
+
+entity::~entity() {
+  _components.clear();
+  std::cout << "~entity()\n";
+}
+
+entity::entity(std::string name, long uuid) : _name{name}, _uuid{uuid} {}
+entity::entity(std::string name, long uuid, std::shared_ptr<entity> parent)
+    : _name{name}, _uuid{uuid}, _parent{parent} {}
+
+// entity::entity(Private) {}
+
+std::shared_ptr<entity> entity::create(std::string name, long uuid) {
+  auto e = std::make_shared<entity>(name, uuid);
+  // e->_name = name;
+  // e->_uuid = uuid;
+  return e;
+}
+
+std::shared_ptr<entity> entity::create(std::string name, long uuid,
+                                       std::shared_ptr<entity> parent) {
+  auto e = std::make_shared<entity>(name, uuid);
+  parent->add_child_entity(e->get_ptr());
+  return e;
 }
 
 bool entity::get_component(long uuid, component &c) {
   auto it =
       std::find_if(_components.begin(), _components.end(),
                    [uuid](component *c) { return c->get_uuid() == uuid; });
-  c = *(*it);
+  c = *(*it); // get value from iterator (*it), then turn it into a value type
+              // (**it)
   return true;
 }
 
@@ -33,13 +69,29 @@ void entity::remove_component(long uuid) {
   _components.erase(it);
 }
 
-void entity::print() {
-  std::cout << "E: " << _uuid << " | C size: " << _components.size() << "\n";
+void entity::add_child_entity(std::shared_ptr<entity> e) {
+  _child_entities.push_back(e);
+}
+
+std::weak_ptr<entity> entity::get_parent_entity() { return _parent; }
+
+void entity::print() { print(4); }
+
+void entity::print(int indent) {
+  std::cout << "E: " << _name << "(" << _uuid
+            << ") | components: " << _components.size() << "\n";
+
   for (auto &&c : _components) {
+    for (int i = 0; i < indent; i++)
+      std::cout << " ";
     c->print();
     std::cout << "\n";
   }
+
+  int new_indent = indent + 4;
   for (auto &&e : _child_entities) {
-    e->print();
+    for (int i = 0; i < indent; i++)
+      std::cout << " ";
+    e->print(new_indent);
   }
 }

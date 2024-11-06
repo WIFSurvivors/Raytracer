@@ -41,6 +41,9 @@ struct simple_system //: system
   simple_component *create_component(std::shared_ptr<entity> e);
   simple_component *create_component(std::shared_ptr<entity> e, int value);
 
+  ~simple_system();
+
+  void clear();
   // bool remove_component(simple_component *c);
 
   inline const auto &get_components() { return _components; }

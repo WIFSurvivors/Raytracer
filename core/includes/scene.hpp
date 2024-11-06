@@ -9,12 +9,14 @@ static int entity_counter = 0;
 
 struct scene {
   scene();
+  ~scene();
 
   //   std::shared_ptr<entity> add_new_entity();
   //   bool remove_entity(std::shared_ptr<entity> e);
 
-  std::shared_ptr<entity> get_root();
+  std::weak_ptr<entity> get_root();
 
+  std::shared_ptr<entity> create_entity(std::string name);
   std::shared_ptr<entity> create_entity(std::string name,
                                         std::shared_ptr<entity> parent);
   std::shared_ptr<entity>
