@@ -47,6 +47,7 @@ jobs:
           FIX_DOTNET_SLN_FORMAT_ANALYZERS: true
           IGNORE_GENERATED_FILES: true
           FIX_JSON_PRETTIER: true
+          FIX_CSHARP: true
           
           CPP_LINTER_RULES: CPPLINT.cfg
           FILTER_REGEX_EXCLUDE: (GUI/RaytracerGUI/obj/*)|(GUI/RaytracerGUI/bin/*)
