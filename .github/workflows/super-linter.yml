@@ -43,4 +43,5 @@ jobs:
           VALIDATE_CHECKOV: false
 
           CPP_LINTER_RULES: CPPLINT.cfg
+          FILTER_REGEX_EXCLUDE: (*/obj/*)|(*/bin/*)
 
