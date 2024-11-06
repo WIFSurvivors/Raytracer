@@ -29,6 +29,9 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
+      - name: Restore dependencies
+        run: dotnet restore GUI/RaytracerGUI/RaytracerGUI.sln
+        
       - name: Lint Code Base
         uses: super-linter/super-linter@v7.1.0
         env:
@@ -46,41 +49,7 @@ jobs:
           FIX_DOTNET_SLN_FORMAT_ANALYZERS: true
 
           CPP_LINTER_RULES: CPPLINT.cfg
-          FILTER_REGEX_EXCLUDE: (*/obj/*)|(*/bin/*)
-          
-  dotnet-format:
-    runs-on: windows-latest
-    steps:
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '8.0.x'
+          FILTER_REGEX_EXCLUDE: (GUI/RaytracerGUI/obj/*)|(GUI/RaytracerGUI/bin/*)
 
-      - name: Checkout repo
-        uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
-
-      - name: Run dotnet format
-        id: format
-        uses: eero-dev/dotnet-format@d3f2aef1dee3a6e6ed48183722e118ec24635a67
-        with:
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          action: "fix"
-          exclude: GUI/RaytracerGUI/obj GUI/RaytracerGUI/bin
-          workspace: "GUI/RaytracerGUI/RaytracerGUI.sln"
-          only-changed-files: true
-
-      - name: Commit files
-        if: steps.format.outputs.has-changes == 'true'
-        run: |
-          git config --local user.name "github-actions[bot]"
-          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git commit -a -m 'Automated dotnet-format update
-          Co-authored-by: ${{ github.event.pull_request.user.login }} <${{ github.event.pull_request.user.id }}+${{ github.event.pull_request.user.login }}@users.noreply.github.com>'
-      - name: Push changes
-        if: steps.format.outputs.has-changes == 'true'
-        uses: ad-m/github-push-action@0fafdd62b84042d49ec0cb92d9cac7f7ce4ec79e
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.head_ref }}
+      - name: Run dotnet format with no restore
+        run: dotnet format GUI/RaytracerGUI/RaytracerGUI.sln --verbosity detailed --no-restore
