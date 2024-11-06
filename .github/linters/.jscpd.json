@@ -1,0 +1,6 @@
+{
+    "ignore": [
+       "GUI/RaytracerGUI/bin/**",
+        "GUI/RaytracerGUI/obj/**"
+    ]
+}
