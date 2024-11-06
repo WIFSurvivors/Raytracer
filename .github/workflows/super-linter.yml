@@ -29,10 +29,6 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-    
-      - name: Restore dependencies
-        run: dotnet restore 
-
       - name: Lint Code Base
         uses: super-linter/super-linter@v7.1.0
         env:
@@ -69,6 +65,7 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           action: "fix"
+          exclude: GUI/RaytracerGUI/obj/ GUI/RaytracerGUI/bin/
           workspace: "GUI/RaytracerGUI/RaytracerGUI.sln"
           only-changed-files: true
 
