@@ -41,7 +41,9 @@ jobs:
           FIX_CLANG_FORMAT: true
           FIX_YAML_PRETTIER: true
           VALIDATE_CHECKOV: false
-          VALIDATE_CSHARP: false
+          FIX_DOTNET_SLN_FORMAT_STYLE: true
+          FIX_DOTNET_SLN_FORMAT_WHITESPACE: true
+          FIX_DOTNET_SLN_FORMAT_ANALYZERS: true
 
           CPP_LINTER_RULES: CPPLINT.cfg
           FILTER_REGEX_EXCLUDE: (*/obj/*)|(*/bin/*)
@@ -65,7 +67,7 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           action: "fix"
-          exclude: GUI/RaytracerGUI/obj/ GUI/RaytracerGUI/bin/
+          exclude: GUI/RaytracerGUI/obj GUI/RaytracerGUI/bin
           workspace: "GUI/RaytracerGUI/RaytracerGUI.sln"
           only-changed-files: true
 
