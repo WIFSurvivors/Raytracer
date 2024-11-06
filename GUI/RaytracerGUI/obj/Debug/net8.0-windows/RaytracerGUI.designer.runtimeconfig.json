@@ -12,8 +12,8 @@
       }
     ],
     "additionalProbingPaths": [
-      "C:\\Users\\Ale\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\Ale\\.nuget\\packages"
+      "C:\\Users\\spyro\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\spyro\\.nuget\\packages"
     ],
     "configProperties": {
       "System.Runtime.Serialization.EnableUnsafeBinaryFormatterSerialization": true,

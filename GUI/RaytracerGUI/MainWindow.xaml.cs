@@ -42,20 +42,20 @@ namespace RaytracerGUI
                 //
                 // test
                 //
-
+                //
             }
         }
 
         private void clickSave(object sender, RoutedEventArgs e)
         {
-           
+
         }
 
 
         private void clickExit(object sender, RoutedEventArgs e)
         {
 
-            Application.Current.Shutdown(0); 
+            Application.Current.Shutdown(0);
         }
     }
 }

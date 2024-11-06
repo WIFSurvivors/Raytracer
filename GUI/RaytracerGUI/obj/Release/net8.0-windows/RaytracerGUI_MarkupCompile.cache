@@ -1,20 +1,20 @@
 ﻿RaytracerGUI
-1.0.0.0
+
 
 winexe
 C#
 .cs
-C:\Users\spyro\Source\Repos\WIFSurvivors\Raytracer\GUI\RaytracerGUI\obj\Debug\net8.0-windows\
+C:\Users\spyro\Source\Repos\WIFSurvivors\Raytracer\GUI\RaytracerGUI\obj\Release\net8.0-windows\
 RaytracerGUI
 none
 false
-TRACE;DEBUG;NET;NET8_0;NETCOREAPP
+TRACE;RELEASE;NET;NET8_0;NETCOREAPP
 C:\Users\spyro\Source\Repos\WIFSurvivors\Raytracer\GUI\RaytracerGUI\App.xaml
 21831039002
 12082431741
-6-221243309
+4-54903603
 1981124507420
 GlobalStyles.xaml;MainWindow.xaml;
 
-False
+True
 

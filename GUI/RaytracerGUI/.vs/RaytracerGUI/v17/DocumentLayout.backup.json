@@ -1,21 +1,21 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\",
+  "WorkspaceRootPath": "C:\\Users\\spyro\\source\\repos\\WIFSurvivors\\Raytracer\\GUI\\RaytracerGUI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|c:\\users\\ale\\source\\repos\\raytracergui\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|c:\\users\\ale\\source\\repos\\raytracergui\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|c:\\users\\spyro\\source\\repos\\wifsurvivors\\raytracer\\gui\\raytracergui\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|c:\\users\\ale\\source\\repos\\raytracergui\\globalstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|c:\\users\\spyro\\source\\repos\\wifsurvivors\\raytracer\\gui\\raytracergui\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|c:\\users\\spyro\\source\\repos\\wifsurvivors\\raytracer\\gui\\raytracergui\\globalstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|solutionrelative:globalstyles.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|c:\\users\\ale\\source\\repos\\raytracergui\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "AbsoluteMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|c:\\users\\spyro\\source\\repos\\wifsurvivors\\raytracer\\gui\\raytracergui\\app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
       "RelativeMoniker": "D:0:0:{56E150FF-05D6-471B-9FA3-2F9A4E4B07E0}|RaytracerGUI.csproj|solutionrelative:app.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
     }
   ],
@@ -26,15 +26,15 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 2,
           "Children": [
             {
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "App.xaml",
-              "DocumentMoniker": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\App.xaml",
+              "DocumentMoniker": "C:\\Users\\spyro\\source\\repos\\WIFSurvivors\\Raytracer\\GUI\\RaytracerGUI\\App.xaml",
               "RelativeDocumentMoniker": "App.xaml",
-              "ToolTip": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\App.xaml",
+              "ToolTip": "C:\\Users\\spyro\\source\\repos\\WIFSurvivors\\Raytracer\\GUI\\RaytracerGUI\\App.xaml",
               "RelativeToolTip": "App.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2024-10-25T13:36:57.595Z",
@@ -44,9 +44,9 @@
               "$type": "Document",
               "DocumentIndex": 2,
               "Title": "GlobalStyles.xaml",
-              "DocumentMoniker": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\GlobalStyles.xaml",
+              "DocumentMoniker": "C:\\Users\\spyro\\source\\repos\\WIFSurvivors\\Raytracer\\GUI\\RaytracerGUI\\GlobalStyles.xaml",
               "RelativeDocumentMoniker": "GlobalStyles.xaml",
-              "ToolTip": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\GlobalStyles.xaml",
+              "ToolTip": "C:\\Users\\spyro\\source\\repos\\WIFSurvivors\\Raytracer\\GUI\\RaytracerGUI\\GlobalStyles.xaml",
               "RelativeToolTip": "GlobalStyles.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2024-10-25T13:35:55.901Z",
@@ -54,11 +54,11 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 0,
               "Title": "MainWindow.xaml",
-              "DocumentMoniker": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\spyro\\source\\repos\\WIFSurvivors\\Raytracer\\GUI\\RaytracerGUI\\MainWindow.xaml",
               "RelativeDocumentMoniker": "MainWindow.xaml",
-              "ToolTip": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\MainWindow.xaml",
+              "ToolTip": "C:\\Users\\spyro\\source\\repos\\WIFSurvivors\\Raytracer\\GUI\\RaytracerGUI\\MainWindow.xaml",
               "RelativeToolTip": "MainWindow.xaml",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
               "WhenOpened": "2024-10-25T13:35:25.569Z",
@@ -66,16 +66,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "MainWindow.xaml.cs",
-              "DocumentMoniker": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\spyro\\source\\repos\\WIFSurvivors\\Raytracer\\GUI\\RaytracerGUI\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "MainWindow.xaml.cs",
-              "ToolTip": "C:\\Users\\Ale\\source\\repos\\RaytracerGUI\\MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\spyro\\source\\repos\\WIFSurvivors\\Raytracer\\GUI\\RaytracerGUI\\MainWindow.xaml.cs",
               "RelativeToolTip": "MainWindow.xaml.cs",
               "ViewState": "AgIAABkAAAAAAAAAAAAgwDkAAAAtAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-10-25T13:35:23.931Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-10-25T13:35:23.931Z"
             }
           ]
         }
