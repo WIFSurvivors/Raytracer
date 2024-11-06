@@ -29,12 +29,9 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '7.x'
+    
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore GUI/RaytracerGUI/RaytracerGUI.sln
 
       - name: Lint Code Base
         uses: super-linter/super-linter@v7.1.0
@@ -53,5 +50,5 @@ jobs:
           FILTER_REGEX_EXCLUDE: (*/obj/*)|(*/bin/*)
 
       - name: Run dotnet format with detailed logging
-        run: dotnet format --verbosity detailed --no-restore
+        run: dotnet format --verbosity detailed --no-restore GUI/RaytracerGUI/RaytracerGUI.sln
 
