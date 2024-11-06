@@ -27,6 +27,9 @@ jobs:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
 
+      - name: Restore dependencies
+        run: dotnet restore GUI/RaytracerGUI/RaytracerGUI.sln
+        
       - name: Lint Code Base
         uses: super-linter/super-linter@v7.1.0
         env:
@@ -39,4 +42,14 @@ jobs:
           FIX_CLANG_FORMAT: true
           FIX_YAML_PRETTIER: true
           VALIDATE_CHECKOV: false
+          FIX_DOTNET_SLN_FORMAT_STYLE: true
+          FIX_DOTNET_SLN_FORMAT_WHITESPACE: true
+          FIX_DOTNET_SLN_FORMAT_ANALYZERS: true
+          IGNORE_GENERATED_FILES: true
+          FIX_JSON_PRETTIER: true
+          
           CPP_LINTER_RULES: CPPLINT.cfg
+          FILTER_REGEX_EXCLUDE: (GUI/RaytracerGUI/obj/*)|(GUI/RaytracerGUI/bin/*)
+
+      - name: Run dotnet format with no restore
+        run: dotnet format GUI/RaytracerGUI/RaytracerGUI.sln --verbosity detailed --no-restore
