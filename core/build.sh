@@ -1,6 +1,7 @@
 #! /bin/bash
 
 build_ninja() {
+	mkdir -p build
 	cmake -S . -B build -G "Ninja" 
 	cd build
 	ninja
@@ -8,18 +9,32 @@ build_ninja() {
 }
 
 build_default() {
+	mkdir -p build
 	cmake -S . -B build -G "Unix Makefiles"
 	cd build
 	make
 	./RayTracer
 }
 
-mkdir -p build
+build_debug() {
+	mkdir -p build-debug
+	cmake -S . -B build-debug -G "Ninja" -D GLFW_BUILD_X11=1 -D GLFW_BUILD_WAYLAND=0
+	cd build-debug
+	ninja
+	./RayTracer
+}
+
+
+
 while [[ $# -gt 0 ]];
 do
 	case "$1" in
 		-n|--ninja)
 			build_ninja 
+			exit 1
+			;;
+		-d|--debug)
+			build_debug 
 			exit 1
 			;;
 		*)

@@ -37,6 +37,9 @@ namespace core {
 
 		int _scr_height = 800;
 		int _scr_width = 800;
+		double _mouseX = 0;
+		double _mouseY = 0;
+		GLuint mouseUniformID;
 
 		GLFWwindow *_window;
 		GLuint _vao;
