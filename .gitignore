@@ -24,3 +24,5 @@
 */RaytracerGUI/obj/*
 */RaytracerGUI/.vs/*
 
+# TCP 
+**/build/*
