@@ -48,6 +48,8 @@ jobs:
           IGNORE_GENERATED_FILES: true
           FIX_JSON_PRETTIER: true
           FIX_CSHARP: true
+          FIX_MARKDOWN_PRETTIER: true
+          FIX_MARKDOWN: true
           
           CPP_LINTER_RULES: CPPLINT.cfg
           FILTER_REGEX_EXCLUDE: (GUI/RaytracerGUI/obj/*)|(GUI/RaytracerGUI/bin/*)
