@@ -40,7 +40,6 @@ namespace RaytracerGUI
 
                 // Code for handle selected file
                 //
-                // test
                 //
 
             }
