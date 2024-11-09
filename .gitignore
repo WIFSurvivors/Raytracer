@@ -17,8 +17,12 @@
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
 */build/*
-.cache/*
+*/.cache/*
 
 # GUI binary & .vs
 */RaytracerGUI/bin/*
+*/RaytracerGUI/obj/*
 */RaytracerGUI/.vs/*
+
+# TCP 
+**/build/*
