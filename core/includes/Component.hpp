@@ -1,16 +1,16 @@
 #pragma once
 
 #include <memory>
-// #include "entity.hpp"
-struct entity;
+// #include "Entity.hpp"
+struct Entity;
 
 static long component_count = 1000;
 
-struct component {
+struct Component {
   // Life cycle of a component:
 
   /// @brief Use the constructor to internally initialize the object
-  component(std::weak_ptr<entity> e);
+  Component(std::weak_ptr<Entity> e);
 
   /// @brief Appendum to consturctor for referencing external objects
   virtual void init();
@@ -25,12 +25,12 @@ struct component {
   /// @brief Use the constructor to internally deconstruct the object
   // virtual ~component();
 
-  bool operator<(const component &right) const { return _uuid < right._uuid; }
+  bool operator<(const Component &right) const { return _uuid < right._uuid; }
 
   int64_t get_uuid();
   virtual void print() = 0;
 
-  std::weak_ptr<entity> _entity;
+  std::weak_ptr<Entity> _entity;
 
 protected:
   long _uuid;

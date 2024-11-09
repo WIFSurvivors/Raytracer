@@ -1,17 +1,16 @@
-#include "scene_manager.hpp"
+#include "SceneManager.hpp"
+#include "Scene.hpp"
 #include "glm/vec3.hpp"
-#include <scene.hpp>
-
 #include <iostream>
 
-scene_manager::scene_manager() {}
+SceneManager::SceneManager() {}
 
-void scene_manager::load_example_scene() {
+void SceneManager::load_example_scene() {
   // can be read from a json file
-  // otherwise an "unnamed" scene is used for communicating via tcp
-  scene s{};
+  // otherwise an "unnamed" Scene is used for communicating via tcp
+  Scene s{};
   {
-    // optionally accessing the entity root object
+    // optionally accessing the Entity root object
     auto root_entity = s.get_root().lock();
 
     // build up a tree of entities
@@ -40,7 +39,7 @@ void scene_manager::load_example_scene() {
     c2->init();
     c3->init();
 
-    // start updating the scene
+    // start updating the Scene
     // delta time is for rendering not interesting
     // but can be used for camera movement inside preview
     const float dt{1.f / 30.f};
@@ -49,12 +48,12 @@ void scene_manager::load_example_scene() {
     // c2->update(dt);
     // c3->update(dt);
 
-    // component and entities values can be changed on runtime
+    // Component and entities values can be changed on runtime
     e3->position = /*glm::vec3*/ {20.f, 0.5f, -4.f};
     e2->rotation = {0.f, 90.f, 0.f};
     c2->set_value(80);
 
-    // add a new "light" entity and component on runtime
+    // add a new "light" Entity and Component on runtime
     std::cout << "\n";
     auto e4 = s.create_entity("cone light");
     auto c4 = simple_sys.create_component(e4, 1);

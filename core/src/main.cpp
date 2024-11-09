@@ -1,13 +1,11 @@
+#include "SceneManager.hpp"
 #include "WindowEngine.h"
-#include "scene_manager.hpp"
 #include <iostream>
 
-#include <simple_system.hpp>
-
 int main() {
-  scene_manager sm{};
+  SceneManager sm{};
   sm.load_example_scene();
 
-  // WindowEngine engine;
-  // engine.initializeEngine();
+  WindowEngine engine{};
+  engine.initializeEngine();
 }

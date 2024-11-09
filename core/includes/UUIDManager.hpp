@@ -2,7 +2,7 @@
 
 #include <map>
 
-struct uuid_manager {
+struct UUIDManager {
   int getNewUUID();
 
 private:

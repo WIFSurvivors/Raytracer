@@ -3,12 +3,12 @@
 #include <map>
 #include <memory>
 
-#include "entity.hpp"
-#include "simple_component.hpp"
+#include "Entity.hpp"
+#include "SimpleComponent.hpp"
 
 // template<class T> requires
 // struct system{
-//     virtual bool add_component(component c) = 0;
+//     virtual bool add_component(Component c) = 0;
 // };
 
 // template<class T, class U>
@@ -29,24 +29,24 @@
 // template <class T>
 // struct system{
 
-//     bool add_component(derived<component> c);
-//     bool remove_component(derived<component> c);
+//     bool add_component(derived<Component> c);
+//     bool remove_component(derived<Component> c);
 
 // private:
-//     std::vector<derived<component>> _components;
+//     std::vector<derived<Component>> _components;
 // };
 
-struct simple_system //: system
+struct SimpleSystem //: system
 {
-  simple_component *create_component(long e) { return nullptr; }
-  simple_component *create_component(long e, int value) { return nullptr; }
-  simple_component *create_component(std::shared_ptr<entity> e);
-  simple_component *create_component(std::shared_ptr<entity> e, int value);
+  SimpleComponent *create_component(long e) { return nullptr; }
+  SimpleComponent *create_component(long e, int value) { return nullptr; }
+  SimpleComponent *create_component(std::shared_ptr<Entity> e);
+  SimpleComponent *create_component(std::shared_ptr<Entity> e, int value);
 
   void clear();
 
   inline const auto &get_components() const { return _components; }
-  // bool remove_component(simple_component *c);
+  // bool remove_component(SimpleComponent *c);
 
   void print_all_components();
 
@@ -55,5 +55,5 @@ struct simple_system //: system
   // void destroy() const;
 
 private:
-  std::map<long, std::unique_ptr<simple_component>> _components{};
+  std::map<long, std::unique_ptr<SimpleComponent>> _components{};
 };
