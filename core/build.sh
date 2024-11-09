@@ -3,7 +3,7 @@
 build_ninja() {
 	mkdir -p build
 	cmake -S . -B build -G "Ninja" 
-	cd build
+	cd build || exit
 	ninja
 	./RayTracer
 }
@@ -11,7 +11,7 @@ build_ninja() {
 build_default() {
 	mkdir -p build
 	cmake -S . -B build -G "Unix Makefiles"
-	cd build
+	cd build || exit
 	make
 	./RayTracer
 }
@@ -19,7 +19,7 @@ build_default() {
 build_debug() {
 	mkdir -p build-debug
 	cmake -S . -B build-debug -G "Ninja" -D GLFW_BUILD_X11=1 -D GLFW_BUILD_WAYLAND=0
-	cd build-debug
+	cd build-debug || exit
 	ninja
 	./RayTracer
 }
