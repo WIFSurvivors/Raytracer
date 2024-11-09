@@ -3,11 +3,6 @@
 
 ### VisualStudioCode ###
 .vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-!.vscode/*.code-snippets
 
 # Local History for Visual Studio Code
 .history/
@@ -21,6 +16,14 @@
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
+*/build/*
+*/.cache/*
+*/build-debug/*
 
-build/*
-.cache/*
+# GUI binary & .vs
+*/RaytracerGUI/bin/*
+*/RaytracerGUI/obj/*
+*/RaytracerGUI/.vs/*
+
+# TCP 
+**/build/*
