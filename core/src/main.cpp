@@ -13,6 +13,3 @@ int main()
 	
 	rs.destroy();
 }
-
-
-
