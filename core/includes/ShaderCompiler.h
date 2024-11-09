@@ -40,9 +40,9 @@ struct Shader {
 	private:
 
 	template<typename... Args>
-		void loadFiles(Args... paths){
+	void loadFiles(Args... paths){
 			(... , loadFile(paths));
-		}
+	}
 
 	void loadFile(std::pair<GLenum,const char*> ShaderPath){
 

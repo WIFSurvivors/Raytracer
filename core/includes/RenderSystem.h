@@ -32,9 +32,9 @@ namespace core {
 class RenderSystem {
 private:
   //  This function is called, whenever the window size changes
-  void static framebuffer_size_callback(GLFWwindow *window, int new_width,
+  static void framebuffer_size_callback(GLFWwindow *window, int new_width,
                                         int new_height);
-  void static processInput(GLFWwindow *window);
+  static void processInput(GLFWwindow *window);
 
   int _scr_height = 800;
   int _scr_width = 800;
