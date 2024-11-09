@@ -16,9 +16,9 @@
 .ionide
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
-*/build/*
-*/.cache/*
-*/build-debug/*
+**/build/*
+**/.cache/*
+**/build-debug/*
 
 # GUI binary & .vs
 */RaytracerGUI/bin/*
