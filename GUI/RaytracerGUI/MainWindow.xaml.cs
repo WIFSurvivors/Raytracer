@@ -38,9 +38,7 @@ namespace RaytracerGUI
             {
                 string filePath = openFileDialog.FileName;
 
-                // Code for handle selected file
-                //
-                //
+                // use filePath in TCP paket
 
             }
         }
@@ -50,10 +48,17 @@ namespace RaytracerGUI
            
         }
 
+        private void clickImportScene(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void clickExportScene(object sender, RoutedEventArgs e)
+        {
+
+        }
 
         private void clickExit(object sender, RoutedEventArgs e)
         {
-
             Application.Current.Shutdown(0); 
         }
     }
