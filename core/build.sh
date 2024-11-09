@@ -2,7 +2,7 @@
 
 build_ninja() {
 	mkdir -p build
-	cmake -S . -B build -G "Ninja" 
+	cmake -S . -B build -G "Ninja"
 	cd build || exit
 	ninja
 	./RayTracer
@@ -24,23 +24,17 @@ build_debug() {
 	./RayTracer
 }
 
-
-
-while [[ $# -gt 0 ]];
-do
+while [[ $# -gt 0 ]];do
 	case "$1" in
-		-n|--ninja)
-			build_ninja 
-			exit 1
-			;;
-		-d|--debug)
-			build_debug 
-			exit 1
-			;;
-		*)
-			build_default 
-			exit 1
-			;;
-
-	esac
-done
+	-n | --ninja)
+	build_ninja
+		exit 1
+		;;
+	-d | --debug)
+		build_debug
+		exit 1
+		;;
+	*)
+		build_default
+		exit 1
+		;;
