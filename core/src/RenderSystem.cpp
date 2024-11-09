@@ -6,7 +6,6 @@
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include <iostream>
 #include <memory>
 
 #include <iostream>
@@ -27,42 +26,41 @@ void RenderSystem::init() {
   glGenVertexArrays(1, &_vao);
   glBindVertexArray(_vao);
 
-  // I dont like this at all
+  //  I dont like this at all
   Shader simpleShader{
       std::make_pair(GL_VERTEX_SHADER, "../shaders/vertexshader.glsl"),
       std::make_pair(GL_FRAGMENT_SHADER, "../shaders/fragmentshader.glsl")};
   program = std::make_unique<Shader>(simpleShader);
-  // program->activateShader();
-  // I dont like this at all
+  //  program->activateShader();
+  //  I dont like this at all
   Shader computeShader{
       std::make_pair(GL_COMPUTE_SHADER, "../shaders/computeshader.glsl")};
   compute = std::make_unique<Shader>(computeShader);
 
-  //	mouseUniformID = glGetUniformLocation(computeShader.programID,
-  //"mousePos");
+  //  mouseUniformID = glGetUniformLocation(computeShader.programID,
+  //  "mousePos");
 
-  // Jeb, i don't know what to do
-  // And I dont like that I give a programID here
+  //  Jeb, i don't know what to do
+  //  And I dont like that I give a programID here
   _component->init(simpleShader.programID);
-  // compute->activateShader();
+  //  compute->activateShader();
   mouseUniformID = glGetUniformLocation(computeShader.programID, "mousePos");
   compute->activateShader();
   program->activateShader();
 }
 
 void RenderSystem::update() {
+  //  Render
 
-  // Render
-
-  // Specifies the background color1
+  //  Specifies the background color1
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
 
   glm::vec2 puk = glm::vec2(_mouseX, _mouseY);
 
-//  glUniform2fv(mouseUniformID, 1, &puk[0]);
+  //  glUniform2fv(mouseUniformID, 1, &puk[0]);
 
-  // Setup compute shader
+  //  Setup compute shader
   compute->activateShader();
       glUniform1f(glGetUniformLocation(compute->programID, "time"),
                   glfwGetTime());
@@ -75,9 +73,9 @@ void RenderSystem::update() {
       glUniform2fv(glGetUniformLocation(compute->programID, "imageSize"),
                    1, glm::value_ptr(glm::vec2(_scr_width, _scr_height)));
     glUniform2fv(mouseUniformID, 1, &puk[0]);
-  // Self explanatory
-  // Dispateches the compute shader with SCR_WIDTH*SCR_HEIGHT*1 = number of work
-  // groups
+  //  Self explanatory
+  //  Dispateches the compute shader with SCR_WIDTH*SCR_HEIGHT*1 = number of work
+  //  groups
   glDispatchCompute(_scr_width, _scr_height, 1);
   glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
@@ -103,7 +101,7 @@ void RenderSystem::render() {
     processInput(_window);
 
     glfwGetCursorPos(_window, &_mouseX, &_mouseY);
-    std::cout << "X: " << (int)_mouseX << ", Y: " << (int)_mouseY << "\n";
+    std::cout << "X: " << static_cast<int>(_mouseX) << ", Y: " << static_cast<int>(_mouseY) << "\n";
     update();
 
     // glfw: swap buffers and poll IO events (keys pressed/released, mouse

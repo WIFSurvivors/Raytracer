@@ -7,6 +7,8 @@
 #include <iostream>
 #include <unordered_map>
 #include <vector>
+#include <utility>
+#include <string>
 
 struct Shader {
 	/**
@@ -23,7 +25,7 @@ struct Shader {
 
 	template<typename... Args>
 		Shader(Args... paths){
-			//GLenum shaderType
+			//  GLenum shaderType
 			static_assert((std::is_same_v<Args, std::pair<int, const char*>> && ...), "Failed: Arguments of ShaderCompiler not of type char*");
 			glCreateShader(GL_VERTEX_SHADER);
 			loadFiles(paths...);
@@ -48,7 +50,7 @@ struct Shader {
 		std::ifstream ShaderFile;
 		ShaderFile.exceptions(std::ios::failbit | std::ios::badbit);
 
-		//Try Open file Read content and close afterwards
+		//  Try Open file Read content and close afterwards
 		try{
 			ShaderFile.open(ShaderPath.second);
 			std::stringstream shaderstream; 
@@ -59,9 +61,9 @@ struct Shader {
 			std::cerr << e.what() << std::endl;
 		}
 
-		//Content of File should now be loaded succesfully
-		//https://www.khronos.org/opengl/wiki/Shader_Compilation
-		//
+		//  Content of File should now be loaded succesfully
+		//  https://www.khronos.org/opengl/wiki/Shader_Compilation
+		// 
 		const char* shaderChar = ShaderCode.c_str();
 		GLuint shaderID = glCreateShader(ShaderPath.first);
 		glShaderSource(shaderID, 1, &shaderChar, NULL);
@@ -81,7 +83,7 @@ struct Shader {
 
 		glad_glLinkProgram(programID);
 
-		//Yuck TODO better
+		//  Yuck TODO better
 		if(!checkProgramStatus(programID)) return;
 
 
