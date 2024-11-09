@@ -58,7 +58,7 @@ namespace core {
 		void setTextures();
 	public:
 		void init(GLuint programID);
-		void update();
+		void update(GLuint VAO);
 		void destroy();
 	};
 }

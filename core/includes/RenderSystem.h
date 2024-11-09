@@ -40,9 +40,11 @@ namespace core {
 		double _mouseX = 0;
 		double _mouseY = 0;
 		GLuint mouseUniformID;
-
 		GLFWwindow *_window;
 		GLuint _vao;
+		std::vector<glm::vec3> v = {glm::vec3{-0.5f, -0.5f, 0.0f},
+                                       glm::vec3{0.5f, -0.5f, 0.0f},
+                                       glm::vec3{0.0f, 0.5f, 0.0f}};
 
 		// GLuint _porgramID;
 		// GLuint _computeID;

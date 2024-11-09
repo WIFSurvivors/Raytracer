@@ -64,6 +64,16 @@ void RenderSystem::update() {
 
   // Setup compute shader
   compute->activateShader();
+      glUniform1f(glGetUniformLocation(compute->programID, "time"),
+                  glfwGetTime());
+      glUniform3fv(glGetUniformLocation(compute->programID, "v0"), 1,
+                   glm::value_ptr(v[0]));
+      glUniform3fv(glGetUniformLocation(compute->programID, "v1"), 1,
+                   glm::value_ptr(v[1]));
+      glUniform3fv(glGetUniformLocation(compute->programID, "v2"), 1,
+                   glm::value_ptr(v[2]));
+      glUniform2fv(glGetUniformLocation(compute->programID, "imageSize"),
+                   1, glm::value_ptr(glm::vec2(_scr_width, _scr_height)));
     glUniform2fv(mouseUniformID, 1, &puk[0]);
   // Self explanatory
   // Dispateches the compute shader with SCR_WIDTH*SCR_HEIGHT*1 = number of work
