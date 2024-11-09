@@ -38,3 +38,4 @@ while [[ $# -gt 0 ]];do
 		build_default
 		exit 1
 		;;
+	esac
