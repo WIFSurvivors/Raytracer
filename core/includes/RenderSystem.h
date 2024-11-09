@@ -6,8 +6,8 @@
 #include <memory>
 #include <vector>
 
-#include "RenderComponent.h"
-#include "ShaderCompiler.h"
+#include "includes/RenderComponent.h"
+#include "includes/ShaderCompiler.h"
 
 namespace core {
 /**

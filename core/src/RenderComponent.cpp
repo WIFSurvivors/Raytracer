@@ -2,7 +2,7 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/glm.hpp>
 
-#include "RenderComponent.h"
+#include "includes/RenderComponent.h"
 
 namespace core {
 

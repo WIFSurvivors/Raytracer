@@ -1,5 +1,5 @@
-#include "RenderSystem.h"
-#include "RenderComponent.h"
+#include "includes/RenderSystem.h"
+#include "includes/RenderComponent.h"
 
 int main()
 {
