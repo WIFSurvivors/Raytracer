@@ -12,6 +12,8 @@
                 <MenuItem Header="File" Width="165">
                     <MenuItem Header="Open" Click="clickOpen"/>
                     <MenuItem Header="Save" Click="clickSave"/>
+                    <MenuItem Header="Import Scene" Click="clickImportScene"/>
+                    <MenuItem Header="Export Scene" Click="clickExportScene" />
                     <MenuItem Header="Exit" Click="clickExit" />
                 </MenuItem>
                 <MenuItem Header="View" Width="165">
@@ -35,27 +37,30 @@
                 <TreeViewItem Header="xyz 2" />
             </TreeView>
             <ListBox Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="5" Margin="274,50,-61,24">
-                
+                <ListBoxItem Content="Test Item 1" />
+                <ListBoxItem Content="Test Item 2" />
+                <ListBoxItem Content="Test Item 3" />
             </ListBox>
-                
+
+
         </Grid>
         <Button Style="{StaticResource PrimaryButtonStyle}" Margin="600,350,50,30">
-            <Image Source="/images/arrow-right.png" Width="50" Height="50"/>
+            <Image Source="/images/arrow-right.png" Width="30" Height="30"/>
         </Button>
         <Button Style="{StaticResource PrimaryButtonStyle}" Margin="250,350,50,30">
-            <Image Source="/images/arrow-left.png" Width="50" Height="50"/>
+            <Image Source="/images/arrow-left.png" Width="30" Height="30"/>
         </Button>
         <Button Style="{StaticResource PrimaryButtonStyle}" Margin="1000,375,50,30">
-            <Image Source="/images/arrow-up.png" Width="50" Height="50"/>
+            <Image Source="/images/arrow-up.png" Width="30" Height="30"/>
         </Button>
         <Button Style="{StaticResource PrimaryButtonStyle}" Margin="1000,525,50,30">
-            <Image Source="/images/arrow-down.png" Width="50" Height="50"/>
+            <Image Source="/images/arrow-down.png" Width="30" Height="30"/>
         </Button>
         <Button Style="{StaticResource PrimaryButtonStyle}" Margin="600,550,50,30">
-            <Image Source="/images/arrow-rotate-x.png" Width="50" Height="50"/>
+            <Image Source="/images/arrow-rotate-x.png" Width="30" Height="30"/>
         </Button>
         <Button Style="{StaticResource PrimaryButtonStyle}" Margin="250,550,50,30">
-            <Image Source="/images/arrow-rotate-y.png" Width="50" Height="50"/>
+            <Image Source="/images/arrow-rotate-y.png" Width="30" Height="30"/>
         </Button>
     </Grid>
 </Window>
