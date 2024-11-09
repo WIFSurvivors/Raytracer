@@ -39,16 +39,25 @@ FetchContent_Declare(
 # find_package(OpenGL REQUIRED)
 
 FetchContent_MakeAvailable(glad glfw glm)
-
-set(GLAD_INCLUDE_DIRS "${glad_BINARY_DIR}/include")
-set(GLAD_SOURCES "${glad_BINARY_DIR}/src/glad.c")
+set(GLAD_INCLUDE_DIRS "${glad_SOURCE_DIR}/include")
+#set(GLAD_SOURCES "${glad_BINARY_DIR}/src/glad.c")
 set(GLFW_INCLUDE_DIRS "${glfw_SOURCE_DIR}/include")
 set(GLM_INCLUDE_DIRS "${glm_SOURCE_DIR}")
 
-#glad_add_library(glad STATIC API gl:core=4.6 LOCATION ${PROJECT_SOURCE_DIR}/vendor/glad-build/${TARGET}) ???
-file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
-add_executable(${PROJECT_NAME} ${SOURCES} ${GLAD_SOURCES})
-target_include_directories(${PROJECT_NAME} PUBLIC ${GLAD_INCLUDE_DIRS} ${CORE_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw glm::glm)
+file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
+file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/includes/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/includes/*.h)
+
+
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+target_include_directories(${PROJECT_NAME} PRIVATE
+  ${GLAD_INCLUDE_DIRS}
+  ${CORE_INCLUDE_DIR}   
+  ${GLFW_INCLUDE_DIRS}
+  ${GLM_INCLUDE_DIRS}
+)
+#glad_add_library(glad STATIC API gl:core=4.6 LOCATION ${PROJECT_SOURCE_DIR}/vendor/glad-build/${TARGET}) ???
+#include_directories(${INSTALL_INCLUDE_DIR})
+#target_include_directories(${PROJECT_NAME} PUBLIC ${GLAD_INCLUDE_DIRS} ${CORE_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw glm::glm)
 
