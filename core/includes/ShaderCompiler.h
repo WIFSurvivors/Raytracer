@@ -4,11 +4,12 @@
 #include <glad/glad.h>
 #include <iostream>
 #include <sstream>
+#include <string>
+#include <utility>
 #include <unordered_map>
 #include <vector>
 
 struct Shader {
-
   std::unordered_map<GLenum, GLuint> shaderIDs;
   GLuint programID;
 
@@ -23,13 +24,12 @@ struct Shader {
 
   void activateShader() { glUseProgram(programID); }
 
-private:
+  private:
   template <typename... Args> void loadFiles(Args... paths) {
     (..., loadFile(paths));
   }
 
   void loadFile(std::pair<GLenum, const char *> ShaderPath) {
-
     std::string ShaderCode;
     std::ifstream ShaderFile;
     ShaderFile.exceptions(std::ios::failbit | std::ios::badbit);
@@ -66,7 +66,7 @@ private:
     }
 
     glad_glLinkProgram(programID);
-
+    
     // Yuck TODO better
     if (!checkProgramStatus(programID))
       return;
@@ -85,7 +85,6 @@ private:
       glad_glGetProgramiv(programID, GL_INFO_LOG_LENGTH, &logSize);
       std::vector<GLchar> errorLog(logSize);
       glad_glGetProgramInfoLog(programID, logSize, &logSize, &errorLog[0]);
-
       std::cerr << "Error log: "
                 << std::string(errorLog.begin(), errorLog.end()) << std::endl;
 
@@ -109,7 +108,6 @@ private:
       std::vector<GLchar> errorLog(logSize);
       glad_glGetShaderInfoLog(shaderID, logSize, &logSize, &errorLog[0]);
       glad_glDeleteShader(shaderID);
-
       std::cerr << "Error log: "
                 << std::string(errorLog.begin(), errorLog.end()) << std::endl;
     }

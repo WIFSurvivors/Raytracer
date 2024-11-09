@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.30.0)
 project(RayTracer VERSION 0.0.1 DESCRIPTION "RayTracer in CPP using OpenGL")
 
 include(FetchContent)
-
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #clangd req.
 
 set(CMAKE_CXX_CPPLINT "cpplint;--filter=-legal,-build/include_order,-build/include_subdir,-whitespace/indent")
@@ -34,7 +34,12 @@ FetchContent_Declare(
   GIT_PROGRESS    TRUE
 )
 
-FetchContent_MakeAvailable(glm glad)
+FetchContent_MakeAvailable(glad glfw glm)
+
+set(GLAD_INCLUDE_DIR "${glad_BUILD_DIR}/include")
+set(GLFW_INCLUDE_DIR "${glfw_SOURCE_DIR}/include")
+set(GLM_INCLUDE_DIR "${glm_SOURCE_DIR}")
+
 #glad_add_library(glad STATIC API gl:core=4.6 LOCATION ${PROJECT_SOURCE_DIR}/vendor/glad-build/${TARGET}) ???
 file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 include_directories(${INSTALL_INCLUDE_DIR})

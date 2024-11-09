@@ -1,14 +1,15 @@
 #pragma once
+
 #include "ShaderCompiler.h"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include <iostream>
+#include <utility>
 
 struct WindowEngine {
-
-  void static framebuffer_size_callback(GLFWwindow *window, int width,
+  static void framebuffer_size_callback(GLFWwindow *window, int width,
                                         int height);
-  void static processInput(GLFWwindow *window);
+  static void processInput(GLFWwindow *window);
 
   uint32_t SCR_HEIGHT = 800;
   uint32_t SCR_WIDTH = 800;
@@ -19,6 +20,7 @@ struct WindowEngine {
   void initializeEngine() {
     if (!initGLFW())
       throw std::runtime_error{"Failed to Initialize Engine"};
+    
     render_loop();
     terminate();
   }
@@ -29,7 +31,6 @@ struct WindowEngine {
   }
 
   void render_loop() {
-
     unsigned int VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
@@ -41,7 +42,7 @@ struct WindowEngine {
 
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
-                          (void *)0);
+                          reinterpret_cast<void *>(0));
     glEnableVertexAttribArray(0);
 
     Shader simpleShader{
@@ -70,7 +71,6 @@ struct WindowEngine {
   }
 
   int initGLFW() {
-
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -101,8 +101,8 @@ struct WindowEngine {
     }
     return 1;
   }
-
-private:
+  
+  private:
 };
 
 // process all input: query GLFW whether relevant keys are pressed/released this
