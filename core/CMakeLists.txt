@@ -5,8 +5,13 @@ include(FetchContent)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #clangd req.
 
+set(CMAKE_CXX_CPPLINT "cpplint;--filter=-legal,-build/include_order,-build/include_subdir,-whitespace/indent")
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+
+
 set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}")
-set(INSTALL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/includes")
+set(CORE_INCLUDE_DIR "${CMAKE_SOURCE_DIR}")
 
 FetchContent_Declare(
   glad
