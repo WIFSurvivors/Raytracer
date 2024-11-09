@@ -50,6 +50,7 @@ jobs:
           FIX_CSHARP: true
           FIX_MARKDOWN_PRETTIER: true
           FIX_MARKDOWN: true
+          FIX_SHELL_SHFMT: true
           
           CPP_LINTER_RULES: CPPLINT.cfg
           FILTER_REGEX_EXCLUDE: (GUI/RaytracerGUI/obj/*)|(GUI/RaytracerGUI/bin/*)

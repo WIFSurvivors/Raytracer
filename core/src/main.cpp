@@ -1,11 +1,15 @@
-#include "includes/SceneManager.hpp"
-#include "includes/WindowEngine.h"
-#include <iostream>
+#include "includes/RenderSystem.h"
+#include "includes/RenderComponent.h"
 
-int main() {
-  SceneManager sm{};
-  sm.load_example_scene();
+int main()
+{
+	core::RenderSystem rs;
+	core::RenderComponent comp;
+	core::RenderComponent comp02;
+	rs._component = std::make_unique<core::RenderComponent>(comp);
+	rs.init();
 
-  WindowEngine engine{};
-  engine.initializeEngine();
+	rs.render(); // shouldn't exist 
+	
+	rs.destroy();
 }
