@@ -15,7 +15,7 @@ struct SimpleComponent : Component {
   void set_value(int value);
   int get_value();
 
-  virtual void print() override;
+  void print() override;
 
 private:
   int _value{};
