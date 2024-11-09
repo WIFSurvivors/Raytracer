@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SimpleSystem.hpp"
+#include "includes/SimpleSystem.hpp"
 
 struct SceneManager {
   SceneManager();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ShaderCompiler.h"
+#include "includes/ShaderCompiler.h"
 #include <GLFW/glfw3.h>
 #include <glad/glad.h>
 #include <iostream>
@@ -20,7 +20,7 @@ struct WindowEngine {
   void initializeEngine() {
     if (!initGLFW())
       throw std::runtime_error{"Failed to Initialize Engine"};
-    
+
     render_loop();
     terminate();
   }
@@ -101,8 +101,8 @@ struct WindowEngine {
     }
     return 1;
   }
-  
-  private:
+
+private:
 };
 
 // process all input: query GLFW whether relevant keys are pressed/released this

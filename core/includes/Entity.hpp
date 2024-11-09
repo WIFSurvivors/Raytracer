@@ -1,14 +1,13 @@
 #pragma once
-#include "Component.hpp"
-#include "Scene.hpp"
 #include "glm/vec3.hpp"
+#include "includes/Component.hpp"
+#include "includes/Scene.hpp"
 #include <map>
 #include <memory>
 #include <string>
 #include <vector>
 
 struct Entity : public std::enable_shared_from_this<Entity> {
-
   // make private -> will require some friend magic...
   // Entity(Private);
   Entity();
@@ -17,7 +16,7 @@ struct Entity : public std::enable_shared_from_this<Entity> {
 
   inline std::shared_ptr<Entity> get_ptr() { return shared_from_this(); }
 
-  bool get_component(int64_t uuid, Component &c);
+  bool get_component(int64_t uuid, Component *c);
 
   void add_component(Component *c);
   void remove_component(Component *c);
@@ -55,8 +54,6 @@ private:
   std::vector<Component *> _components{};
 
   void print(int indent);
-
-  // TODO: Add method to
   // int _parent_uuid{};
   // std::vector<long> _child_entities_uuids{};
   // std::vector<long> _component_uuids{};

@@ -4,13 +4,13 @@
 // #include "Entity.hpp"
 struct Entity;
 
-static long component_count = 1000;
+static int64_t component_count = 1000;
 
 struct Component {
   // Life cycle of a component:
 
   /// @brief Use the constructor to internally initialize the object
-  Component(std::weak_ptr<Entity> e);
+  explicit Component(std::weak_ptr<Entity> e);
 
   /// @brief Appendum to consturctor for referencing external objects
   virtual void init();
@@ -33,5 +33,5 @@ struct Component {
   std::weak_ptr<Entity> _entity;
 
 protected:
-  long _uuid;
+  int64_t _uuid;
 };

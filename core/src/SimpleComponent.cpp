@@ -1,4 +1,4 @@
-#include "SimpleComponent.hpp"
+#include "includes/SimpleComponent.hpp"
 #include <iostream>
 #include <string>
 

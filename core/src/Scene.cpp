@@ -1,5 +1,5 @@
-#include "Scene.hpp"
-#include "Entity.hpp"
+#include "includes/Scene.hpp"
+#include "includes/Entity.hpp"
 #include <iostream>
 #include <memory>
 #include <string>

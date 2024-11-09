@@ -1,5 +1,5 @@
-#include "SceneManager.hpp"
-#include "WindowEngine.h"
+#include "includes/SceneManager.hpp"
+#include "includes/WindowEngine.h"
 #include <iostream>
 
 int main() {

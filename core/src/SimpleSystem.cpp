@@ -1,6 +1,6 @@
-#include "SimpleSystem.hpp"
-#include "Entity.hpp"
-#include "SimpleComponent.hpp"
+#include "includes/SimpleSystem.hpp"
+#include "includes/Entity.hpp"
+#include "includes/SimpleComponent.hpp"
 #include <iostream>
 #include <memory>
 #include <utility>

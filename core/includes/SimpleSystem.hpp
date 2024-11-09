@@ -1,10 +1,8 @@
 #pragma once
-
+#include "includes/Entity.hpp"
+#include "includes/SimpleComponent.hpp"
 #include <map>
 #include <memory>
-
-#include "Entity.hpp"
-#include "SimpleComponent.hpp"
 
 // template<class T> requires
 // struct system{
@@ -36,10 +34,9 @@
 //     std::vector<derived<Component>> _components;
 // };
 
-struct SimpleSystem //: system
-{
-  SimpleComponent *create_component(long e) { return nullptr; }
-  SimpleComponent *create_component(long e, int value) { return nullptr; }
+struct SimpleSystem /* : system */ {
+  SimpleComponent *create_component(int64_t e) { return nullptr; }
+  SimpleComponent *create_component(int64_t e, int value) { return nullptr; }
   SimpleComponent *create_component(std::shared_ptr<Entity> e);
   SimpleComponent *create_component(std::shared_ptr<Entity> e, int value);
 
@@ -55,5 +52,5 @@ struct SimpleSystem //: system
   // void destroy() const;
 
 private:
-  std::map<long, std::unique_ptr<SimpleComponent>> _components{};
+  std::map<int64_t, std::unique_ptr<SimpleComponent>> _components{};
 };

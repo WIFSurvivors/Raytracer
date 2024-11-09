@@ -1,4 +1,4 @@
-#include "Entity.hpp"
+#include "includes/Entity.hpp"
 #include <iostream>
 #include <memory>
 #include <string>
@@ -19,12 +19,11 @@ std::shared_ptr<Entity> Entity::create(std::string name, int64_t uuid,
   return e;
 }
 
-bool Entity::get_component(int64_t uuid, Component &c) {
+bool Entity::get_component(int64_t uuid, Component *c) {
   auto it =
       std::find_if(_components.begin(), _components.end(),
                    [uuid](Component *c) { return c->get_uuid() == uuid; });
-  c = *(*it); // get value from iterator (*it), then turn it into a value type
-              // (*(*it))
+  c = *it;
   return true;
 }
 

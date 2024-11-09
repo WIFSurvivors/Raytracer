@@ -1,6 +1,6 @@
-#include "SceneManager.hpp"
-#include "Scene.hpp"
+#include "includes/SceneManager.hpp"
 #include "glm/vec3.hpp"
+#include "includes/Scene.hpp"
 #include <iostream>
 
 SceneManager::SceneManager() {}
