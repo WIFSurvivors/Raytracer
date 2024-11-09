@@ -38,7 +38,6 @@ struct Shader {
 
 
 	private:
-
 	template<typename... Args>
 	void loadFiles(Args... paths){
 			(... , loadFile(paths));
