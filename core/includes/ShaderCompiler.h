@@ -8,7 +8,6 @@
 #include <unordered_map>
 #include <vector>
 
-
 struct Shader {
 	/**
 	 *	TODO:
