@@ -37,7 +37,7 @@ void SimpleSystem::print_all_components() {
   std::cout << "c.uuid | c.adr          | c.value | c.Entity-uuid:\n";
   for (auto &&c : _components) {
     std::cout << "- " << c.first << " | " << c.second << " | "
-              << c.second->get_value() << " | e: " << (c.second->_entity.lock())
-              << "\n";
+              << c.second->get_value()
+              << " | e: " << (c.second->_entity.lock())->get_uuid() << "\n";
   }
 }

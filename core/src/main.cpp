@@ -1,15 +1,24 @@
-#include "includes/RenderSystem.h"
-#include "includes/RenderComponent.h"
+#include "includes/RenderSystem.hpp"
+#include "includes/RenderComponent.hpp"
 
-int main()
-{
-	core::RenderSystem rs;
-	core::RenderComponent comp;
-	core::RenderComponent comp02;
-	rs._component = std::make_unique<core::RenderComponent>(comp);
-	rs.init();
+#include "includes/SceneManager.hpp"
 
-	rs.render(); // shouldn't exist 
-	
-	rs.destroy();
+int main() {
+  SceneManager sm{};
+  sm.load();
+  sm.run();
+  sm.unload();
+
+  /*
+  core::RenderSystem rs;
+
+  core::RenderComponent comp;
+  core::RenderComponent comp02;
+  rs._component = std::make_unique<core::RenderComponent>(comp);
+  rs.init();
+
+  rs.render(); // shouldn't exist
+
+  rs.destroy();
+  */
 }

@@ -6,6 +6,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <optional>
 
 struct Entity : public std::enable_shared_from_this<Entity> {
   // make private -> will require some friend magic...
@@ -16,13 +17,14 @@ struct Entity : public std::enable_shared_from_this<Entity> {
 
   inline std::shared_ptr<Entity> get_ptr() { return shared_from_this(); }
 
-  bool get_component(int64_t uuid, Component *c);
+  std::optional<Component *> get_component(int64_t uuid);
 
   void add_component(Component *c);
   void remove_component(Component *c);
   void remove_component(int64_t uuid);
 
   void add_child_entity(std::shared_ptr<Entity> e);
+  std::vector<std::shared_ptr<Entity>> &get_child_entities();
 
   std::weak_ptr<Entity> get_parent_entity();
 
