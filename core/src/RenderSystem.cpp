@@ -34,7 +34,7 @@ void RenderSystem::init() {
   //  program->activateShader();
   //  I dont like this at all
   Shader computeShader{
-      std::make_pair(GL_COMPUTE_SHADER, "../shaders/computeshader.glsl")};
+      std::make_pair(GL_COMPUTE_SHADER, "../shaders/computeshaderCircle.glsl")};
   compute = std::make_unique<Shader>(computeShader);
 
   //  mouseUniformID = glGetUniformLocation(computeShader.programID,
