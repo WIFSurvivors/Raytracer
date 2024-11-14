@@ -5,62 +5,99 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RaytracerGUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1280">
+        Title="MainWindow" 
+        Height="720" Width="1280"
+        MinHeight="720" MinWidth="1280" >
     <Grid>
-        <Grid Width="450" HorizontalAlignment="Left">
-            <Menu Background="{StaticResource WindowPrimaryColor}" Foreground="White" VerticalAlignment="Top" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="3"  Margin="10,10,-61,0">
-                <MenuItem Header="File" Width="165">
-                    <MenuItem Header="Open" Click="clickOpen"/>
-                    <MenuItem Header="Save" Click="clickSave"/>
-                    <MenuItem Header="Import Scene" Click="clickImportScene"/>
-                    <MenuItem Header="Export Scene" Click="clickExportScene" />
-                    <MenuItem Header="Exit" Click="clickExit" />
-                </MenuItem>
-                <MenuItem Header="View" Width="165">
-                    <MenuItem Header="Reset" />
-                </MenuItem>
-                <MenuItem Header="Settings" Width="165">
-                    <MenuItem Header="Preferences" />
-                    <MenuItem Header="About" />
-                </MenuItem>
-            </Menu>
-            <Border BorderBrush="{StaticResource ComponentPrimaryColor}" BorderThickness="5" CornerRadius="5" Padding="5" Margin="619,50,-789,271">
-                <Image Source="/images/preview.png" Margin="0,0,0,0" />
-            </Border>
-            <TreeView Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="5" Margin="10,50,225,24">
-                <TreeViewItem Header="xyz 1">
-                    <TreeViewItem Header="xyz 1.1" />
-                    <TreeViewItem Header="xyz 1.2">
-                        <TreeViewItem Header="xyz 1.2.1" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="512"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Width="512" HorizontalAlignment="Left" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid VerticalAlignment="Center" Grid.Row="0">
+                <Menu Background="{StaticResource WindowPrimaryColor}" Foreground="White" VerticalAlignment="Top" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="3"  >
+                    <MenuItem Header="File" Width="168">
+                        <MenuItem Header="Open" Click="clickOpen"/>
+                        <MenuItem Header="Save" Click="clickSave"/>
+                        <MenuItem Header="Import Scene" Click="clickImportScene"/>
+                        <MenuItem Header="Export Scene" Click="clickExportScene" />
+                        <MenuItem Header="Exit" Click="clickExit" />
+                    </MenuItem>
+                    <MenuItem Header="View" Width="168">
+                        <MenuItem Header="Reset" />
+                    </MenuItem>
+                    <MenuItem Header="Settings" Width="168">
+                        <MenuItem Header="Preferences" />
+                        <MenuItem Header="About" />
+                    </MenuItem>
+                </Menu>
+            </Grid>
+            <Grid VerticalAlignment="Stretch" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TreeView Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="5" Grid.Column="0">
+                    <TreeViewItem Header="xyz 1">
+                        <TreeViewItem Header="xyz 1.1" />
+                        <TreeViewItem Header="xyz 1.2">
+                            <TreeViewItem Header="xyz 1.2.1" />
+                        </TreeViewItem>
                     </TreeViewItem>
-                </TreeViewItem>
-                <TreeViewItem Header="xyz 2" />
-            </TreeView>
-            <ListBox Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="5" Margin="274,50,-61,24">
-                <ListBoxItem Content="Test Item 1" />
-                <ListBoxItem Content="Test Item 2" />
-                <ListBoxItem Content="Test Item 3" />
-            </ListBox>
-
-
+                    <TreeViewItem Header="xyz 2" />
+                </TreeView>
+                <ListBox Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="5" Grid.Column="1">
+                    <ListBoxItem Content="Test Item 1" />
+                    <ListBoxItem Content="Test Item 2" />
+                    <ListBoxItem Content="Test Item 3" />
+                </ListBox>
+            </Grid>
         </Grid>
-        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="600,350,50,30">
-            <Image Source="/images/arrow-right.png" Width="30" Height="30"/>
-        </Button>
-        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="250,350,50,30">
-            <Image Source="/images/arrow-left.png" Width="30" Height="30"/>
-        </Button>
-        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="1000,375,50,30">
-            <Image Source="/images/arrow-up.png" Width="30" Height="30"/>
-        </Button>
-        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="1000,525,50,30">
-            <Image Source="/images/arrow-down.png" Width="30" Height="30"/>
-        </Button>
-        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="600,550,50,30">
-            <Image Source="/images/arrow-rotate-x.png" Width="30" Height="30"/>
-        </Button>
-        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="250,550,50,30">
-            <Image Source="/images/arrow-rotate-y.png" Width="30" Height="30"/>
-        </Button>
+
+        <Grid HorizontalAlignment="Stretch" Grid.Column="1" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="180" />
+            </Grid.RowDefinitions>
+
+            <Border Grid.Row="0" Margin="50" BorderBrush="{StaticResource ComponentPrimaryColor}" BorderThickness="5">
+                <Image  Source="/images/preview.png" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
+            </Border>
+
+            <Grid Width="400" Height="200" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
+                    <Image Source="/images/arrow-left.png" Width="30" Height="30"/>
+                </Button>
+                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+                    <Image Source="/images/arrow-right.png" Width="30" Height="30"/>
+                </Button>
+                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center">
+                    <Image Source="/images/arrow-up.png" Width="30" Height="30"/>
+                </Button>
+                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top">
+                    <Image Source="/images/arrow-down.png" Width="30" Height="30"/>
+                </Button>
+                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
+                    <Image Source="/images/arrow-rotate-x.png" Width="30" Height="30"/>
+                </Button>
+                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top">
+                    <Image Source="/images/arrow-rotate-y.png" Width="30" Height="30"/>
+                </Button>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

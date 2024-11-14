@@ -11,6 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="fonts\lucon.ttf" />
     <None Remove="images\arrow-down.png" />
     <None Remove="images\arrow-left.png" />
     <None Remove="images\arrow-right.png" />
@@ -26,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="fonts\lucon.ttf" />
     <Resource Include="images\arrow-down.png" />
     <Resource Include="images\arrow-left.png" />
     <Resource Include="images\arrow-right.png" />
