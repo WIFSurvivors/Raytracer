@@ -21,8 +21,8 @@
 **/build-debug/*
 
 # GUI binary & .vs
-*/RaytracerGUI/bin/*
-*/RaytracerGUI/obj/*
+**/bin/*
+**/obj/*
 */RaytracerGUI/.vs/*
 
 # TCP 
