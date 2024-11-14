@@ -5,8 +5,8 @@ int main()
 {
 	core::RenderSystem rs;
 	core::RenderComponent comp;
-	core::RenderComponent comp02;
-	rs._component = std::make_unique<core::RenderComponent>(comp);
+  core::RenderComponent comp02;
+	rs._component = std::make_unique<core::RenderComponent>(comp02);
 	rs.init();
 
 	rs.render(); // shouldn't exist 
