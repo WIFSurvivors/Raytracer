@@ -12,7 +12,7 @@ struct SceneManager {
   void unload();
 
 private:
-  Scene current_scene;
+  Scene current_scene; // don't default this :)
   SimpleSystem simple_sys{};
   WindowManager _wm{};
   core::RenderSystem render_sys{&_wm};
