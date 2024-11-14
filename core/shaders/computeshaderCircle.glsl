@@ -91,19 +91,31 @@ void main()
 	ivec2 dims = imageSize(textureOutput);
 	float x = -(float(pixel_coords.x * 2 - dims.x) / dims.x); // transforms to [-1.0, 1.0]
 	float y = -(float(pixel_coords.y * 2 - dims.y) / dims.y); // transforms to [-1.0, 1.0]
-	//Sphere spheres[12];
+  
+  //Sphere spheres[12];
   vec3 rayOrigin = vec3(0.0, 0.0, -2);
   vec3 rayPixel = vec3(x, y, 0.0);
 	vec3 rayDirection = normalize(rayPixel - rayOrigin);
 	Ray r = Ray(rayOrigin, rayDirection);
-	Sphere s = Sphere(0.3, vec3(0.0, 0.0, -1.0));
-	float t = intersecCircle(s, r);
-  if (t != -1) {
-      imageStore(textureOutput, pixel_coords, ray_color(r, t));
-      
-  }else{
-    imageStore(textureOutput, pixel_coords, vec4(0.0, 1.0, 0.0, 1.0));
+  Sphere s[4];
+  s[0] = Sphere(0.1, vec3(0.3, 0.3, -1.0)); 
+  s[1] = Sphere(0.1, vec3(0.3, -0.3, -1.0));
+  s[2] = Sphere(0.1, vec3(-0.3, 0.3, -1.0));
+  s[3] = Sphere(0.1, vec3(-0.3, -0.3, -1.0));
+  
+  for(int i = 0; i<4; i++){
+    float t = intersecCircle(s[i], r);
+
+    if (t != -1) {
+        imageStore(textureOutput, pixel_coords, ray_color(r, t));
+        return;
+    }
+    
   }
+
+
+  imageStore(textureOutput, pixel_coords, vec4(0.0, 1.0, 0.0, 1.0));
+  
 
    
 }
