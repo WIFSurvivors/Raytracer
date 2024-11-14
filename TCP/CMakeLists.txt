@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #clangd req.
  
 set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}")
-set(INSTALL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/includes")
+set(INSTALL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}")
 
 include(FetchContent)
 FetchContent_Declare(
@@ -18,16 +18,14 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Boost)
 
-
-# Add source to this project's executable.
-add_executable (tcp-test "main.cpp")
-
+add_executable (tcp-test "src/tcp_server/TcpServer.cpp")
+target_include_directories(tcp-test PRIVATE ${CMAKE_SOURCE_DIR})
 
 target_link_libraries(tcp-test
   PRIVATE 
   Boost::asio
   # Boost::filesystem
-  Boost::thread
+  #Boost::thread
   # Boost::program_options
 )
 
