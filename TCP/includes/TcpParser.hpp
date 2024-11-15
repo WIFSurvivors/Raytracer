@@ -1,9 +1,12 @@
 #pragma once
-#include <string>
+#include "includes/TcpCommand.hpp"
+#include "includes/TcpExecuter.hpp"
+#include "includes/MoveCommand.hpp"
 #include <iostream>
+#include <string>
 struct TcpParser {
   TcpParser();
-  int parse(std::string msg);
+  TcpCommand& parse(std::string msg);
 
 private:
 };

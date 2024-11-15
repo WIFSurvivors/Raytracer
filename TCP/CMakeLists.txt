@@ -17,8 +17,8 @@ FetchContent_Declare(
   GIT_TAG boost-1.82.0
 )
 FetchContent_MakeAvailable(Boost)
-
-add_executable (tcp-test "src/tcp_server/TcpServer.cpp")
+file(GLOB_RECURSE TCP_SERVER_SOURCES "src/tcp_server/*.cpp")
+add_executable (tcp-test ${TCP_SERVER_SOURCES})
 target_include_directories(tcp-test PRIVATE ${CMAKE_SOURCE_DIR})
 
 target_link_libraries(tcp-test
