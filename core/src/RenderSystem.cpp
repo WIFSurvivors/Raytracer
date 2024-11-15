@@ -63,8 +63,10 @@ void RenderSystem::update() {
   // Jeb, i dont know what to do
   // I moved it here because i want to have acces to the updated data of Model
   _component->update();
-
-
+  float radius = 10.0f;
+  float camX = sin(glfwGetTime()) * radius;
+  float camZ = cos(glfwGetTime()) * radius;
+  _view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));  
 
   //  Setup compute shader
   compute->activateShader();

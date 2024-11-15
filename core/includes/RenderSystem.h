@@ -52,7 +52,7 @@ private:
   //They need to be performed each update cycle because maybe the model has changed?
   //
 
-  glm::mat4 _view = glm::lookAt(glm::vec3{0.0f,0.0f,2.0f}, glm::vec3{0.0f,0.0f,0.0f}, glm::vec3{0.0f,1.0f,0.0f});
+  glm::mat4 _view = glm::lookAt(glm::vec3{0.0f,10.0f,10.0f}, glm::vec3{0.0f,0.0f,0.0f}, glm::vec3{0.0f,1.0f,0.0f});
   float FoV = 60.0f;
   glm::mat4 _projectionMatrix = glm::perspective(glm::radians(FoV), 1.0f, 0.1f, 100.0f);
 
