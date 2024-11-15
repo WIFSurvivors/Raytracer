@@ -1,6 +1,6 @@
 #include <glad/glad.h>
-#include "glm/gtc/matrix_transform.hpp"
 #include <glm/glm.hpp>
+#include <glm/ext/matrix_transform.hpp>
 
 #include "includes/RenderComponent.h"
 
@@ -42,9 +42,11 @@ void RenderComponent::init(GLuint programID) {
 
   textUniformID = glGetUniformLocation(programID, "text");
   mvpUniformID = glGetUniformLocation(programID, "MVP");
+  modelUniformID = glGetUniformLocation(programID, "Model");
+  
 }
 
-void RenderComponent::update(GLuint VAO) {
+void RenderComponent::update() {
   //  TODO:
   //  - Better MVP calculation (e.g. we don't need to call glm::mat4(1) every
   //  time) Calculation for the Model Matrix
@@ -57,7 +59,11 @@ void RenderComponent::update(GLuint VAO) {
   _rotationMatrix =
       glm::rotate(glm::mat4(1), glm::radians(angle), rotationAxis);
   _modelMatrix = _translationMatrix * _rotationMatrix * _scaleMatrix;
-
+  
+  //This all could be done in the shader?
+  //Maybe make update function for: Update information
+  //and Draw function for just drawing the component? 
+  /*
   //  Calculation for the Camera
   glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 2.0f);
   glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -70,13 +76,21 @@ void RenderComponent::update(GLuint VAO) {
   _projectionMatrix = glm::perspective(glm::radians(FoV), 1.0f, 0.1f, 100.0f);
 
   glm::mat4 MVP = _projectionMatrix * _viewMatrix * _translationMatrix;
+  */ 
+  
+}
+
+void RenderComponent::draw(GLuint VAO){
+  
   glUniform1i(textUniformID, 0);
   //  GL_FALSE is for transpose
-  glUniformMatrix4fv(mvpUniformID, 1, GL_FALSE, &MVP[0][0]);
+  glUniformMatrix4fv(modelUniformID, 1, GL_FALSE, &_modelMatrix[0][0]);
   glBindVertexArray(VAO);
   glDrawArrays(GL_TRIANGLES, 0, nvertices);
   glBindVertexArray(0);
+
 }
+
 
 void RenderComponent::destroy() {
   glDisableVertexAttribArray(0);
@@ -112,4 +126,14 @@ void RenderComponent::setTextures() {
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, _textureID);
 }
+
+const GLuint RenderComponent::getModelUniform() const {
+  return modelUniformID;
+}
+
+//yesshh sorry
+glm::mat4 * RenderComponent::getModelMatrice() {
+  return &_modelMatrix;
+}
+
 } //  namespace core
