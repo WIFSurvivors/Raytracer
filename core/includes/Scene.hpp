@@ -12,12 +12,12 @@ struct Scene {
 
   std::weak_ptr<Entity> get_root();
 
-  std::shared_ptr<Entity> create_entity(std::string name);
-  std::shared_ptr<Entity> create_entity(std::string name, int64_t uuid);
-  std::shared_ptr<Entity> create_entity(std::string name,
-                                        std::shared_ptr<Entity> parent);
-  std::shared_ptr<Entity> create_entity(std::string name, int64_t uuid,
-                                        std::shared_ptr<Entity> parent);
+  // std::shared_ptr<Entity> create_entity(std::string name);
+  // std::shared_ptr<Entity> create_entity(std::string name, int64_t uuid);
+  // std::shared_ptr<Entity> create_entity(std::string name,
+  //                                       std::shared_ptr<Entity> parent);
+  // std::shared_ptr<Entity> create_entity(std::string name, int64_t uuid,
+  //                                       std::shared_ptr<Entity> parent);
 
   void print();
 

@@ -1,6 +1,7 @@
 #pragma once
 #include "includes/Entity.hpp"
 #include "includes/SimpleComponent.hpp"
+#include "includes/System.hpp"
 #include <map>
 #include <memory>
 
@@ -34,7 +35,8 @@
 //     std::vector<derived<Component>> _components;
 // };
 
-struct SimpleSystem /* : system */ {
+struct SimpleSystem : System {
+  virtual bool create(int64_t uuid) {}
   SimpleComponent *create_component(int64_t e) { return nullptr; }
   SimpleComponent *create_component(int64_t e, int value) { return nullptr; }
   SimpleComponent *create_component(std::shared_ptr<Entity> e);

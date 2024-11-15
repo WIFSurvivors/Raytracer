@@ -26,7 +26,7 @@ std::optional<Component *> Entity::get_component(int64_t uuid) {
                    [uuid](Component *c) { return c->get_uuid() == uuid; });
 
   if (it == _components.end())
-    return std::nullopt;
+    return std::nullopt; // same as "return {};"
 
   return std::make_optional<Component *>(*it);
 }

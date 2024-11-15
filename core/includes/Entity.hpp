@@ -1,7 +1,7 @@
 #pragma once
 #include "glm/vec3.hpp"
 #include "includes/Component.hpp"
-#include "includes/Scene.hpp"
+#include "includes/EntitySystem.hpp"
 #include <map>
 #include <memory>
 #include <string>
@@ -36,16 +36,12 @@ struct Entity : public std::enable_shared_from_this<Entity> {
   void print();
 
 private:
-  // friend std::shared_ptr<Entity>;
-  // friend std::shared_ptr<Entity> std::make_shared<Entity>();
-  // only Scene is allowed to create entities... using create...
   friend std::shared_ptr<Entity>
-  Scene::create_entity(std::string name, int64_t uuid,
-                       std::shared_ptr<Entity> parent);
+  EntitySystem::create_entity(std::string name, int64_t uuid,
+                              std::shared_ptr<Entity> parent);
 
   static std::shared_ptr<Entity> create(std::string name, int64_t uuid,
                                         std::shared_ptr<Entity> parent);
-
   static std::shared_ptr<Entity> create(std::string name, int64_t uuid);
 
   int64_t _uuid{-1};

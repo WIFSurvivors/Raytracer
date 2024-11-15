@@ -1,5 +1,6 @@
 #pragma once
 
+#include "includes/System.hpp"
 #include <map>
 
 struct UUIDManager {
@@ -7,5 +8,5 @@ struct UUIDManager {
 
 private:
   int _uuid_counter{1};
-  //   std::map<int, system> _uuid_system_mapping{};
+  std::map<int, System> _uuid_system_mapping{};
 };

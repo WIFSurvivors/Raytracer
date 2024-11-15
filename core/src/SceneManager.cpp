@@ -25,30 +25,20 @@ void SceneManager::load() {
   auto c2 = simple_sys.create_component(e1, 8);
   auto c3 = simple_sys.create_component(e2, -5);
 
-  std::cout << "\n\n1)\n";
   current_scene.print();
-  std::cout << "\n\n\n";
   simple_sys.print_all_components();
-  std::cout << "\n\n\n";
-  std::cout << "\n\nA)\n";
 }
 
 void SceneManager::run() {
-  std::cout << "\n\nB)\n";
   // all components should call init
   // debatable if this is neccessary to do for *all* components
   for (auto const &[uuid, component] : simple_sys.get_components()) {
     component->init();
   }
 
-  // Component and entities values can be changed on runtime
-  std::cout << "\n\nx-)\n";
   if (!current_scene.get_root().expired()) {
-    std::cout << "\n\nx+)\n";
     auto root = current_scene.get_root().lock();
-    std::cout << "\n\n1\n";
     auto child_entities = root->get_child_entities();
-    std::cout << "\n\n2\n";
 
     std::cout << "elements: " << child_entities.size() << "\n";
     child_entities[1]->get_child_entities()[0]->position = {20.f, 0.5f, -4.f};
@@ -60,14 +50,12 @@ void SceneManager::run() {
       if (c.has_value()) {
         auto sc = static_cast<SimpleComponent *>(c.value());
         sc->set_value(80);
-        std::cout << "\n\n5a\n";
       }
     }
     if (auto c = child_entities[0]->get_component(1000)) { // == TRUE
       if (c.has_value()) {
         auto sc = static_cast<SimpleComponent *>(c.value());
         sc->set_value(80);
-        std::cout << "\n\n5b\n";
       }
     }
   }
@@ -75,9 +63,7 @@ void SceneManager::run() {
   auto e4 = current_scene.create_entity("cone light");
   auto c4 = simple_sys.create_component(e4, 1);
   c4->init();
-  std::cout << "\n";
 
-  std::cout << "\n\n2)\n";
   double dt_n0 = 0., dt_n1 = 0., dt = 0.;
   do {
     dt_n0 = dt_n1;
@@ -103,8 +89,4 @@ void SceneManager::unload() {
   for (auto &&c : simple_sys.get_components()) {
     c.second->destroy();
   }
-
-  // c1->destroy();
-  // c2->destroy();
-  // c3->destroy();
 }
