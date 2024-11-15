@@ -3,11 +3,7 @@
 #include "includes/Scene.hpp"
 #include <iostream>
 
-SceneManager::SceneManager() {
-  std::cout << "sm: a\n";
-  render_sys.init();
-  std::cout << "sm: b\n";
-}
+SceneManager::SceneManager() { render_sys.init(); }
 
 void SceneManager::load() {
   // optionally accessing the Entity root object

@@ -23,7 +23,7 @@ struct Component {
   virtual void destroy();
 
   /// @brief Use the constructor to internally deconstruct the object
-  // virtual ~component();
+  virtual ~Component() = default;
 
   bool operator<(const Component &right) const { return _uuid < right._uuid; }
 

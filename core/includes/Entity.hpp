@@ -35,6 +35,9 @@ struct Entity : public std::enable_shared_from_this<Entity> {
   inline int64_t get_uuid() { return _uuid; }
   void print();
 
+  const std::string &get_name();
+  void set_name(const std::string &name);
+
 private:
   friend std::shared_ptr<Entity>
   EntitySystem::create_entity(std::string name, int64_t uuid,

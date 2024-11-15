@@ -4,6 +4,9 @@
 #include <iostream>
 #include <memory>
 #include <utility>
+#include <type_traits>
+
+Component *SimpleSystem::create_component(int64_t uuid) {}
 
 // probably inefficent because std::move doesn't move the pointer underneath
 SimpleComponent *SimpleSystem::create_component(std::shared_ptr<Entity> e) {
@@ -20,11 +23,29 @@ SimpleComponent *SimpleSystem::create_component(std::shared_ptr<Entity> e,
   return _components[component_count++].get();
 }
 
-void SimpleSystem::clear() { _components.clear(); }
+bool SimpleSystem::remove(int64_t uuid) {
+  auto it = std::find_if(
+      _components.begin(), _components.end(),
+      [uuid](SimpleComponent *c) { return c->get_uuid() == uuid; });
+  if (it != _components.end()) {
+    _components.erase(it);
+    return true;
+  }
+  return false;
+}
 
-// bool SimpleSystem::remove_component(SimpleComponent *c) {
-//   return _components.erase(c);
-// }
+bool SimpleSystem::remove(Component *c) {
+  if (auto t = static_cast<SimpleComponent *>(c)) {
+    auto it = std::find(_components.begin(), _components.end(), t);
+    if (it != _components.end()) {
+      _components.erase(it);
+      return true;
+    }
+  }
+  return false;
+}
+
+void SimpleSystem::clear() { _components.clear(); }
 
 void SimpleSystem::update(const float dt) {
   for (auto &&c : _components) {

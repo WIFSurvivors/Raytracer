@@ -61,6 +61,9 @@ std::vector<std::shared_ptr<Entity>> &Entity::get_child_entities() {
 }
 std::weak_ptr<Entity> Entity::get_parent_entity() { return _parent; }
 
+const std::string &Entity::get_name() { return _name; }
+void Entity::set_name(const std::string &name) { _name = name; }
+
 // remove magic number
 void Entity::print() { print(4); }
 
