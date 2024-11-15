@@ -30,7 +30,7 @@ target_link_libraries(tcp-test
 )
 
 if (WIN32)
-  target_link_libraries(tcp-test PRIVATE ws2_32)
+  target_link_libraries(tcp-test PRIVATE ws2_32 mswsock)
 endif()
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
