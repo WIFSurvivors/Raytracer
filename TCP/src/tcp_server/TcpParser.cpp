@@ -2,14 +2,17 @@
 
 TcpParser::TcpParser() {}
 
-TcpCommand& TcpParser::parse(std::string msg) {
+std::unique_ptr<TcpCommand> TcpParser::parse(std::string msg) {
   std::cout << "Got message: " << msg << std::endl;
-  if(msg == "command1") {
-    std::cout << "Create command 1" << std::endl;
-  } else if(msg == "command2") {
-    std::cout << "Create command 2" << std::endl;
+    std::string move= "MoveCommand";
+  if(msg.compare(MOVE_COMMAND) == 0) {
+    std::cout << "Create MoveCommand" << std::endl;
+        return std::make_unique<MoveCommand>();
+  } else if(msg.compare(ROTATE_COMMAND) == 0) {
+    std::cout << "Create RotateCommand" << std::endl;
+    return std::make_unique<RotateCommand>();
   } else {
     std::cout << "Unknown command" << std::endl;
   }
-  return *new MoveCommand();
+  return nullptr;
 }

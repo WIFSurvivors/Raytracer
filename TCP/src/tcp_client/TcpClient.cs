@@ -6,30 +6,23 @@ namespace MyTcpClient
 {
     class TcpClientProgram
     {
-        public static void Main(string[] args)
+         public static void Send(TcpClient client, string message)
         {
             try
             {
-                TcpClient client = new TcpClient("127.0.0.1", 51234);
-
-                string message = "Hello Server!";
-                Byte[] data = Encoding.ASCII.GetBytes(message);
-
                 NetworkStream stream = client.GetStream();
 
+                // Send message
+                Byte[] data = Encoding.ASCII.GetBytes(message);
                 stream.Write(data, 0, data.Length);
                 Console.WriteLine("Sent: {0}", message);
 
+                // Receive response
                 data = new Byte[256];
-
                 String responseData = String.Empty;
-
                 Int32 bytes = stream.Read(data, 0, data.Length);
                 responseData = Encoding.ASCII.GetString(data, 0, bytes);
                 Console.WriteLine("Received: {0}", responseData);
-
-                stream.Close();
-                client.Close();
             }
             catch (ArgumentNullException e)
             {
@@ -39,9 +32,6 @@ namespace MyTcpClient
             {
                 Console.WriteLine("SocketException: {0}", e);
             }
-
-            Console.WriteLine("\n Press Enter to continue...");
-            Console.Read();
         }
     }
 }
