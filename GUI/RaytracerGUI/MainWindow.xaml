@@ -13,13 +13,14 @@
             <ColumnDefinition Width="512"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
+        <!-- --> 
         <Grid Width="512" HorizontalAlignment="Left" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid VerticalAlignment="Center" Grid.Row="0">
-                <Menu Background="{StaticResource WindowPrimaryColor}" Foreground="White" VerticalAlignment="Top" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="3"  >
+                <Menu Background="{StaticResource WindowPrimaryColor}" Foreground="White" VerticalAlignment="Top" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="2"  >
                     <MenuItem Header="File" Width="168">
                         <MenuItem Header="Open" Click="clickOpen"/>
                         <MenuItem Header="Save" Click="clickSave"/>
@@ -36,38 +37,75 @@
                     </MenuItem>
                 </Menu>
             </Grid>
+            <!--Everything below Menu -->
             <Grid VerticalAlignment="Stretch" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <TreeView Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="5" Grid.Column="0">
-                    <TreeViewItem Header="xyz 1">
-                        <TreeViewItem Header="xyz 1.1" />
-                        <TreeViewItem Header="xyz 1.2">
-                            <TreeViewItem Header="xyz 1.2.1" />
+                <!--Left Column -->
+                <Grid VerticalAlignment="Stretch" Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <!--Entities -->
+                    <TreeView Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="2" Grid.Row="0">
+                        <TreeViewItem Header="xyz 1">
+                            <TreeViewItem Header="xyz 1.1" />
+                            <TreeViewItem Header="xyz 1.2">
+                                <TreeViewItem Header="xyz 1.2.1" />
+                            </TreeViewItem>
                         </TreeViewItem>
-                    </TreeViewItem>
-                    <TreeViewItem Header="xyz 2" />
-                </TreeView>
-                <ListBox Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="5" Grid.Column="1">
-                    <ListBoxItem Content="Test Item 1" />
-                    <ListBoxItem Content="Test Item 2" />
-                    <ListBoxItem Content="Test Item 3" />
-                </ListBox>
+                        <TreeViewItem Header="xyz 2" />
+                    </TreeView>
+                    <!--Components -->
+                    <ListBox Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="2" Grid.Row="1">
+                        <ListBoxItem Content="Test Item 1" />
+                        <ListBoxItem Content="Test Item 2" />
+                        <ListBoxItem Content="Test Item 3" />
+                    </ListBox>
+                </Grid>
+                <!--Right Column -->
+                <Grid VerticalAlignment="Stretch" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <!--Entities -->
+                    <TreeView Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="2" Grid.Row="0">
+                        <TreeViewItem Header="xyz 1">
+                            <TreeViewItem Header="xyz 1.1" />
+                            <TreeViewItem Header="xyz 1.2">
+                                <TreeViewItem Header="xyz 1.2.1" />
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="xyz 2" />
+                    </TreeView>
+                    <!--Components -->
+                    <TreeView Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="2" Grid.Row="1">
+                        <TreeViewItem Header="xyz 1">
+                            <TreeViewItem Header="xyz 1.1" />
+                            <TreeViewItem Header="xyz 1.2">
+                                <TreeViewItem Header="xyz 1.2.1" />
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="xyz 2" />
+                    </TreeView>
+                </Grid>
             </Grid>
         </Grid>
-
+        <!--Preview-->
         <Grid HorizontalAlignment="Stretch" Grid.Column="1" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="180" />
             </Grid.RowDefinitions>
-
-            <Border Grid.Row="0" Margin="50" BorderBrush="{StaticResource ComponentPrimaryColor}" BorderThickness="5">
+            <!--Preview Picture-->
+            <Border Grid.Row="0" Margin="5" BorderBrush="{StaticResource ComponentPrimaryColor}" BorderThickness="2">
                 <Image  Source="/images/preview.png" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
             </Border>
-
+            <!--Preview Buttons-->
             <Grid Width="400" Height="200" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="1">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
