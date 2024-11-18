@@ -1,14 +1,13 @@
 #pragma once
-#include "includes/TcpCommand.hpp"
-#include "includes/TcpExecuter.hpp"
-#include "includes/MoveCommand.hpp"
-#include "includes/RotateCommand.hpp"
+#include "includes/ParsedTcpCommand.hpp"
 #include <iostream>
 #include <string>
 #include <memory>
+#include <sstream>
+
 struct TcpParser {
   TcpParser();
-  std::unique_ptr<TcpCommand> parse(std::string msg);
+  std::unique_ptr<ParsedTcpCommand> parse(std::string msg);
 
 private:
 };

@@ -5,7 +5,7 @@ TcpServer::TcpServer(boost::asio::io_context& io_context, int port)
     : _io_context(io_context),
       _acceptor(io_context, tcp::endpoint(tcp::v4(), port)),
       _socket(io_context),
-      _is_stopped(false) {}
+      _is_stopped(false) {_command_manager = CommandManager();}
 
 TcpServer::~TcpServer() {
     if (_server_thread.joinable()) {
@@ -40,15 +40,8 @@ void TcpServer::read_message() {
         if (!error && !_is_stopped) {
             std::string msg(_buffer.data(), length);
             std::cout << "Data received: " << msg << std::endl;
-            TcpParser parser;
-            std::unique_ptr<TcpCommand> command = parser.parse(msg);
-            if (command) {
-                TcpExecuter executer;
-                int return_value = executer.execute(*command);
-                boost::asio::write(_socket, boost::asio::buffer(std::to_string(return_value)));
-            } else {
-                std::cout << "Failed to parse command" << std::endl;
-            }
+            std::string return_value = _command_manager.execute_command(msg);
+            boost::asio::write(_socket, boost::asio::buffer(return_value));
             read_message(); 
         } else {
             std::cout << "Receive failed: " << error.message() << std::endl;

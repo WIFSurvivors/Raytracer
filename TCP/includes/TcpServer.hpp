@@ -5,8 +5,10 @@
 #include <thread>
 #include <array>
 #include <chrono>
-#include "includes/TcpParser.hpp"
-#include "includes/TcpExecuter.hpp"
+#include <memory>
+#include <string>
+#include <vector>
+#include "includes/CommandManager.hpp"
 
 using boost::asio::ip::tcp;
 
@@ -26,4 +28,5 @@ private:
   std::array<char, 1024> _buffer;
   std::thread _server_thread;
   bool _is_stopped;
+  CommandManager _command_manager;
 };

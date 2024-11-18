@@ -7,10 +7,10 @@ try
     TcpClient client = new TcpClient("127.0.0.1", 51234);
 
     // Send first message
-    MyTcpClient.TcpClientProgram.Send(client, "MoveCommand");
+    MyTcpClient.TcpClientProgram.Send(client, "MoveCommand 2132121 2 3 4");
 
     // Send second message
-    MyTcpClient.TcpClientProgram.Send(client, "RotateCommand");
+    MyTcpClient.TcpClientProgram.Send(client, "RotateCommand 2132121 2 3 4");
 
     //client.Close();
 }
