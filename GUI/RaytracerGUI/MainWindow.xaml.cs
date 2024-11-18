@@ -5,6 +5,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -60,6 +61,18 @@ namespace RaytracerGUI
         private void clickExit(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown(0); 
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void btn_TCPTest_Click(object sender, RoutedEventArgs e)
+        {
+            LogTextBox.AppendText($"{DateTime.Now}: Log entry added.\n");
+
+            
+            LogTextBox.ScrollToEnd();
         }
     }
 }

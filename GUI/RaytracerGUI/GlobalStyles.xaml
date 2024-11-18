@@ -80,6 +80,13 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <!-- Hover color for Buttons -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="{StaticResource WindowPrimaryColor}"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 

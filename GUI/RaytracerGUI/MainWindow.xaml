@@ -8,12 +8,26 @@
         Title="MainWindow" 
         Height="720" Width="1280"
         MinHeight="720" MinWidth="1280" >
+
+    <Window.Resources>
+        <!-- Slide Out Animation -->
+        <Storyboard x:Key="SlideOut">
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                         To="200" Duration="0:0:0.3" />
+        </Storyboard>
+
+        <!-- Slide In Animation -->
+        <Storyboard x:Key="SlideIn">
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                         To="0" Duration="0:0:0.3" />
+        </Storyboard>
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="512"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <!-- --> 
+       
         <Grid Width="512" HorizontalAlignment="Left" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
@@ -50,7 +64,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <!--Entities -->
-                    <TreeView Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="2" Grid.Row="0">
+                    <TreeView Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="2" Grid.Row="0" Margin="0,10,0,0">
                         <TreeViewItem Header="xyz 1">
                             <TreeViewItem Header="xyz 1.1" />
                             <TreeViewItem Header="xyz 1.2">
@@ -73,7 +87,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <!--Entities -->
-                    <TreeView Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="2" Grid.Row="0">
+                    <TreeView Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="2" Grid.Row="0" Margin="0,10,0,0">
                         <TreeViewItem Header="xyz 1">
                             <TreeViewItem Header="xyz 1.1" />
                             <TreeViewItem Header="xyz 1.2">
@@ -99,42 +113,81 @@
         <Grid HorizontalAlignment="Stretch" Grid.Column="1" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
-                <RowDefinition Height="180" />
+                <RowDefinition Height="180" x:Name="GUIBottom"/>
             </Grid.RowDefinitions>
             <!--Preview Picture-->
             <Border Grid.Row="0" Margin="5" BorderBrush="{StaticResource ComponentPrimaryColor}" BorderThickness="2">
                 <Image  Source="/images/preview.png" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
             </Border>
-            <!--Preview Buttons-->
-            <Grid Width="400" Height="200" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
+
+            <!--GuiBottom-->
+            <Grid HorizontalAlignment="Stretch" Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="1*" />
                 </Grid.ColumnDefinitions>
 
-                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
-                    <Image Source="/images/arrow-left.png" Width="30" Height="30"/>
-                </Button>
-                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
-                    <Image Source="/images/arrow-right.png" Width="30" Height="30"/>
-                </Button>
-                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center">
-                    <Image Source="/images/arrow-up.png" Width="30" Height="30"/>
-                </Button>
-                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top">
-                    <Image Source="/images/arrow-down.png" Width="30" Height="30"/>
-                </Button>
-                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
-                    <Image Source="/images/arrow-rotate-x.png" Width="30" Height="30"/>
-                </Button>
-                <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top">
-                    <Image Source="/images/arrow-rotate-y.png" Width="30" Height="30"/>
-                </Button>
+
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <!--TCP Log-->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox></TextBox>
+
+                        <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="40" Click="btn_TCPTest_Click">
+                            <Image Source="/images/arrow-right.png" Height="30"/>
+                        </Button>
+                    </Grid>
+
+                    <TextBox Name="LogTextBox" 
+                 VerticalScrollBarVisibility="Auto" 
+                 HorizontalScrollBarVisibility="Disabled" 
+                 IsReadOnly="True" 
+                 AcceptsReturn="True" 
+                 VerticalAlignment="Top" 
+                 Grid.Row="1"/>
+                    
+                </Grid>
+
+                <!--Preview Buttons-->
+                <Grid Height="180" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"  Margin="10" Click="Button_Click">
+                        <Image Source="/images/arrow-left.png" Width="30" Height="30"/>
+                    </Button>
+                    <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="10">
+                        <Image Source="/images/arrow-right.png" Width="30" Height="30"/>
+                    </Button>
+                    <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="10">
+                        <Image Source="/images/arrow-up.png" Width="30" Height="30"/>
+                    </Button>
+                    <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" Margin="10">
+                        <Image Source="/images/arrow-down.png" Width="30" Height="30"/>
+                    </Button>
+                    <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Margin="10">
+                        <Image Source="/images/arrow-rotate-x.png" Width="30" Height="30"/>
+                    </Button>
+                    <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Margin="10">
+                        <Image Source="/images/arrow-rotate-y.png" Width="30" Height="30"/>
+                    </Button>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>
