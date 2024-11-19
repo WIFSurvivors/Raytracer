@@ -18,7 +18,7 @@ EntitySystem::create_entity(std::string name, int64_t uuid,
 
 bool EntitySystem::remove(int64_t uuid) {
   auto it = std::find_if(_entities.begin(), _entities.end(),
-                         [uuid](Entity *e) { return e->get_uuid() == uuid; });
+                         [uuid](const auto &e) { return e.first == uuid; });
   if (it != _entities.end()) {
     _entities.erase(it);
     return true;
@@ -27,8 +27,11 @@ bool EntitySystem::remove(int64_t uuid) {
 }
 
 bool EntitySystem::remove(Entity *e) {
-  if (auto t = static_cast<Entity *>(e)) {
-    auto it = std::find(_entities.begin(), _entities.end(), t);
+  if (auto t = static_cast<Entity *>(e)) { // neccessary???
+    auto it =
+        std::find_if(_entities.begin(), _entities.end(), [t](const auto &val) {
+          return val.second.lock().get() == t;
+        });
     if (it != _entities.end()) {
       _entities.erase(it);
       return true;

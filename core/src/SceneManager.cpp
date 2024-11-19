@@ -6,8 +6,7 @@
 SceneManager::SceneManager() { render_sys.init(); }
 
 void SceneManager::load() {
-  // optionally accessing the Entity root object
-  // auto root_entity = s.get_root().lock();
+  current_scene = Scene{};
 
   // build up a tree of entities
   // will also possible with tcp commands
@@ -69,7 +68,7 @@ void SceneManager::run() {
     // std::cout << "dt: " << dt << "\n";
 
     simple_sys.update(dt);
-    // render_sys.update(dt);
+    render_sys.update(dt);
   } while (true);
 
   std::cout << "\n\n3)\n";

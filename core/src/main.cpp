@@ -11,6 +11,8 @@ int main() {
 
   /*
   core::RenderSystem rs;
+  WindowManager wm;
+  core::RenderSystem rs{&wm};
 
   core::RenderComponent comp;
   core::RenderComponent comp02;

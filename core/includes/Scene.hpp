@@ -29,4 +29,5 @@ private:
 
   SimpleSystem simple_system{};
   EntitySystem entity_system{};
+  /*RenderSystem render_system{};*/
 };
