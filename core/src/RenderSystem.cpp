@@ -34,7 +34,7 @@ void RenderSystem::init() {
   //  program->activateShader();
   //  I dont like this at all
   Shader computeShader{
-      std::make_pair(GL_COMPUTE_SHADER, "../shaders/computeShaderTesting.glsl")};
+      std::make_pair(GL_COMPUTE_SHADER, "../shaders/computeshaderCircle.glsl")};
   compute = std::make_unique<Shader>(computeShader);
 
   //  mouseUniformID = glGetUniformLocation(computeShader.programID,
@@ -66,7 +66,7 @@ void RenderSystem::update() {
   float radius = 10.0f;
   float camX = sin(glfwGetTime()) * radius;
   float camZ = cos(glfwGetTime()) * radius;
-  _view = glm::lookAt(glm::vec3(camX, 0.0, camZ), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));  
+  _view = glm::lookAt(glm::vec3(0.0, 10.0, 10.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));  
 
   //  Setup compute shader
   compute->activateShader();

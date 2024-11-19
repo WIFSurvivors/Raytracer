@@ -12,7 +12,6 @@ uniform mat4 Projection;
 struct Sphere {
     float r;
     vec3 C;
-    vec3 color;
 };
 
 struct Ray {
@@ -82,7 +81,7 @@ float rand(vec2 co) {
 }
 
 vec3 randOnHemisphere(vec3 n) {
-    vec3 r = vec3(rand(n.xy), rand(n.yz), rand(n.xz) + time);
+    vec3 r = vec3(rand(n.xy), rand(n.yz), rand(n.xz));
     if (dot(r, n) > 0) {
         return r;
     } else {
@@ -90,77 +89,23 @@ vec3 randOnHemisphere(vec3 n) {
     }
 }
 
-vec4 CalcColor(Sphere s[2], int count, Ray r) {
-    vec3 color = vec3(0.0,0.0,0.0);
-    float t = 1.0 / 0.0; // =)
-    float temp;
-    int index = 0;
-    for (int i = 0; i < count; i++) {
-        temp = intersectsSphere(s[i], r);
-        if (temp < t && temp > 0.0) {
-            t = temp;
-            index = i;
-        }
-        continue;
-    }
-
-    if (t > 0.0 && !isinf(t)) {
-        vec3 sectionPoint = r.origin + t * r.direction;
-        vec3 N = normalize(sectionPoint - s[index].C);
-        vec3 dir = randOnHemisphere(N);
-        
-        r = Ray(sectionPoint,dir);
-        color += s[index].color * max(dot(N, dir), 0.0);
-        
-        float t = 1.0 / 0.0; // =)
-        float temp;
-        int index = 0;
-        for (int i = 0; i < count; i++) {
-            temp = intersectsSphere(s[i], r);
-            if (temp < t && temp > 0.0) {
-                t = temp;
-                index = i;
-                sectionPoint = r.origin + t * r.direction;
-                N = normalize(sectionPoint - s[index].C);
-                dir = randOnHemisphere(N);
-                color += s[index].color * max(dot(N,dir),0.0);
-            }
-            continue;
-        }
-
-        
-        return vec4(color, 1.0);
-    } else {
-        vec3 N = normalize(r.direction);
-        float a = 0.5 * (N.y + 1.0);
-        vec3 res = (1.0 - a) * vec3(0.0, 0.0, 0.0) + a * vec3(0.5, 0.7, 1.0);
-        return vec4(res, 1.0);
-    }
-}
-
 vec4 rayColor(Ray r) {
-    //mat4 MVP = Projection * View * Model * mat4(1.0);
+    mat4 MVP = Projection * View * Model * mat4(1.0);
     vec3 v0 = vec3(-0.6, -0.8, -0.5);
     vec3 v1 = vec3(0.6, -0.8, -0.5);
     vec3 v2 = vec3(0.0, 0.8, 0.2);
 
     Vertex v = Vertex(v0, v1, v2);
 
-    vec4 c1 = vec4(-4.0, 0.0, -1.0, 1.0);
-    vec4 c2 = vec4(4.0, 0.0, -1.0, 1.0);
+    vec4 c = vec4(0.0, 0.0, -1.0, 1.0);
+    Sphere s1 = Sphere(0.9, c.xyz);
 
-    Sphere s1 = Sphere(3.9, c1.xyz, vec3(0.0, 1.0, 0.0));
+    // Sphere s2 = Sphere(0.5, vec3(0.0, 0.4, 0.0));
 
-    Sphere s2 = Sphere(3.9, c2.xyz, vec3(0.5, 0.0, 0.5));
-
-    Sphere s[2];
-    s[0] = s1;
-    s[1] = s2;
     float t = -1.0;
     float temp = -1.0;
-    return CalcColor(s, 2, r);
 
-    //t = intersectsSphere(s1, r); //
+    t = intersectsSphere(s1, r);
     // if (temp != -1.0) {
     //     if (t == -1) {
     //         t = temp;
@@ -182,54 +127,44 @@ vec4 rayColor(Ray r) {
     // }
 
     /*
-                            	temp = intersectsSphere(s2, r);
-                            	if(temp != -1.0) {
-                            		if(t == -1) {
-                            			t = temp;
-                            		} else {
-                            			t = min(t, temp);
-                            		}
-                            	}
-                            */
-    /*
-        if (t > 0.0) {
-            vec3 N = normalize(r.origin + t * r.direction - s1.C);
-            vec3 dir = randOnHemisphere(N);
-            return vec4(dir, 1.0);
-        }
+                	temp = intersectsSphere(s2, r);
+                	if(temp != -1.0) {
+                		if(t == -1) {
+                			t = temp;
+                		} else {
+                			t = min(t, temp);
+                		}
+                	}
+                */
+    if (t > 0.0) {
+        vec3 N = normalize(r.origin + t * r.direction - s1.C);
+        vec3 dir = randOnHemisphere(N);
+        return vec4(dir, 1.0);
+    }
 
-        t = intersectsSphere(s2, r);
-        if (t > 0.0) {
-            vec3 N = normalize(r.origin + t * r.direction - s2.C);
-            vec3 dir = randOnHemisphere(N);
-            return vec4(dir, 1.0);
-        }
+    // if(t > 0.0) {
+    //	vec3 pixelCol = vec3(1.0, 1.0, 1.0);
+    //	vec3 p = r.origin + t * r.direction;
+    //	for(int i = 0; i < 70; i++) {
+    //		vec3 N = normalize(p - vec3(0.0, 0.0, -1.0));
+    // return 0.5 * vec4(N.x + 1.0, N.y + 1.0, N.z + 1.0, 1.0);
+    // vec3 dir = randOnHemisphere(N);
 
-        // if(t > 0.0) {
-        //	vec3 pixelCol = vec3(1.0, 1.0, 1.0);
-        //	vec3 p = r.origin + t * r.direction;
-        //	for(int i = 0; i < 70; i++) {
-        //		vec3 N = normalize(p - vec3(0.0, 0.0, -1.0));
-        // return 0.5 * vec4(N.x + 1.0, N.y + 1.0, N.z + 1.0, 1.0);
-        // vec3 dir = randOnHemisphere(N);
-
-        // pixelCol = pixelCol - 0.02 * dir;
-        // p = N + t*dir;
-        // }
-        // return vec4(pixelCol, 1.0);
-        // vec3 N = normalize((r.origin + t * r.direction) - vec3(0.0, 0.0, -1.0));
-        // return 0.5 * vec4(N.x + 1.0, N.y + 1.0, N.z + 1.0, 1.0);
-        // vec3 dir01 = randOnHemisphere(N);
-        // vec3 dir02 = randOnHemisphere(N);
-        // vec3 dir03 = randOnHemisphere(N);
-        // return 0.8 * vec4(dir01.xyz*0.3 + dir03.xyz*0.3 + dir03.xyz*0.3, 1.0);
-        // }
-
-        vec3 N = normalize(r.direction);
-        float a = 0.5 * (N.y + 1.0);
-        vec3 res = (1.0 - a) * vec3(0.0, 0.0, 0.0) + a * vec3(0.5, 0.7, 1.0);
-        return vec4(res, 1.0);
-        */
+    // pixelCol = pixelCol - 0.02 * dir;
+    // p = N + t*dir;
+    // }
+    // return vec4(pixelCol, 1.0);
+    // vec3 N = normalize((r.origin + t * r.direction) - vec3(0.0, 0.0, -1.0));
+    // return 0.5 * vec4(N.x + 1.0, N.y + 1.0, N.z + 1.0, 1.0);
+    // vec3 dir01 = randOnHemisphere(N);
+    // vec3 dir02 = randOnHemisphere(N);
+    // vec3 dir03 = randOnHemisphere(N);
+    // return 0.8 * vec4(dir01.xyz*0.3 + dir03.xyz*0.3 + dir03.xyz*0.3, 1.0);
+    // }
+    vec3 N = normalize(r.direction);
+    float a = 0.5 * (N.y + 1.0);
+    vec3 res = (1.0 - a) * vec3(0.0, 0.0, 0.0) + a * vec3(0.5, 0.7, 1.0);
+    return vec4(res, 1.0);
 }
 
 Plane createPlane(vec3 point1, vec3 point2, vec3 point3) {
@@ -265,20 +200,10 @@ void main() {
     float x = float(pixelCoords.x * 2 - dims.x) / dims.x; // transforms to [-1.0, 1.0]
     float y = float(pixelCoords.y * 2 - dims.y) / dims.y; // transforms to [-1.0, 1.0]
 
-    vec3 rayOrigin = vec3(0.0, 10.0, 10.0); // Ray origin should always be camera position. Current camera position is not used
-
-    //ray in clip
-    vec4 rayPixel = vec4(x, y, -1.0, 1.0);
-
-    // Convert to eye space
-    vec4 rayEye = inverse(Projection) * rayPixel;
-    rayEye = vec4(rayEye.xy, -1.0, 0.0); // We = 0 dir
-
-    // Convert to world space
-    vec3 rayDirWorld = normalize(vec3(inverse(View) * rayEye));
-
-    //vec3 rayDirection = normalize(rayPixel.xyz - rayOrigin);
-    Ray r = Ray(rayOrigin, rayDirWorld);
-    imageStore(textureOutput, pixelCoords, vec4(rayDirWorld, 1.0));
+    vec3 rayOrigin = vec3(0.0, 0.0, 2.0);
+    vec3 rayPixel = vec3(x, y, 0.0);
+    vec3 rayDirection = normalize(rayPixel - rayOrigin);
+    Ray r = Ray(rayOrigin, rayDirection);
     imageStore(textureOutput, pixelCoords, rayColor(r));
+    //imageStore(textureOutput, pixel_coords, vec4(0.0, 1.0, 0.0, 1.0));
 }
