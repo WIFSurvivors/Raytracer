@@ -13,6 +13,7 @@ struct Sphere {
     float r;
     vec3 C;
     vec3 color;
+    float reflectivity; //maybe [0,1] 0 not reflective 1 absolute reflective
 };
 
 struct Ray {
@@ -90,52 +91,40 @@ vec3 randOnHemisphere(vec3 n) {
     }
 }
 
-vec4 CalcColor(Sphere s[2], int count, Ray r) {
+const int css = 2;
+vec4 CalcColor(Sphere s[css], int count, Ray r) {
+    int MAXIMAL_BOUNCES = 100;
     vec3 color = vec3(0.0,0.0,0.0);
-    float t = 1.0 / 0.0; // =)
-    float temp;
-    int index = 0;
-    for (int i = 0; i < count; i++) {
-        temp = intersectsSphere(s[i], r);
-        if (temp < t && temp > 0.0) {
-            t = temp;
-            index = i;
-        }
-        continue;
-    }
-
-    if (t > 0.0 && !isinf(t)) {
-        vec3 sectionPoint = r.origin + t * r.direction;
-        vec3 N = normalize(sectionPoint - s[index].C);
-        vec3 dir = randOnHemisphere(N);
-        
-        r = Ray(sectionPoint,dir);
-        color += s[index].color * max(dot(N, dir), 0.0);
-        
+    for (int bounce = 0; bounce <= 10; bounce++) {
         float t = 1.0 / 0.0; // =)
-        float temp;
-        int index = 0;
+        int index = -1;
+
         for (int i = 0; i < count; i++) {
-            temp = intersectsSphere(s[i], r);
+            float temp = intersectsSphere(s[i], r);
             if (temp < t && temp > 0.0) {
                 t = temp;
                 index = i;
-                sectionPoint = r.origin + t * r.direction;
-                N = normalize(sectionPoint - s[index].C);
-                dir = randOnHemisphere(N);
-                color += s[index].color * max(dot(N,dir),0.0);
             }
-            continue;
         }
-
         
-        return vec4(color, 1.0);
-    } else {
-        vec3 N = normalize(r.direction);
-        float a = 0.5 * (N.y + 1.0);
-        vec3 res = (1.0 - a) * vec3(0.0, 0.0, 0.0) + a * vec3(0.5, 0.7, 1.0);
-        return vec4(res, 1.0);
+        if (t > 0.0 && index>=0) {
+            vec3 sectionPoint = r.origin + t * r.direction;
+            vec3 N = normalize(sectionPoint - s[index].C);
+            //vec3 dir = randOnHemisphere(N);
+            vec3 dir = reflect(r.direction,N);
+
+            r = Ray(sectionPoint, dir);
+            color += s[index].color  * max(dot(N, dir), 0.0);
+            
+        } else {
+            vec3 N = normalize(r.direction);
+            float a = 0.5 * (N.y + 1.0);
+            vec3 res = (1.0 - a) * vec3(0.0, 0.0, 0.0) + a * vec3(0.5, 0.7, 1.0);
+            color += res;
+            break; // missed
+        }
     }
+  return vec4(color,1.0);
 }
 
 vec4 rayColor(Ray r) {
@@ -149,9 +138,9 @@ vec4 rayColor(Ray r) {
     vec4 c1 = vec4(-4.0, 0.0, -1.0, 1.0);
     vec4 c2 = vec4(4.0, 0.0, -1.0, 1.0);
 
-    Sphere s1 = Sphere(3.9, c1.xyz, vec3(0.0, 1.0, 0.0));
+    Sphere s1 = Sphere(3.9, c1.xyz, vec3(0.0, 1.0, 0.0), 0.0);
 
-    Sphere s2 = Sphere(3.9, c2.xyz, vec3(0.5, 0.0, 0.5));
+    Sphere s2 = Sphere(3.9, c2.xyz, vec3(0.5, 0.0, 0.5), 0.0);
 
     Sphere s[2];
     s[0] = s1;
@@ -182,54 +171,54 @@ vec4 rayColor(Ray r) {
     // }
 
     /*
-                            	temp = intersectsSphere(s2, r);
-                            	if(temp != -1.0) {
-                            		if(t == -1) {
-                            			t = temp;
-                            		} else {
-                            			t = min(t, temp);
-                            		}
-                            	}
-                            */
+                                	temp = intersectsSphere(s2, r);
+                                	if(temp != -1.0) {
+                                		if(t == -1) {
+                                			t = temp;
+                                		} else {
+                                			t = min(t, temp);
+                                		}
+                                	}
+                                */
     /*
-        if (t > 0.0) {
-            vec3 N = normalize(r.origin + t * r.direction - s1.C);
-            vec3 dir = randOnHemisphere(N);
-            return vec4(dir, 1.0);
-        }
+            if (t > 0.0) {
+                vec3 N = normalize(r.origin + t * r.direction - s1.C);
+                vec3 dir = randOnHemisphere(N);
+                return vec4(dir, 1.0);
+            }
 
-        t = intersectsSphere(s2, r);
-        if (t > 0.0) {
-            vec3 N = normalize(r.origin + t * r.direction - s2.C);
-            vec3 dir = randOnHemisphere(N);
-            return vec4(dir, 1.0);
-        }
+            t = intersectsSphere(s2, r);
+            if (t > 0.0) {
+                vec3 N = normalize(r.origin + t * r.direction - s2.C);
+                vec3 dir = randOnHemisphere(N);
+                return vec4(dir, 1.0);
+            }
 
-        // if(t > 0.0) {
-        //	vec3 pixelCol = vec3(1.0, 1.0, 1.0);
-        //	vec3 p = r.origin + t * r.direction;
-        //	for(int i = 0; i < 70; i++) {
-        //		vec3 N = normalize(p - vec3(0.0, 0.0, -1.0));
-        // return 0.5 * vec4(N.x + 1.0, N.y + 1.0, N.z + 1.0, 1.0);
-        // vec3 dir = randOnHemisphere(N);
+            // if(t > 0.0) {
+            //	vec3 pixelCol = vec3(1.0, 1.0, 1.0);
+            //	vec3 p = r.origin + t * r.direction;
+            //	for(int i = 0; i < 70; i++) {
+            //		vec3 N = normalize(p - vec3(0.0, 0.0, -1.0));
+            // return 0.5 * vec4(N.x + 1.0, N.y + 1.0, N.z + 1.0, 1.0);
+            // vec3 dir = randOnHemisphere(N);
 
-        // pixelCol = pixelCol - 0.02 * dir;
-        // p = N + t*dir;
-        // }
-        // return vec4(pixelCol, 1.0);
-        // vec3 N = normalize((r.origin + t * r.direction) - vec3(0.0, 0.0, -1.0));
-        // return 0.5 * vec4(N.x + 1.0, N.y + 1.0, N.z + 1.0, 1.0);
-        // vec3 dir01 = randOnHemisphere(N);
-        // vec3 dir02 = randOnHemisphere(N);
-        // vec3 dir03 = randOnHemisphere(N);
-        // return 0.8 * vec4(dir01.xyz*0.3 + dir03.xyz*0.3 + dir03.xyz*0.3, 1.0);
-        // }
+            // pixelCol = pixelCol - 0.02 * dir;
+            // p = N + t*dir;
+            // }
+            // return vec4(pixelCol, 1.0);
+            // vec3 N = normalize((r.origin + t * r.direction) - vec3(0.0, 0.0, -1.0));
+            // return 0.5 * vec4(N.x + 1.0, N.y + 1.0, N.z + 1.0, 1.0);
+            // vec3 dir01 = randOnHemisphere(N);
+            // vec3 dir02 = randOnHemisphere(N);
+            // vec3 dir03 = randOnHemisphere(N);
+            // return 0.8 * vec4(dir01.xyz*0.3 + dir03.xyz*0.3 + dir03.xyz*0.3, 1.0);
+            // }
 
-        vec3 N = normalize(r.direction);
-        float a = 0.5 * (N.y + 1.0);
-        vec3 res = (1.0 - a) * vec3(0.0, 0.0, 0.0) + a * vec3(0.5, 0.7, 1.0);
-        return vec4(res, 1.0);
-        */
+            vec3 N = normalize(r.direction);
+            float a = 0.5 * (N.y + 1.0);
+            vec3 res = (1.0 - a) * vec3(0.0, 0.0, 0.0) + a * vec3(0.5, 0.7, 1.0);
+            return vec4(res, 1.0);
+            */
 }
 
 Plane createPlane(vec3 point1, vec3 point2, vec3 point3) {
