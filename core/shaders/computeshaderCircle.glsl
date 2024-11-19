@@ -83,7 +83,7 @@ float rand(vec2 co) {
 }
 
 vec3 randOnHemisphere(vec3 n) {
-    vec3 r = vec3(rand(n.xy), rand(n.yz), rand(n.xz) + time);
+    vec3 r = vec3(rand(n.xy), rand(n.yz), rand(n.xz));
     if (dot(r, n) > 0) {
         return r;
     } else {
@@ -91,10 +91,11 @@ vec3 randOnHemisphere(vec3 n) {
     }
 }
 
-const int css = 2;
+const int css = 3;
 vec4 CalcColor(Sphere s[css], int count, Ray r) {
     int MAXIMAL_BOUNCES = 100;
     vec3 color = vec3(0.0,0.0,0.0);
+    float global_ref=1.0;
     for (int bounce = 0; bounce <= 10; bounce++) {
         float t = 1.0 / 0.0; // =)
         int index = -1;
@@ -108,19 +109,22 @@ vec4 CalcColor(Sphere s[css], int count, Ray r) {
         }
         
         if (t > 0.0 && index>=0) {
+            global_ref = s[index].reflectivity;
             vec3 sectionPoint = r.origin + t * r.direction;
             vec3 N = normalize(sectionPoint - s[index].C);
             //vec3 dir = randOnHemisphere(N);
             vec3 dir = reflect(r.direction,N);
 
             r = Ray(sectionPoint, dir);
-            color += s[index].color  * max(dot(N, dir), 0.0);
+            //color += s[index].color * (1.0-global_ref) * max(dot(N, dir), 0.0); // 1-global_ref because color needs to be darker for the reflection? // test
+            color += s[index].color * (1.0 - global_ref) * max(dot(N, dir), 0.0);
+            global_ref *= s[index].reflectivity; 
             
         } else {
             vec3 N = normalize(r.direction);
             float a = 0.5 * (N.y + 1.0);
             vec3 res = (1.0 - a) * vec3(0.0, 0.0, 0.0) + a * vec3(0.5, 0.7, 1.0);
-            color += res;
+            color += res*global_ref;
             break; // missed
         }
     }
@@ -137,17 +141,19 @@ vec4 rayColor(Ray r) {
 
     vec4 c1 = vec4(-4.0, 0.0, -1.0, 1.0);
     vec4 c2 = vec4(4.0, 0.0, -1.0, 1.0);
+    vec4 c3 = vec4(0.0, -10.0, 0.0, 1.0);
 
     Sphere s1 = Sphere(3.9, c1.xyz, vec3(0.0, 1.0, 0.0), 0.0);
-
     Sphere s2 = Sphere(3.9, c2.xyz, vec3(0.5, 0.0, 0.5), 0.0);
+    Sphere s3 = Sphere(5.0, c3.xyz, vec3(0.0, 0.0, 0.0), 0.0);
 
-    Sphere s[2];
+    Sphere s[3];
     s[0] = s1;
     s[1] = s2;
+    s[2] = s3;
     float t = -1.0;
     float temp = -1.0;
-    return CalcColor(s, 2, r);
+    return CalcColor(s, 3, r);
 
     //t = intersectsSphere(s1, r); //
     // if (temp != -1.0) {
