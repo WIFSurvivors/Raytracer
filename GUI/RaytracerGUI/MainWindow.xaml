@@ -34,18 +34,18 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid VerticalAlignment="Center" Grid.Row="0">
-                <Menu Background="{StaticResource WindowPrimaryColor}" Foreground="White" VerticalAlignment="Top" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="2"  >
-                    <MenuItem Header="File" Width="168">
+                <Menu VerticalAlignment="Top">
+                <MenuItem Header="File" Width="170">
                         <MenuItem Header="Open" Click="clickOpen"/>
                         <MenuItem Header="Save" Click="clickSave"/>
                         <MenuItem Header="Import Scene" Click="clickImportScene"/>
                         <MenuItem Header="Export Scene" Click="clickExportScene" />
                         <MenuItem Header="Exit" Click="clickExit" />
                     </MenuItem>
-                    <MenuItem Header="View" Width="168">
+                    <MenuItem Header="View" Width="169">
                         <MenuItem Header="Reset" />
                     </MenuItem>
-                    <MenuItem Header="Settings" Width="168">
+                    <MenuItem Header="Settings" Width="169">
                         <MenuItem Header="Preferences" />
                         <MenuItem Header="About" />
                     </MenuItem>
@@ -54,17 +54,103 @@
             <!--Everything below Menu -->
             <Grid VerticalAlignment="Stretch" Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <!--Left Column -->
-                <Grid VerticalAlignment="Stretch" Grid.Column="0">
+
+                <Grid Grid.Column="0">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" MinHeight="256" MaxHeight="512"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
-                    <!--Entities -->
-                    <TreeView Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="2" Grid.Row="0" Margin="0,10,0,0">
+
+                    <TreeView Grid.Row="0">
+                        <TreeViewItem Header="xyz 1">
+                            <TreeViewItem Header="xyz 1.1">
+                                <TreeViewItem Header="xyz 1.1.1">
+                                    <TreeViewItem Header="xyz 1.1.1.1" />
+                                    <TreeViewItem Header="xyz 1.1.1.2" />
+                                    <TreeViewItem Header="xyz 1.1.1.3" />
+                                </TreeViewItem>
+                                <TreeViewItem Header="xyz 1.1.2" />
+                                <TreeViewItem Header="xyz 1.1.3" />
+                                <TreeViewItem Header="xyz 1.1.4" />
+                                <TreeViewItem Header="xyz 1.1.5" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 1.2">
+                                <TreeViewItem Header="xyz 1.2.1">
+                                    <TreeViewItem Header="xyz 1.2.1.1">
+                                        <TreeViewItem Header="xyz 1.2.1.1.1" />
+                                        <TreeViewItem Header="xyz 1.2.1.1.2" />
+                                    </TreeViewItem>
+                                    <TreeViewItem Header="xyz 1.2.1.2" />
+                                    <TreeViewItem Header="xyz 1.2.1.3" />
+                                </TreeViewItem>
+                                <TreeViewItem Header="xyz 1.2.2">
+                                    <TreeViewItem Header="xyz 1.2.2.1" />
+                                    <TreeViewItem Header="xyz 1.2.2.2" />
+                                </TreeViewItem>
+                                <TreeViewItem Header="xyz 1.2.3" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 1.3">
+                                <TreeViewItem Header="xyz 1.3.1" />
+                                <TreeViewItem Header="xyz 1.3.2" />
+                                <TreeViewItem Header="xyz 1.3.3" />
+                                <TreeViewItem Header="xyz 1.3.4" />
+                                <TreeViewItem Header="xyz 1.3.5" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 1.4">
+                                <TreeViewItem Header="xyz 1.4.1" />
+                                <TreeViewItem Header="xyz 1.4.2" />
+                            </TreeViewItem>
+                        </TreeViewItem>
+
+                        <TreeViewItem Header="xyz 2">
+                            <TreeViewItem Header="xyz 2.1">
+                                <TreeViewItem Header="xyz 2.1.1" />
+                                <TreeViewItem Header="xyz 2.1.2" />
+                                <TreeViewItem Header="xyz 2.1.3" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 2.2">
+                                <TreeViewItem Header="xyz 2.2.1">
+                                    <TreeViewItem Header="xyz 2.2.1.1" />
+                                </TreeViewItem>
+                                <TreeViewItem Header="xyz 2.2.2" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 2.3">
+                                <TreeViewItem Header="xyz 2.3.1" />
+                                <TreeViewItem Header="xyz 2.3.2" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 2.4">
+                                <TreeViewItem Header="xyz 2.4.1" />
+                            </TreeViewItem>
+                        </TreeViewItem>
+
+                        <TreeViewItem Header="xyz 3">
+                            <TreeViewItem Header="xyz 3.1">
+                                <TreeViewItem Header="xyz 3.1.1" />
+                                <TreeViewItem Header="xyz 3.1.2" />
+                                <TreeViewItem Header="xyz 3.1.3" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 3.2">
+                                <TreeViewItem Header="xyz 3.2.1">
+                                    <TreeViewItem Header="xyz 3.2.1.1" />
+                                    <TreeViewItem Header="xyz 3.2.1.2" />
+                                </TreeViewItem>
+                                <TreeViewItem Header="xyz 3.2.2" />
+                                <TreeViewItem Header="xyz 3.2.3" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 3.3">
+                                <TreeViewItem Header="xyz 3.3.1" />
+                                <TreeViewItem Header="xyz 3.3.2" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 3.4">
+                                <TreeViewItem Header="xyz 3.4.1" />
+                            </TreeViewItem>
+                        </TreeViewItem>
+                    </TreeView>
+
+                    <TreeView Grid.Row="1">
                         <TreeViewItem Header="xyz 1">
                             <TreeViewItem Header="xyz 1.1" />
                             <TreeViewItem Header="xyz 1.2">
@@ -73,39 +159,25 @@
                         </TreeViewItem>
                         <TreeViewItem Header="xyz 2" />
                     </TreeView>
-                    <!--Components -->
-                    <ListBox Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="2" Grid.Row="1">
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" MinHeight="256" MaxHeight="512"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <ListBox Grid.Row="0">
                         <ListBoxItem Content="Test Item 1" />
                         <ListBoxItem Content="Test Item 2" />
                         <ListBoxItem Content="Test Item 3" />
                     </ListBox>
-                </Grid>
-                <!--Right Column -->
-                <Grid VerticalAlignment="Stretch" Grid.Column="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <!--Entities -->
-                    <TreeView Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="2" Grid.Row="0" Margin="0,10,0,0">
-                        <TreeViewItem Header="xyz 1">
-                            <TreeViewItem Header="xyz 1.1" />
-                            <TreeViewItem Header="xyz 1.2">
-                                <TreeViewItem Header="xyz 1.2.1" />
-                            </TreeViewItem>
-                        </TreeViewItem>
-                        <TreeViewItem Header="xyz 2" />
-                    </TreeView>
-                    <!--Components -->
-                    <TreeView Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="2" Grid.Row="1">
-                        <TreeViewItem Header="xyz 1">
-                            <TreeViewItem Header="xyz 1.1" />
-                            <TreeViewItem Header="xyz 1.2">
-                                <TreeViewItem Header="xyz 1.2.1" />
-                            </TreeViewItem>
-                        </TreeViewItem>
-                        <TreeViewItem Header="xyz 2" />
-                    </TreeView>
+
+                    <ListBox Grid.Row="1">
+                        <ListBoxItem Content="Sub Item 1" />
+                        <ListBoxItem Content="Sub Item 2" />
+                        <ListBoxItem Content="Sub Item 3" />
+                    </ListBox>
                 </Grid>
             </Grid>
         </Grid>
@@ -116,19 +188,19 @@
                 <RowDefinition Height="180" x:Name="GUIBottom"/>
             </Grid.RowDefinitions>
             <!--Preview Picture-->
-            <Border Grid.Row="0" Margin="5" BorderBrush="{StaticResource ComponentPrimaryColor}" BorderThickness="2">
+            <Border Grid.Row="0" Margin="5">
                 <Image  Source="/images/preview.png" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
             </Border>
 
             <!--GuiBottom-->
             <Grid HorizontalAlignment="Stretch" Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1*" />
-                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
 
-                <Grid Grid.Column="0">
+                <Grid Grid.Column="0" Margin="5">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="20"/>
                         <RowDefinition Height="*"/>
@@ -140,21 +212,10 @@
                             <ColumnDefinition Width="40"/>
                         </Grid.ColumnDefinitions>
 
-                        <TextBox></TextBox>
-
-                        <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="40" Click="btn_TCPTest_Click">
-                            <Image Source="/images/arrow-right.png" Height="30"/>
-                        </Button>
+                        <TextBox BorderThickness="0"/>
+                        <Button Name="btnLog" Content="Log" Style="{StaticResource PrimaryButtonStyle}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="40" Click="generalButtonClick"/>
                     </Grid>
-
-                    <TextBox Name="LogTextBox" 
-                 VerticalScrollBarVisibility="Auto" 
-                 HorizontalScrollBarVisibility="Disabled" 
-                 IsReadOnly="True" 
-                 AcceptsReturn="True" 
-                 VerticalAlignment="Top" 
-                 Grid.Row="1"/>
-                    
+                    <TextBox Name="tbxLog" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" AcceptsReturn="True" VerticalAlignment="Top" Grid.Row="1"/>
                 </Grid>
 
                 <!--Preview Buttons-->
@@ -169,22 +230,22 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"  Margin="10" Click="Button_Click">
+                    <Button Name="btnLeft" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"  Margin="10" Click="generalButtonClick">
                         <Image Source="/images/arrow-left.png" Width="30" Height="30"/>
                     </Button>
-                    <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="10">
+                    <Button Name="btnRight" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
                         <Image Source="/images/arrow-right.png" Width="30" Height="30"/>
                     </Button>
-                    <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="10">
+                    <Button Name="btnUp" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
                         <Image Source="/images/arrow-up.png" Width="30" Height="30"/>
                     </Button>
-                    <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" Margin="10">
+                    <Button Name="btnDown" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" Margin="10" Click="generalButtonClick">
                         <Image Source="/images/arrow-down.png" Width="30" Height="30"/>
                     </Button>
-                    <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Margin="10">
+                    <Button Name="btnRx" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Margin="10" Click="generalButtonClick">
                         <Image Source="/images/arrow-rotate-x.png" Width="30" Height="30"/>
                     </Button>
-                    <Button Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Margin="10">
+                    <Button Name="btnRy" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Margin="10" Click="generalButtonClick">
                         <Image Source="/images/arrow-rotate-y.png" Width="30" Height="30"/>
                     </Button>
                 </Grid>

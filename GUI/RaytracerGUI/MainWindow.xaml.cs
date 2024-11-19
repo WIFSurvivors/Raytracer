@@ -43,7 +43,8 @@ namespace RaytracerGUI
 
             }
         }
-
+        
+        //Menu clicks
         private void clickSave(object sender, RoutedEventArgs e)
         {
            
@@ -63,16 +64,64 @@ namespace RaytracerGUI
             Application.Current.Shutdown(0); 
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
 
+        //Button clicks
+        private void generalButtonClick(object sender, RoutedEventArgs e)
+        {
+            Button clickedButton = sender as Button;
+
+            if (clickedButton != null)
+            {
+                // get variable name
+                string button = clickedButton.Name;
+                // string buttonContent = clickedButton.Content.ToString();
+
+                switch (button)
+                {
+                    case "btnLeft":
+                        tbxLog.AppendText(button + " was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        break;
+
+                    case "btnRight":
+                        tbxLog.AppendText(button + " was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        break;
+
+                    case "btnUp":
+                        tbxLog.AppendText(button + " was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        break;
+
+                    case "btnDown":
+                        tbxLog.AppendText(button + " was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        break;
+
+                    case "btnRx":
+                        tbxLog.AppendText(button + "  was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        break;
+
+                    case "btnRy":
+                        tbxLog.AppendText(button + "  was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        break;
+
+                    case "btnLog":
+                        tbxLog.AppendText($"{DateTime.Now}: Log entry added.\n");
+                        tbxLog.ScrollToEnd();
+                        break;
+                }
+            }
         }
+
         private void btn_TCPTest_Click(object sender, RoutedEventArgs e)
         {
-            LogTextBox.AppendText($"{DateTime.Now}: Log entry added.\n");
+            tbxLog.AppendText($"{DateTime.Now}: Log entry added.\n");
 
             
-            LogTextBox.ScrollToEnd();
+            tbxLog.ScrollToEnd();
         }
     }
 }
