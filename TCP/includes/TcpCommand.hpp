@@ -2,6 +2,9 @@
 #include <map>
 #include <string>
 #include <iostream>
+#include <vector>
+#include <memory>
+#include <cstdint>
 
 struct TcpCommand {
   std::vector<std::string> parameters;
