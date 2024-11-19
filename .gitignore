@@ -4,6 +4,9 @@
 ### VisualStudioCode ###
 .vscode/*
 
+### jetbrains ###
+**/.idea/*
+
 # Local History for Visual Studio Code
 .history/
 
