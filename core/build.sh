@@ -8,7 +8,6 @@ build_ninja() {
 	./RayTracer
 }
 
-
 build_default() {
 	mkdir -p build
 	cmake -S . -B build -G "Unix Makefiles"
