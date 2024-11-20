@@ -13,6 +13,17 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Cache CMake build directories
+      uses: actions/cache@v2
+      with:
+        path: |
+          core/build
+          TCP/build
+          ~/.cmake
+        key: ${{ runner.os }}-cmake-${{ hashFiles('**/CMakeLists.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-cmake-
+
     - name:  Build core
       run: cmake -B core/build -S core && cmake --build core/build
     - name: Build Tcp
