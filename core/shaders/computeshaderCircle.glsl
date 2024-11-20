@@ -94,8 +94,9 @@ vec3 randOnHemisphere(vec3 n) {
 const int css = 3;
 vec4 CalcColor(Sphere s[css], int count, Ray r) {
     int MAXIMAL_BOUNCES = 100;
-    vec3 color = vec3(0.0,0.0,0.0);
-    float global_ref=1.0;
+    vec3 color = vec3(0.0,0.0,0.0);    
+    vec3 reflec_accumulation = vec3(1.0, 1.0, 1.0); //Reflection in percent 100% red 100% green and blue
+
     for (int bounce = 0; bounce <= 10; bounce++) {
         float t = 1.0 / 0.0; // =)
         int index = -1;
@@ -109,22 +110,21 @@ vec4 CalcColor(Sphere s[css], int count, Ray r) {
         }
         
         if (t > 0.0 && index>=0) {
-            global_ref = s[index].reflectivity;
             vec3 sectionPoint = r.origin + t * r.direction;
             vec3 N = normalize(sectionPoint - s[index].C);
             //vec3 dir = randOnHemisphere(N);
             vec3 dir = reflect(r.direction,N);
-
+            sectionPoint = sectionPoint + 0.01 * dir; //Move a little further to prevent intersection with current sphere
+        
             r = Ray(sectionPoint, dir);
-            //color += s[index].color * (1.0-global_ref) * max(dot(N, dir), 0.0); // 1-global_ref because color needs to be darker for the reflection? // test
-            color += s[index].color * (1.0 - global_ref) * max(dot(N, dir), 0.0);
-            global_ref *= s[index].reflectivity; 
-            
+            color += reflec_accumulation * s[index].color * max(dot(N, dir), 0.0); // acc * color. Meaning color will always be displayed at first hit. afterwards we get little color for the further hits because
+            reflec_accumulation*=s[index].reflectivity; //  accumulation is beeing reduced by the reflectivity of the current hit. 
+            if(length(reflec_accumulation) < 0.01) break; // If accumulation reach a certain point there should be no further reflections and the bounces should stop
         } else {
             vec3 N = normalize(r.direction);
             float a = 0.5 * (N.y + 1.0);
             vec3 res = (1.0 - a) * vec3(0.0, 0.0, 0.0) + a * vec3(0.5, 0.7, 1.0);
-            color += res*global_ref;
+            color += vec3(0.0,0.0,0.0) * reflec_accumulation;
             break; // missed
         }
     }
@@ -143,9 +143,9 @@ vec4 rayColor(Ray r) {
     vec4 c2 = vec4(4.0, 0.0, -1.0, 1.0);
     vec4 c3 = vec4(0.0, -10.0, 0.0, 1.0);
 
-    Sphere s1 = Sphere(3.9, c1.xyz, vec3(0.0, 1.0, 0.0), 0.0);
+    Sphere s1 = Sphere(3.9, c1.xyz, vec3(0.0, 1.0, 0.0), 1.0);
     Sphere s2 = Sphere(3.9, c2.xyz, vec3(0.5, 0.0, 0.5), 0.0);
-    Sphere s3 = Sphere(5.0, c3.xyz, vec3(0.0, 0.0, 0.0), 0.0);
+    Sphere s3 = Sphere(5.0, c3.xyz, vec3(0.1, 0.0, 0.0), 0.5);
 
     Sphere s[3];
     s[0] = s1;
