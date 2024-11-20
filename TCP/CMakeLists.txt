@@ -38,3 +38,27 @@ endif()
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET tcp-test PROPERTY CXX_STANDARD 20)
 endif()
+# --- Adding Google Test ---
+
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG v1.13.0
+)
+FetchContent_MakeAvailable(googletest)
+
+enable_testing()
+
+add_executable(test_tcp
+  tests/test_tcp.cpp
+)
+
+target_link_libraries(test_tcp
+  PRIVATE
+  gtest
+  gtest_main
+  Boost::asio
+  Boost::thread
+)
+
+add_test(NAME TCPTest COMMAND test_tcp)
