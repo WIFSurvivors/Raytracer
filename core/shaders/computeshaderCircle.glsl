@@ -17,6 +17,8 @@ struct Sphere {
     vec3 C;
     vec3 color;
     float reflectivity; //maybe [0,1] 0 not reflective 1 absolute reflective
+    // float refraction; ??
+    // float emissive;?
 };
 
 struct Ray {
@@ -154,9 +156,14 @@ vec4 CalcColorWithLightSources(Sphere s[hittableCount], Ray r, Light emitter[emi
               bool isShadow = isInShadow(s,Ray(sectionPoint, shadowRay), index, distanceToLight);
               // If no intersections, apply direct lighting (diffuse lighting)
               if (!isShadow) {
+                  vec3 reflecDirection = reflect(r.direction,N);
+                  sectionPoint = sectionPoint + 0.01 * reflecDirection;
+                  r = Ray(sectionPoint, reflecDirection);
                   float diffuse = max(dot(N, shadowRay), 0.0);  // Lambertian diffuse shading
-                  vec3 lighting = light.color * light.intensity * diffuse * attenuation;
+                  vec3 lighting = reflec_accumulation * light.color * s[index].color * light.intensity  * diffuse * attenuation;
+                  reflec_accumulation *= s[index].reflectivity;
                   color += lighting;
+                  if (length(reflec_accumulation) < 0.01) break; // If accumulation reach a certain point there should be no further reflections and the bounces should stop
               }
             }
 
@@ -217,8 +224,8 @@ vec4 rayColor(Ray r) {
     vec4 c3 = vec4(0.0, -10.0, 0.0, 1.0);
 
     Sphere s1 = Sphere(3.9, c1.xyz, vec3(0.0, 1.0, 0.0), 1.0);
-    Sphere s2 = Sphere(3.9, c2.xyz, vec3(0.5, 0.0, 0.5), 0.0);
-    Sphere s3 = Sphere(5.0, c3.xyz, vec3(0.1, 0.0, 0.0), 0.5);
+    Sphere s2 = Sphere(3.9, c2.xyz, vec3(0.5, 0.0, 0.5), 0.2);
+    Sphere s3 = Sphere(5.0, c3.xyz, vec3(1.0, 1.0, 1.0), 0.5);
 
     Sphere s[3];
     s[0] = s1;
@@ -228,7 +235,7 @@ vec4 rayColor(Ray r) {
     float temp = -1.0;
     
     Light[1] lightSources;
-    lightSources[0] = Light(vec3(0.0,10.0,0.0),vec3(0.0,0.0,0.0), vec3(0.4,0.0,0.9),1.0);
+    lightSources[0] = Light(vec3(0.0,10.0,10.0),vec3(0.0,0.0,0.0), vec3(1.0,1.0,1.0),100.0);
     //return CalcColor(s, r);
     return CalcColorWithLightSources(s,r,lightSources);
     //t = intersectsSphere(s1, r); //
@@ -350,6 +357,6 @@ void main() {
 
     //vec3 rayDirection = normalize(rayPixel.xyz - rayOrigin);
     Ray r = Ray(rayOrigin, rayDirWorld);
-    imageStore(textureOutput, pixelCoords, vec4(rayDirWorld, 1.0));
+    //imageStore(textureOutput, pixelCoords, vec4(rayDirWorld, 1.0));
     imageStore(textureOutput, pixelCoords, rayColor(r));
 }
