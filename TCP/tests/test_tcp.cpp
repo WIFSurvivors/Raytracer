@@ -7,5 +7,5 @@ TEST(TCPTest, DummyTest) {
 
 TEST(TCPTest, DummyTest2) {
     
-    ASSERT_EQ(1 + 1, 3);  
+    ASSERT_EQ(1 + 1, 2);  
 }
