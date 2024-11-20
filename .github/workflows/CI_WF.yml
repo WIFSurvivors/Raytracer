@@ -4,11 +4,11 @@
 # You can adjust the behavior by modifying this file.
 # For more information, see:
 # https://github.com/github/super-linter
-name: Lint Code Base
+name: CI Workflow
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "CI_test" ]
   pull_request:
     branches: [ "main" ]
 jobs:
@@ -57,3 +57,37 @@ jobs:
 
       - name: Run dotnet format with no restore
         run: dotnet format GUI/RaytracerGUI/RaytracerGUI.sln --verbosity detailed --no-restore
+  
+  build-and-test:
+    name: Build and Test
+    runs-on: windows-latest
+    needs: run-lint  
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Cache CMake build directories
+        uses: actions/cache@v4
+        with:
+          path: |
+            core/build
+            TCP/build
+            ~/.cmake
+          key: ${{ runner.os }}-cmake-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-cmake-
+
+      - name: Build Core
+        run: cmake -B core/build -S core -G "Unix Makefiles" && cmake --build core/build
+
+      - name: Build TCP
+        run: cmake -B TCP/build -S TCP -G "Unix Makefiles" && cmake --build TCP/build
+
+      - name: Build GUI
+        run: dotnet build GUI/RayTracerGUI/
+
+      - name: Run Tests for TCP
+        working-directory: TCP/build
+        run: |
+          ctest --output-on-failure
