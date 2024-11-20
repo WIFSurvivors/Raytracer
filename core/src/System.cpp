@@ -3,8 +3,12 @@
 // #include "includes/utility/NotImplementedError.hpp"
 #include "includes/utility/NotSupportedError.hpp"
 
-std::weak_ptr<Component> System::create_component(int64_t uuid) {
+Component *System::create_component(int64_t uuid, std::shared_ptr<Entity> e) {
   throw NotSupportedError{};
+}
+
+std::shared_ptr<Entity> System::create_entity(int64_t uuid) {
+  return create_entity("Unnamed", uuid);
 }
 std::shared_ptr<Entity> System::create_entity(const std::string &name,
                                               int64_t uuid) {

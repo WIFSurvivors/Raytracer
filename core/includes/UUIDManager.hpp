@@ -1,15 +1,21 @@
 #pragma once
 
 #include "includes/System.hpp"
+#include "boost/uuid/uuid.hpp"
+#include "boost/uuid/uuid_generators.hpp"
 #include <map>
 
-struct UUIDManager {
-  int64_t getNewUUID();
-  int64_t getNewUUID(System *s);
+typedef boost::uuids::uuid uuid;
 
-  System *get_system(int64_t uuid);
+struct UUIDManager {
+  uuid getNewUUID();
+  uuid getNewUUID(System *s);
+
+  System *get_system(uuid id);
+
+  void print();
 
 private:
-  int _uuid_counter{1};
-  std::map<int, System *> _uuid_system_mapping{};
+  boost::uuids::random_generator gen{};
+  std::map<uuid, System *> _uuid_system_mapping{};
 };
