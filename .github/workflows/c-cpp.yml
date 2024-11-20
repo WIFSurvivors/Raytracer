@@ -17,3 +17,5 @@ jobs:
       run: cmake -B core/build -S core && cmake --build core/build
     - name: Build Tcp
       run: cmake -B TCP/build -S TCP && cmake --build TCP/build
+    - name: Build GUI
+      run: dotnet build GUI/RayTracerGUI/
