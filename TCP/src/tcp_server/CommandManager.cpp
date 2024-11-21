@@ -21,7 +21,7 @@ std::string CommandManager::execute_command(std::string command) {
   std::unique_ptr<TcpCommand> tcp_command =
       _factory.create_command(*parsed_command);
   if (tcp_command) {
-    int return_value = _executer.execute(*tcp_command);
+    int return_value = _executer.execute(std::move(tcp_command));
     if(return_value == 0){
       push(std::move(tcp_command));
     }
