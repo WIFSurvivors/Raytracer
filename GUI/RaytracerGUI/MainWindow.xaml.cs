@@ -25,43 +25,43 @@ namespace RaytracerGUI
             this.Background = (Brush)Application.Current.Resources["WindowBackgroundColor"];
         }
 
-        private void clickOpen(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog
-            {
-                Filter = "OBJ and MTL Files (*.obj;*.mtl)|*.obj;*.mtl",
-                Title = "Select a .obj or .mtl file"
-            };
-
-
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                string filePath = openFileDialog.FileName;
-
-                // use filePath in TCP paket
-
-            }
-        }
-        
         //Menu clicks
-        private void clickSave(object sender, RoutedEventArgs e)
+        private void generalMenuClick(object sender, RoutedEventArgs e)
         {
-           
-        }
+            MenuItem clickedMenuItem = sender as MenuItem;
 
-        private void clickImportScene(object sender, RoutedEventArgs e)
-        {
+            if (clickedMenuItem != null)
+            {
+                // get variable name
+                string item = clickedMenuItem.Name;
 
-        }
-        private void clickExportScene(object sender, RoutedEventArgs e)
-        {
+                switch (item)
+                {
+                    case "mniOpen":
+                        tbxLog.AppendText(item + " was clicked! \n");
+                        tbxLog.ScrollToEnd();
 
-        }
+                        OpenFileDialog openFileDialog = new OpenFileDialog
+                        {
+                            Filter = "OBJ and MTL Files (*.obj;*.mtl)|*.obj;*.mtl",
+                            Title = "Select a .obj or .mtl file"
+                        };
 
-        private void clickExit(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown(0); 
+                        if (openFileDialog.ShowDialog() == true)
+                        {
+                            string filePath = openFileDialog.FileName;
+                        }
+                        break;
+
+                    case "mniExit":
+                        tbxLog.AppendText(item + " was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        Application.Current.Shutdown(0);
+                        break;
+
+                   
+                }
+            }
         }
 
 
@@ -74,7 +74,6 @@ namespace RaytracerGUI
             {
                 // get variable name
                 string button = clickedButton.Name;
-                // string buttonContent = clickedButton.Content.ToString();
 
                 switch (button)
                 {
@@ -114,14 +113,6 @@ namespace RaytracerGUI
                         break;
                 }
             }
-        }
-
-        private void btn_TCPTest_Click(object sender, RoutedEventArgs e)
-        {
-            tbxLog.AppendText($"{DateTime.Now}: Log entry added.\n");
-
-            
-            tbxLog.ScrollToEnd();
         }
     }
 }

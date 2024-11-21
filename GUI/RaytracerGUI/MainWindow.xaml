@@ -36,18 +36,18 @@
             <Grid VerticalAlignment="Center" Grid.Row="0">
                 <Menu VerticalAlignment="Top">
                 <MenuItem Header="File" Width="170">
-                        <MenuItem Header="Open" Click="clickOpen"/>
-                        <MenuItem Header="Save" Click="clickSave"/>
-                        <MenuItem Header="Import Scene" Click="clickImportScene"/>
-                        <MenuItem Header="Export Scene" Click="clickExportScene" />
-                        <MenuItem Header="Exit" Click="clickExit" />
+                        <MenuItem Name="mniOpen" Header="Open" Click="generalMenuClick"/>
+                        <MenuItem Name="mniSave" Header="Save" Click="generalMenuClick"/>
+                        <MenuItem Name="mniImport" Header="Import Scene" Click="generalMenuClick"/>
+                        <MenuItem Name="mniExport" Header="Export Scene" Click="generalMenuClick" />
+                        <MenuItem Name="mniExit" Header="Exit" Click="generalMenuClick" />
                     </MenuItem>
                     <MenuItem Header="View" Width="169">
-                        <MenuItem Header="Reset" />
+                        <MenuItem Name="mniReset" Header="Reset" Click="generalMenuClick" />
                     </MenuItem>
                     <MenuItem Header="Settings" Width="169">
-                        <MenuItem Header="Preferences" />
-                        <MenuItem Header="About" />
+                        <MenuItem  Name="mniPreferences" Header="Preferences" Click="generalMenuClick" />
+                        <MenuItem Name="mniAbout" Header="About" Click="generalMenuClick" />
                     </MenuItem>
                 </Menu>
             </Grid>

@@ -118,7 +118,7 @@
         <Setter Property="FontFamily" Value="pack://application:,,,/RaytracerGUI;component/fonts/#Lucida Console"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Background" Value="{StaticResource ComponentPrimaryColor}"/>
+        <Setter Property="Background" Value="{StaticResource ComponentBackgroundColor}"/>
         <Setter Property="Width" Value="100"/>
         <Setter Property="Height" Value="45"/>
         <Setter Property="Template">
@@ -133,7 +133,8 @@
         <Style.Triggers>
             <!-- Hover color for Buttons -->
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Background" Value="{StaticResource ComponentBackgroundColor}"/>
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="{StaticResource ComponentPrimaryColor}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
