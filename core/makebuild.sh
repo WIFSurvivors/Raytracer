@@ -5,8 +5,8 @@ BUILD_DIR="$SCRIPT_DIR/build"
 
 compile(){
   echo "Compiling binaries"
-  mkdir -p $BUILD_DIR
-  cd $BUILD_DIR || exit
+  mkdir -p "$BUILD_DIR"
+  cd "$BUILD_DIR" || exit
   cmake ..
   make
   echo "Compilation finished"
