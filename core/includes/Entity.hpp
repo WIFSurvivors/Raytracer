@@ -23,8 +23,8 @@ struct Entity : public std::enable_shared_from_this<Entity> {
   std::optional<Component *> get_component(uuid id);
 
   void add_component(Component *c);
-  void remove_component(Component *c);
-  void remove_component(uuid id);
+  bool remove_component(Component *c);
+  bool remove_component(uuid id);
 
   void add_child_entity(std::shared_ptr<Entity> e);
   std::vector<std::shared_ptr<Entity>> &get_child_entities();

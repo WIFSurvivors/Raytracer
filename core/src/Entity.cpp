@@ -1,29 +1,29 @@
 #include "includes/Entity.hpp"
+#include "boost/uuid/uuid_io.hpp"
 #include <iostream>
 #include <memory>
 #include <string>
 #include <optional>
 
-Entity::Entity() : _name{"root"}, _uuid{-123} {}
-Entity::Entity(std::string name, int64_t uuid) : _name{name}, _uuid{uuid} {}
-Entity::Entity(std::string name, int64_t uuid, std::shared_ptr<Entity> parent)
-    : _name{name}, _uuid{uuid}, _parent{parent} {}
+Entity::Entity() : _name{"root"}, _uuid{} {} // i dislike the empty uuid :/
+Entity::Entity(std::string name, uuid id) : _name{name}, _uuid{id} {}
+Entity::Entity(std::string name, uuid id, std::shared_ptr<Entity> parent)
+    : _name{name}, _uuid{id}, _parent{parent} {}
 
-std::shared_ptr<Entity> Entity::create(std::string name, int64_t uuid) {
-  return std::make_shared<Entity>(name, uuid);
+std::shared_ptr<Entity> Entity::create(std::string name, uuid id) {
+  return std::make_shared<Entity>(name, id);
 }
 
-std::shared_ptr<Entity> Entity::create(std::string name, int64_t uuid,
+std::shared_ptr<Entity> Entity::create(std::string name, uuid id,
                                        std::shared_ptr<Entity> parent) {
-  auto e = std::make_shared<Entity>(name, uuid);
+  auto e = std::make_shared<Entity>(name, id);
   parent->add_child_entity(e->get_ptr());
   return e;
 }
 
-std::optional<Component *> Entity::get_component(int64_t uuid) {
-  auto it =
-      std::find_if(_components.begin(), _components.end(),
-                   [uuid](Component *c) { return c->get_uuid() == uuid; });
+std::optional<Component *> Entity::get_component(uuid id) {
+  auto it = std::find_if(_components.begin(), _components.end(),
+                         [id](Component *c) { return c->get_uuid() == id; });
 
   if (it == _components.end())
     return std::nullopt; // same as "return {};"
@@ -36,20 +36,23 @@ void Entity::add_component(Component *c) {
   _components.push_back(c);
 }
 
-void Entity::remove_component(Component *c) {
+bool Entity::remove_component(Component *c) {
   auto it = std::find(_components.begin(), _components.end(), c);
-  if (it != _components.end())
+  if (it != _components.end()) {
     _components.erase(it);
-  // add boolean return type
+    return true;
+  }
+  return false;
 }
 
-void Entity::remove_component(int64_t uuid) {
-  auto it =
-      std::find_if(_components.begin(), _components.end(),
-                   [uuid](Component *c) { return c->get_uuid() == uuid; });
-  if (it != _components.end())
+bool Entity::remove_component(uuid id) {
+  auto it = std::find_if(_components.begin(), _components.end(),
+                         [id](Component *c) { return c->get_uuid() == id; });
+  if (it != _components.end()) {
     _components.erase(it);
-  // add boolean return type
+    return true;
+  }
+  return false;
 }
 
 void Entity::add_child_entity(std::shared_ptr<Entity> e) {
