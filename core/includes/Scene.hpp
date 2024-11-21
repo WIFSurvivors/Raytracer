@@ -1,17 +1,21 @@
 #pragma once
 
+#include "includes/Engine.hpp"
 #include "includes/System.hpp"
 #include "includes/SimpleSystem.hpp"
 #include "includes/EntitySystem.hpp"
+#include "includes/WindowManager.hpp"
+#include "includes/RenderSystem.hpp"
 #include "boost/uuid/uuid.hpp"
 #include <memory>
 #include <string>
 
 typedef boost::uuids::uuid uuid;
 struct Entity;
+class Engine;
 
 struct Scene {
-  Scene();
+  Scene(Engine &e);
 
   std::weak_ptr<Entity> get_root();
 
@@ -23,6 +27,8 @@ struct Scene {
                                         std::shared_ptr<Entity> parent);
 
   void print();
+
+  void generate_sample_content();
 
 private:
   std::shared_ptr<Entity> _root{};

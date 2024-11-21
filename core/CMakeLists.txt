@@ -9,9 +9,11 @@ set(CMAKE_CXX_CPPLINT "cpplint;--filter=-legal,-build/include_order,-build/inclu
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-
 set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}")
 set(CORE_INCLUDE_DIR "${CMAKE_SOURCE_DIR}")
+
+set(BOOST_INCLUDE_LIBRARIES uuid)
+set(BOOST_ENABLE_CMAKE ON)
 
 FetchContent_Declare(
   glad
@@ -36,33 +38,16 @@ FetchContent_Declare(
   GIT_PROGRESS    TRUE
 )
 
-
-# Fetch Boost.Core (dependency for Boost.UUID)
 FetchContent_Declare(
-    boost-core
-    GIT_REPOSITORY https://github.com/boostorg/core.git
-    GIT_TAG boost-1.82.0
+  boost
+  GIT_REPOSITORY https://github.com/boostorg/boost.git
+  GIT_PROGRESS TRUE
+  GIT_TAG boost-1.86.0
 )
-FetchContent_MakeAvailable(boost-core)
-
-# Fetch Boost.Swap (dependency for Boost.UUID)
-#FetchContent_Declare(
-#    boost-swap
-#    GIT_REPOSITORY https://github.com/boostorg/swap.git
-#    GIT_TAG boost-1.82.0
-#)
-#FetchContent_MakeAvailable(boost-swap)
-
-FetchContent_Declare(
-    boost-uuid
-    GIT_REPOSITORY https://github.com/boostorg/uuid.git
-    GIT_TAG boost-1.82.0 # Replace with the desired Boost version tag
-)
-FetchContent_MakeAvailable(boost-uuid)
 
 # find_package(OpenGL REQUIRED)
 
-FetchContent_MakeAvailable(glad glfw glm boost-core boost-uuid)
+FetchContent_MakeAvailable(glad glfw glm boost)
 set(GLAD_INCLUDE_DIRS "${glad_SOURCE_DIR}/include")
 #set(GLAD_SOURCES "${glad_BINARY_DIR}/src/glad.c")
 set(GLFW_INCLUDE_DIRS "${glfw_SOURCE_DIR}/include")
@@ -79,9 +64,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
   ${CORE_INCLUDE_DIR}   
   ${GLFW_INCLUDE_DIRS}
   ${GLM_INCLUDE_DIRS}
+  ${BoostUUID_SOURCE_DIR}/include
 )
 #glad_add_library(glad STATIC API gl:core=4.6 LOCATION ${PROJECT_SOURCE_DIR}/vendor/glad-build/${TARGET}) ???
 #include_directories(${INSTALL_INCLUDE_DIR})
 #target_include_directories(${PROJECT_NAME} PUBLIC ${GLAD_INCLUDE_DIRS} ${CORE_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw glm::glm boost)
+target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw glm::glm Boost::uuid)
 

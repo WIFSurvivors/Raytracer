@@ -1,7 +1,7 @@
 #pragma once
 
-#include <memory>
 #include "boost/uuid/uuid.hpp"
+#include <memory>
 typedef boost::uuids::uuid uuid;
 
 struct Entity; // forward declaration due to child-parent structure

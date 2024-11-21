@@ -1,13 +1,16 @@
 #include "includes/RenderSystem.hpp"
 #include "includes/RenderComponent.hpp"
 
-#include "includes/SceneManager.hpp"
+#include "includes/Engine.hpp"
 
 int main() {
-  SceneManager sm{};
-  sm.load();
-  sm.run();
-  sm.unload();
+  Engine engine{};
+  engine.startLoop();
+
+  //   SceneManager sm{};
+  //   sm.load();
+  //   sm.run();
+  //   sm.unload();
 
   /*
   core::RenderSystem rs;

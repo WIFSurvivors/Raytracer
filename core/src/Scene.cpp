@@ -1,6 +1,9 @@
 #include "includes/Scene.hpp"
 
-Scene::Scene() : _root{std::make_shared<Entity>()} {}
+Scene::Scene(Engine &e)
+    : _uuid_manager{e.get_uuid_manager()},
+      _root{std::make_shared<Entity>(
+          "root", _uuid_manager->getNewUUID(&entity_system))} {}
 
 std::weak_ptr<Entity> Scene::get_root() { return _root; }
 
@@ -23,3 +26,5 @@ std::shared_ptr<Entity> Scene::create_entity(std::string name, uuid uuid,
 }
 
 void Scene::print() { _root->print(); }
+
+void Scene::generate_sample_content() {}
