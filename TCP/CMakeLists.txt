@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #clangd req.
  
 set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}")
-set(INSTALL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}/includes")
+set(INSTALL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}")
 
 include(FetchContent)
 FetchContent_Declare(
@@ -17,24 +17,46 @@ FetchContent_Declare(
   GIT_TAG boost-1.82.0
 )
 FetchContent_MakeAvailable(Boost)
-
-
-# Add source to this project's executable.
-add_executable (tcp-test "main.cpp")
-
+file(GLOB_RECURSE TCP_SERVER_SOURCES "src/tcp_server/*.cpp")
+add_executable (tcp-test ${TCP_SERVER_SOURCES})
+target_include_directories(tcp-test PRIVATE ${CMAKE_SOURCE_DIR})
 
 target_link_libraries(tcp-test
   PRIVATE 
   Boost::asio
   # Boost::filesystem
-  Boost::thread
+  #Boost::thread
   # Boost::program_options
 )
 
 if (WIN32)
-  target_link_libraries(tcp-test PRIVATE ws2_32)
+  target_link_libraries(tcp-test PRIVATE ws2_32 mswsock)
 endif()
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET tcp-test PROPERTY CXX_STANDARD 20)
 endif()
+# --- Adding Google Test ---
+
+FetchContent_Declare(
+  googletest
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG v1.13.0
+)
+FetchContent_MakeAvailable(googletest)
+
+enable_testing()
+
+add_executable(test_tcp
+  tests/test_tcp.cpp
+)
+
+target_link_libraries(test_tcp
+  PRIVATE
+  gtest
+  gtest_main
+  Boost::asio
+  Boost::thread
+)
+
+add_test(NAME TCPTest COMMAND test_tcp)
