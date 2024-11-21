@@ -4,6 +4,9 @@
 ### VisualStudioCode ###
 .vscode/*
 
+### jetbrains ###
+**/.idea/*
+
 # Local History for Visual Studio Code
 .history/
 
@@ -21,8 +24,8 @@
 **/build-debug/*
 
 # GUI binary & .vs
-*/RaytracerGUI/bin/*
-*/RaytracerGUI/obj/*
+**/bin/*
+**/obj/*
 */RaytracerGUI/.vs/*
 
 # TCP 
