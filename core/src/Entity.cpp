@@ -1,5 +1,6 @@
 #include "includes/Entity.hpp"
 #include "boost/uuid/uuid_io.hpp"
+#include "includes/utility/NotImplementedError.hpp"
 #include <iostream>
 #include <memory>
 #include <string>
@@ -62,6 +63,11 @@ void Entity::add_child_entity(std::shared_ptr<Entity> e) {
 std::vector<std::shared_ptr<Entity>> &Entity::get_child_entities() {
   return _child_entities;
 }
+
+bool Entity::remove_child_entity(std::shared_ptr<Entity> e) {
+  throw NotImplementedError{};
+}
+
 std::weak_ptr<Entity> Entity::get_parent_entity() { return _parent; }
 
 const std::string &Entity::get_name() { return _name; }
