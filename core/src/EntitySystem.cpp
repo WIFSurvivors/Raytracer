@@ -9,7 +9,7 @@ std::shared_ptr<Entity> EntitySystem::create_entity(const std::string &name,
 }
 
 std::shared_ptr<Entity>
-EntitySystem::create_entity(std::string name, uuid id,
+EntitySystem::create_entity(const std::string &name, uuid id,
                             std::shared_ptr<Entity> parent) {
   auto e = Entity::create(name, id, parent);
   _entities[id] = e;

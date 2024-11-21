@@ -32,9 +32,13 @@ struct Entity : public std::enable_shared_from_this<Entity> {
 
   std::weak_ptr<Entity> get_parent_entity();
 
-  glm::vec3 position{};
-  glm::vec3 rotation{};
-  glm::vec3 scale{1.f, 1.f, 1.f};
+  glm::vec3 _position{};
+  glm::vec3 _rotation{};
+  glm::vec3 _scale{1.f, 1.f, 1.f};
+
+  glm::vec3 get_local_position();
+  glm::vec3 get_local_rotation();
+  glm::vec3 get_local_scale();
 
   inline uuid get_uuid() { return _uuid; }
   void print();
