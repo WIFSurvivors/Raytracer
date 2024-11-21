@@ -8,7 +8,7 @@
 
 struct TcpCommand {
   std::vector<std::string> parameters;
-  TcpCommand(int64_t uuid) : _uuid(uuid) {}
+  explicit TcpCommand(int64_t uuid) : _uuid(uuid) {}
   virtual ~TcpCommand() = default;
   virtual int execute() = 0;
   virtual int undo() = 0;

@@ -14,4 +14,4 @@ private:
     int _new_x;
     int _new_y;
     int _new_z;
-};;
+};

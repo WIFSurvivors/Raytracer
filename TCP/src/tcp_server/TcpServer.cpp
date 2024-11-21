@@ -63,7 +63,7 @@ int main() {
         boost::asio::io_context io_context;
         auto server = std::make_shared<TcpServer>(io_context, 51234);
         server->start();
-        std::this_thread::sleep_for(std::chrono::seconds(10));
+        std::this_thread::sleep_for(std::chrono::seconds(1000));
         server->stop();
     } catch (std::exception& e) {
         std::cerr << "Exception: " << e.what() << std::endl;
