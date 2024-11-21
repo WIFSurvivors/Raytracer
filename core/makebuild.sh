@@ -1,3 +1,4 @@
+#! /bin/bash
 SCRIPT_DIR=$(dirname "$(realpath "$0")")
 BUILD_DIR="$SCRIPT_DIR/build"
 
@@ -21,7 +22,7 @@ elif [[ "$1" == "--cleancompile" ]]; then
   if [ -d "$BUILD_DIR" ]; then
     rm -rf "$BUILD_DIR" || exit
     echo "Removed existing build directory"
-  fi 
+  fi
   compile
   exit
 elif [[ "$1" == "--clean" ]]; then
