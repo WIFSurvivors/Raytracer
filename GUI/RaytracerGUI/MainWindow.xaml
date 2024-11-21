@@ -5,57 +5,251 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RaytracerGUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1280">
+        Title="MainWindow" 
+        Height="720" Width="1280"
+        MinHeight="720" MinWidth="1280" >
+
+    <Window.Resources>
+        <!-- Slide Out Animation -->
+        <Storyboard x:Key="SlideOut">
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                         To="200" Duration="0:0:0.3" />
+        </Storyboard>
+
+        <!-- Slide In Animation -->
+        <Storyboard x:Key="SlideIn">
+            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
+                         To="0" Duration="0:0:0.3" />
+        </Storyboard>
+    </Window.Resources>
     <Grid>
-        <Grid Width="450" HorizontalAlignment="Left">
-            <Menu Background="{StaticResource WindowPrimaryColor}" Foreground="White" VerticalAlignment="Top" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="3"  Margin="10,10,-61,0">
-                <MenuItem Header="File" Width="165">
-                    <MenuItem Header="Open" Click="clickOpen"/>
-                    <MenuItem Header="Save" Click="clickSave"/>
-                    <MenuItem Header="Exit" Click="clickExit" />
-                </MenuItem>
-                <MenuItem Header="View" Width="165">
-                    <MenuItem Header="Reset" />
-                </MenuItem>
-                <MenuItem Header="Settings" Width="165">
-                    <MenuItem Header="Preferences" />
-                    <MenuItem Header="About" />
-                </MenuItem>
-            </Menu>
-            <Border BorderBrush="{StaticResource ComponentPrimaryColor}" BorderThickness="5" CornerRadius="5" Padding="5" Margin="619,50,-789,271">
-                <Image Source="/images/preview.png" Margin="0,0,0,0" />
-            </Border>
-            <TreeView Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="5" Margin="10,50,225,24">
-                <TreeViewItem Header="xyz 1">
-                    <TreeViewItem Header="xyz 1.1" />
-                    <TreeViewItem Header="xyz 1.2">
-                        <TreeViewItem Header="xyz 1.2.1" />
-                    </TreeViewItem>
-                </TreeViewItem>
-                <TreeViewItem Header="xyz 2" />
-            </TreeView>
-            <ListBox Background="{StaticResource ComponentBackgroundColor}" BorderBrush="{StaticResource WindowPrimaryColor}" BorderThickness="5" Margin="274,50,-61,24">
-                
-            </ListBox>
-                
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="512"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+       
+        <Grid Width="512" HorizontalAlignment="Left" Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid VerticalAlignment="Center" Grid.Row="0">
+                <Menu VerticalAlignment="Top">
+                <MenuItem Header="File" Width="170">
+                        <MenuItem Name="mniOpen" Header="Open" Click="generalMenuClick"/>
+                        <MenuItem Name="mniSave" Header="Save" Click="generalMenuClick"/>
+                        <MenuItem Name="mniImport" Header="Import Scene" Click="generalMenuClick"/>
+                        <MenuItem Name="mniExport" Header="Export Scene" Click="generalMenuClick" />
+                        <MenuItem Name="mniExit" Header="Exit" Click="generalMenuClick" />
+                    </MenuItem>
+                    <MenuItem Header="View" Width="169">
+                        <MenuItem Name="mniReset" Header="Reset" Click="generalMenuClick" />
+                    </MenuItem>
+                    <MenuItem Header="Settings" Width="169">
+                        <MenuItem  Name="mniPreferences" Header="Preferences" Click="generalMenuClick" />
+                        <MenuItem Name="mniAbout" Header="About" Click="generalMenuClick" />
+                    </MenuItem>
+                </Menu>
+            </Grid>
+            <!--Everything below Menu -->
+            <Grid VerticalAlignment="Stretch" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" MinHeight="256" MaxHeight="512"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <TreeView Grid.Row="0">
+                        <TreeViewItem Header="xyz 1">
+                            <TreeViewItem Header="xyz 1.1">
+                                <TreeViewItem Header="xyz 1.1.1">
+                                    <TreeViewItem Header="xyz 1.1.1.1" />
+                                    <TreeViewItem Header="xyz 1.1.1.2" />
+                                    <TreeViewItem Header="xyz 1.1.1.3" />
+                                </TreeViewItem>
+                                <TreeViewItem Header="xyz 1.1.2" />
+                                <TreeViewItem Header="xyz 1.1.3" />
+                                <TreeViewItem Header="xyz 1.1.4" />
+                                <TreeViewItem Header="xyz 1.1.5" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 1.2">
+                                <TreeViewItem Header="xyz 1.2.1">
+                                    <TreeViewItem Header="xyz 1.2.1.1">
+                                        <TreeViewItem Header="xyz 1.2.1.1.1" />
+                                        <TreeViewItem Header="xyz 1.2.1.1.2" />
+                                    </TreeViewItem>
+                                    <TreeViewItem Header="xyz 1.2.1.2" />
+                                    <TreeViewItem Header="xyz 1.2.1.3" />
+                                </TreeViewItem>
+                                <TreeViewItem Header="xyz 1.2.2">
+                                    <TreeViewItem Header="xyz 1.2.2.1" />
+                                    <TreeViewItem Header="xyz 1.2.2.2" />
+                                </TreeViewItem>
+                                <TreeViewItem Header="xyz 1.2.3" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 1.3">
+                                <TreeViewItem Header="xyz 1.3.1" />
+                                <TreeViewItem Header="xyz 1.3.2" />
+                                <TreeViewItem Header="xyz 1.3.3" />
+                                <TreeViewItem Header="xyz 1.3.4" />
+                                <TreeViewItem Header="xyz 1.3.5" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 1.4">
+                                <TreeViewItem Header="xyz 1.4.1" />
+                                <TreeViewItem Header="xyz 1.4.2" />
+                            </TreeViewItem>
+                        </TreeViewItem>
+
+                        <TreeViewItem Header="xyz 2">
+                            <TreeViewItem Header="xyz 2.1">
+                                <TreeViewItem Header="xyz 2.1.1" />
+                                <TreeViewItem Header="xyz 2.1.2" />
+                                <TreeViewItem Header="xyz 2.1.3" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 2.2">
+                                <TreeViewItem Header="xyz 2.2.1">
+                                    <TreeViewItem Header="xyz 2.2.1.1" />
+                                </TreeViewItem>
+                                <TreeViewItem Header="xyz 2.2.2" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 2.3">
+                                <TreeViewItem Header="xyz 2.3.1" />
+                                <TreeViewItem Header="xyz 2.3.2" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 2.4">
+                                <TreeViewItem Header="xyz 2.4.1" />
+                            </TreeViewItem>
+                        </TreeViewItem>
+
+                        <TreeViewItem Header="xyz 3">
+                            <TreeViewItem Header="xyz 3.1">
+                                <TreeViewItem Header="xyz 3.1.1" />
+                                <TreeViewItem Header="xyz 3.1.2" />
+                                <TreeViewItem Header="xyz 3.1.3" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 3.2">
+                                <TreeViewItem Header="xyz 3.2.1">
+                                    <TreeViewItem Header="xyz 3.2.1.1" />
+                                    <TreeViewItem Header="xyz 3.2.1.2" />
+                                </TreeViewItem>
+                                <TreeViewItem Header="xyz 3.2.2" />
+                                <TreeViewItem Header="xyz 3.2.3" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 3.3">
+                                <TreeViewItem Header="xyz 3.3.1" />
+                                <TreeViewItem Header="xyz 3.3.2" />
+                            </TreeViewItem>
+                            <TreeViewItem Header="xyz 3.4">
+                                <TreeViewItem Header="xyz 3.4.1" />
+                            </TreeViewItem>
+                        </TreeViewItem>
+                    </TreeView>
+
+                    <TreeView Grid.Row="1">
+                        <TreeViewItem Header="xyz 1">
+                            <TreeViewItem Header="xyz 1.1" />
+                            <TreeViewItem Header="xyz 1.2">
+                                <TreeViewItem Header="xyz 1.2.1" />
+                            </TreeViewItem>
+                        </TreeViewItem>
+                        <TreeViewItem Header="xyz 2" />
+                    </TreeView>
+                </Grid>
+
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" MinHeight="256" MaxHeight="512"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <ListBox Grid.Row="0">
+                        <ListBoxItem Content="Test Item 1" />
+                        <ListBoxItem Content="Test Item 2" />
+                        <ListBoxItem Content="Test Item 3" />
+                    </ListBox>
+
+                    <ListBox Grid.Row="1">
+                        <ListBoxItem Content="Sub Item 1" />
+                        <ListBoxItem Content="Sub Item 2" />
+                        <ListBoxItem Content="Sub Item 3" />
+                    </ListBox>
+                </Grid>
+            </Grid>
         </Grid>
-        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="600,350,50,30">
-            <Image Source="/images/arrow-right.png" Width="50" Height="50"/>
-        </Button>
-        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="250,350,50,30">
-            <Image Source="/images/arrow-left.png" Width="50" Height="50"/>
-        </Button>
-        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="1000,375,50,30">
-            <Image Source="/images/arrow-up.png" Width="50" Height="50"/>
-        </Button>
-        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="1000,525,50,30">
-            <Image Source="/images/arrow-down.png" Width="50" Height="50"/>
-        </Button>
-        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="600,550,50,30">
-            <Image Source="/images/arrow-rotate-x.png" Width="50" Height="50"/>
-        </Button>
-        <Button Style="{StaticResource PrimaryButtonStyle}" Margin="250,550,50,30">
-            <Image Source="/images/arrow-rotate-y.png" Width="50" Height="50"/>
-        </Button>
+        <!--Preview-->
+        <Grid HorizontalAlignment="Stretch" Grid.Column="1" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="180" x:Name="GUIBottom"/>
+            </Grid.RowDefinitions>
+            <!--Preview Picture-->
+            <Border Grid.Row="0" Margin="5">
+                <Image  Source="/images/preview.png" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
+            </Border>
+
+            <!--GuiBottom-->
+            <Grid HorizontalAlignment="Stretch" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+
+                <Grid Grid.Column="0" Margin="5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <!--TCP Log-->
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox BorderThickness="0"/>
+                        <Button Name="btnLog" Content="Log" Style="{StaticResource PrimaryButtonStyle}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="40" Click="generalButtonClick"/>
+                    </Grid>
+                    <TextBox Name="tbxLog" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" AcceptsReturn="True" VerticalAlignment="Top" Grid.Row="1"/>
+                </Grid>
+
+                <!--Preview Buttons-->
+                <Grid Height="180" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Name="btnLeft" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"  Margin="10" Click="generalButtonClick">
+                        <Image Source="/images/arrow-left.png" Width="30" Height="30"/>
+                    </Button>
+                    <Button Name="btnRight" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
+                        <Image Source="/images/arrow-right.png" Width="30" Height="30"/>
+                    </Button>
+                    <Button Name="btnUp" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
+                        <Image Source="/images/arrow-up.png" Width="30" Height="30"/>
+                    </Button>
+                    <Button Name="btnDown" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" Margin="10" Click="generalButtonClick">
+                        <Image Source="/images/arrow-down.png" Width="30" Height="30"/>
+                    </Button>
+                    <Button Name="btnRx" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Margin="10" Click="generalButtonClick">
+                        <Image Source="/images/arrow-rotate-x.png" Width="30" Height="30"/>
+                    </Button>
+                    <Button Name="btnRy" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Margin="10" Click="generalButtonClick">
+                        <Image Source="/images/arrow-rotate-y.png" Width="30" Height="30"/>
+                    </Button>
+                </Grid>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>
