@@ -15,8 +15,8 @@ struct Entity : public std::enable_shared_from_this<Entity> {
   // make private -> will require some friend magic...
   // Entity(Private);
   Entity();
-  Entity(std::string name, uuid id);
-  Entity(std::string name, uuid id, std::shared_ptr<Entity> parent);
+  Entity(const std::string &name, uuid id);
+  Entity(const std::string &name, uuid id, std::shared_ptr<Entity> parent);
 
   inline std::shared_ptr<Entity> get_ptr() { return shared_from_this(); }
 
@@ -28,6 +28,7 @@ struct Entity : public std::enable_shared_from_this<Entity> {
 
   void add_child_entity(std::shared_ptr<Entity> e);
   std::vector<std::shared_ptr<Entity>> &get_child_entities();
+  bool remove_child_entity(std::shared_ptr<Entity> e);
 
   std::weak_ptr<Entity> get_parent_entity();
 
@@ -43,12 +44,12 @@ struct Entity : public std::enable_shared_from_this<Entity> {
 
 private:
   friend std::shared_ptr<Entity>
-  EntitySystem::create_entity(std::string name, uuid id,
+  EntitySystem::create_entity(const std::string &name, uuid id,
                               std::shared_ptr<Entity> parent);
 
-  static std::shared_ptr<Entity> create(std::string name, uuid id,
+  static std::shared_ptr<Entity> create(const std::string &name, uuid id,
                                         std::shared_ptr<Entity> parent);
-  static std::shared_ptr<Entity> create(std::string name, uuid id);
+  static std::shared_ptr<Entity> create(const std::string &name, uuid id);
 
   uuid _uuid{-1};
   std::string _name{"untitled"};

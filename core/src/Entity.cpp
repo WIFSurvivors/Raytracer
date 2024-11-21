@@ -7,15 +7,15 @@
 #include <optional>
 
 Entity::Entity() : _name{"root"}, _uuid{} {} // i dislike the empty uuid :/
-Entity::Entity(std::string name, uuid id) : _name{name}, _uuid{id} {}
-Entity::Entity(std::string name, uuid id, std::shared_ptr<Entity> parent)
+Entity::Entity(const std::string &name, uuid id) : _name{name}, _uuid{id} {}
+Entity::Entity(const std::string &name, uuid id, std::shared_ptr<Entity> parent)
     : _name{name}, _uuid{id}, _parent{parent} {}
 
-std::shared_ptr<Entity> Entity::create(std::string name, uuid id) {
+std::shared_ptr<Entity> Entity::create(const std::string &name, uuid id) {
   return std::make_shared<Entity>(name, id);
 }
 
-std::shared_ptr<Entity> Entity::create(std::string name, uuid id,
+std::shared_ptr<Entity> Entity::create(const std::string &name, uuid id,
                                        std::shared_ptr<Entity> parent) {
   auto e = std::make_shared<Entity>(name, id);
   parent->add_child_entity(e->get_ptr());
