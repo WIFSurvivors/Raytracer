@@ -5,6 +5,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -24,37 +25,94 @@ namespace RaytracerGUI
             this.Background = (Brush)Application.Current.Resources["WindowBackgroundColor"];
         }
 
-        private void clickOpen(object sender, RoutedEventArgs e)
+        //Menu clicks
+        private void generalMenuClick(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog
+            MenuItem clickedMenuItem = sender as MenuItem;
+
+            if (clickedMenuItem != null)
             {
-                Filter = "OBJ and MTL Files (*.obj;*.mtl)|*.obj;*.mtl",
-                Title = "Select a .obj or .mtl file"
-            };
+                // get variable name
+                string item = clickedMenuItem.Name;
 
+                switch (item)
+                {
+                    case "mniOpen":
+                        tbxLog.AppendText(item + " was clicked! \n");
+                        tbxLog.ScrollToEnd();
 
+                        OpenFileDialog openFileDialog = new OpenFileDialog
+                        {
+                            Filter = "OBJ and MTL Files (*.obj;*.mtl)|*.obj;*.mtl",
+                            Title = "Select a .obj or .mtl file"
+                        };
 
-            if (openFileDialog.ShowDialog() == true)
-            {
-                string filePath = openFileDialog.FileName;
+                        if (openFileDialog.ShowDialog() == true)
+                        {
+                            string filePath = openFileDialog.FileName;
+                        }
+                        break;
 
-                // Code for handle selected file
-                //
-                //
+                    case "mniExit":
+                        tbxLog.AppendText(item + " was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        Application.Current.Shutdown(0);
+                        break;
 
+                   
+                }
             }
         }
 
-        private void clickSave(object sender, RoutedEventArgs e)
+
+        //Button clicks
+        private void generalButtonClick(object sender, RoutedEventArgs e)
         {
-           
-        }
+            Button clickedButton = sender as Button;
 
+            if (clickedButton != null)
+            {
+                // get variable name
+                string button = clickedButton.Name;
 
-        private void clickExit(object sender, RoutedEventArgs e)
-        {
+                switch (button)
+                {
+                    case "btnLeft":
+                        tbxLog.AppendText(button + " was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        break;
 
-            Application.Current.Shutdown(0); 
+                    case "btnRight":
+                        tbxLog.AppendText(button + " was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        break;
+
+                    case "btnUp":
+                        tbxLog.AppendText(button + " was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        break;
+
+                    case "btnDown":
+                        tbxLog.AppendText(button + " was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        break;
+
+                    case "btnRx":
+                        tbxLog.AppendText(button + "  was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        break;
+
+                    case "btnRy":
+                        tbxLog.AppendText(button + "  was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        break;
+
+                    case "btnLog":
+                        tbxLog.AppendText($"{DateTime.Now}: Log entry added.\n");
+                        tbxLog.ScrollToEnd();
+                        break;
+                }
+            }
         }
     }
 }

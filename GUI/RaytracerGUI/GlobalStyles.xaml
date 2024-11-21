@@ -12,34 +12,115 @@
     <!-- Style for all Windows -->
     <Style TargetType="Window">
         <Setter Property="Background" Value="{StaticResource WindowBackgroundColor}" />
-        <Setter Property="FontFamily" Value="Ludica Console"/>
-        <Setter Property="FontSize" Value="28"/>
+        <Setter Property="FontFamily" Value="pack://application:,,,/RaytracerGUI;component/fonts/#Lucida Console"/>
+        <Setter Property="FontSize" Value="18"/>
         <Setter Property="Foreground" Value="White"/>
     </Style>
 
-    <!-- problem -->
-    <Style TargetType="Control">
-        <Setter Property="FontFamily" Value="Ludica Console"/>
-        <Setter Property="FontSize" Value="28"/>
+    <!-- Style for Menu -->
+    <Style TargetType="Menu">
+        <Setter Property="FontFamily" Value="pack://application:,,,/RaytracerGUI;component/fonts/#Lucida Console"/>
+        <Setter Property="FontSize" Value="18"/>
         <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource ComponentBackgroundColor}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource WindowPrimaryColor}"/>
+        <Setter Property="BorderThickness" Value="2"/>
     </Style>
 
     <!-- Style for MenuItems -->
     <Style TargetType="MenuItem">
-        <Setter Property="Background" Value="{StaticResource ComponentBackgroundColor}"/>
+        <Setter Property="FontFamily" Value="pack://application:,,,/RaytracerGUI;component/fonts/#Lucida Console"/>
+        <Setter Property="FontSize" Value="18"/>
         <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource ComponentBackgroundColor}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource WindowPrimaryColor}"/>
+        <Setter Property="BorderThickness" Value="2"/>
         <Style.Triggers>
-            <!-- Hover-Farbe -->
+            <!-- Hover color for MenuItems -->
             <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="{StaticResource WindowBackgroundColor}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+
+    <!-- Style for TreeView -->
+    <Style TargetType="TreeView">
+        <Setter Property="FontFamily" Value="pack://application:,,,/RaytracerGUI;component/fonts/#Lucida Console"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource ComponentBackgroundColor}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource WindowPrimaryColor}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+    
+    <!-- Style for TreeViewItems -->
+    <Style TargetType="TreeViewItem">
+        <Setter Property="FontFamily" Value="pack://application:,,,/RaytracerGUI;component/fonts/#Lucida Console"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource ComponentBackgroundColor}"/>
+        <Style.Triggers>
+            <!-- Hover color for TreeViewItems -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="{StaticResource WindowPrimaryColor}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Style for ListBox -->
+    <Style TargetType="ListBox">
+        <Setter Property="FontFamily" Value="pack://application:,,,/RaytracerGUI;component/fonts/#Lucida Console"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource ComponentBackgroundColor}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource WindowPrimaryColor}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+    </Style>
+
+    <!-- Style for ListBoxItems -->
+    <Style TargetType="ListBoxItem">
+        <Setter Property="FontFamily" Value="pack://application:,,,/RaytracerGUI;component/fonts/#Lucida Console"/>
+        <Setter Property="FontSize" Value="18"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource ComponentBackgroundColor}"/>
+        <Style.Triggers>
+            <!-- Hover color for ListBoxItems -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="{StaticResource WindowPrimaryColor}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Style for TextBox -->
+    <Style TargetType="TextBox">
+        <Setter Property="FontFamily" Value="pack://application:,,,/RaytracerGUI;component/fonts/#Lucida Console"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource WindowBackgroundColor}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource ComponentPrimaryColor}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Style.Triggers>
+            <!-- Hover color for TextBox -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="Black"/>
                 <Setter Property="Background" Value="{StaticResource ComponentPrimaryColor}"/>
             </Trigger>
         </Style.Triggers>
     </Style>
 
+
+    <!-- Style for Button -->
     <Style x:Key="PrimaryButtonStyle" TargetType="Button">
-        <Setter Property="Background" Value="{StaticResource ComponentPrimaryColor}"/>
-        <Setter Property="Width" Value="151"/>
-        <Setter Property="Height" Value="60"/>
+        <Setter Property="FontFamily" Value="pack://application:,,,/RaytracerGUI;component/fonts/#Lucida Console"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource ComponentBackgroundColor}"/>
+        <Setter Property="Width" Value="100"/>
+        <Setter Property="Height" Value="45"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
@@ -49,6 +130,13 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Style.Triggers>
+            <!-- Hover color for Buttons -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="{StaticResource ComponentPrimaryColor}"/>
+            </Trigger>
+        </Style.Triggers>
     </Style>
 
 
