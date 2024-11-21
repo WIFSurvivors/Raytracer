@@ -34,7 +34,7 @@ void RenderSystem::init() {
   //  program->activateShader();
   //  I dont like this at all
   Shader computeShader{
-      std::make_pair(GL_COMPUTE_SHADER, "../shaders/computeshader.glsl")};
+      std::make_pair(GL_COMPUTE_SHADER, "../shaders/computeshaderCircle.glsl")};
   compute = std::make_unique<Shader>(computeShader);
 
   //  mouseUniformID = glGetUniformLocation(computeShader.programID,
@@ -60,16 +60,22 @@ void RenderSystem::update() {
 
   //  glUniform2fv(mouseUniformID, 1, &puk[0]);
 
+  // Jeb, i dont know what to do
+  // I moved it here because i want to have acces to the updated data of Model
+  _component->update();
+  float radius = 10.0f;
+  float camX = sin(glfwGetTime()) * radius;
+  float camZ = cos(glfwGetTime()) * radius;
+  _view = glm::lookAt(glm::vec3(0.0, 10.0, 10.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));  
+
   //  Setup compute shader
   compute->activateShader();
       glUniform1f(glGetUniformLocation(compute->programID, "time"),
                   glfwGetTime());
-      glUniform3fv(glGetUniformLocation(compute->programID, "v0"), 1,
-                   glm::value_ptr(v[0]));
-      glUniform3fv(glGetUniformLocation(compute->programID, "v1"), 1,
-                   glm::value_ptr(v[1]));
-      glUniform3fv(glGetUniformLocation(compute->programID, "v2"), 1,
-                   glm::value_ptr(v[2]));
+
+      glUniformMatrix4fv(glGetUniformLocation(compute->programID, "Model"), 1, GL_FALSE, glm::value_ptr(*_component->getModelMatrice()));
+      glUniformMatrix4fv(glGetUniformLocation(compute->programID, "View"), 1, GL_FALSE, glm::value_ptr(_view));
+      glUniformMatrix4fv(glGetUniformLocation(compute->programID, "Projection"), 1, GL_FALSE, glm::value_ptr(_projectionMatrix));
       glUniform2fv(glGetUniformLocation(compute->programID, "imageSize"),
                    1, glm::value_ptr(glm::vec2(_scr_width, _scr_height)));
     glUniform2fv(mouseUniformID, 1, &puk[0]);
@@ -81,9 +87,8 @@ void RenderSystem::update() {
 
   // Setup fragment and vertex shader
   program->activateShader();
-
-  // Jeb, i dont know what to do
-  _component->update(_vao);
+  //draw
+  _component->draw(_vao);
 }
 
 void RenderSystem::destroy() {

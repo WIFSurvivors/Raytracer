@@ -47,6 +47,7 @@ private:
 
   GLuint textUniformID;
   GLuint mvpUniformID;
+  GLuint modelUniformID;
 
   void
   setVertices(); // for now does nothing but later here we can load an object
@@ -54,7 +55,10 @@ private:
 
 public:
   void init(GLuint programID);
-  void update(GLuint VAO);
+  const GLuint getModelUniform() const;
+  glm::mat4* getModelMatrice();
+  void update();
+  void draw(GLuint VAO);
   void destroy();
 };
 } // namespace core

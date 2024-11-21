@@ -3,6 +3,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
+#include <glm/ext/matrix_transform.hpp>
+#include <glm/ext/matrix_clip_space.hpp>
 #include <memory>
 #include <vector>
 
@@ -43,9 +45,17 @@ private:
   GLuint mouseUniformID;
   GLFWwindow *_window;
   GLuint _vao;
-  std::vector<glm::vec3> v = {glm::vec3{-0.5f, -0.5f, 0.0f},
-                              glm::vec3{0.5f, -0.5f, 0.0f},
-                              glm::vec3{0.0f, 0.5f, 0.0f}};
+
+  //As i understand the rendersystem is responsible for the rendering of the different componennts.
+  //The View (Camera) and the Projection Matrices have no right to be in the components themselves. In case its not the camera component?
+  //Additionally i would like to reallocate the MVP calculation to the respectible shaderes themselfs.
+  //They need to be performed each update cycle because maybe the model has changed?
+  //
+
+  glm::mat4 _view = glm::lookAt(glm::vec3{0.0f,10.0f,10.0f}, glm::vec3{0.0f,0.0f,0.0f}, glm::vec3{0.0f,1.0f,0.0f});
+  float FoV = 60.0f;
+  glm::mat4 _projectionMatrix = glm::perspective(glm::radians(FoV), 1.0f, 0.1f, 100.0f);
+
 
   //  GLuint _porgramID;
   //  GLuint _computeID;
