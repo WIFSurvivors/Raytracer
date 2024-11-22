@@ -49,8 +49,8 @@ file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/includes/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/includes/*.h)
 
 
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
-target_include_directories(${PROJECT_NAME} PRIVATE 
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} )
+target_include_directories(${PROJECT_NAME} PUBLIC 
 ${GLAD_INCLUDE_DIRS}
 ${CORE_INCLUDE_DIR}   
 ${GLFW_INCLUDE_DIRS}
@@ -60,11 +60,13 @@ ${GLM_INCLUDE_DIRS}
 #include_directories(${INSTALL_INCLUDE_DIR})
 #target_include_directories(${PROJECT_NAME} PUBLIC ${GLAD_INCLUDE_DIRS} ${CORE_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS})
 target_link_libraries(${PROJECT_NAME} PUBLIC glad glfw glm::glm)
-
+IF (TOPLEVEL)
+  target_link_libraries(${PROJECT_NAME} PUBLIC tcp)
+ENDIF()
 
 message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_library(core STATIC ${SOURCES})
+add_library(core STATIC ${SOURCES} ${HEADERS})
 target_include_directories(core PUBLIC 
 ${CMAKE_CURRENT_SOURCE_DIR}
 ${GLAD_INCLUDE_DIRS}  
@@ -72,3 +74,6 @@ ${GLFW_INCLUDE_DIRS}
 ${GLM_INCLUDE_DIRS}
 )
 target_link_libraries(core PUBLIC glad glfw glm::glm)
+IF (TOPLEVEL)
+  target_link_libraries(core PUBLIC tcp)
+ENDIF()

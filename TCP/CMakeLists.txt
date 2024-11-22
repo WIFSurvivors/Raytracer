@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.30.0)
 project(tcp-test VERSION 0.0.1 DESCRIPTION "TCP Server and Client in CPP using Boost")
 
-set(BOOST_INCLUDE_LIBRARIES thread filesystem system program_options asio date_time)
+set(BOOST_INCLUDE_LIBRARIES thread filesystem system program_options asio date_time json)
 set(BOOST_ENABLE_CMAKE ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #clangd req.
@@ -19,41 +19,44 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Boost)
 file(GLOB_RECURSE TCP_SERVER_SOURCES "src/tcp_server/*.cpp")
 add_executable (tcp-test ${TCP_SERVER_SOURCES})
-target_include_directories(tcp-test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+target_include_directories(tcp-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 
 target_link_libraries(tcp-test
-  PRIVATE 
+  PUBLIC 
   Boost::asio
   # Boost::filesystem
   #Boost::thread
   # Boost::program_options
   Boost::json
-  core
 )
 
 if (WIN32)
-  target_link_libraries(tcp-test PRIVATE ws2_32 mswsock)
+  target_link_libraries(tcp-test PUBLIC ws2_32 mswsock)
 endif()
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET tcp-test PROPERTY CXX_STANDARD 20)
 endif()
+IF (TOPLEVEL) 
+  target_link_libraries(tcp-test PUBLIC core)
+ENDIF()
 
 add_library(tcp STATIC ${TCP_SERVER_SOURCES})
 target_include_directories(tcp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 target_link_libraries(tcp
-  PRIVATE 
+  PUBLIC 
   Boost::asio
   # Boost::filesystem
   #Boost::thread
   # Boost::program_options
   Boost::json
-  core
 )
 if (WIN32)
-  target_link_libraries(tcp PRIVATE ws2_32 mswsock)
+  target_link_libraries(tcp PUBLIC ws2_32 mswsock)
 endif()
-
+IF (TOPLEVEL) 
+  target_link_libraries(tcp PUBLIC core)
+ENDIF()
 
 # --- Adding Google Test ---
 
@@ -77,5 +80,7 @@ target_link_libraries(test_tcp
   Boost::asio
   Boost::thread
 )
-
+IF(TOPLEVEL)
+  target_link_libraries(test_tcp PRIVATE core)
+ENDIF()
 add_test(NAME TCPTest COMMAND test_tcp)

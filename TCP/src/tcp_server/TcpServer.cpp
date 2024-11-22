@@ -1,6 +1,5 @@
 #include "includes/TcpServer.hpp"
 
-
 TcpServer::TcpServer(int port)
     : _io_context(),
       _acceptor(_io_context, tcp::endpoint(tcp::v4(), port)),
@@ -60,7 +59,7 @@ void TcpServer::stop() {
     _io_context.stop();
     std::cout << "Server stopped" << std::endl;
 }
-
+#ifndef TOPLEVEL
 int main() {
     try {
         auto server = std::make_shared<TcpServer>(51234);
@@ -72,3 +71,5 @@ int main() {
     }
     return 0;
 }
+
+#endif
