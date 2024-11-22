@@ -8,7 +8,7 @@ set(TOPLEVEL "YES")
 add_subdirectory(core)
 add_subdirectory(TCP)
 
-add_executable(${PROJECT_NAME} build/core/libcore.a build/TCP/libtcp.a)
+add_executable(${PROJECT_NAME} core tcp)
 target_include_directories(${PROJECT_NAME} PUBLIC 
 ${CMAKE_CURRENT_SOURCE_DIR}/core 
 ${CMAKE_CURRENT_SOURCE_DIR}/TCP
