@@ -19,7 +19,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Boost)
 file(GLOB_RECURSE TCP_SERVER_SOURCES "src/tcp_server/*.cpp")
 add_executable (tcp-test ${TCP_SERVER_SOURCES})
-target_include_directories(tcp-test PRIVATE ${CMAKE_SOURCE_DIR})
+target_include_directories(tcp-test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
 
 target_link_libraries(tcp-test
   PRIVATE 
@@ -27,6 +27,8 @@ target_link_libraries(tcp-test
   # Boost::filesystem
   #Boost::thread
   # Boost::program_options
+  Boost::json
+  core
 )
 
 if (WIN32)
@@ -36,6 +38,23 @@ endif()
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET tcp-test PROPERTY CXX_STANDARD 20)
 endif()
+
+add_library(tcp STATIC ${TCP_SERVER_SOURCES})
+target_include_directories(tcp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+target_link_libraries(tcp
+  PRIVATE 
+  Boost::asio
+  # Boost::filesystem
+  #Boost::thread
+  # Boost::program_options
+  Boost::json
+  core
+)
+if (WIN32)
+  target_link_libraries(tcp PRIVATE ws2_32 mswsock)
+endif()
+
+
 # --- Adding Google Test ---
 
 FetchContent_Declare(
