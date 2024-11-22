@@ -32,11 +32,11 @@ void UUIDManager::print() {
   // print header SYSTEM | UUID
   std::string str = "UUID";
   size_t divider_length = str.size();
-  TablePrinter::printHeader(str, str.length());
+  TablePrinter::printElement(str, str.length());
   std::cout << " | ";
   str = "SYSTEM";
   divider_length += str.size();
-  TablePrinter::printHeader(str, str.length());
+  TablePrinter::printElement(str, str.length());
 
   // print divider =====|====; ("=|=" -> +3)
   std::cout << "\n" << std::string{"=", divider_length + 3} << "\n";

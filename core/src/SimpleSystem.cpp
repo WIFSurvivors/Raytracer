@@ -14,33 +14,14 @@ SimpleComponent *SimpleSystem::create_component(uuid id,
 
 SimpleComponent *
 SimpleSystem::create_component(uuid id, std::shared_ptr<Entity> e, int value) {
-  _components[id] = std::make_unique<SimpleComponent>(e, id, value);
+  _components[id] = std::make_unique<SimpleComponent>(id, e, value);
   auto ptr = _components[id].get();
   e->add_component(ptr);
   return ptr;
 }
 
-bool SimpleSystem::remove(uuid id) {
-  auto it =
-      std::find_if(_components.begin(), _components.end(),
-                   [id](SimpleComponent *c) { return c->get_uuid() == id; });
-  if (it != _components.end()) {
-    _components.erase(it);
-    return true;
-  }
-  return false;
-}
-
-bool SimpleSystem::remove(Component *c) {
-  if (auto t = static_cast<SimpleComponent *>(c)) {
-    auto it = std::find(_components.begin(), _components.end(), t);
-    if (it != _components.end()) {
-      _components.erase(it);
-      return true;
-    }
-  }
-  return false;
-}
+bool SimpleSystem::remove(uuid id) { return _components.erase(id); }
+bool SimpleSystem::remove(Component *c) { return remove(c->get_uuid()); }
 
 void SimpleSystem::clear() { _components.clear(); }
 

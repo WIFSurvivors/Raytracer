@@ -3,11 +3,6 @@
 #include "boost/uuid/uuid_io.hpp"
 #include <iostream>
 
-std::shared_ptr<Entity> EntitySystem::create_entity(const std::string &name,
-                                                    uuid id) {
-  return create_entity(name, id, nullptr);
-}
-
 std::shared_ptr<Entity>
 EntitySystem::create_entity(const std::string &name, uuid id,
                             std::shared_ptr<Entity> parent) {

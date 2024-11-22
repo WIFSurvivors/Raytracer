@@ -1,4 +1,5 @@
 #include "includes/Scene.hpp"
+#include "includes/Engine.hpp"
 
 Scene::Scene(Engine &e)
     : _uuid_manager{e.get_uuid_manager()},

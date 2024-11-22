@@ -13,7 +13,7 @@ struct SceneManager {
   void unload();
 
 private:
-  Scene current_scene; // don't default this :)
+  //   Scene current_scene; // don't default this :)
   UUIDManager _uuid_manager{};
   SimpleSystem simple_sys{};
   WindowManager _wm{};

@@ -13,9 +13,6 @@ struct Entity;
 struct EntitySystem : public System {
   EntitySystem() = default;
 
-  std::shared_ptr<Entity> create_entity(const std::string &name,
-                                        uuid id) override;
-
   std::shared_ptr<Entity> create_entity(const std::string &, uuid id,
                                         std::shared_ptr<Entity> parent);
 

@@ -55,7 +55,7 @@ private:
                                         std::shared_ptr<Entity> parent);
   static std::shared_ptr<Entity> create(const std::string &name, uuid id);
 
-  uuid _uuid{-1};
+  uuid _uuid{};
   std::string _name{"untitled"};
 
   std::weak_ptr<Entity> _parent{};

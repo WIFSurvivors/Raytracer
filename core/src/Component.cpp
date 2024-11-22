@@ -1,10 +1,12 @@
 #include "includes/Component.hpp"
-#include <iostream>
-
 #include "includes/Entity.hpp"
+#include <iostream>
+#include <cassert>
 
 Component::Component(uuid id, std::weak_ptr<Entity> e) : _uuid{id}, _entity{e} {
-  assert(e.lock() == nullptr, "Entity is a nullptr");
+  // has to be rewritten for windows apparently?
+  // https://en.cppreference.com/w/cpp/error/assert
+  assert(e.lock() == nullptr && "Entity is a nullptr");
   e.lock()->add_component(this);
 }
 void Component::init() {}

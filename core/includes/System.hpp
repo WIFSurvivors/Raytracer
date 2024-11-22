@@ -1,11 +1,16 @@
 #pragma once
 
-#include "includes/Component.hpp"
-#include "includes/Entity.hpp"
+// #include "includes/Component.hpp"
+// #include "includes/Entity.hpp"
+#include "boost/uuid/uuid.hpp"
 #include <cstdint>
 #include <string>
+#include <memory>
 
 typedef boost::uuids::uuid uuid;
+
+struct Entity;
+struct Component;
 
 /*
 A System handles UUID to Component or Entity bindings and can provide
@@ -23,7 +28,6 @@ struct System {
   /**
    * Entity are responsible for representing components in 3D space.
    */
-  std::shared_ptr<Entity> create_entity(uuid id);
   virtual std::shared_ptr<Entity> create_entity(const std::string &name,
                                                 uuid id);
 
