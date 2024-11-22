@@ -5,8 +5,8 @@
 
 struct TcpExecuter {
   TcpExecuter();
-  int execute(std::unique_ptr<TcpCommand> command);
-  int undo(std::unique_ptr<TcpCommand> command);
+  int execute(TcpCommand *command);
+  int undo(TcpCommand * command);
 
 private:
 };
