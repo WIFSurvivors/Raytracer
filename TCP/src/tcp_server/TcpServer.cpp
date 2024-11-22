@@ -1,11 +1,13 @@
 #include "includes/TcpServer.hpp"
 
 
-TcpServer::TcpServer(std::shared_ptr< boost::asio::io_context> io_context, int port)
-    : _io_context(io_context),
-      _acceptor(*io_context, tcp::endpoint(tcp::v4(), port)),
-      _socket(*io_context),
-      _is_stopped(false) {_command_manager = CommandManager();}
+TcpServer::TcpServer(int port)
+    : _io_context(),
+      _acceptor(_io_context, tcp::endpoint(tcp::v4(), port)),
+      _socket(_io_context),
+      _is_stopped(false),
+      _command_manager()
+      {}
 
 TcpServer::~TcpServer() {
     if (_server_thread.joinable()) {
@@ -16,7 +18,7 @@ TcpServer::~TcpServer() {
 void TcpServer::start() {
     std::cout << "-- waiting for incoming connections...\n";
     do_accept();
-    _server_thread = std::thread([this]() { _io_context->run(); });
+    _server_thread = std::thread([this]() { _io_context.run(); });
 }
 
 void TcpServer::do_accept() {
@@ -55,14 +57,13 @@ void TcpServer::stop() {
     _is_stopped = true;
     _acceptor.close();
     _socket.close();
-    _io_context->stop();
+    _io_context.stop();
     std::cout << "Server stopped" << std::endl;
 }
 
 int main() {
     try {
-        auto io_context = std::make_shared<boost::asio::io_context>();
-        auto server = std::make_shared<TcpServer>(io_context, 51234);
+        auto server = std::make_shared<TcpServer>(51234);
         server->start();
         std::this_thread::sleep_for(std::chrono::seconds(1000));
         server->stop();
