@@ -13,7 +13,7 @@
 using boost::asio::ip::tcp;
 
 struct TcpServer : public std::enable_shared_from_this<TcpServer> {
-  TcpServer(int port);
+  explicit TcpServer(int port);
   ~TcpServer();
   void start();
   void stop();
