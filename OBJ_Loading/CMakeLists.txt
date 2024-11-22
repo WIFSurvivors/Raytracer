@@ -13,6 +13,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}")
 set(CORE_INCLUDE_DIR "${CMAKE_SOURCE_DIR}")
 
+# Enable AVX and AVX2
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(-mavx -mavx2)
+elseif(MSVC)
+    add_compile_options(/arch:AVX2)
+endif()
+
 FetchContent_Declare(
   tinyobjloader
   GIT_REPOSITORY  https://github.com/tinyobjloader/tinyobjloader.git
@@ -41,7 +48,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(tinyobjloader tinybvh glm)
 set(TINYOBJLOADER_INCLUDE_DIRS "${tinyobjloader_SOURCE_DIR}/include")
 #set(GLAD_SOURCES "${glad_BINARY_DIR}/src/glad.c")
-#set(TINYBVH_INCLUDE_DIRS "${tinybvh_SOURCE_DIR}/include")
+set(TINYBVH_INCLUDE_DIRS "${tinybvh_SOURCE_DIR}")
 set(GLM_INCLUDE_DIRS "${glm_SOURCE_DIR}")
 
 
@@ -51,7 +58,7 @@ file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/includes/*.hpp ${CMAKE_CUR
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 target_include_directories(${PROJECT_NAME} PRIVATE
-  ${TINYBVH_INCLUDE_DIRS}
+  ${tinybvh_SOURCE_DIR}
   ${CORE_INCLUDE_DIR}   
   ${TINYOBJLOADER_INCLUDE_DIRS}
   ${GLM_INCLUDE_DIRS}
