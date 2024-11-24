@@ -1,4 +1,5 @@
 #pragma once
+#include "includes/utility/SimpleLogger.hpp"
 #include "includes/Entity.hpp"
 #include "includes/SimpleComponent.hpp"
 #include "includes/System.hpp"
@@ -9,6 +10,8 @@
 typedef boost::uuids::uuid uuid;
 
 struct SimpleSystem : public System {
+  SimpleSystem();
+
   SimpleComponent *create_component(uuid uuid,
                                     std::shared_ptr<Entity> e) override;
   SimpleComponent *create_component(uuid uuid, std::shared_ptr<Entity> e,

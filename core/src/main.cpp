@@ -3,9 +3,14 @@
 
 #include "includes/Engine.hpp"
 
+#include "includes/utility/SimpleLogger.hpp"
+
 int main() {
+  SimpleLogger::print("main 1");
   Engine engine{};
+  SimpleLogger::print("main 2");
   engine.startLoop();
+  SimpleLogger::print("main 3");
 
   //   SceneManager sm{};
   //   sm.load();

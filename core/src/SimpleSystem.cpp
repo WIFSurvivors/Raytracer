@@ -7,6 +7,8 @@
 #include <utility>
 #include <type_traits>
 
+SimpleSystem::SimpleSystem() { SimpleLogger::print("simple system 1"); }
+
 SimpleComponent *SimpleSystem::create_component(uuid id,
                                                 std::shared_ptr<Entity> e) {
   return create_component(id, e, 0);

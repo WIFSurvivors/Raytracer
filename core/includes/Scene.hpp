@@ -1,5 +1,6 @@
 #pragma once
 
+#include "includes/utility/SimpleLogger.hpp"
 #include "includes/System.hpp"
 #include "includes/SimpleSystem.hpp"
 #include "includes/EntitySystem.hpp"
@@ -30,13 +31,15 @@ struct Scene {
 
   void generate_sample_content();
 
+  UUIDManager *get_uuid_manager();
+
 private:
-  std::shared_ptr<Entity> _root{};
+  std::shared_ptr<Entity> _root;
 
-  UUIDManager *_uuid_manager;
+  UUIDManager _uuid_manager{};
 
-  SimpleSystem simple_system{};
-  EntitySystem entity_system{};
-  WindowManager _wm{};
-  core::RenderSystem render_sys{&_wm};
+  EntitySystem _entity_system{};
+  SimpleSystem _simple_system{};
+  //   WindowManager _wm{};
+  //   core::RenderSystem render_sys{&_wm};
 };

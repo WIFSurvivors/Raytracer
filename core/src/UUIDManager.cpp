@@ -2,6 +2,7 @@
 #include "includes/utility/TablePrinter.hpp"
 #include <iostream>
 #include <boost/uuid/uuid_io.hpp>
+#include <format>
 
 uuid UUIDManager::getNewUUID() {
   auto new_uuid = gen();
@@ -11,6 +12,8 @@ uuid UUIDManager::getNewUUID() {
 
 uuid UUIDManager::getNewUUID(System *s) {
   auto new_uuid = gen();
+  SimpleLogger::print(std::format("-- created uuid: \"{}\"",
+                                  boost::uuids::to_string(new_uuid)));
   _uuid_system_mapping[new_uuid] = s;
   return new_uuid;
 }
@@ -51,3 +54,5 @@ void UUIDManager::print() {
   }
   std::cout << std::endl;
 }
+
+UUIDManager::UUIDManager() { SimpleLogger::print("uuid manager 1"); }

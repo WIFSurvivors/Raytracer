@@ -11,7 +11,7 @@ typedef boost::uuids::uuid uuid;
 struct Entity;
 
 struct EntitySystem : public System {
-  EntitySystem() = default;
+  EntitySystem();
 
   std::shared_ptr<Entity> create_entity(const std::string &, uuid id,
                                         std::shared_ptr<Entity> parent);

@@ -16,11 +16,10 @@ public:
 
   void startLoop();
 
-  UUIDManager *get_uuid_manager();
+  UUIDManager *get_active_uuid_manager();
 
 private:
   void init();
-  UUIDManager _uuid_manager{};
   // WindowManager wm{};
   // this should potentially be safed here or in main(). it'll depend on how to
   // this is integrated into the C# GUI

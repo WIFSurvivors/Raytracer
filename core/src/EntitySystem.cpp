@@ -1,6 +1,7 @@
 #include "includes/Entity.hpp"
 #include "includes/EntitySystem.hpp"
 #include "boost/uuid/uuid_io.hpp"
+#include "includes/utility/SimpleLogger.hpp"
 #include <iostream>
 
 std::shared_ptr<Entity>
@@ -43,3 +44,4 @@ void EntitySystem::print() {
       std::cout << uuid << " | " << e_locked->get_name() << "\n";
   }
 }
+EntitySystem::EntitySystem() { SimpleLogger::print("entity system 1"); }
