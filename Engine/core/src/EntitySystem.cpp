@@ -8,7 +8,7 @@ std::shared_ptr<Entity>
 EntitySystem::create_entity(const std::string &name, uuid id,
                             std::shared_ptr<Entity> parent) {
   auto e = Entity::create(name, id, parent);
-  _entities[id] = e;
+  _entities[id] = e.get();
   return e;
 }
 
@@ -23,25 +23,25 @@ bool EntitySystem::remove(uuid id) {
 }
 
 bool EntitySystem::remove(Entity *e) {
-  if (auto t = static_cast<Entity *>(e)) { // neccessary???
-    auto it =
-        std::find_if(_entities.begin(), _entities.end(), [t](const auto &val) {
-          return val.second.lock().get() == t;
-        });
-    if (it != _entities.end()) {
-      _entities.erase(it);
-      return true;
-    }
+  auto it = std::find_if(_entities.begin(), _entities.end(),
+                         [e](const auto &val) { return val.second == e; });
+  if (it != _entities.end()) {
+    _entities.erase(it);
+    return true;
   }
   return false;
 }
 
 void EntitySystem::print() {
   std::cout << "EntitySystem: UUID | Entity Name\n";
+  std::cout << _entities.size() << "\n";
+
   for (auto const &[uuid, e] : _entities) {
-    auto e_locked = e.lock();
-    if (e_locked)
-      std::cout << uuid << " | " << e_locked->get_name() << "\n";
+    std::cout << "test1\n";
+    std::cout << uuid << " | ";
+    std::cout << (e != nullptr ? e->get_name() : "unknown") << "\n";
   }
 }
-EntitySystem::EntitySystem() { SimpleLogger::print("entity system 1"); }
+EntitySystem::EntitySystem() : System() {
+  SimpleLogger::print("entity system 1");
+}
