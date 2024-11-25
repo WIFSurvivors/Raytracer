@@ -3,75 +3,87 @@
 #include "includes/Scene.hpp"
 #include <iostream>
 
-SceneManager::SceneManager() {}
+SceneManager::SceneManager() { /*render_sys.init();*/
+}
 
-void SceneManager::load_example_scene() {
-  // can be read from a json file
-  // otherwise an "unnamed" Scene is used for communicating via tcp
-  Scene s{};
-  {
-    // optionally accessing the Entity root object
-    auto root_entity = s.get_root().lock();
+void SceneManager::load() {
+  //   current_scene = Scene{};
 
-    // build up a tree of entities
-    // will also possible with tcp commands
-    auto e1 = s.create_entity("camera");
-    auto e2 = s.create_entity("cat", 13);
-    auto e3 = s.create_entity("cube", e2);
+  //   // build up a tree of entities
+  //   // will also possible with tcp commands
+  //   auto e1 = current_scene.create_entity("camera");
+  //   auto e2 = current_scene.create_entity("cat", 13);
+  //   auto e3 = current_scene.create_entity("cube", e2);
 
-    // add components to entities
-    // will also possible with tcp commands
-    auto c1 = simple_sys.create_component(e1, 5);
-    auto c2 = simple_sys.create_component(e1, 8);
-    auto c3 = simple_sys.create_component(e2, -5);
+  //   // add components to entities
+  //   // will also possible with tcp commands
+  //   auto c1 = simple_sys.create_component(e1, 5);
+  //   auto c2 = simple_sys.create_component(e1, 8);
+  //   auto c3 = simple_sys.create_component(e2, -5);
 
-    std::cout << "\n\n1)\n";
-    s.print();
-    std::cout << "\n\n\n";
-    simple_sys.print_all_components();
-    std::cout << "\n\n\n";
+  //   current_scene.print();
+  //   simple_sys.print_all_components();
+}
 
-    // ===== RUNTIME BEGINS (PREVIEW)
+void SceneManager::run() {
+  // all components should call init
+  // debatable if this is neccessary to do for *all* components
+  //   for (auto const &[uuid, component] : simple_sys.get_components()) {
+  //     component->init();
+  //   }
 
-    // initialize some possible external references
-    // (here it does nothing)
-    c1->init();
-    c2->init();
-    c3->init();
+  //   if (!current_scene.get_root().expired()) {
+  //     auto root = current_scene.get_root().lock();
+  //     auto child_entities = root->get_child_entities();
 
-    // start updating the Scene
-    // delta time is for rendering not interesting
-    // but can be used for camera movement inside preview
-    const float dt{1.f / 30.f};
-    simple_sys.update(dt);
-    // c1->update(dt);
-    // c2->update(dt);
-    // c3->update(dt);
+  //     std::cout << "elements: " << child_entities.size() << "\n";
+  //     child_entities[1]->get_child_entities()[0]->position = {20.f, 0.5f,
+  //     -4.f};
 
-    // Component and entities values can be changed on runtime
-    e3->position = /*glm::vec3*/ {20.f, 0.5f, -4.f};
-    e2->rotation = {0.f, 90.f, 0.f};
-    c2->set_value(80);
+  //     child_entities[0]->rotation = {0.f, 90.f, 0.f};
+  //     std::cout << "\n\n4\n";
 
-    // add a new "light" Entity and Component on runtime
-    std::cout << "\n";
-    auto e4 = s.create_entity("cone light");
-    auto c4 = simple_sys.create_component(e4, 1);
-    c4->init();
-    std::cout << "\n";
+  //     if (auto c = root->get_component(1000)) { // == FALSE
+  //       if (c.has_value()) {
+  //         auto sc = static_cast<SimpleComponent *>(c.value());
+  //         sc->set_value(80);
+  //       }
+  //     }
+  //     if (auto c = child_entities[0]->get_component(1000)) { // == TRUE
+  //       if (c.has_value()) {
+  //         auto sc = static_cast<SimpleComponent *>(c.value());
+  //         sc->set_value(80);
+  //       }
+  //     }
+  //   }
 
-    simple_sys.update(dt);
+  //   auto e4 = current_scene.create_entity("cone light");
+  //   auto c4 = simple_sys.create_component(e4, 1);
+  //   c4->init();
 
-    std::cout << "\n\n2)\n";
-    s.print();
-    std::cout << "\n\n\n";
-    simple_sys.print_all_components();
-    std::cout << "\n\n\n";
+  //   double dt_n0 = 0., dt_n1 = 0., dt = 0.;
+  //   do {
+  //     dt_n0 = dt_n1;
+  //     dt_n1 = _wm.get_time();
+  //     dt = dt_n1 - dt_n0;
 
-    // remove some possible external references
-    // (here it does nothing)
-    c1->destroy();
-    c2->destroy();
-    c3->destroy();
-  }
+  //     // std::cout << "dt: " << dt << "\n";
+
+  //     simple_sys.update(dt);
+  //     render_sys.update(dt);
+  //   } while (true);
+
+  //   std::cout << "\n\n3)\n";
+  //   current_scene.print();
+  //   std::cout << "\n\n\n";
+  //   simple_sys.print_all_components();
+  //   std::cout << "\n\n\n";
+}
+
+void SceneManager::unload() {
+  // remove some possible external references
+  // (here it does nothing)
+  //   for (auto &&c : simple_sys.get_components()) {
+  //     c.second->destroy();
+  //   }
 }

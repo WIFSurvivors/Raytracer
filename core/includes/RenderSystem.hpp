@@ -8,8 +8,8 @@
 #include <memory>
 #include <vector>
 
-#include "includes/RenderComponent.h"
-#include "includes/ShaderCompiler.h"
+#include "includes/RenderComponent.hpp"
+#include "includes/ShaderCompiler.hpp"
 
 namespace core {
 /**

@@ -19,7 +19,9 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Boost)
 file(GLOB_RECURSE TCP_SERVER_SOURCES "src/tcp_server/*.cpp")
 add_executable (tcp-test ${TCP_SERVER_SOURCES})
+
 target_include_directories(tcp-test PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${Boost_INCLUDE_DIRS})
+
 
 target_link_libraries(tcp-test
   PUBLIC 
@@ -79,6 +81,7 @@ target_link_libraries(test_tcp
   gtest_main
   Boost::asio
   Boost::thread
+  Boost::json
 )
 IF(TOPLEVEL)
   target_link_libraries(test_tcp PRIVATE core)

@@ -1,15 +1,17 @@
 #include "includes/SimpleComponent.hpp"
 #include <iostream>
 #include <string>
+#include <boost/uuid/uuid_io.hpp>
 
-SimpleComponent::SimpleComponent(std::weak_ptr<Entity> e) : Component{e} {
+SimpleComponent::SimpleComponent(uuid id, std::weak_ptr<Entity> e)
+    : Component{id, e} {
   std::cout << "--- constructor | ";
   print();
   std::cout << "\n";
 }
 
-SimpleComponent::SimpleComponent(std::weak_ptr<Entity> e, int value)
-    : Component{e}, _value{value} {
+SimpleComponent::SimpleComponent(uuid id, std::weak_ptr<Entity> e, int value)
+    : Component{id, e}, _value{value} {
   std::cout << "--- constructor | ";
   print();
   std::cout << "\n";
@@ -22,9 +24,9 @@ void SimpleComponent::init() {
 }
 
 void SimpleComponent::update(float dt) {
-  std::cout << "--- update | ";
-  print();
-  std::cout << "\n";
+  // std::cout << "--- update | ";
+  // print();
+  // std::cout << "\n";
 }
 
 void SimpleComponent::destroy() {

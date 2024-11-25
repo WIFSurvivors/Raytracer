@@ -1,6 +1,6 @@
-#include "includes/RenderSystem.h"
-#include "includes/RenderComponent.h"
-#include "includes/ShaderCompiler.h"
+#include "includes/RenderSystem.hpp"
+#include "includes/RenderComponent.hpp"
+#include "includes/ShaderCompiler.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glm/ext/matrix_transform.hpp>

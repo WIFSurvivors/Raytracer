@@ -1,16 +1,16 @@
 #pragma once
 
+#include "boost/uuid/uuid.hpp"
 #include <memory>
-// #include "Entity.hpp"
-struct Entity;
+typedef boost::uuids::uuid uuid;
 
-static int64_t component_count = 1000;
+struct Entity; // forward declaration due to child-parent structure
 
 struct Component {
   // Life cycle of a component:
 
   /// @brief Use the constructor to internally initialize the object
-  explicit Component(std::weak_ptr<Entity> e);
+  explicit Component(uuid id, std::weak_ptr<Entity> e);
 
   /// @brief Appendum to consturctor for referencing external objects
   virtual void init();
@@ -23,15 +23,15 @@ struct Component {
   virtual void destroy();
 
   /// @brief Use the constructor to internally deconstruct the object
-  // virtual ~component();
+  virtual ~Component() = default;
 
   bool operator<(const Component &right) const { return _uuid < right._uuid; }
 
-  int64_t get_uuid();
+  uuid get_uuid();
   virtual void print() = 0;
 
   std::weak_ptr<Entity> _entity;
 
 protected:
-  int64_t _uuid;
+  uuid _uuid;
 };
