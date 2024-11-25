@@ -9,9 +9,11 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #clangd req.
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
-
 set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}")
 set(CORE_INCLUDE_DIR "${CMAKE_SOURCE_DIR}")
+
+set(BOOST_INCLUDE_LIBRARIES uuid)
+set(BOOST_ENABLE_CMAKE ON)
 
 FetchContent_Declare(
   glad
@@ -36,9 +38,16 @@ FetchContent_Declare(
   GIT_PROGRESS    TRUE
 )
 
+FetchContent_Declare(
+  boost
+  GIT_REPOSITORY https://github.com/boostorg/boost.git
+  GIT_PROGRESS TRUE
+  GIT_TAG boost-1.86.0
+)
+
 # find_package(OpenGL REQUIRED)
 
-FetchContent_MakeAvailable(glad glfw glm)
+FetchContent_MakeAvailable(glad glfw glm boost)
 set(GLAD_INCLUDE_DIRS "${glad_SOURCE_DIR}/include")
 #set(GLAD_SOURCES "${glad_BINARY_DIR}/src/glad.c")
 set(GLFW_INCLUDE_DIRS "${glfw_SOURCE_DIR}/include")
@@ -55,9 +64,10 @@ target_include_directories(${PROJECT_NAME} PRIVATE
   ${CORE_INCLUDE_DIR}   
   ${GLFW_INCLUDE_DIRS}
   ${GLM_INCLUDE_DIRS}
+  ${BoostUUID_SOURCE_DIR}/include
 )
 #glad_add_library(glad STATIC API gl:core=4.6 LOCATION ${PROJECT_SOURCE_DIR}/vendor/glad-build/${TARGET}) ???
 #include_directories(${INSTALL_INCLUDE_DIR})
 #target_include_directories(${PROJECT_NAME} PUBLIC ${GLAD_INCLUDE_DIRS} ${CORE_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw glm::glm)
+target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw glm::glm Boost::uuid)
 
