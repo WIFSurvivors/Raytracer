@@ -1,30 +1,31 @@
 #include "includes/SimpleSystem.hpp"
 #include "includes/Entity.hpp"
 #include "includes/SimpleComponent.hpp"
+#include "boost/uuid/uuid_io.hpp"
 #include <iostream>
 #include <memory>
 #include <utility>
+#include <type_traits>
 
-// probably inefficent because std::move doesn't move the pointer underneath
-SimpleComponent *SimpleSystem::create_component(std::shared_ptr<Entity> e) {
-  _components[component_count] = std::make_unique<SimpleComponent>(e);
-  auto c = _components[component_count].get();
-  e->add_component(c);
-  return c;
+SimpleSystem::SimpleSystem() { SimpleLogger::print("simple system 1"); }
+
+SimpleComponent *SimpleSystem::create_component(uuid id,
+                                                std::shared_ptr<Entity> e) {
+  return create_component(id, e, 0);
 }
 
-SimpleComponent *SimpleSystem::create_component(std::shared_ptr<Entity> e,
-                                                int value) {
-  _components[component_count] = std::make_unique<SimpleComponent>(e, value);
-  e->add_component(_components[component_count].get());
-  return _components[component_count++].get();
+SimpleComponent *
+SimpleSystem::create_component(uuid id, std::shared_ptr<Entity> e, int value) {
+  _components[id] = std::make_unique<SimpleComponent>(id, e, value);
+  auto ptr = _components[id].get();
+  e->add_component(ptr);
+  return ptr;
 }
+
+bool SimpleSystem::remove(uuid id) { return _components.erase(id); }
+bool SimpleSystem::remove(Component *c) { return remove(c->get_uuid()); }
 
 void SimpleSystem::clear() { _components.clear(); }
-
-// bool SimpleSystem::remove_component(SimpleComponent *c) {
-//   return _components.erase(c);
-// }
 
 void SimpleSystem::update(const float dt) {
   for (auto &&c : _components) {
