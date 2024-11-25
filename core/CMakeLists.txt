@@ -64,7 +64,7 @@ ${GLAD_INCLUDE_DIRS}
 ${CORE_INCLUDE_DIR}   
 ${GLFW_INCLUDE_DIRS}
 ${GLM_INCLUDE_DIRS}
-${BoostUUID_SOURCE_DIR}/include
+${Boost_INCLUDE_DIRS}
 )
 #glad_add_library(glad STATIC API gl:core=4.6 LOCATION ${PROJECT_SOURCE_DIR}/vendor/glad-build/${TARGET}) ???
 #include_directories(${INSTALL_INCLUDE_DIR})
@@ -83,8 +83,9 @@ ${CMAKE_CURRENT_SOURCE_DIR}
 ${GLAD_INCLUDE_DIRS}  
 ${GLFW_INCLUDE_DIRS} 
 ${GLM_INCLUDE_DIRS}
+${Boost_INCLUDE_DIRS}
 )
-target_link_libraries(core PUBLIC glad glfw glm::glm)
+target_link_libraries(core PUBLIC glad glfw glm::glm Boost::uuid)
 IF (TOPLEVEL)
   target_link_libraries(core PUBLIC tcp)
 ENDIF()
