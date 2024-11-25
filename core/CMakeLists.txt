@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
 set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}")
-set(CORE_INCLUDE_DIR "${CMAKE_SOURCE_DIR}")
+set(CORE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 
 set(BOOST_INCLUDE_LIBRARIES uuid)
 set(BOOST_ENABLE_CMAKE ON)
@@ -58,16 +58,33 @@ file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/includes/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/includes/*.h)
 
 
-add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
-target_include_directories(${PROJECT_NAME} PRIVATE
-  ${GLAD_INCLUDE_DIRS}
-  ${CORE_INCLUDE_DIR}   
-  ${GLFW_INCLUDE_DIRS}
-  ${GLM_INCLUDE_DIRS}
-  ${BoostUUID_SOURCE_DIR}/include
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} )
+target_include_directories(${PROJECT_NAME} PUBLIC 
+${GLAD_INCLUDE_DIRS}
+${CORE_INCLUDE_DIR}   
+${GLFW_INCLUDE_DIRS}
+${GLM_INCLUDE_DIRS}
+${BoostUUID_SOURCE_DIR}/include
 )
 #glad_add_library(glad STATIC API gl:core=4.6 LOCATION ${PROJECT_SOURCE_DIR}/vendor/glad-build/${TARGET}) ???
 #include_directories(${INSTALL_INCLUDE_DIR})
 #target_include_directories(${PROJECT_NAME} PUBLIC ${GLAD_INCLUDE_DIRS} ${CORE_INCLUDE_DIR} ${GLFW_INCLUDE_DIRS} ${GLM_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} PRIVATE glad glfw glm::glm Boost::uuid)
+target_link_libraries(${PROJECT_NAME} PUBLIC glad glfw glm::glm Boost::uuid)
 
+IF (TOPLEVEL)
+  target_link_libraries(${PROJECT_NAME} PUBLIC tcp)
+ENDIF()
+
+message(STATUS "CMAKE_SOURCE_DIR: ${CMAKE_CURRENT_SOURCE_DIR}")
+
+add_library(core STATIC ${SOURCES} ${HEADERS})
+target_include_directories(core PUBLIC 
+${CMAKE_CURRENT_SOURCE_DIR}
+${GLAD_INCLUDE_DIRS}  
+${GLFW_INCLUDE_DIRS} 
+${GLM_INCLUDE_DIRS}
+)
+target_link_libraries(core PUBLIC glad glfw glm::glm)
+IF (TOPLEVEL)
+  target_link_libraries(core PUBLIC tcp)
+ENDIF()
