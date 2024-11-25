@@ -1,5 +1,6 @@
 #pragma once
 
+#include "includes/Component.hpp"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <vector>
@@ -20,7 +21,7 @@ namespace core {
  *RenderComponent)
  *  - implement better way to store number of vertices
  */
-class RenderComponent {
+class RenderComponent : Component {
 private:
   GLuint _vbo;
   GLuint _textureID;
@@ -49,8 +50,8 @@ private:
   GLuint mvpUniformID;
   GLuint modelUniformID;
 
-  void
-  setVertices(); // for now does nothing but later here we can load an object
+  // void setVertices(); // for now does nothing but later here we can load an
+  // object
   void setTextures();
 
 public:
