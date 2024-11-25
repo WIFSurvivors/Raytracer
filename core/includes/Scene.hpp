@@ -15,7 +15,7 @@ typedef boost::uuids::uuid uuid;
 struct Entity;
 class Engine;
 
-struct Scene {
+struct Scene /*: public virtual System */ {
   Scene(Engine &e);
 
   std::weak_ptr<Entity> get_root();
@@ -34,12 +34,12 @@ struct Scene {
   UUIDManager *get_uuid_manager();
 
 private:
-  std::shared_ptr<Entity> _root;
-
-  UUIDManager _uuid_manager{};
-
   EntitySystem _entity_system{};
   SimpleSystem _simple_system{};
+
+  UUIDManager _uuid_manager{};
   //   WindowManager _wm{};
   //   core::RenderSystem render_sys{&_wm};
+
+  std::shared_ptr<Entity> _root;
 };

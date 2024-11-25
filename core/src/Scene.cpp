@@ -10,7 +10,7 @@ Scene::Scene(Engine &e) : _root{create_entity("root")} {
 std::weak_ptr<Entity> Scene::get_root() { return _root; }
 
 std::shared_ptr<Entity> Scene::create_entity(std::string name) {
-  _entity_system.print();
+  // _entity_system.print();
   // SimpleLogger::print(
   //     std::format("EntitySystem -> {}", typeid(_entity_system)));
   SimpleLogger::print(std::format("scene: create_entity(name): \"{}\"", name));

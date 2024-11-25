@@ -20,6 +20,5 @@ struct UUIDManager {
 
 private:
   boost::uuids::random_generator gen{};
-  std::map<int, System *> _int_system_mapping{};
   std::map<uuid, System *> _uuid_system_mapping{};
 };

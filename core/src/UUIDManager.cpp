@@ -14,8 +14,6 @@ uuid UUIDManager::getNewUUID(System *s) {
   auto new_uuid = gen();
   SimpleLogger::print(std::format("-- created uuid: \"{}\"",
                                   boost::uuids::to_string(new_uuid)));
-  SimpleLogger::print("0");
-  _int_system_mapping[0] = s;
   SimpleLogger::print("1");
   _uuid_system_mapping[new_uuid] = s;
   SimpleLogger::print("test");

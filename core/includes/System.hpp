@@ -17,6 +17,7 @@ A System handles UUID to Component or Entity bindings and can provide
 system-wide attributes and methods.
 */
 struct System {
+  System() = default;
   virtual ~System() = default;
 
   /**
