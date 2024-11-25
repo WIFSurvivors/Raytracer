@@ -1,6 +1,7 @@
 #include "includes/system/EntitySystem.hpp"
 #include "includes/Entity.hpp"
 #include "includes/utility/SimpleLogger.hpp"
+#include "includes/utility/TablePrinter.hpp"
 #include "boost/uuid/uuid_io.hpp"
 #include <iostream>
 
@@ -40,15 +41,17 @@ bool EntitySystem::remove(Entity *e) {
 }
 
 void EntitySystem::print() {
-  std::cout << "EntitySystem: UUID | Entity Name\n";
-  std::cout << _entities.size() << "\n";
-
+  TablePrinter::printElement("EntitySystem: UUID", 36);
+  std::cout << " | ";
+  TablePrinter::printElement("Entity Name", 12);
+  std::cout << "\n";
+  std::cout << std::string(36 + 12 + 3, '=');
+  std::cout << "\n";
   for (auto const &[uuid, e] : _entities) {
-    std::cout << "test1\n";
     std::cout << uuid << " | ";
     std::cout << (e != nullptr ? e->get_name() : "unknown") << "\n";
   }
 }
 EntitySystem::EntitySystem() : System() {
-  SimpleLogger::print("entity system 1");
+  SimpleLogger::print("-- created entity system");
 }
