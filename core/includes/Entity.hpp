@@ -1,7 +1,7 @@
 #pragma once
 #include "glm/vec3.hpp"
-#include "includes/Component.hpp"
-#include "includes/EntitySystem.hpp"
+#include "includes/component/Component.hpp"
+#include "includes/system/EntitySystem.hpp"
 #include "boost/uuid/uuid.hpp"
 #include <map>
 #include <memory>
@@ -47,6 +47,9 @@ struct Entity : public std::enable_shared_from_this<Entity> {
   void set_name(const std::string &name);
 
 private:
+  friend std::shared_ptr<Entity>
+  EntitySystem::create_root(const std::string &name, uuid id);
+
   friend std::shared_ptr<Entity>
   EntitySystem::create_entity(const std::string &name, uuid id,
                               std::shared_ptr<Entity> parent);

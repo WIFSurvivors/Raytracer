@@ -1,8 +1,15 @@
+#include "includes/system/EntitySystem.hpp"
 #include "includes/Entity.hpp"
-#include "includes/EntitySystem.hpp"
-#include "boost/uuid/uuid_io.hpp"
 #include "includes/utility/SimpleLogger.hpp"
+#include "boost/uuid/uuid_io.hpp"
 #include <iostream>
+
+std::shared_ptr<Entity> EntitySystem::create_root(const std::string &name,
+                                                  uuid id) {
+  auto e = Entity::create(name, id);
+  _entities[id] = e.get();
+  return e;
+}
 
 std::shared_ptr<Entity>
 EntitySystem::create_entity(const std::string &name, uuid id,

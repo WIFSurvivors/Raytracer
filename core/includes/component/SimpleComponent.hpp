@@ -1,13 +1,13 @@
 #pragma once
 
-#include "includes/Component.hpp"
+#include "includes/component/Component.hpp"
 #include "includes/Entity.hpp"
 #include <memory>
 
 struct SimpleComponent : Component {
   //   explicit SimpleComponent(std::weak_ptr<Entity> e);
-  SimpleComponent(uuid id, std::weak_ptr<Entity> e);
-  SimpleComponent(uuid id, std::weak_ptr<Entity> e, int value);
+  SimpleComponent(uuid id, Entity *e);
+  SimpleComponent(uuid id, Entity *e, int value);
   void init() override;
   void update(float dt) override;
   void destroy() override;

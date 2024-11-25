@@ -24,7 +24,7 @@ struct System {
    * A component is always linked to an entity. It is recommended to overwrite
    * return type suited for the system.
    */
-  virtual Component *create_component(uuid id, std::shared_ptr<Entity> e);
+  virtual Component *create_component(uuid id, Entity *e);
 
   /**
    * Entity are responsible for representing components in 3D space.

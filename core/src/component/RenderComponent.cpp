@@ -1,9 +1,7 @@
+#include "includes/component/RenderComponent.hpp"
 #include <glad/glad.h>
-#include "glm/gtc/matrix_transform.hpp"
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/glm.hpp>
-
-#include "includes/RenderComponent.hpp"
-
 #include <iostream>
 
 namespace core {

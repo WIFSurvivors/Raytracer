@@ -1,9 +1,7 @@
-#include "includes/System.hpp"
-
-// #include "includes/utility/NotImplementedError.hpp"
+#include "includes/system/System.hpp"
 #include "includes/utility/NotSupportedError.hpp"
 
-Component *System::create_component(uuid uuid, std::shared_ptr<Entity> e) {
+Component *System::create_component(uuid uuid, Entity *e) {
   throw NotSupportedError{};
 }
 

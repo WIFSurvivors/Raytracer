@@ -1,5 +1,5 @@
-#include "includes/RenderSystem.hpp"
-#include "includes/RenderComponent.hpp"
+#include "includes/system/RenderSystem.hpp"
+#include "includes/component/RenderComponent.hpp"
 #include "includes/ShaderCompiler.hpp"
 
 #include <glm/ext/matrix_transform.hpp>

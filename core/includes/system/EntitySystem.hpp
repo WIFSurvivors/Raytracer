@@ -1,6 +1,6 @@
 #pragma once
 
-#include "includes/System.hpp"
+#include "includes/system/System.hpp"
 #include "boost/uuid/uuid.hpp"
 #include <memory>
 #include <map>
@@ -13,6 +13,7 @@ struct Entity;
 struct EntitySystem : public System {
   EntitySystem();
 
+  std::shared_ptr<Entity> create_root(const std::string &, uuid id);
   std::shared_ptr<Entity> create_entity(const std::string &, uuid id,
                                         std::shared_ptr<Entity> parent);
 

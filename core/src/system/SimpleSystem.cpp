@@ -1,7 +1,7 @@
-#include "includes/SimpleSystem.hpp"
+#include "includes/system/SimpleSystem.hpp"
 #include "includes/Entity.hpp"
-#include "includes/SimpleComponent.hpp"
-#include "boost/uuid/uuid_io.hpp"
+#include "includes/component/SimpleComponent.hpp"
+#include <boost/uuid/uuid_io.hpp>
 #include <iostream>
 #include <memory>
 #include <utility>
@@ -9,13 +9,11 @@
 
 SimpleSystem::SimpleSystem() { SimpleLogger::print("simple system 1"); }
 
-SimpleComponent *SimpleSystem::create_component(uuid id,
-                                                std::shared_ptr<Entity> e) {
+SimpleComponent *SimpleSystem::create_component(uuid id, Entity *e) {
   return create_component(id, e, 0);
 }
 
-SimpleComponent *
-SimpleSystem::create_component(uuid id, std::shared_ptr<Entity> e, int value) {
+SimpleComponent *SimpleSystem::create_component(uuid id, Entity *e, int value) {
   _components[id] = std::make_unique<SimpleComponent>(id, e, value);
   auto ptr = _components[id].get();
   e->add_component(ptr);
@@ -39,6 +37,6 @@ void SimpleSystem::print_all_components() {
   for (auto &&c : _components) {
     std::cout << "- " << c.first << " | " << c.second << " | "
               << c.second->get_value()
-              << " | e: " << (c.second->_entity.lock())->get_uuid() << "\n";
+              << " | e: " << c.second->get_entity()->get_uuid() << "\n";
   }
 }

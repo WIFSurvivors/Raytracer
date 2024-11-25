@@ -1,16 +1,14 @@
-#include "includes/RenderSystem.hpp"
-#include "includes/RenderComponent.hpp"
-
+#include "includes/system/RenderSystem.hpp"
+#include "includes/component/RenderComponent.hpp"
 #include "includes/Engine.hpp"
-
 #include "includes/utility/SimpleLogger.hpp"
 
 int main() {
-  SimpleLogger::print("main 1");
+  SimpleLogger::print("=== APP STARTED ===");
   Engine engine{};
-  SimpleLogger::print("main 2");
+  SimpleLogger::print("=== START LOOP ===");
   engine.startLoop();
-  SimpleLogger::print("main 3");
+  SimpleLogger::print("=== APP ENDED ===");
 
   //   SceneManager sm{};
   //   sm.load();

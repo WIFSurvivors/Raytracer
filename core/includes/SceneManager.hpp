@@ -1,8 +1,8 @@
 #pragma once
 
-#include "includes/SimpleSystem.hpp"
-#include "includes/RenderSystem.hpp"
-#include "includes/RenderComponent.hpp"
+#include "includes/system/SimpleSystem.hpp"
+#include "includes/system/RenderSystem.hpp"
+#include "includes/component/RenderComponent.hpp"
 #include "includes/UUIDManager.hpp"
 
 struct SceneManager {

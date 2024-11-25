@@ -1,6 +1,6 @@
 #pragma once
 
-#include "includes/RenderComponent.hpp"
+#include "includes/component/RenderComponent.hpp"
 #include "includes/ShaderCompiler.hpp"
 #include "includes/WindowManager.hpp"
 #include <glad/glad.h>
