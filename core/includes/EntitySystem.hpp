@@ -22,5 +22,5 @@ struct EntitySystem : public System {
   void print();
 
 private:
-  std::map<uuid, std::weak_ptr<Entity>> _entities{};
+  std::map<uuid, Entity *> _entities{};
 };

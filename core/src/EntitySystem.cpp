@@ -38,10 +38,15 @@ bool EntitySystem::remove(Entity *e) {
 
 void EntitySystem::print() {
   std::cout << "EntitySystem: UUID | Entity Name\n";
+  std::cout << _entities.size() << "\n";
+
   for (auto const &[uuid, e] : _entities) {
+    std::cout << "test1\n";
     auto e_locked = e.lock();
+    std::cout << "test2\n";
     if (e_locked)
-      std::cout << uuid << " | " << e_locked->get_name() << "\n";
+      std::cout << "test3\n";
+    std::cout << uuid << " | " << e_locked->get_name() << "\n";
   }
 }
 EntitySystem::EntitySystem() { SimpleLogger::print("entity system 1"); }

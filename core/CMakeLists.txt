@@ -3,9 +3,10 @@ project(RayTracer VERSION 0.0.1 DESCRIPTION "RayTracer in CPP using OpenGL")
 
 include(FetchContent)
 set(CMAKE_CXX_STANDARD 23)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #clangd req.
+set(COMPILE_FLAGS -g)
+#set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #clangd req.
 
-set(CMAKE_CXX_CPPLINT "cpplint;--filter=-legal,-build/include_order,-build/include_subdir,-whitespace/indent")
+#set(CMAKE_CXX_CPPLINT "cpplint;--filter=-legal,-build/include_order,-build/include_subdir,-whitespace/indent")
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 
@@ -59,7 +60,7 @@ file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/includes/*.hpp ${CMAKE_CUR
 
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
-target_include_directories(${PROJECT_NAME} PRIVATE
+target_include_directories(${PROJECT_NAME} PUBLIC
   ${GLAD_INCLUDE_DIRS}
   ${CORE_INCLUDE_DIR}   
   ${GLFW_INCLUDE_DIRS}
