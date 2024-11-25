@@ -1,8 +1,5 @@
 #pragma once
 
-#include "includes/RenderComponent.hpp"
-#include "includes/ShaderCompiler.hpp"
-#include "includes/WindowManager.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -11,12 +8,15 @@
 #include <memory>
 #include <vector>
 
+#include "includes/RenderComponent.hpp"
+#include "includes/ShaderCompiler.hpp"
+
 namespace core {
 /**
  *	RenderSystem class, that is resposible for:
- *	- ~~Window Managing~~
+ *	- Window Managing
  *	- Rendering
- *	- ~~Input processing~~
+ *	- Input processing
  *
  *	TODO:
  *	- Differentiate between private and public members
@@ -31,24 +31,19 @@ namespace core {
  *	- Jeb, i dont know what to do: implement create_component()
  *	- Do we really need a separate class for shaders
  */
-struct RenderSystem {
-
-  RenderSystem(WindowManager *wm);
-
-  void init();
-  void update(const float dt); // represents render
-  void destroy();
-
-  //  temporal
-  //  we need, this because Render System is responsible for the window and
-  //  input handling
-  void render();
-
+class RenderSystem {
 private:
-  WindowManager *_wm;
-  std::unique_ptr<RenderComponent> _component;
+  //  This function is called, whenever the window size changes
+  static void framebuffer_size_callback(GLFWwindow *window, int new_width,
+                                        int new_height);
+  static void processInput(GLFWwindow *window);
 
-  GLuint mouseUniformID; // a bit cringe... but it stays here for now
+  int _scr_height = 800;
+  int _scr_width = 800;
+  double _mouseX = 0;
+  double _mouseY = 0;
+  GLuint mouseUniformID;
+  GLFWwindow *_window;
   GLuint _vao;
 
   //As i understand the rendersystem is responsible for the rendering of the different componennts.
@@ -68,6 +63,20 @@ private:
   //  Not sure about this
   std::unique_ptr<Shader> program;
   std::unique_ptr<Shader> compute;
+
+  int initGLFW();
+
+public:
+  //  Jeb, i dont know what to do
+  std::unique_ptr<RenderComponent> _component;
+  void init();
+  void update();
+  void destroy();
+
+  //  temporal
+  //  we need, this because Render System is responsible for the window and
+  //  input handling
+  void render();
 };
 
 } // namespace core
