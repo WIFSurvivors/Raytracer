@@ -1,11 +1,11 @@
 #pragma once
 
 #include "includes/utility/SimpleLogger.hpp"
-#include "includes/System.hpp"
-#include "includes/SimpleSystem.hpp"
-#include "includes/EntitySystem.hpp"
+#include "includes/system/System.hpp"
 #include "includes/WindowManager.hpp"
-#include "includes/RenderSystem.hpp"
+#include "includes/system/SimpleSystem.hpp"
+#include "includes/system/EntitySystem.hpp"
+#include "includes/system/RenderSystem.hpp"
 #include "includes/UUIDManager.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <memory>
@@ -17,14 +17,15 @@ class Engine;
 
 struct Scene /*: public virtual System */ {
   Scene(Engine &e);
+  Scene(Engine &e, uuid id);
 
   std::weak_ptr<Entity> get_root();
 
-  std::shared_ptr<Entity> create_entity(std::string name);
-  std::shared_ptr<Entity> create_entity(std::string name, uuid id);
-  std::shared_ptr<Entity> create_entity(std::string name,
+  std::shared_ptr<Entity> create_entity(const std::string &name);
+  std::shared_ptr<Entity> create_entity(const std::string &name, uuid id);
+  std::shared_ptr<Entity> create_entity(const std::string &name,
                                         std::shared_ptr<Entity> parent);
-  std::shared_ptr<Entity> create_entity(std::string name, uuid id,
+  std::shared_ptr<Entity> create_entity(const std::string &name, uuid id,
                                         std::shared_ptr<Entity> parent);
 
   void print();
@@ -34,6 +35,9 @@ struct Scene /*: public virtual System */ {
   UUIDManager *get_uuid_manager();
 
 private:
+  std::shared_ptr<Entity> create_root(const std::string &name);
+  std::shared_ptr<Entity> create_root(const std::string &name, uuid id);
+
   EntitySystem _entity_system{};
   SimpleSystem _simple_system{};
 

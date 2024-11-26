@@ -10,7 +10,7 @@ struct Component {
   // Life cycle of a component:
 
   /// @brief Use the constructor to internally initialize the object
-  explicit Component(uuid id, std::weak_ptr<Entity> e);
+  Component(uuid id, Entity *e);
 
   /// @brief Appendum to consturctor for referencing external objects
   virtual void init();
@@ -28,10 +28,11 @@ struct Component {
   bool operator<(const Component &right) const { return _uuid < right._uuid; }
 
   uuid get_uuid();
-  virtual void print() = 0;
+  virtual void print() {}
 
-  std::weak_ptr<Entity> _entity;
+  inline Entity *get_entity() { return _entity; }
 
 protected:
   uuid _uuid;
+  Entity *_entity;
 };

@@ -1,6 +1,6 @@
 #include "includes/SceneManager.hpp"
-#include "glm/vec3.hpp"
 #include "includes/Scene.hpp"
+#include <glm/vec3.hpp>
 #include <iostream>
 
 SceneManager::SceneManager() { /*render_sys.init();*/

@@ -2,7 +2,7 @@
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-#include "includes/RenderComponent.hpp"
+#include "includes/component/RenderComponent.hpp"
 
 #include <iostream>
 
@@ -10,7 +10,7 @@ namespace core {
 
 void RenderComponent::init(GLuint programID) {
   std::cout << "rc: a\n";
-  //  TODO:
+  //  TODO:‚‚‚
   //  - Understand the index of the generic vertex attribute
   //  (glVertexAttribPointer())
   //  - If we gonna have more render components index has to be different for

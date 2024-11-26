@@ -1,6 +1,6 @@
 #pragma once
 
-#include "includes/Component.hpp"
+#include "includes/component/Component.hpp"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <vector>

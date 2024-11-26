@@ -1,5 +1,7 @@
 #pragma once
 
+#include "includes/component/RenderComponent.hpp"
+#include "includes/ShaderCompiler.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -8,8 +10,6 @@
 #include <memory>
 #include <vector>
 
-#include "includes/RenderComponent.hpp"
-#include "includes/ShaderCompiler.hpp"
 
 namespace core {
 /**
