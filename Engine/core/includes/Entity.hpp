@@ -1,14 +1,8 @@
 #pragma once
 #include "glm/vec3.hpp"
-<<<<<<< HEAD
-#include "includes/Component.hpp"
-#include "includes/EntitySystem.hpp"
-#include <boost/uuid/uuid.hpp>
-=======
 #include "includes/component/Component.hpp"
 #include "includes/system/EntitySystem.hpp"
-#include "boost/uuid/uuid.hpp"
->>>>>>> uuid-implementation
+#include <boost/uuid/uuid.hpp>
 #include <map>
 #include <memory>
 #include <string>

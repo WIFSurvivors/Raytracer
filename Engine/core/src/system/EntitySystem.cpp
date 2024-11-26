@@ -3,6 +3,7 @@
 #include "includes/utility/SimpleLogger.hpp"
 #include "includes/utility/TablePrinter.hpp"
 #include <boost/uuid/uuid.hpp>
+#include <boost/uuid/uuid_io.hpp>
 #include <iostream>
 
 std::shared_ptr<Entity> EntitySystem::create_root(const std::string &name,

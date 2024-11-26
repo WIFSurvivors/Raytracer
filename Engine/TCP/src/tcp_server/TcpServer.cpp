@@ -61,14 +61,15 @@ void TcpServer::stop() {
     std::cout << "Server stopped" << std::endl;
 }
 
-int main() {
-    try {
-        auto server = std::make_shared<TcpServer>(51234);
-        server->start();
-        std::this_thread::sleep_for(std::chrono::seconds(1000));
-        server->stop();
-    } catch (std::exception& e) {
-        std::cerr << "Exception: " << e.what() << std::endl;
-    }
-    return 0;
-}
+//int main() {
+//    try {
+//        auto server = std::make_shared<TcpServer>(51234);
+//        server->start();
+//        std::this_thread::sleep_for(std::chrono::seconds(1000));
+//        server->stop();
+//    } catch (std::exception& e) {
+//        std::cerr << "Exception: " << e.what() << std::endl;
+//    }
+//    return 0;
+//}
+//
