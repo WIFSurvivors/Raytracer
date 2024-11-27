@@ -8,6 +8,10 @@ public class EcsApi
     public EcsApi(String host, int port) {
         _client = new MyTcpClient(host, port);
     }
+    public string get_root() {
+        String returnValue = _client.Send("GetRoot");
+        return "GetRoot " + returnValue;
+    }   
     public string get_entity(String UUID)
     {
         return "GetEntity";

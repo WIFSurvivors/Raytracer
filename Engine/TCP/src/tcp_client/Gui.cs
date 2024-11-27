@@ -16,6 +16,7 @@ public class Gui
             // Send second message
             String uuid2 = api.rotate_entity("213213", 1.0f, 2.0f, 3.0f);
             //client.Close();
+            string message = api.get_root();
         }
         catch (ArgumentNullException e)
         {
