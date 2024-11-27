@@ -103,7 +103,7 @@ int main() {
   
   bvh.Refit( tinybvh::BVH::VERBOSE );
 
-  std::cout << "Nodes : " << bvh.NodeCount(tinybvh::BVH::WALD_32BYTE) << "  Node: " << (bvh.bvhNode) <<std::endl;
+  std::cout << "Nodes : " << bvh.NodeCount(tinybvh::BVH::WALD_32BYTE) << "  Node: " << (bvh.usedBVHNodes) <<std::endl;
   assert( bvh.bvhNode != 0);
   auto* leftnode = &bvh.bvhNode[0];
   auto* rightnode = &bvh.bvhNode[1];
@@ -112,7 +112,15 @@ int main() {
   unsigned retVal =0, nodeIdx=0, stack[64],stackPtr=0;
   while(1){
     const auto& n = bvh.bvhNode[nodeIdx];
-    std::cout << n.leftFirst << std::endl;
+    std::cout << n.aabbMax.x << std::endl;
+    std::cout << n.aabbMax.y << std::endl;
+    std::cout << n.aabbMax.z << std::endl;
+
+    std::cout << " " << std::endl;
+    std::cout << n.aabbMin.x << std::endl;
+    std::cout << n.aabbMin.y << std::endl;
+    std::cout << n.aabbMin.z << std::endl;
+    std::cout << "---" << std::endl;
     retVal++;
     if(n.isLeaf()) { if (stackPtr==0) break; else nodeIdx = stack[--stackPtr];}
     else nodeIdx = n.leftFirst, stack[stackPtr++] = n.leftFirst+1; 
