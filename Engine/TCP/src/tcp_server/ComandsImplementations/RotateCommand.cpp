@@ -1,6 +1,6 @@
 #include "includes/CommandImplementations/RotateCommand.hpp"
 
-int RotateCommand::execute() {
+int RotateCommand::execute(Engine * engine) {
     std::cout << "RotateCommand executed" << std::endl; 
     return 0;
 }

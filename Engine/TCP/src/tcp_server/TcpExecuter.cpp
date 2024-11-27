@@ -6,8 +6,8 @@ TcpExecuter::TcpExecuter()
 
 }
 
-int TcpExecuter::execute(TcpCommand *command) { 
-    std::cout << "Executing command " << command->execute() << std::endl;
+int TcpExecuter::execute(TcpCommand *command, Engine *engine) { 
+    std::cout << "Executing command " << command->execute(engine) << std::endl;
     return 0; 
 }
 

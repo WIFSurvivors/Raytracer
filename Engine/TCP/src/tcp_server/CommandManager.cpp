@@ -1,10 +1,5 @@
 #include "includes/CommandManager.hpp"
 
-CommandManager::CommandManager() {
-    _parser = TcpParser();
-    _factory = TcpCommandFactory();
-    _executer = TcpExecuter();
-}
 
 void CommandManager::push(std::unique_ptr<TcpCommand> command) {
   _command_queue.push(std::move(command));
@@ -21,7 +16,7 @@ std::string CommandManager::execute_command(std::string command) {
   std::unique_ptr<TcpCommand> tcp_command =
       _factory.create_command(*parsed_command);
   if (tcp_command) {
-    int return_value = _executer.execute(tcp_command.get());
+    int return_value = _executer.execute(tcp_command.get(), _engine);
     if(return_value == 0){
       push(std::move(tcp_command));
     }

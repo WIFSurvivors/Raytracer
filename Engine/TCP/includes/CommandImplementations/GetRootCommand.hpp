@@ -7,7 +7,7 @@
 struct GetRootCommand : public TcpCommand
 {
 	GetRootCommand(); 
-	int execute() override;
+	int execute(Engine * e) override;
 	int undo() override;
 
 private:

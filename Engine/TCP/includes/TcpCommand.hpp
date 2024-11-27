@@ -5,13 +5,13 @@
 #include <vector>
 #include <memory>
 #include <cstdint>
-
+#include "includes/Engine.hpp"
 struct TcpCommand {
   std::vector<std::string> parameters;
   TcpCommand() = default;
   explicit TcpCommand(int64_t uuid) : _uuid(uuid) {}
   virtual ~TcpCommand() = default;
-  virtual int execute() = 0;
+  virtual int execute(Engine * engine) = 0;
   virtual int undo() = 0;
     int64_t _uuid;
   private:
