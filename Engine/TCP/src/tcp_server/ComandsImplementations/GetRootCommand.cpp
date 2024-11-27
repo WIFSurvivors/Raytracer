@@ -3,6 +3,7 @@
 GetRootCommand::GetRootCommand() 
 {
     std::cout << "GetRootCommand::GetRootCommand()" << std::endl;
+   
 }
 
 int GetRootCommand::undo() 
