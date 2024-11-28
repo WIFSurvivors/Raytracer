@@ -42,7 +42,10 @@ glm::ivec2 WindowManager::getScreenSize() const { return _screenSize; }
 double WindowManager::get_time() { return glfwGetTime(); }
 
 bool WindowManager::_initGLFW() {
-  glfwInit();
+   	if(!glfwInit()) {
+        std::cout << "Failed to init glfw\n";
+        return false;
+	}
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -55,6 +58,7 @@ bool WindowManager::_initGLFW() {
 
   // glfw window creation
   // --------------------
+  // std::cout << "Im gonna create a window\n";
   _window = glfwCreateWindow(_screenSize.x, _screenSize.y, "RenderWindow", NULL,
                              NULL);
   if (_window == NULL) {
@@ -63,6 +67,8 @@ bool WindowManager::_initGLFW() {
     return 0;
   }
   glfwMakeContextCurrent(_window);
+  std::cout << _window << "\n";
+  glfwSetInputMode(_window, GLFW_STICKY_KEYS, GL_TRUE);
   glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
   return true;
 }

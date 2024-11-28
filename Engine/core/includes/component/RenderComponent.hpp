@@ -5,23 +5,23 @@
 #include <glm/glm.hpp>
 #include <vector>
 
-namespace core {
+
 /**
- *	RenderComponent class:
+ *    RenderComponent class:
  *
- *	TODO:
- *	- Do we store vertices in Render Component???
- *	 - if no, then Render Components can be allocated on the stack (i am not
+ *    TODO:
+ *    - Do we store vertices in Render Component???
+ *     - if no, then Render Components can be allocated on the stack (i am not
  *sure about this)
- *	- Move view matrix and projection matrix somewhere else
- *	- implement setVertices()
- *	- implement beter set Texture
+ *    - Move view matrix and projection matrix somewhere else
+ *    - implement setVertices()
+ *    - implement beter set Texture
  *  - Do we need _uvVBO and UV???
  *  - Where do we define the Uniforms??? (I dont like it that it is in the
  *RenderComponent)
  *  - implement better way to store number of vertices
  */
-class RenderComponent : Component {
+class RenderComponent  : public virtual Component{
 private:
   GLuint _vbo;
   GLuint _textureID;
@@ -48,18 +48,14 @@ private:
 
   GLuint textUniformID;
   GLuint mvpUniformID;
-  GLuint modelUniformID;
 
   // void setVertices(); // for now does nothing but later here we can load an
   // object
   void setTextures();
 
 public:
+// RenderComponent();
   void init(GLuint programID);
-  const GLuint getModelUniform() const;
-  glm::mat4* getModelMatrice();
-  void update();
-  void draw(GLuint VAO);
+  void update(GLuint VAO);
   void destroy();
 };
-} // namespace core

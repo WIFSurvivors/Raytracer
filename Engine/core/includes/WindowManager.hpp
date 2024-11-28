@@ -23,8 +23,10 @@ struct WindowManager {
 
   double get_time();
 
+    GLFWwindow *_window;
+
 private:
-  GLFWwindow *_window;
+
 
   glm::vec2 _mousePos{0., 0.};
   glm::ivec2 _screenSize{800, 800};
