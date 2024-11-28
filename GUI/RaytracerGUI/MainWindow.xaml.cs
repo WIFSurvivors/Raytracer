@@ -84,8 +84,8 @@ namespace RaytracerGUI
                 {
                     case "btnLeft":
                         tbxLog.AppendText(button + " was clicked! \n");
-                        //string msg = _ecsApi.get_root();
-                        //tbxLog.AppendText(msg);
+                        string msg = _ecsApi.get_root();
+                        tbxLog.AppendText(msg);
                         tbxLog.ScrollToEnd();
                         break;
 
