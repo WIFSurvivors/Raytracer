@@ -1,5 +1,6 @@
 #pragma once
 
+#include "includes/Entity.hpp"
 #include "includes/component/Component.hpp"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -23,7 +24,7 @@
  */
 // class RenderComponent  : public virtual Component{
 
-class RenderComponent{
+class RenderComponent: Component{
 private:
   GLuint _vbo;
   GLuint _textureID;
@@ -56,7 +57,9 @@ private:
   void setTextures();
 
 public:
-// RenderComponent();
+  RenderComponent(uuid id, Entity* e, GLuint programID): Component(id, e){
+      init(programID);
+  };
   void init(GLuint programID);
   void update(GLuint VAO);
   void destroy();
