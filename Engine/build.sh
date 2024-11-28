@@ -13,7 +13,7 @@ debug() {
 	cmake -D CMAKE_BUILD_TYPE=DEBUG -D GLFW_BUILD_X11=1 -D GLFW_BUILD_WAYLAND=0 -S . -B build-debug -G "Ninja" && \
 	cd build-debug || exit && \
 	ninja && \
-	./RayTracer
+	./TopLevelProject
 }
 
 while [[ $# -gt 0 ]];do
