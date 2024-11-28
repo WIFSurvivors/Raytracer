@@ -16,11 +16,11 @@ std::string CommandManager::execute_command(std::string command) {
   std::unique_ptr<TcpCommand> tcp_command =
       _factory.create_command(*parsed_command);
   if (tcp_command) {
-    int return_value = _executer.execute(tcp_command.get(), _engine);
-    if(return_value == 0){
+    std::string return_value = _executer.execute(tcp_command.get(), _engine);
+    if(return_value.compare( "0") == 0){
       push(std::move(tcp_command));
     }
-    return std::to_string(return_value);
+    return return_value;
   } else {
     std::cout << "Failed to parse command" << std::endl;
     return "Failed to parse command";

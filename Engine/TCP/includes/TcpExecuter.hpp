@@ -5,7 +5,7 @@
 
 struct TcpExecuter {
   TcpExecuter();
-  int execute(TcpCommand *command , Engine *engine);
+  std::string execute(TcpCommand *command , Engine *engine);
   int undo(TcpCommand * command);
 
 private:
