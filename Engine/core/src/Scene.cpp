@@ -1,6 +1,9 @@
 #include "includes/Scene.hpp"
 #include "includes/Engine.hpp"
+#include "includes/utility/NotImplementedError.hpp"
+#include "includes/utility/SimpleLogger.hpp"
 #include <boost/uuid/uuid_io.hpp>
+#include <cassert>
 #include <format>
 
 Scene::Scene(Engine &e) : _root{create_root("root")} {
@@ -46,6 +49,11 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
   return _entity_system.create_entity(name, id, parent);
 }
 
+bool Scene::remove(uuid id) {
+  throw NotImplementedError();
+  // return false;
+}
+
 void Scene::print() { _root->print(); }
 
 void Scene::generate_sample_content() {
@@ -61,8 +69,16 @@ void Scene::generate_sample_content() {
   _uuid_manager.print();
   _entity_system.print();
 
-  //   auto c1 = _simple_system.create_component(e1);
+SimpleLogger::print(std::string(10, '-'));
+  auto new_uuid = _uuid_manager.getNewUUID(&_simple_system);
+  // auto c0 = _render_system.create_component(e1, r, 2);
+  SimpleLogger::print(std::format("wawa {}", e1.get() != nullptr));
+  auto c1 = _simple_system.create_component(new_uuid, e1.get());
+  new_uuid = _uuid_manager.getNewUUID(&_simple_system);
+  SimpleLogger::print(std::format("wawa {}", e3.get() != nullptr));
+  auto c2 = _simple_system.create_component(new_uuid, e3.get());
   //   auto c1 = _simple_system.create_component(e1, 1);
+  SimpleLogger::print(std::string(10, '-'));
 }
 
 UUIDManager *Scene::get_uuid_manager() { return &_uuid_manager; }

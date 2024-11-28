@@ -6,7 +6,7 @@
 Component::Component(uuid id, Entity *e) : _uuid{id}, _entity{e} {
   // has to be rewritten for windows apparently?
   // https://en.cppreference.com/w/cpp/error/assert
-  assert(e == nullptr && "Entity is a nullptr");
+  assert(e != nullptr && "Entity is a nullptr");
   e->add_component(this);
 }
 void Component::init() {}

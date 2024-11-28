@@ -13,9 +13,9 @@
 
 typedef boost::uuids::uuid uuid;
 struct Entity;
-class Engine;
+struct Engine;
 
-struct Scene /*: public virtual System */ {
+struct Scene /*: public virtual System*/ {
   Scene(Engine &e);
   Scene(Engine &e, uuid id);
 
@@ -29,6 +29,8 @@ struct Scene /*: public virtual System */ {
                                         std::shared_ptr<Entity> parent);
 
   void print();
+
+  bool remove(uuid id); // probably not required here...
 
   void generate_sample_content();
 
