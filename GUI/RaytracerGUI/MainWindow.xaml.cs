@@ -9,6 +9,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using tcp_client;
 
 using Microsoft.Win32;
 
@@ -19,10 +20,13 @@ namespace RaytracerGUI
     /// </summary>
     public partial class MainWindow : Window
     {
+        private EcsApi _ecsApi;
+
         public MainWindow()
         {
             InitializeComponent();
             this.Background = (Brush)Application.Current.Resources["WindowBackgroundColor"];
+            _ecsApi = new EcsApi("127.0.0.1",51234);            
         }
 
         //Menu clicks
@@ -79,6 +83,8 @@ namespace RaytracerGUI
                 {
                     case "btnLeft":
                         tbxLog.AppendText(button + " was clicked! \n");
+                        string msg = _ecsApi.GetRoot();
+                        tbxLog.AppendText(msg);
                         tbxLog.ScrollToEnd();
                         break;
 
