@@ -66,7 +66,7 @@ jobs:
     steps:
       - name: Download MinGW GCC 14.2.0
         run: |
-          curl -LO https://github.com/niXman/mingw-builds-binaries/archive/refs/tags/14.2.0-rt_v12-rev0.zip
+          curl -LO https://github.com/niXman/mingw-builds-binaries/releases/download/14.2.0-rt_v12-rev0/i686-14.2.0-release-win32-dwarf-ucrt-rt_v12-rev0.7z
 
       - name: Install 7-Zip
         run: |
@@ -74,8 +74,7 @@ jobs:
 
       - name: Extract GCC
         run: |
-          7z x 14.2.0-rt_v12-rev0.zip -oC:\tools
-          7z x C:\tools\x86_64-14.2.0-release-win32-seh-ucrt-rt_v12-rev0.7z -oC:\tools
+          7z x i686-14.2.0-release-win32-dwarf-ucrt-rt_v12-rev0.7z -oC:\tools
 
       - name: Add GCC to PATH
         run: echo "C:\tools\x86_64-14.2.0-release-win32-seh-ucrt-rt_v12-rev0\bin" >> $env:GITHUB_PATH
