@@ -2,7 +2,8 @@
 
 #include "includes/Scene.hpp"
 #include "includes/UUIDManager.hpp"
-class TcpServer;
+#include "includes/TcpServer.hpp"
+
 /**
  * Engine is responsible for starting the app and the fundamental parts.
  * These are the UUID Manager, a simple Scene (which initializes the  ECS) and

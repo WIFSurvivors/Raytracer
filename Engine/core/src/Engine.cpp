@@ -1,7 +1,7 @@
 #include "includes/Engine.hpp"
-#include "includes/TcpServer.hpp"
 #include "includes/utility/SimpleLogger.hpp"
 
+class TcpServer;
 Engine::Engine() { init(); }
 
 void Engine::init() {

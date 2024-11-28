@@ -1,5 +1,6 @@
 #include "includes/CommandImplementations/GetRootCommand.hpp"
 #include "includes/Entity.hpp"
+#include "includes/Engine.hpp"
 #include "includes/Scene.hpp"
 #include <boost/json.hpp>
 #include <boost/uuid/uuid_io.hpp>

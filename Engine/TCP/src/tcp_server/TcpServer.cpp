@@ -1,6 +1,5 @@
 #include "includes/TcpServer.hpp"
-
-#include "includes/Engine.hpp"
+class Engine;
 
 TcpServer::TcpServer(int port, Engine &e)
     : _io_context(),

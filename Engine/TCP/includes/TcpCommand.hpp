@@ -5,7 +5,7 @@
 #include <vector>
 #include <memory>
 #include <cstdint>
-#include "includes/Engine.hpp"
+class Engine;
 struct TcpCommand {
   std::vector<std::string> parameters;
   TcpCommand() = default;
