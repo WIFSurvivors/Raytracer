@@ -3,6 +3,7 @@
 #include <glm/ext/matrix_transform.hpp>
 
 #include "includes/component/RenderComponent.hpp"
+#include "glm/ext/matrix_clip_space.hpp"
 
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>

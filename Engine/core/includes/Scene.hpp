@@ -44,10 +44,10 @@ private:
 
   EntitySystem _entity_system{};
   SimpleSystem _simple_system{};
+  //   core::RenderSystem render_sys{&_wm};
 
   UUIDManager _uuid_manager{};
-  //   WindowManager _wm{};
-  //   core::RenderSystem render_sys{&_wm};
+  //   WindowManager _wm{}; // will probably end up in engine
 
   std::shared_ptr<Entity> _root;
 };

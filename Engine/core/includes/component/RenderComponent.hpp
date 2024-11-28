@@ -21,7 +21,9 @@
  *RenderComponent)
  *  - implement better way to store number of vertices
  */
-class RenderComponent  : public virtual Component{
+// class RenderComponent  : public virtual Component{
+
+class RenderComponent{
 private:
   GLuint _vbo;
   GLuint _textureID;

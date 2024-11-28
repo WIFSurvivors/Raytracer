@@ -38,13 +38,13 @@ void RenderSystem::init() {
   std::cout << "rs: c\n";
   //  I dont like this at all
   Shader simpleShader{
-      std::make_pair(GL_VERTEX_SHADER, "../shaders/vertexshader.glsl"),
-      std::make_pair(GL_FRAGMENT_SHADER, "../shaders/fragmentshader.glsl")};
+      std::make_pair(GL_VERTEX_SHADER, "../core/shaders/vertexshader.glsl"),
+      std::make_pair(GL_FRAGMENT_SHADER, "../core/shaders/fragmentshader.glsl")};
   program = std::make_unique<Shader>(simpleShader);
   //  program->activateShader();
   //  I dont like this at all
   Shader computeShader{
-      std::make_pair(GL_COMPUTE_SHADER, "../shaders/computeshader.glsl")};
+      std::make_pair(GL_COMPUTE_SHADER, "../core/shaders/computeshader.glsl")};
   compute = std::make_unique<Shader>(computeShader);
 
   std::cout << "rs: d\n";

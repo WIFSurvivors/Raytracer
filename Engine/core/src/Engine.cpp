@@ -13,10 +13,10 @@ void Engine::init() {
   }
 }
 
-void Engine::startLoop() {while (true)
-{
-  /* code */
-}
+void Engine::startLoop() {
+  while (true) {
+    /* code */
+  }
 }
 
 UUIDManager *Engine::get_active_uuid_manager() {

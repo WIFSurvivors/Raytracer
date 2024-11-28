@@ -3,7 +3,6 @@
 #include "includes/component/Component.hpp"
 #include "includes/system/EntitySystem.hpp"
 #include <boost/uuid/uuid.hpp>
-#include <map>
 #include <memory>
 #include <string>
 #include <vector>
@@ -32,13 +31,17 @@ struct Entity : public std::enable_shared_from_this<Entity> {
 
   std::weak_ptr<Entity> get_parent_entity();
 
-  glm::vec3 _position{};
-  glm::vec3 _rotation{};
-  glm::vec3 _scale{1.f, 1.f, 1.f};
+  glm::vec3 get_local_position() const;
+  void set_local_position(const glm::vec3 pos);
+  glm::vec3 get_world_position() const;
 
-  glm::vec3 get_local_position();
-  glm::vec3 get_local_rotation();
-  glm::vec3 get_local_scale();
+  glm::vec3 get_local_rotation() const;
+  void set_local_rotation(const glm::vec3 pos);
+  glm::vec3 get_world_rotation() const;
+
+  glm::vec3 get_local_scale() const;
+  void set_local_scale(const glm::vec3 pos);
+  glm::vec3 get_world_scale() const;
 
   inline uuid get_uuid() { return _uuid; }
   void print();
@@ -60,6 +63,10 @@ private:
 
   uuid _uuid{};
   std::string _name{"untitled"};
+
+  glm::vec3 _position{};
+  glm::vec3 _rotation{};
+  glm::vec3 _scale{1.f, 1.f, 1.f};
 
   std::weak_ptr<Entity> _parent{};
   std::vector<std::shared_ptr<Entity>> _child_entities{};

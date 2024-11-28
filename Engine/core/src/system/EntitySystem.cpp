@@ -6,6 +6,10 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <iostream>
 
+#define GLM_ENABLE_EXPERIMENTAL
+// #include "glm/vec3.hpp"
+#include "glm/ext.hpp"
+
 std::shared_ptr<Entity> EntitySystem::create_root(const std::string &name,
                                                   uuid id) {
   auto e = Entity::create(name, id);
@@ -45,12 +49,21 @@ void EntitySystem::print() {
   TablePrinter::printElement("EntitySystem: UUID", 36);
   std::cout << " | ";
   TablePrinter::printElement("Entity Name", 12);
+  std::cout << " | ";
+  TablePrinter::printElement("Position", 34);
   std::cout << "\n";
-  std::cout << std::string(36 + 12 + 3, '=');
+  std::cout << std::string(36 + 12 + 34 + 3, '=');
   std::cout << "\n";
   for (auto const &[uuid, e] : _entities) {
     std::cout << uuid << " | ";
-    std::cout << (e != nullptr ? e->get_name() : "unknown") << "\n";
+    if (e == nullptr) {
+      std::cout << "missing...\n";
+      continue;
+    }
+    TablePrinter::printElement(e->get_name(), 12);
+    std::cout << " | ";
+    std::cout << e->get_world_position();
+    std::cout << "\n";
   }
 }
 EntitySystem::EntitySystem() : System() {
