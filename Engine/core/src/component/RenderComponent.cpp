@@ -5,6 +5,7 @@
 #include "includes/component/RenderComponent.hpp"
 
 #include <iostream>
+#include <glm/gtc/matrix_transform.hpp>
 
 
 void RenderComponent::init(GLuint programID) {
@@ -78,7 +79,6 @@ void RenderComponent::update(GLuint VAO) {
   //  TODO:
   //  calculate the aspect ratio appropriately
   _projectionMatrix = glm::perspective(glm::radians(FoV), 1.0f, 0.1f, 100.0f);
-
   glm::mat4 MVP = _projectionMatrix * _viewMatrix * _translationMatrix;
   glUniform1i(textUniformID, 0);
   //  GL_FALSE is for transpose
