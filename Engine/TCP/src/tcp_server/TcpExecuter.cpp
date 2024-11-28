@@ -6,9 +6,10 @@ TcpExecuter::TcpExecuter()
 
 }
 
-int TcpExecuter::execute(TcpCommand *command) { 
-    std::cout << "Executing command " << command->execute() << std::endl;
-    return 0; 
+std::string TcpExecuter::execute(TcpCommand *command, Engine *engine) { 
+    std::string return_value = command->execute(engine);
+    std::cout << "Executing command " << return_value << std::endl;
+    return return_value; 
 }
 
 int TcpExecuter::undo(TcpCommand *command) { return 0; }

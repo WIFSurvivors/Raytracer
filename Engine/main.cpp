@@ -11,15 +11,6 @@ int main() {
   SimpleLogger::print("=== START LOOP ===");
   engine.startLoop();
   SimpleLogger::print("=== APP ENDED ===");
-    try {
-        auto server = std::make_shared<TcpServer>(51234);
-        Entity entity;
-        entity.print();
-        server->start();
-        std::this_thread::sleep_for(std::chrono::seconds(1000));
-        server->stop();
-    } catch (std::exception& e) {
-        std::cerr << "Exception: " << e.what() << std::endl;
-    }
+    
     return 0;
 }

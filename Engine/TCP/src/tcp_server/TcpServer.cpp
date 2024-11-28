@@ -1,12 +1,14 @@
 #include "includes/TcpServer.hpp"
 
+#include "includes/Engine.hpp"
 
-TcpServer::TcpServer(int port)
+TcpServer::TcpServer(int port, Engine &e)
     : _io_context(),
       _acceptor(_io_context, tcp::endpoint(tcp::v4(), port)),
       _socket(_io_context),
       _is_stopped(false),
-      _command_manager()
+      _engine(&e),
+    _command_manager(&e)
       {}
 
 TcpServer::~TcpServer() {

@@ -9,11 +9,10 @@
 #include <string>
 #include <vector>
 #include "includes/CommandManager.hpp"
-
 using boost::asio::ip::tcp;
-
+class Engine;
 struct TcpServer : public std::enable_shared_from_this<TcpServer> {
-  explicit TcpServer(int port);
+  explicit TcpServer(int port, Engine &e);
   ~TcpServer();
   void start();
   void stop();
@@ -28,5 +27,6 @@ private:
   std::array<char, 1024> _buffer;
   std::thread _server_thread;
   bool _is_stopped;
-  CommandManager _command_manager{};
+  Engine * _engine;
+  CommandManager _command_manager;
 };
