@@ -15,7 +15,7 @@ void Engine::init() {
 }
 
 void Engine::startLoop() {
-  RenderComponent comp;
+  RenderComponent comp{get_active_uuid_manager()->getNewUUID(), _scene.get_root().lock().get(), _render_system.program->programID};
   comp.init(_render_system.program->programID);
   _render_system._component = std::make_unique<RenderComponent>(comp);
   _render_system.render();
