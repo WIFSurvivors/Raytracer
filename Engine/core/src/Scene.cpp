@@ -61,30 +61,37 @@ void Scene::generate_sample_content() {
   _entity_system.print();
 
   SimpleLogger::print(std::string(10, '-'));
+
   auto e1 = create_entity("camera");
+  e1->set_local_position(glm::vec3{0, 1, 2});
   auto e2 = create_entity("cat");
+  e2->set_local_rotation(glm::vec3{45, 0, 0});
   auto e3 = create_entity("cube", e1);
+  e3->set_local_position(glm::vec3{-2, 6, 7});
+
   SimpleLogger::print(std::string(10, '-'));
 
   _uuid_manager.print();
   _entity_system.print();
 
-SimpleLogger::print(std::string(10, '-'));
+  SimpleLogger::print(std::string(10, '-'));
+
   auto new_uuid = _uuid_manager.getNewUUID(&_simple_system);
-  // auto c0 = _render_system.create_component(e1, r, 2);
-  SimpleLogger::print(std::format("wawa {}", e1.get() != nullptr));
   auto c1 = _simple_system.create_component(new_uuid, e1.get());
   new_uuid = _uuid_manager.getNewUUID(&_simple_system);
-  SimpleLogger::print(std::format("wawa {}", e3.get() != nullptr));
-  auto c2 = _simple_system.create_component(new_uuid, e3.get());
-  //   auto c1 = _simple_system.create_component(e1, 1);
+  auto c2 = _simple_system.create_component(new_uuid, e3.get(), -56);
+
   SimpleLogger::print(std::string(10, '-'));
+
+  _uuid_manager.print();
+  _entity_system.print();
+  _simple_system.print_all_components();
 }
 
 UUIDManager *Scene::get_uuid_manager() { return &_uuid_manager; }
 
 // WORK IN PROGRESS WIP TODO WOOHOO
-void Scene::update(float dt){
+void Scene::update(float dt) {
   // all components should call init
   // debatable if this is neccessary to do for *all* components
   //   for (auto const &[uuid, component] : simple_sys.get_components()) {
@@ -137,7 +144,6 @@ void Scene::update(float dt){
   //   std::cout << "\n\n\n";
   //   simple_sys.print_all_components();
   //   std::cout << "\n\n\n";
-
 
   // remove some possible external references
   // (here it does nothing)

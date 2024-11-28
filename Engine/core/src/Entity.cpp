@@ -94,3 +94,36 @@ void Entity::print(int indent) {
     e->print(new_indent);
   }
 }
+
+glm::vec3 Entity::get_local_position() const { return _position; }
+void Entity::set_local_position(const glm::vec3 pos) { _position = pos; }
+glm::vec3 Entity::get_world_position() const {
+  if (auto p = _parent.lock()) {
+    auto vec = p->get_world_position();
+    return vec + get_local_position();
+  }
+
+  return get_local_position();
+}
+
+glm::vec3 Entity::get_local_rotation() const { return _rotation; }
+void Entity::set_local_rotation(const glm::vec3 rot) { _rotation = rot; }
+glm::vec3 Entity::get_world_rotation() const {
+  if (auto p = _parent.lock()) {
+    auto vec = p->get_world_rotation();
+    return vec + get_local_rotation();
+  }
+
+  return get_local_rotation();
+}
+
+glm::vec3 Entity::get_local_scale() const { return _scale; }
+void Entity::set_local_scale(const glm::vec3 sca) { _scale = sca; }
+glm::vec3 Entity::get_world_scale() const {
+  if (auto p = _parent.lock()) {
+    auto vec = p->get_world_scale();
+    return vec + get_local_scale();
+  }
+
+  return get_local_scale();
+}
