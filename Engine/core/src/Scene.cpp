@@ -6,11 +6,11 @@
 #include <cassert>
 #include <format>
 
-Scene::Scene(Engine &e) : _root{create_root("root")} {
+Scene::Scene(Engine *e) : _root{create_root("root")} {
   generate_sample_content();
 }
 
-Scene::Scene(Engine &e, uuid id) : _root{create_root("root", id)} {}
+Scene::Scene(Engine *e, uuid id) : _root{create_root("root", id)} {}
 
 std::shared_ptr<Entity> Scene::create_root(const std::string &name) {
   auto uuid = _uuid_manager.getNewUUID(&_entity_system);

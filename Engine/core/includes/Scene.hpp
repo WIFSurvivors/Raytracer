@@ -16,8 +16,8 @@ struct Entity;
 struct Engine;
 
 struct Scene /*: public virtual System*/ {
-  Scene(Engine &e);
-  Scene(Engine &e, uuid id);
+  explicit Scene(Engine *e);
+  Scene(Engine *e, uuid id);
 
   std::weak_ptr<Entity> get_root();
 

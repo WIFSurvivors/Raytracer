@@ -33,7 +33,7 @@
  */
 struct RenderSystem {
 
-  RenderSystem(WindowManager *wm);
+  explicit RenderSystem(WindowManager *wm);
 
   void init();
   void update(const float dt); // represents render
@@ -63,4 +63,3 @@ private:
 
   std::unique_ptr<Shader> compute;
 };
-

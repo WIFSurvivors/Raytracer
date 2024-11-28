@@ -59,7 +59,7 @@ private:
 public:
   RenderComponent(uuid id, Entity* e, GLuint programID): Component(id, e){
       init(programID);
-  };
+  }
   void init(GLuint programID);
   void update(GLuint VAO);
   void destroy();

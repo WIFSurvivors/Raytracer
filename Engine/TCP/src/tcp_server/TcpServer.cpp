@@ -1,13 +1,13 @@
 #include "includes/TcpServer.hpp"
 class Engine;
 
-TcpServer::TcpServer(int port, Engine &e)
+TcpServer::TcpServer(int port, Engine *e)
     : _io_context(),
       _acceptor(_io_context, tcp::endpoint(tcp::v4(), port)),
       _socket(_io_context),
       _is_stopped(false),
-      _engine(&e),
-    _command_manager(&e)
+      _engine(e),
+    _command_manager(e)
       {}
 
 TcpServer::~TcpServer() {
@@ -45,7 +45,7 @@ void TcpServer::read_message() {
             std::cout << "Data received: " << msg << std::endl;
             std::string return_value = _command_manager.execute_command(msg);
             boost::asio::write(_socket, boost::asio::buffer(return_value));
-            read_message(); 
+            read_message();
         } else {
             std::cout << "Receive failed: " << error.message() << std::endl;
             _socket.close();
@@ -61,16 +61,3 @@ void TcpServer::stop() {
     _io_context.stop();
     std::cout << "Server stopped" << std::endl;
 }
-
-//int main() {
-//    try {
-//        auto server = std::make_shared<TcpServer>(51234);
-//        server->start();
-//        std::this_thread::sleep_for(std::chrono::seconds(1000));
-//        server->stop();
-//    } catch (std::exception& e) {
-//        std::cerr << "Exception: " << e.what() << std::endl;
-//    }
-//    return 0;
-//}
-//
