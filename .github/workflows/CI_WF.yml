@@ -64,18 +64,24 @@ jobs:
     needs: run-lint  
 
     steps:
-      - name: Set up GCC 14.2.0
+      - name: Download MinGW GCC 14.2.0
         run: |
           curl -LO https://github.com/niXman/mingw-builds-binaries/archive/refs/tags/14.2.0-rt_v12-rev0.zip
-          
-          tar -xf x86_64-14.2.0-release-win32-seh-ucrt-rt_v12-rev0.7z.zip -C C:\tools
-          
-          echo "C:\tools\mingw64\bin" >> $env:GITHUB_PATH
+
+      - name: Install 7-Zip
+        run: |
+          choco install 7zip --no-progress
+
+      - name: Extract GCC
+        run: |
+          7z x 14.2.0-rt_v12-rev0.zip -oC:\tools
+          7z x C:\tools\x86_64-14.2.0-release-win32-seh-ucrt-rt_v12-rev0.7z -oC:\tools
+
+      - name: Add GCC to PATH
+        run: echo "C:\tools\x86_64-14.2.0-release-win32-seh-ucrt-rt_v12-rev0\bin" >> $env:GITHUB_PATH
 
       - name: Verify GCC Version
         run: gcc --version
-      - name: Checkout Code
-        uses: actions/checkout@v4
 
       - name: Cache CMake build directories
         uses: actions/cache@v4
