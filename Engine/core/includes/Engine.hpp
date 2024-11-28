@@ -21,9 +21,10 @@ public:
   Scene *get_scene() { return &_scene; }
 private:
   void init();
-  // WindowManager wm{};
+  WindowManager _wm{};
   // this should potentially be safed here or in main(). it'll depend on how to
   // this is integrated into the C# GUI
   Scene _scene{*this}; // scene should be initalized last
   std::shared_ptr<TcpServer> _tcp_server = std::make_shared<TcpServer>(51234, *this);
+  RenderSystem _render_system{&_wm};
 };

@@ -11,12 +11,16 @@ void Engine::init() {
   } catch (const std::exception &e) {
     SimpleLogger::print("Error: " + std::string(e.what()));
   }
+  _render_system.init();
 }
 
 void Engine::startLoop() {
-  while (true) {
-    /* code */
-  }
+  RenderComponent comp;
+  comp.init(_render_system.program->programID);
+  _render_system._component = std::make_unique<RenderComponent>(comp);
+  _render_system.render();
+  comp.destroy();
+  _render_system.destroy();
 }
 
 UUIDManager *Engine::get_active_uuid_manager() {
