@@ -36,6 +36,8 @@ struct Scene /*: public virtual System*/ {
 
   UUIDManager *get_uuid_manager();
 
+  void update(float dt);
+
 private:
   std::shared_ptr<Entity> create_root(const std::string &name);
   std::shared_ptr<Entity> create_root(const std::string &name, uuid id);
