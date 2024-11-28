@@ -3,7 +3,6 @@
 #include "includes/component/Component.hpp"
 #include "includes/system/EntitySystem.hpp"
 #include <boost/uuid/uuid.hpp>
-#include <map>
 #include <memory>
 #include <string>
 #include <vector>

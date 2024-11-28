@@ -17,7 +17,7 @@ std::shared_ptr<Entity> Entity::create(const std::string &name, uuid id) {
 
 std::shared_ptr<Entity> Entity::create(const std::string &name, uuid id,
                                        std::shared_ptr<Entity> parent) {
-  auto e = std::make_shared<Entity>(name, id);
+  auto e = std::make_shared<Entity>(name, id, parent);
   parent->add_child_entity(e->get_ptr());
   return e;
 }
@@ -98,11 +98,13 @@ void Entity::print(int indent) {
 glm::vec3 Entity::get_local_position() const { return _position; }
 void Entity::set_local_position(const glm::vec3 pos) { _position = pos; }
 glm::vec3 Entity::get_world_position() const {
+
+  // std::cout << _parent->get_name() << ": " << _parent.use_count() << "|" <<
+  // _parent.get() <<"\n";
   if (auto p = _parent.lock()) {
     auto vec = p->get_world_position();
     return vec + get_local_position();
   }
-
   return get_local_position();
 }
 

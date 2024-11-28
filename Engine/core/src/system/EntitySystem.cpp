@@ -1,5 +1,4 @@
 #include "includes/system/EntitySystem.hpp"
-#include "glm/ext/vector_float3.hpp"
 #include "includes/Entity.hpp"
 #include "includes/utility/SimpleLogger.hpp"
 #include "includes/utility/TablePrinter.hpp"
