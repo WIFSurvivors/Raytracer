@@ -1,6 +1,7 @@
-#pragma once 
+#pragma once
 #include "includes/TcpCommand.hpp"
 #include <iostream>
+#include <string>
 #define MOVE_COMMAND "MoveCommand"
 class TcpCommand;
 

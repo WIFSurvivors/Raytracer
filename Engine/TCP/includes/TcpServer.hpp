@@ -12,7 +12,7 @@
 using boost::asio::ip::tcp;
 class Engine;
 struct TcpServer : public std::enable_shared_from_this<TcpServer> {
-  explicit TcpServer(int port, Engine &e);
+  explicit TcpServer(int port, Engine* e);
   ~TcpServer();
   void start();
   void stop();
