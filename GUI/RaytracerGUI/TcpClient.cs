@@ -7,10 +7,11 @@ namespace tcp_client
     class MyTcpClient
     {
         private TcpClient client;
-        public MyTcpClient(String host, int port) {
+        public MyTcpClient(String host, int port)
+        {
             client = new TcpClient(host, port);
         }
-         public string Send(string message)
+        public string Send(string message)
         {
             try
             {
@@ -29,16 +30,20 @@ namespace tcp_client
                 Console.WriteLine("Received: {0}", responseData);
                 return responseData;
             }
+
+            catch (System.Net.Sockets.SocketException ex)
+            {
+                Console.WriteLine($"SocketException: {ex.Message}");
+                Console.WriteLine($"ErrorCode: {ex.ErrorCode}");
+                Console.WriteLine($"StackTrace: {ex.StackTrace}");
+                return "SocketException";
+            }
             catch (ArgumentNullException e)
             {
                 Console.WriteLine("ArgumentNullException: {0}", e);
                 return "ArgumentNullException";
             }
-            catch (SocketException e)
-            {
-                Console.WriteLine("SocketException: {0}", e);
-                return "SocketException";
-            }
+
         }
     }
 }
