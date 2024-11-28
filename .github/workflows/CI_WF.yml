@@ -66,9 +66,9 @@ jobs:
     steps:
       - name: Set up GCC 14.2.0
         run: |
-          curl -LO https://github.com/brechtsanders/winlibs_mingw/releases/download/gcc-14.2.0-llvm-18.0.0-mingw-x86_64-23.10.0/winlibs-x86_64-posix-seh-gcc-14.2.0-llvm-18.0.0-mingw-23.10.0.zip
+          curl -LO https://github.com/niXman/mingw-builds-binaries/archive/refs/tags/14.2.0-rt_v12-rev0.zip
           
-          tar -xf winlibs-x86_64-posix-seh-gcc-14.2.0-llvm-18.0.0-mingw-23.10.0.zip -C C:\tools
+          tar -xf x86_64-14.2.0-release-win32-seh-ucrt-rt_v12-rev0.7z.zip -C C:\tools
           
           echo "C:\tools\mingw64\bin" >> $env:GITHUB_PATH
 
