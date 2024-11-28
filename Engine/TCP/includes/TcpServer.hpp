@@ -27,6 +27,6 @@ private:
   std::array<char, 1024> _buffer;
   std::thread _server_thread;
   bool _is_stopped;
-  Engine * _engine;
+  Engine* _engine;
   CommandManager _command_manager;
 };
