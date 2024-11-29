@@ -11,8 +11,8 @@ struct TcpCommand {
   TcpCommand() = default;
   explicit TcpCommand(int64_t uuid) : _uuid(uuid) {}
   virtual ~TcpCommand() = default;
-  virtual std::string execute(Engine * engine) = 0;
-  virtual int undo() = 0;
+  virtual const std::string& execute(Engine * engine) = 0;
+  virtual const std::string& undo() = 0;
     int64_t _uuid;
   private:
     std::map<std::string, std::string> _previous_state;

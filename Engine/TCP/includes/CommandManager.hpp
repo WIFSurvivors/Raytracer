@@ -16,7 +16,7 @@ struct CommandManager
 	std::queue<std::unique_ptr<TcpCommand>> _command_queue;
 	void push(std::unique_ptr<TcpCommand> command);
 	std::unique_ptr<TcpCommand> pop();
-	std::string execute_command(std::string command);
+	const std::string& execute_command(std::string command);
 private:
 	TcpParser _parser{};
 	TcpCommandFactory _factory{};

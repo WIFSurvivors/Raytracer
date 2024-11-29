@@ -43,7 +43,7 @@ void TcpServer::read_message() {
         if (!error && !_is_stopped) {
             std::string msg(_buffer.data(), length);
             std::cout << "Data received: " << msg << std::endl;
-            std::string return_value = _command_manager.execute_command(msg);
+            const std::string& return_value = _command_manager.execute_command(msg);
             boost::asio::write(_socket, boost::asio::buffer(return_value));
             read_message();
         } else {

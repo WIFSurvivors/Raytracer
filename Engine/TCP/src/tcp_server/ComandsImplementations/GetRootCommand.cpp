@@ -11,10 +11,10 @@ GetRootCommand::GetRootCommand()
    
 }
 
-int GetRootCommand::undo() 
+const std::string& GetRootCommand::undo() 
 {
     std::cout << "GetRootCommand::undo()" << std::endl;
-    return 0;
+    return "0";
 }
 
 boost::json::array entities_to_json(const std::vector<std::shared_ptr<Entity>>& entities) {
@@ -43,7 +43,7 @@ boost::json::object entity_to_json(const std::shared_ptr<Entity>& entity) {
 }
 
 
-std::string GetRootCommand::execute(Engine * engine) 
+const std::string& GetRootCommand::execute(Engine * engine) 
 {
     std::cout << "GetRootCommand::execute()" << std::endl;
     

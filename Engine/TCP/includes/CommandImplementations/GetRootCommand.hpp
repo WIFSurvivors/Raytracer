@@ -8,8 +8,8 @@
 struct GetRootCommand : public TcpCommand
 {
 	GetRootCommand(); 
-	std::string execute(Engine * e) override;
-	int undo() override;
+	const std::string& execute(Engine * e) override;
+	const std::string& undo() override;
 
 private:
 

@@ -11,7 +11,7 @@ std::unique_ptr<TcpCommand> CommandManager::pop() {
   return std::move(command);
 }
 
-std::string CommandManager::execute_command(std::string command) {
+const std::string& CommandManager::execute_command(std::string command) {
   std::unique_ptr<ParsedTcpCommand> parsed_command = _parser.parse(command);
   std::unique_ptr<TcpCommand> tcp_command =
       _factory.create_command(*parsed_command);
