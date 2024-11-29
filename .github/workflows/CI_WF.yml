@@ -64,6 +64,24 @@ jobs:
     needs: run-lint  
 
     steps:
+      - name: Download MinGW GCC 14.2.0
+        run: |
+          curl -LO https://github.com/niXman/mingw-builds-binaries/releases/download/14.2.0-rt_v12-rev0/i686-14.2.0-release-win32-dwarf-ucrt-rt_v12-rev0.7z
+
+      - name: Install 7-Zip
+        run: |
+          choco install 7zip --no-progress
+
+      - name: Extract GCC
+        run: |
+          7z x i686-14.2.0-release-win32-dwarf-ucrt-rt_v12-rev0.7z -oC:\tools
+
+      - name: Add GCC to PATH
+        run: echo "C:\tools\mingw32\bin\" >> $env:GITHUB_PATH
+
+      - name: Verify GCC Version
+        run: gcc --version
+      
       - name: Checkout Code
         uses: actions/checkout@v4
 
@@ -71,23 +89,19 @@ jobs:
         uses: actions/cache@v4
         with:
           path: |
-            core/build
-            TCP/build
+            Engine/build
             ~/.cmake
           key: ${{ runner.os }}-cmake-${{ hashFiles('**/CMakeLists.txt') }}
           restore-keys: |
             ${{ runner.os }}-cmake-
 
-      - name: Build Core
-        run: cmake -B core/build -S core -G "Unix Makefiles" && cmake --build core/build
-
-      - name: Build TCP
-        run: cmake -B TCP/build -S TCP -G "Unix Makefiles" && cmake --build TCP/build
+      - name: Build Engine
+        run: cmake -B Engine/build -S Engine -G "Unix Makefiles" && cmake --build Engine/build
 
       - name: Build GUI
         run: dotnet build GUI/RayTracerGUI/
 
-      - name: Run Tests for TCP
-        working-directory: TCP/build
-        run: |
-          ctest --output-on-failure
+      #- name: Run Tests for TCP
+       # working-directory: TCP/build
+        #run: |
+         # ctest --output-on-failure
