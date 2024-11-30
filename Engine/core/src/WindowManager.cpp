@@ -1,4 +1,5 @@
 #include "includes/WindowManager.hpp"
+#include "GLFW/glfw3.h"
 #include <iostream>
 
 void WindowManager::processInput(GLFWwindow *window) {
@@ -71,4 +72,9 @@ bool WindowManager::_initGLFW() {
   glfwSetInputMode(_window, GLFW_STICKY_KEYS, GL_TRUE);
   glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
   return true;
+}
+
+void WindowManager::update() {
+   updateInput();
+   glfwSwapBuffers(_window);
 }

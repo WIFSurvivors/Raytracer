@@ -18,7 +18,15 @@ void Engine::startLoop() {
   RenderComponent comp{get_active_uuid_manager()->getNewUUID(), _scene.get_root().lock().get(), _render_system.program->programID};
   comp.init(_render_system.program->programID);
   _render_system._component = std::make_unique<RenderComponent>(comp);
-  _render_system.render();
+  // _render_system.render();
+  while(_wm.shouldClose()) {
+          // _wm->processInput(_wm->_window);
+          _render_system.update(_wm.get_time());
+          // std::cout << "IM IN WHILE LOOP\n";
+          _wm.update();
+        // glfwSwapBuffers(_wm._window);
+      }
+	// glfwPollEvents();
   comp.destroy();
   _render_system.destroy();
 }

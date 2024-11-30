@@ -22,7 +22,7 @@ struct WindowManager {
   void swapBuffers();
 
   double get_time();
-
+  void update();
     GLFWwindow *_window;
 
 private:

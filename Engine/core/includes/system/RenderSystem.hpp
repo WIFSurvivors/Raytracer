@@ -42,7 +42,7 @@ struct RenderSystem {
   //  temporal
   //  we need, this because Render System is responsible for the window and
   //  input handling
-  void render();
+  // void render();
   std::unique_ptr<RenderComponent> _component;
   std::unique_ptr<Shader> program;
 

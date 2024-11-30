@@ -107,15 +107,9 @@ void RenderSystem::destroy() {
   glfwTerminate();
 }
 
-void RenderSystem::render() {
-    glfwSetInputMode(_wm->_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+// void RenderSystem::render() {
+    // glfwSetInputMode(_wm->_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
      // glfwMakeContextCurrent(_wm->_window);
-    while(_wm->shouldClose()) {
-        // _wm->processInput(_wm->_window);
-        update(_wm->get_time());
-        // std::cout << "IM IN WHILE LOOP\n";
-       	glfwSwapBuffers(_wm->_window);
-    }
-	glfwPollEvents();
-}
+
+// }
