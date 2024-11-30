@@ -64,100 +64,20 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TreeView Grid.Row="0">
-                        <TreeViewItem Header="xyz 1">
-                            <TreeViewItem Header="xyz 1.1">
-                                <TreeViewItem Header="xyz 1.1.1">
-                                    <TreeViewItem Header="xyz 1.1.1.1" />
-                                    <TreeViewItem Header="xyz 1.1.1.2" />
-                                    <TreeViewItem Header="xyz 1.1.1.3" />
-                                </TreeViewItem>
-                                <TreeViewItem Header="xyz 1.1.2" />
-                                <TreeViewItem Header="xyz 1.1.3" />
-                                <TreeViewItem Header="xyz 1.1.4" />
-                                <TreeViewItem Header="xyz 1.1.5" />
-                            </TreeViewItem>
-                            <TreeViewItem Header="xyz 1.2">
-                                <TreeViewItem Header="xyz 1.2.1">
-                                    <TreeViewItem Header="xyz 1.2.1.1">
-                                        <TreeViewItem Header="xyz 1.2.1.1.1" />
-                                        <TreeViewItem Header="xyz 1.2.1.1.2" />
-                                    </TreeViewItem>
-                                    <TreeViewItem Header="xyz 1.2.1.2" />
-                                    <TreeViewItem Header="xyz 1.2.1.3" />
-                                </TreeViewItem>
-                                <TreeViewItem Header="xyz 1.2.2">
-                                    <TreeViewItem Header="xyz 1.2.2.1" />
-                                    <TreeViewItem Header="xyz 1.2.2.2" />
-                                </TreeViewItem>
-                                <TreeViewItem Header="xyz 1.2.3" />
-                            </TreeViewItem>
-                            <TreeViewItem Header="xyz 1.3">
-                                <TreeViewItem Header="xyz 1.3.1" />
-                                <TreeViewItem Header="xyz 1.3.2" />
-                                <TreeViewItem Header="xyz 1.3.3" />
-                                <TreeViewItem Header="xyz 1.3.4" />
-                                <TreeViewItem Header="xyz 1.3.5" />
-                            </TreeViewItem>
-                            <TreeViewItem Header="xyz 1.4">
-                                <TreeViewItem Header="xyz 1.4.1" />
-                                <TreeViewItem Header="xyz 1.4.2" />
-                            </TreeViewItem>
-                        </TreeViewItem>
-
-                        <TreeViewItem Header="xyz 2">
-                            <TreeViewItem Header="xyz 2.1">
-                                <TreeViewItem Header="xyz 2.1.1" />
-                                <TreeViewItem Header="xyz 2.1.2" />
-                                <TreeViewItem Header="xyz 2.1.3" />
-                            </TreeViewItem>
-                            <TreeViewItem Header="xyz 2.2">
-                                <TreeViewItem Header="xyz 2.2.1">
-                                    <TreeViewItem Header="xyz 2.2.1.1" />
-                                </TreeViewItem>
-                                <TreeViewItem Header="xyz 2.2.2" />
-                            </TreeViewItem>
-                            <TreeViewItem Header="xyz 2.3">
-                                <TreeViewItem Header="xyz 2.3.1" />
-                                <TreeViewItem Header="xyz 2.3.2" />
-                            </TreeViewItem>
-                            <TreeViewItem Header="xyz 2.4">
-                                <TreeViewItem Header="xyz 2.4.1" />
-                            </TreeViewItem>
-                        </TreeViewItem>
-
-                        <TreeViewItem Header="xyz 3">
-                            <TreeViewItem Header="xyz 3.1">
-                                <TreeViewItem Header="xyz 3.1.1" />
-                                <TreeViewItem Header="xyz 3.1.2" />
-                                <TreeViewItem Header="xyz 3.1.3" />
-                            </TreeViewItem>
-                            <TreeViewItem Header="xyz 3.2">
-                                <TreeViewItem Header="xyz 3.2.1">
-                                    <TreeViewItem Header="xyz 3.2.1.1" />
-                                    <TreeViewItem Header="xyz 3.2.1.2" />
-                                </TreeViewItem>
-                                <TreeViewItem Header="xyz 3.2.2" />
-                                <TreeViewItem Header="xyz 3.2.3" />
-                            </TreeViewItem>
-                            <TreeViewItem Header="xyz 3.3">
-                                <TreeViewItem Header="xyz 3.3.1" />
-                                <TreeViewItem Header="xyz 3.3.2" />
-                            </TreeViewItem>
-                            <TreeViewItem Header="xyz 3.4">
-                                <TreeViewItem Header="xyz 3.4.1" />
-                            </TreeViewItem>
-                        </TreeViewItem>
+                    <TreeView Name="trv_Entities" Grid.Row="0">
+                        <TreeViewItem Header="Entity 1" />
                     </TreeView>
 
-                    <TreeView Grid.Row="1">
-                        <TreeViewItem Header="xyz 1">
-                            <TreeViewItem Header="xyz 1.1" />
-                            <TreeViewItem Header="xyz 1.2">
-                                <TreeViewItem Header="xyz 1.2.1" />
+                    <TreeView Name="trv_Components" Grid.Row="1">
+                        <TreeViewItem Header="Component Category 1">
+                            <TreeViewItem Header="Component 1.1" />
+                            <TreeViewItem Header="Component 1.2">
+                                <TreeViewItem Header="Component Category 1" />
                             </TreeViewItem>
                         </TreeViewItem>
-                        <TreeViewItem Header="xyz 2" />
+                        <TreeViewItem Header="Component Category 2">
+                            <TreeViewItem Header="Component 2.1" />
+                        </TreeViewItem>
                     </TreeView>
                 </Grid>
 
@@ -167,16 +87,16 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <ListBox Grid.Row="0">
-                        <ListBoxItem Content="Test Item 1" />
-                        <ListBoxItem Content="Test Item 2" />
-                        <ListBoxItem Content="Test Item 3" />
+                    <ListBox Name="lbx_Entity" Grid.Row="0">
+                        <ListBoxItem Content="Entity Option 1" />
+                        <ListBoxItem Content="Entity Option 2" />
+                        <ListBoxItem Content="Entity Option 3" />
                     </ListBox>
 
-                    <ListBox Grid.Row="1">
-                        <ListBoxItem Content="Sub Item 1" />
-                        <ListBoxItem Content="Sub Item 2" />
-                        <ListBoxItem Content="Sub Item 3" />
+                    <ListBox Name="lbx_Component" Grid.Row="1">
+                        <ListBoxItem Content="Component Option 1" />
+                        <ListBoxItem Content="Component Option 2" />
+                        <ListBoxItem Content="Component Option 3" />
                     </ListBox>
                 </Grid>
             </Grid>
