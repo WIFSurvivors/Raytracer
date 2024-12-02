@@ -21,12 +21,42 @@ namespace RaytracerGUI
     public partial class MainWindow : Window
     {
         private EcsApi? _ecsApi;
+        private string selectedUUID;
 
         public MainWindow()
         {
             InitializeComponent();
             this.Background = (Brush)Application.Current.Resources["WindowBackgroundColor"];
-            _ecsApi = new EcsApi("127.0.0.1", 51234);
+
+            bool connection = false;
+
+            while (!connection)
+            {
+                try
+                {
+                    _ecsApi = new EcsApi("127.0.0.1", 51234);
+
+                    // initial root-request
+                    selectedUUID = _ecsApi.get_root();
+                    tbxLog.AppendText(selectedUUID);
+                    connection = true; // connection was successful
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBoxResult result = MessageBox.Show(ex.Message + "\n" +
+                        "Please start the \"TopLevelProject.exe\" and try again!",
+                        "Connection Error",
+                        MessageBoxButton.OKCancel,
+                        MessageBoxImage.Error);
+
+                    if (result == MessageBoxResult.Cancel)
+                    {
+                        // close application
+                        Application.Current.Shutdown();
+                        break;
+                    }
+                }
+            }
 
         }
 
@@ -84,8 +114,6 @@ namespace RaytracerGUI
                 {
                     case "btnLeft":
                         tbxLog.AppendText(button + " was clicked! \n");
-                        string msg = _ecsApi.get_root();
-                        tbxLog.AppendText(msg);
                         tbxLog.ScrollToEnd();
                         break;
 
@@ -117,6 +145,7 @@ namespace RaytracerGUI
                     case "btnLog":
                         tbxLog.AppendText($"{DateTime.Now}: Log entry added.\n");
                         tbxLog.ScrollToEnd();
+                        TreeBuilder treeBuilder = new TreeBuilder(selectedUUID, trv_Entities);
                         break;
                 }
             }
