@@ -34,7 +34,7 @@ void RenderSystem::init() {
 
   glGenVertexArrays(1, &_vao);
   glBindVertexArray(_vao);
-
+  
   std::cout << "rs: c\n";
   //  I dont like this at all
   Shader simpleShader{
@@ -44,7 +44,7 @@ void RenderSystem::init() {
   //  program->activateShader();
   //  I dont like this at all
   Shader computeShader{
-      std::make_pair(GL_COMPUTE_SHADER, "../core/shaders/computeshader.glsl")};
+      std::make_pair(GL_COMPUTE_SHADER, "../core/shaders/computeshaderCircle.glsl")};
   compute = std::make_unique<Shader>(computeShader);
 
   std::cout << "rs: d\n";
@@ -69,19 +69,31 @@ void RenderSystem::update(const float dt) {
   //  Specifies the background color1
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
-
+  
   //  Setup compute shader
+  //
+  float radius = 10.0f;
+  float camX = sin(glfwGetTime()) * radius;
+  float camZ = cos(glfwGetTime()) * radius;
+  glm::mat4 viw = glm::lookAt(glm::vec3(0.0, 10.0, 10.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));  
+  float FoV = 60.0f;
+  glm::mat4 projectionMat = glm::perspective(glm::radians(FoV), 1.0f, 0.1f, 100.0f);
+
   compute->activateShader();
   glUniform1f(glGetUniformLocation(compute->programID, "time"), dt);
-  glUniform3fv(glGetUniformLocation(compute->programID, "v0"), 1,
+  glUniform3fv(glGetUniformLocation(compute->programID, "v0_no_use"), 1,
                glm::value_ptr(v[0]));
-  glUniform3fv(glGetUniformLocation(compute->programID, "v1"), 1,
+  glUniform3fv(glGetUniformLocation(compute->programID, "v1_no_use"), 1,
                glm::value_ptr(v[1]));
-  glUniform3fv(glGetUniformLocation(compute->programID, "v2"), 1,
+  glUniform3fv(glGetUniformLocation(compute->programID, "v2_no_use"), 1,
                glm::value_ptr(v[2]));
-  glUniform2fv(glGetUniformLocation(compute->programID, "imageSize"), 1,
+  glUniform2fv(glGetUniformLocation(compute->programID, "imageSize_no_use"), 1,
                glm::value_ptr((glm::vec2)_wm->getScreenSize()));
   glUniform2fv(mouseUniformID, 1, &_wm->getMousePos()[0]);
+
+  
+  glUniformMatrix4fv(glGetUniformLocation(compute->programID, "View"), 1, GL_FALSE, glm::value_ptr(viw));
+  glUniformMatrix4fv(glGetUniformLocation(compute->programID, "Projection"), 1, GL_FALSE, glm::value_ptr(projectionMat));
   //  Self explanatory
   //  Dispateches the compute shader with SCR_WIDTH*SCR_HEIGHT*1 = number of
   //  work groups
