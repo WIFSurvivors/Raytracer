@@ -12,6 +12,9 @@ using System.Windows.Shapes;
 using System.Net.Sockets;
 using tcp_client;
 using Microsoft.Win32;
+using System.Diagnostics;
+using System.Windows.Interop;
+using System.Runtime.InteropServices;
 
 namespace RaytracerGUI
 {
@@ -22,7 +25,8 @@ namespace RaytracerGUI
     {
         private EcsApi? _ecsApi;
         private string selectedUUID;
-
+        private GLFWLoader loader;
+        private IntPtr hWndParent;
         public MainWindow()
         {
             InitializeComponent();
@@ -96,6 +100,33 @@ namespace RaytracerGUI
 
 
                 }
+            }
+        }
+
+
+
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            hWndParent = new WindowInteropHelper(this).Handle;
+            loader = new GLFWLoader(this, hWndParent);
+            loader.WindowLoaded();
+
+        }
+
+
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+
+        }
+
+        private void RenderArea_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (loader != null)
+            {
+                loader.OnResize();
             }
         }
 

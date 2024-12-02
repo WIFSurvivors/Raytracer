@@ -7,7 +7,9 @@
         mc:Ignorable="d"
         Title="MainWindow" 
         Height="720" Width="1280"
-        MinHeight="720" MinWidth="1280" >
+        MinHeight="720" MinWidth="1280" 
+        Loaded="Window_Loaded"
+Closing="Window_Closing">
 
     <Window.Resources>
         <!-- Slide Out Animation -->
@@ -27,7 +29,7 @@
             <ColumnDefinition Width="512"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-       
+
         <Grid Width="512" HorizontalAlignment="Left" Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"/>
@@ -35,7 +37,7 @@
             </Grid.RowDefinitions>
             <Grid VerticalAlignment="Center" Grid.Row="0">
                 <Menu VerticalAlignment="Top">
-                <MenuItem Header="File" Width="170">
+                    <MenuItem Header="File" Width="170">
                         <MenuItem Name="mniOpen" Header="Open" Click="generalMenuClick"/>
                         <MenuItem Name="mniSave" Header="Save" Click="generalMenuClick"/>
                         <MenuItem Name="mniImport" Header="Import Scene" Click="generalMenuClick"/>
@@ -109,7 +111,7 @@
             </Grid.RowDefinitions>
             <!--Preview Picture-->
             <Border Grid.Row="0" Margin="5">
-                <Image  Source="/images/preview.png" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="UniformToFill"/>
+                <Rectangle Name="RenderArea" Grid.Row="1" Grid.Column="1" Stroke="#008800" SizeChanged="RenderArea_SizeChanged"/>
             </Border>
 
             <!--GuiBottom-->
