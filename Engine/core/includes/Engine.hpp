@@ -21,6 +21,7 @@ public:
 
   UUIDManager *get_active_uuid_manager();
   Scene *get_scene() { return &_scene; }
+  RenderSystem *get_render_system() { return &_render_system; }
 private:
   void init();
   WindowManager _wm{};
