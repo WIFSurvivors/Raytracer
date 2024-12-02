@@ -39,16 +39,18 @@ struct RenderSystem {
   void update(const float dt); // represents render
   void destroy();
 
+  RenderComponent *create_component(uuid id, Entity *e, std::vector<glm::vec3>& vertices, std::vector<glm::vec2>& UV);
+
   //  temporal
   //  we need, this because Render System is responsible for the window and
   //  input handling
   // void render();
-  std::unique_ptr<RenderComponent> _component;
-  std::unique_ptr<Shader> program;
+  // std::unique_ptr<RenderComponent> _component;
 
 private:
   WindowManager *_wm;
 
+  std::unique_ptr<Shader> program;
 
   GLuint mouseUniformID; // a bit cringe... but it stays here for now
   GLuint _vao;
@@ -60,6 +62,6 @@ private:
   //  GLuint _computeID;
   //
   //  Not sure about this
-
+  std::map<uuid, std::unique_ptr<RenderComponent>> _components{};
   std::unique_ptr<Shader> compute;
 };

@@ -91,16 +91,27 @@ void RenderSystem::update(const float dt) {
 
   // Setup fragment and vertex shader
   program->activateShader();
-
-  _component->update(_vao);
+  glBindVertexArray(_vao);
+  // _component->update();
+  for (auto &&c : _components) {
+    c.second->update();
+  }
   // Input
   // processInput(_window);
 
   // update(glfwGetTime());
 }
 
+RenderComponent *RenderSystem::create_component(uuid id, Entity *e, std::vector<glm::vec3>& vertices, std::vector<glm::vec2>& UV) {
+  _components[id] = std::make_unique<RenderComponent>(id, e, program->programID, vertices, UV);
+  auto ptr = _components[id].get();
+  // ptr->init(program->programID);
+  e->add_component(ptr);
+  return ptr;
+}
+
 void RenderSystem::destroy() {
-  _component->destroy();
+  // _component->destroy();
 
   glDeleteVertexArrays(1, &_vao);
 
