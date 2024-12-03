@@ -70,14 +70,6 @@ void RenderSystem::update(const float dt) {
 //  Calculation for the Camera
 
   //  Setup compute shader
-  //
-  float radius = 10.0f;
-  float camX = sin(glfwGetTime()) * radius;
-  float camZ = cos(glfwGetTime()) * radius;
-  glm::mat4 viw = glm::lookAt(glm::vec3(0.0, 10.0, 10.0), glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0));  
-  float FoV = 60.0f;
-  glm::mat4 projectionMat = glm::perspective(glm::radians(FoV), 1.0f, 0.1f, 100.0f);
-
   compute->activateShader();
   glUniform1f(_timeU, dt);
   glUniform3fv(_cameraU, 1, &_cameraPosition[0]);
