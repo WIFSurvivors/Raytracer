@@ -31,7 +31,7 @@ namespace RaytracerGUI
         {
             InitializeComponent();
             this.Background = (Brush)Application.Current.Resources["WindowBackgroundColor"];
-
+            StartOtherExe("../../../../../Engine/build/TopLevelProject.exe");
             bool connection = false;
 
             while (!connection)
@@ -118,7 +118,11 @@ namespace RaytracerGUI
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            _ecsApi.close_RS();
+            if (loader != null)
+            {
+                loader.CloseWindow();
+            }
+            //_ecsApi.close_RS();
 
 
         }
@@ -180,6 +184,23 @@ namespace RaytracerGUI
                         TreeBuilder treeBuilder = new TreeBuilder(selectedUUID, trv_Entities);
                         break;
                 }
+            }
+        }
+
+        private void StartOtherExe(string exePath)
+        {
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = exePath,
+                    UseShellExecute = false
+                };
+                Process.Start(startInfo);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to start the executable. Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

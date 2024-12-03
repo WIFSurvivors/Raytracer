@@ -34,13 +34,23 @@ public class GLFWLoader
     private static extern bool IsWindowEnabled(IntPtr hWnd);
 
     [DllImport("kernel32.dll", SetLastError = true)]
+
     private static extern uint GetLastError();
+
+    [DllImport("user32.dll", CharSet = CharSet.Auto)]
+    private static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, IntPtr wParam, IntPtr lParam);
+
+    private const UInt32 WM_CLOSE = 0x0010;
+
+
+
+
     private const int GWL_STYLE = -16;
     private const uint WS_CHILD = 0x40000000;
     private const uint WS_VISIBLE = 0x10000000;
     private const int SW_HIDE = 0;
     private const int SW_SHOW = 5;
-
+    private IntPtr hWndGLFW;
     private bool _isHandlingSizeChanged = false;
     private nint hWndParent;
     RaytracerGUI.MainWindow _mainWindow;
@@ -49,6 +59,10 @@ public class GLFWLoader
         _mainWindow = mainWindow;
         this.hWndParent = hWndParent;
 
+    }
+    public void CloseWindow()
+    {
+        SendMessage(hWndGLFW, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
     }
 
     private Rect GetRenderAreaBounds()
@@ -66,7 +80,7 @@ public class GLFWLoader
     public void WindowLoaded()
     {
 
-        IntPtr hWndGLFW = FindGLFWWindow();
+        hWndGLFW = FindGLFWWindow();
 
         if (hWndGLFW != IntPtr.Zero)
         {
