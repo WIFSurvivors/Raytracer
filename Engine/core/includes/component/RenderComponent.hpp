@@ -5,8 +5,6 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <vector>
-#include <iostream>
-
 
 /**
  *    RenderComponent class:
@@ -25,48 +23,43 @@
  */
 // class RenderComponent  : public virtual Component{
 
-class RenderComponent: public Component{
+class RenderComponent : Component {
 private:
   GLuint _vbo;
   GLuint _textureID;
   GLuint _uvVBO;
 
-  // glm::mat4 _translationMatrix;
-  // glm::mat4 _rotationMatrix;
-  // glm::mat4 _scaleMatrix;
+  glm::mat4 _translationMatrix;
+  glm::mat4 _rotationMatrix;
+  glm::mat4 _scaleMatrix;
   glm::mat4 _modelMatrix;
 
-  // glm::mat4 _viewMatrix;       // shouldn't be here
-  // glm::mat4 _projectionMatrix; // shouldn't be here
+  glm::mat4 _viewMatrix;       // shouldn't be here
+  glm::mat4 _projectionMatrix; // shouldn't be here
 
-  std::vector<glm::vec3> _vertices;
+  std::vector<glm::vec3> vertices = {
+      glm::vec3{-1.0f, -1.0f, 0.0f}, glm::vec3{1.0f, -1.0f, 0.0f},
+      glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, -1.0f, 0.0f},
+      glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, 1.0f, 0.0f}};
 
-  int _nvertices = 6; // Number of vertices
+  int nvertices = 6; // Number of vertices
 
-  std::vector<glm::vec2> _uv;
+  std::vector<glm::vec2> UV = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 0.0f},
+                               glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 0.0f},
+                               glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 1.0f}};
 
-  GLuint _textU;
-  GLuint _modelU;
-  // GLuint mvpUniformID;
+  GLuint textUniformID;
+  GLuint mvpUniformID;
 
   // void setVertices(); // for now does nothing but later here we can load an
   // object
   void setTextures();
 
 public:
-  RenderComponent(uuid id, Entity* e, GLuint programID, std::vector<glm::vec3>& vertices, std::vector<glm::vec2>& UV):
-  Component{id, e}{
-      // init(programID);
-      _vertices = vertices;
-      // std::cout << vertices.size() << "\n";
-      _nvertices = vertices.size();
-      _uv = UV;
-      _modelMatrix = glm::mat4(1);
-      init(programID);
+  RenderComponent(uuid id, Entity *e, GLuint programID) : Component(id, e) {
+    init(programID);
   }
   void init(GLuint programID);
-  void update();
+  void update(GLuint VAO);
   void destroy();
-
-  void move(glm::vec3 dir);
 };
