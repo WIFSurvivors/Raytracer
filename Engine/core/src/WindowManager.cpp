@@ -51,6 +51,7 @@ bool WindowManager::_initGLFW() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+  glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
   // glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
 
 #ifdef __APPLE__

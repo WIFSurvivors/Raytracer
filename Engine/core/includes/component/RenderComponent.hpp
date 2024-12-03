@@ -31,13 +31,13 @@ private:
   GLuint _textureID;
   GLuint _uvVBO;
 
-  glm::mat4 _translationMatrix;
-  glm::mat4 _rotationMatrix;
-  glm::mat4 _scaleMatrix;
+  // glm::mat4 _translationMatrix;
+  // glm::mat4 _rotationMatrix;
+  // glm::mat4 _scaleMatrix;
   glm::mat4 _modelMatrix;
 
-  glm::mat4 _viewMatrix;       // shouldn't be here
-  glm::mat4 _projectionMatrix; // shouldn't be here
+  // glm::mat4 _viewMatrix;       // shouldn't be here
+  // glm::mat4 _projectionMatrix; // shouldn't be here
 
   std::vector<glm::vec3> _vertices;
 
@@ -45,8 +45,9 @@ private:
 
   std::vector<glm::vec2> _uv;
 
-  GLuint textUniformID;
-  GLuint mvpUniformID;
+  GLuint _textU;
+  GLuint _modelU;
+  // GLuint mvpUniformID;
 
   // void setVertices(); // for now does nothing but later here we can load an
   // object
@@ -60,9 +61,12 @@ public:
       // std::cout << vertices.size() << "\n";
       _nvertices = vertices.size();
       _uv = UV;
+      _modelMatrix = glm::mat4(1);
       init(programID);
   }
   void init(GLuint programID);
   void update();
   void destroy();
+
+  void move(glm::vec3 dir);
 };

@@ -52,12 +52,20 @@ private:
 
   std::unique_ptr<Shader> program;
 
-  GLuint mouseUniformID; // a bit cringe... but it stays here for now
+  // GLuint mouseUniformID; // a bit cringe... but it stays here for now
   GLuint _vao;
   std::vector<glm::vec3> v = {glm::vec3{-0.5f, -0.5f, 0.0f},
                               glm::vec3{0.5f, -0.5f, 0.0f},
                               glm::vec3{0.0f, 0.5f, 0.0f}};
-
+glm::vec3 _cameraPosition;
+glm::vec3 _cameraDirection;
+float _fov;
+glm::mat4 _viewMatrix;
+glm::mat4 _projectionMatrix;
+ GLuint _timeU;
+  GLuint _cameraU;
+  GLuint _projU;
+  GLuint _viewU;
   //  GLuint _porgramID;
   //  GLuint _computeID;
   //

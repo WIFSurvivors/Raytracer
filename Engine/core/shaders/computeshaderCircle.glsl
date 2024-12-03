@@ -4,7 +4,9 @@ layout(local_size_x = 1, local_size_y = 1, local_size_z = 1) in;
 layout(rgba32f, binding = 0) uniform image2D textureOutput;
 
 // Model does not really exist rn so bleh
-//uniform mat4 Model;
+uniform float time;
+uniform vec3 cameraPos;
+// uniform mat4 Model;
 uniform mat4 View;
 uniform mat4 Projection;
 
@@ -116,7 +118,7 @@ bool isInShadow(Sphere s[hittableCount], Ray r, int originObject, float distance
     if(tShadow > 0.0 && tShadow < distance){
       return true;
     }
-    
+
   }
 
   return false;
@@ -124,11 +126,11 @@ bool isInShadow(Sphere s[hittableCount], Ray r, int originObject, float distance
 
 vec4 CalcColorWithLightSources(Sphere s[hittableCount], Ray r, Light emitter[emitterCount]) {
     //Maximal Bounces for one ray
-    int MAXIMAL_BOUNCES = 100;
+    int MAXIMAL_BOUNCES = 10;
     // Color is to the start BLACK because no light reached a pixel yet
     vec3 color = vec3(0.0, 0.0, 0.0);
     vec3 reflec_accumulation = vec3(1.0, 1.0, 1.0); //Reflection in percent 100% red 100% green and blue
-    
+
     //For each bounce we want:
     for (int bounce = 0; bounce <= MAXIMAL_BOUNCES; bounce++) {
         float t = 1.0 / 0.0; // =)
@@ -155,7 +157,7 @@ vec4 CalcColorWithLightSources(Sphere s[hittableCount], Ray r, Light emitter[emi
               vec3 shadowRay = normalize(light.position - sectionPoint);
               //the distance to the light to the section point;
               float distanceToLight = length(light.position - sectionPoint);
-              //The attentuation based on Intensity = 1 / d^2 
+              //The attentuation based on Intensity = 1 / d^2
               float attenuation = 1.0 / (distanceToLight * distanceToLight);  // Inverse square law
               // Check if the shadow ray intersects other objects in its path
               bool isShadow = isInShadow(s,Ray(sectionPoint, shadowRay), index, distanceToLight);
@@ -238,7 +240,7 @@ vec4 rayColor(Ray r) {
     s[2] = s3;
     float t = -1.0;
     float temp = -1.0;
-    
+
     Light[1] lightSources;
     lightSources[0] = Light(vec3(0.0,10.0,10.0),vec3(0.0,0.0,0.0), vec3(1.0,1.0,1.0),100.0);
     //return CalcColor(s, r);
@@ -348,7 +350,8 @@ void main() {
     float x = float(pixelCoords.x * 2 - dims.x) / dims.x; // transforms to [-1.0, 1.0]
     float y = float(pixelCoords.y * 2 - dims.y) / dims.y; // transforms to [-1.0, 1.0]
 
-    vec3 rayOrigin = vec3(0.0, 10.0, 10.0); // Ray origin should always be camera position. Current camera position is not used
+    // vec3 rayOrigin = vec3(0.0, 10.0, 10.0); // Ray origin should always be camera position. Current camera position is not used
+    vec3 rayOrigin = cameraPos;
 
     //ray in clip
     vec4 rayPixel = vec4(x, y, -1.0, 1.0);
