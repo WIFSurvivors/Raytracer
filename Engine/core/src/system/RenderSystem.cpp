@@ -88,8 +88,8 @@ void RenderSystem::update(const float dt) {
 
 RenderComponent *
 RenderSystem::create_component(uuid id, Entity *e,
-                               std::vector<glm::vec3> &vertices,
-                               std::vector<glm::vec2> &UV) {
+                               const std::vector<glm::vec3> &vertices,
+                               const std::vector<glm::vec2> &UV) {
   _components[id] = std::make_unique<RenderComponent>(id, e, program->programID,
                                                       vertices, UV);
   auto ptr = _components[id].get();

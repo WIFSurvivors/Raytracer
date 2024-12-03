@@ -6,7 +6,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <iostream>
-
+#include <utility>
 
 /**
  *    RenderComponent class:
@@ -54,7 +54,7 @@ private:
   void setTextures();
 
 public:
-  RenderComponent(uuid id, Entity* e, GLuint programID, std::vector<glm::vec3>& vertices, std::vector<glm::vec2>& UV):
+  RenderComponent(uuid id, Entity* e, GLuint programID, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec2>& UV):
   Component{id, e}{
       // init(programID);
       _vertices = vertices;
@@ -68,5 +68,5 @@ public:
   void update();
   void destroy();
 
-  void move(glm::vec3 dir);
+  void translate(glm::vec3 dir);
 };
