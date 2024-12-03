@@ -50,6 +50,9 @@ struct RenderSystem : public System {
   // void render();
   // std::unique_ptr<RenderComponent> _component;
 
+  bool remove(Component *c) override;
+  bool remove(uuid uuid) override;
+
 private:
   WindowManager *_wm;
 
