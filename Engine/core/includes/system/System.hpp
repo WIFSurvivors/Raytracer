@@ -1,9 +1,6 @@
 #pragma once
 
-// #include "includes/Component.hpp"
-// #include "includes/Entity.hpp"
 #include <boost/uuid/uuid.hpp>
-#include <cstdint>
 #include <string>
 #include <memory>
 

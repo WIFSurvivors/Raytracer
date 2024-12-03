@@ -1,5 +1,6 @@
 #include "includes/system/RenderSystem.hpp"
 #include "includes/WindowManager.hpp"
+#include "includes/component/Component.hpp"
 #include "includes/component/RenderComponent.hpp"
 #include "includes/ShaderCompiler.hpp"
 
@@ -84,6 +85,15 @@ void RenderSystem::update(const float dt) {
   // processInput(_window);
 
   // update(glfwGetTime());
+}
+
+Component *RenderSystem::create_component(uuid id, Entity *e) {
+  _components[id] =
+      std::make_unique<RenderComponent>(id, e, program->programID);
+  auto ptr = _components[id].get();
+  // ptr->init(program->programID);
+  e->add_component(ptr);
+  return ptr;
 }
 
 RenderComponent *
