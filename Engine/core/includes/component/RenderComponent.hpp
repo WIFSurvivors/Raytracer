@@ -5,8 +5,6 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <vector>
-#include <iostream>
-#include <utility>
 
 /**
  *    RenderComponent class:
@@ -25,7 +23,16 @@
  */
 // class RenderComponent  : public virtual Component{
 
-class RenderComponent : Component {
+struct RenderComponent : Component {
+  RenderComponent(uuid id, Entity *e, GLuint programID,
+                  const std::vector<glm::vec3> &vertices,
+                  const std::vector<glm::vec2> &UV);
+  void init(GLuint programID);
+  void update(float dt);
+  void destroy();
+
+  void translate(glm::vec3 dir);
+
 private:
   GLuint _vbo;
   GLuint _textureID;
@@ -50,29 +57,10 @@ private:
                                 glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 0.0f},
                                 glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 1.0f}};
 
-  GLuint textUniformID;
-  GLuint mvpUniformID;
+  GLuint _textU;
+  GLuint _modelU;
 
   // void setVertices(); // for now does nothing but later here we can load an
   // object
   void setTextures();
-
-public:
-  RenderComponent(uuid id, Entity *e, GLuint programID,
-                  const std::vector<glm::vec3> &vertices,
-                  const std::vector<glm::vec2> &UV)
-      : Component{id, e} {
-    // init(programID);
-    _vertices = vertices;
-    // std::cout << vertices.size() << "\n";
-    _nvertices = vertices.size();
-    _uv = UV;
-    _modelMatrix = glm::mat4(1);
-    init(programID);
-  }
-  void init(GLuint programID);
-  void update(GLuint VAO);
-  void destroy();
-
-  void translate(glm::vec3 dir);
 };

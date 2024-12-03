@@ -7,6 +7,17 @@
 #include "includes/utility/SimpleLogger.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
+RenderComponent::RenderComponent(uuid id, Entity *e, GLuint programID,
+                                 const std::vector<glm::vec3> &vertices,
+                                 const std::vector<glm::vec2> &UV)
+    : Component{id, e} {
+  _vertices = vertices;
+  _nvertices = vertices.size();
+  _uv = UV;
+  _modelMatrix = glm::mat4(1);
+  init(programID);
+}
+
 void RenderComponent::init(GLuint programID) {
   SimpleLogger::print("RenderComponent::init()");
   //  TODO:
@@ -41,7 +52,7 @@ void RenderComponent::init(GLuint programID) {
   _modelU = glGetUniformLocation(programID, "MVP");
 }
 
-void RenderComponent::update() {
+void RenderComponent::update(const float dt) {
   //  TODO:
   //  - Better MVP calculation (e.g. we don't need to call glm::mat4(1) every
   //  time) Calculation for the Model Matrix

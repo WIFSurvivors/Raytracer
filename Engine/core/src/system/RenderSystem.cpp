@@ -3,6 +3,7 @@
 #include "includes/component/Component.hpp"
 #include "includes/component/RenderComponent.hpp"
 #include "includes/ShaderCompiler.hpp"
+#include "includes/utility/NotImplementedError.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glm/ext/matrix_transform.hpp>
@@ -79,7 +80,7 @@ void RenderSystem::update(const float dt) {
   glBindVertexArray(_vao);
   // _component->update();
   for (auto &&c : _components) {
-    c.second->update();
+    c.second->update(dt);
   }
   // Input
   // processInput(_window);
@@ -88,12 +89,15 @@ void RenderSystem::update(const float dt) {
 }
 
 Component *RenderSystem::create_component(uuid id, Entity *e) {
+  throw NotImplementedError();
+  /*
   _components[id] =
       std::make_unique<RenderComponent>(id, e, program->programID);
   auto ptr = _components[id].get();
   // ptr->init(program->programID);
   e->add_component(ptr);
   return ptr;
+  */
 }
 
 RenderComponent *
@@ -122,3 +126,6 @@ void RenderSystem::destroy() {
 // glfwMakeContextCurrent(_wm->_window);
 
 // }
+
+bool RenderSystem::remove(Component *c) { throw NotImplementedError(); }
+bool RenderSystem::remove(uuid uuid) { throw NotImplementedError(); }
