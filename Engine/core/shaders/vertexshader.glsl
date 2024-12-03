@@ -9,5 +9,5 @@ void main()
 {
   TexCoords = texPos;
 
-  gl_Position = MVP * vec4(aPos, 1.0);
+  gl_Position = vec4(aPos, 1.0);
 }

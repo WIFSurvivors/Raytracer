@@ -39,40 +39,18 @@ void RenderComponent::init(GLuint programID) {
 
   setTextures();
 
-  textUniformID = glGetUniformLocation(programID, "text");
-  mvpUniformID = glGetUniformLocation(programID, "MVP");
+  _textU = glGetUniformLocation(programID, "text");
+  _modelU = glGetUniformLocation(programID, "MVP");
 }
 
 void RenderComponent::update() {
   //  TODO:
   //  - Better MVP calculation (e.g. we don't need to call glm::mat4(1) every
   //  time) Calculation for the Model Matrix
-  _translationMatrix =
-      glm::translate(glm::mat4(1), glm::vec3(0.0f, 0.0f, 0.0f));
-  _scaleMatrix = glm::scale(glm::mat4(1), glm::vec3(1, 1, 1));
-
-  glm::vec3 rotationAxis = glm::vec3(1.0f, 1.0f, 0.0f);
-  float angle = 130.0f;
-  _rotationMatrix =
-      glm::rotate(glm::mat4(1), glm::radians(angle), rotationAxis);
-  _modelMatrix = _translationMatrix * _rotationMatrix * _scaleMatrix;
-
-  //  Calculation for the Camera
-  glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 2.0f);
-  glm::vec3 cameraDirection = glm::vec3(0.0f, 0.0f, 0.0f);
-  _viewMatrix =
-      glm::lookAt(cameraPosition, cameraDirection, glm::vec3(0, 1, 0));
-
-  float FoV = 60.0f;
-  //  TODO:
-  //  calculate the aspect ratio appropriately
-  _projectionMatrix = glm::perspective(glm::radians(FoV), 1.0f, 0.1f, 100.0f);
-  glm::mat4 MVP = _projectionMatrix * _viewMatrix * _translationMatrix;
-
       //glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-  glUniform1i(textUniformID, 0);
+  glUniform1i(_textU, 0);
   //  GL_FALSE is for transpose
-  glUniformMatrix4fv(mvpUniformID, 1, GL_FALSE, &MVP[0][0]);
+  glUniformMatrix4fv(_modelU, 1, GL_FALSE, &_modelMatrix[0][0]);
 
   glBindBuffer(GL_ARRAY_BUFFER, _vbo);
   glEnableVertexAttribArray(0);
@@ -121,4 +99,8 @@ void RenderComponent::setTextures() {
   glBindImageTexture(0, _textureID, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, _textureID);
+}
+
+void RenderComponent::move(glm::vec3 dir) {
+    _modelMatrix = glm::translate(_modelMatrix, dir);
 }
