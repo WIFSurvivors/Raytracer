@@ -19,14 +19,19 @@ public:
 
   void startLoop();
 
-  UUIDManager *get_active_uuid_manager();
-  Scene *get_scene() { return &_scene; }
+  inline UUIDManager *get_active_uuid_manager() {
+    return _scene.get_uuid_manager();
+  }
+  inline WindowManager *get_window_manager() { return &_wm; }
+  inline Scene *get_scene() { return &_scene; }
+  inline RenderSystem *get_render_system() {
+    return _scene.get_render_system();
+  } // temporary solution
+
 private:
-  void init();
+  void init_server();
   WindowManager _wm{};
-  // this should potentially be safed here or in main(). it'll depend on how to
-  // this is integrated into the C# GUI
-  Scene _scene{this}; // scene should be initalized last
-  std::shared_ptr<TcpServer> _tcp_server = std::make_shared<TcpServer>(51234, this);
-  RenderSystem _render_system{&_wm};
+  std::shared_ptr<TcpServer> _tcp_server =
+      std::make_shared<TcpServer>(51234, this);
+  Scene _scene{this}; // scene needs be initalized last
 };

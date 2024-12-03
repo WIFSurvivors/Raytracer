@@ -1,8 +1,6 @@
 #pragma once
 
-#include "includes/utility/SimpleLogger.hpp"
 #include "includes/system/System.hpp"
-#include "includes/WindowManager.hpp"
 #include "includes/system/SimpleSystem.hpp"
 #include "includes/system/EntitySystem.hpp"
 #include "includes/system/RenderSystem.hpp"
@@ -14,10 +12,13 @@
 typedef boost::uuids::uuid uuid;
 struct Entity;
 struct Engine;
+struct SimpleSystem;
+struct EntitySystem;
 
-struct Scene /*: public virtual System*/ {
+struct Scene {
   explicit Scene(Engine *e);
   Scene(Engine *e, uuid id);
+  ~Scene();
 
   std::weak_ptr<Entity> get_root();
 
@@ -30,11 +31,10 @@ struct Scene /*: public virtual System*/ {
 
   void print();
 
-  bool remove(uuid id); // probably not required here...
-
   void generate_sample_content();
 
-  UUIDManager *get_uuid_manager();
+  inline UUIDManager *get_uuid_manager() { return &_uuid_manager; }
+  inline RenderSystem *get_render_system() { return &_render_system; }
 
   void update(float dt);
 
@@ -44,7 +44,7 @@ private:
 
   EntitySystem _entity_system{};
   SimpleSystem _simple_system{};
-  //   core::RenderSystem render_sys{&_wm};
+  RenderSystem _render_system;
 
   UUIDManager _uuid_manager{};
   //   WindowManager _wm{}; // will probably end up in engine
