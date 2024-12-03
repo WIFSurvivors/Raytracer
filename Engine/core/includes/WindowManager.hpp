@@ -14,22 +14,21 @@ struct WindowManager {
 
   WindowManager();
 
+  void close();
   bool shouldClose();
+
   glm::vec2 getMousePos();
   glm::ivec2 getScreenSize() const;
-  void draw(); // make function pointer to RenderSystem??
   void updateInput();
   void swapBuffers();
 
   double get_time();
   void update();
-    GLFWwindow *_window;
 
 private:
-
-
   glm::vec2 _mousePos{0., 0.};
   glm::ivec2 _screenSize{800, 800};
+  GLFWwindow *_window;
 
   bool _initGLFW();
 };

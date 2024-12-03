@@ -29,7 +29,7 @@ public:
   } // temporary solution
 
 private:
-  void init();
+  void init_server();
   WindowManager _wm{};
   std::shared_ptr<TcpServer> _tcp_server =
       std::make_shared<TcpServer>(51234, this);

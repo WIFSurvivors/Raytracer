@@ -17,8 +17,6 @@ void WindowManager::framebuffer_size_callback(GLFWwindow *window, int width,
 
 WindowManager::WindowManager() { _initGLFW(); }
 
-void WindowManager::draw() {}
-
 void WindowManager::updateInput() {
   glfwPollEvents();
   processInput(_window);
@@ -35,6 +33,7 @@ void WindowManager::updateInput() {
 void WindowManager::swapBuffers() { glfwSwapBuffers(_window); }
 
 bool WindowManager::shouldClose() { return !glfwWindowShouldClose(_window); }
+void WindowManager::close() { glfwDestroyWindow(_window); }
 
 glm::vec2 WindowManager::getMousePos() { return _mousePos; }
 
@@ -43,10 +42,10 @@ glm::ivec2 WindowManager::getScreenSize() const { return _screenSize; }
 double WindowManager::get_time() { return glfwGetTime(); }
 
 bool WindowManager::_initGLFW() {
-   	if(!glfwInit()) {
-        std::cout << "Failed to init glfw\n";
-        return false;
-	}
+  if (!glfwInit()) {
+    std::cout << "Failed to init glfw\n";
+    return false;
+  }
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -76,6 +75,6 @@ bool WindowManager::_initGLFW() {
 }
 
 void WindowManager::update() {
-   updateInput();
-   glfwSwapBuffers(_window);
+  updateInput();
+  glfwSwapBuffers(_window);
 }

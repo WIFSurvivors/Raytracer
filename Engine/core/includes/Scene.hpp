@@ -18,6 +18,7 @@ struct EntitySystem;
 struct Scene {
   explicit Scene(Engine *e);
   Scene(Engine *e, uuid id);
+  ~Scene();
 
   std::weak_ptr<Entity> get_root();
 

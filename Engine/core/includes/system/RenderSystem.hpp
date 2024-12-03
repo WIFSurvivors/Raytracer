@@ -11,7 +11,6 @@
 #include <memory>
 #include <vector>
 
-
 /**
  *	RenderSystem class, that is resposible for:
  *	- ~~Window Managing~~
@@ -39,7 +38,9 @@ struct RenderSystem {
   void update(const float dt); // represents render
   void destroy();
 
-  RenderComponent *create_component(uuid id, Entity *e, std::vector<glm::vec3>& vertices, std::vector<glm::vec2>& UV);
+  RenderComponent *create_component(uuid id, Entity *e,
+                                    std::vector<glm::vec3> &vertices,
+                                    std::vector<glm::vec2> &UV);
 
   //  temporal
   //  we need, this because Render System is responsible for the window and
@@ -57,12 +58,12 @@ private:
   std::vector<glm::vec3> v = {glm::vec3{-0.5f, -0.5f, 0.0f},
                               glm::vec3{0.5f, -0.5f, 0.0f},
                               glm::vec3{0.0f, 0.5f, 0.0f}};
-glm::vec3 _cameraPosition;
-glm::vec3 _cameraDirection;
-float _fov;
-glm::mat4 _viewMatrix;
-glm::mat4 _projectionMatrix;
- GLuint _timeU;
+  glm::vec3 _cameraPosition;
+  glm::vec3 _cameraDirection;
+  float _fov;
+  glm::mat4 _viewMatrix;
+  glm::mat4 _projectionMatrix;
+  GLuint _timeU;
   GLuint _cameraU;
   GLuint _projU;
   GLuint _viewU;
