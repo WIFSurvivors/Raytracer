@@ -16,9 +16,13 @@ public class EcsApi
             throw new InvalidOperationException("Could not establish a TCP connection. No TCP server found.", ex);
         }
     }
+    public string close_RS()
+    {
+        return _client.Send("CloseRender");
+    }
     public string get_root()
     {
-        return _client.Send("GetRoot");  
+        return _client.Send("GetRoot");
     }
     public string get_entity(String UUID)
     {
