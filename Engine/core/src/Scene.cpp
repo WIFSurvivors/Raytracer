@@ -6,11 +6,13 @@
 #include <cassert>
 #include <format>
 
-Scene::Scene(Engine *e) : _root{create_root("root")} {
+Scene::Scene(Engine *e)
+    : _root{create_root("root")}, _render_system{e->get_window_manager()} {
   generate_sample_content();
 }
 
-Scene::Scene(Engine *e, uuid id) : _root{create_root("root", id)} {}
+Scene::Scene(Engine *e, uuid id)
+    : _root{create_root("root", id)}, _render_system{e->get_window_manager()} {}
 
 std::shared_ptr<Entity> Scene::create_root(const std::string &name) {
   auto uuid = _uuid_manager.getNewUUID(&_entity_system);
@@ -49,11 +51,6 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
   return _entity_system.create_entity(name, id, parent);
 }
 
-bool Scene::remove(uuid id) {
-  throw NotImplementedError();
-  // return false;
-}
-
 void Scene::print() { _root->print(); }
 
 void Scene::generate_sample_content() {
@@ -87,8 +84,6 @@ void Scene::generate_sample_content() {
   _entity_system.print();
   _simple_system.print_all_components();
 }
-
-UUIDManager *Scene::get_uuid_manager() { return &_uuid_manager; }
 
 // WORK IN PROGRESS WIP TODO WOOHOO
 void Scene::update(float dt) {

@@ -11,8 +11,6 @@
 
 #include <iostream>
 
-
-
 /**
  *	TODO:
  *	- Think about projection clipping space
@@ -26,55 +24,50 @@
 RenderSystem::RenderSystem(WindowManager *wm) : _wm{wm} {}
 
 void RenderSystem::init() {
-  // std::cout << "rs: a\n";
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cout << "Failed to initialize GLAD" << std::endl;
     return;
   }
-  // std::cout << "rs: b\n";
 
   glGenVertexArrays(1, &_vao);
   glBindVertexArray(_vao);
-
-  // std::cout << "rs: c\n";
-  //  I dont like this at all
   Shader simpleShader{
       std::make_pair(GL_VERTEX_SHADER, "../core/shaders/vertexshader.glsl"),
-      std::make_pair(GL_FRAGMENT_SHADER, "../core/shaders/fragmentshader.glsl")};
+      std::make_pair(GL_FRAGMENT_SHADER,
+                     "../core/shaders/fragmentshader.glsl")};
   program = std::make_unique<Shader>(simpleShader);
-  //  program->activateShader();
-  //  I dont like this at all
-  Shader computeShader{
-std::make_pair(GL_COMPUTE_SHADER, "../core/shaders/computeshaderCircle.glsl")};
-  compute = std::make_unique<Shader>(computeShader);
 
+  Shader computeShader{std::make_pair(
+      GL_COMPUTE_SHADER, "../core/shaders/computeshaderCircle.glsl")};
+  compute = std::make_unique<Shader>(computeShader);
 
   _cameraPosition = glm::vec3(0.0f, 10.0f, 10.0f);
   _cameraDirection = glm::vec3(0.0f, 0.0f, 0.0f);
-  _viewMatrix = glm::lookAt(_cameraPosition, _cameraDirection, glm::vec3(0, 1, 0));
+  _viewMatrix =
+      glm::lookAt(_cameraPosition, _cameraDirection, glm::vec3(0, 1, 0));
   //  TODO:
   //  calculate the aspect ratio appropriately
   _fov = 60.0f;
   _projectionMatrix = glm::perspective(glm::radians(_fov), 1.0f, 0.1f, 100.0f);
 
- _timeU = glGetUniformLocation(compute->programID, "time");
- _cameraU = glGetUniformLocation(compute->programID, "cameraPos");
- _projU = glGetUniformLocation(compute->programID, "Projection");
- _viewU = glGetUniformLocation(compute->programID, "View");
+  _timeU = glGetUniformLocation(compute->programID, "time");
+  _cameraU = glGetUniformLocation(compute->programID, "cameraPos");
+  _projU = glGetUniformLocation(compute->programID, "Projection");
+  _viewU = glGetUniformLocation(compute->programID, "View");
 }
 
 void RenderSystem::update(const float dt) {
   //  Specifies the background color1
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
-//  Calculation for the Camera
+  //  Calculation for the Camera
 
   //  Setup compute shader
   compute->activateShader();
   glUniform1f(_timeU, dt);
   glUniform3fv(_cameraU, 1, &_cameraPosition[0]);
-glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
-glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
+  glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
+  glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
 
   auto screen_size = _wm->getScreenSize();
   glDispatchCompute(screen_size.x, screen_size.y, 1);
@@ -93,8 +86,12 @@ glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
   // update(glfwGetTime());
 }
 
-RenderComponent *RenderSystem::create_component(uuid id, Entity *e, std::vector<glm::vec3>& vertices, std::vector<glm::vec2>& UV) {
-  _components[id] = std::make_unique<RenderComponent>(id, e, program->programID, vertices, UV);
+RenderComponent *
+RenderSystem::create_component(uuid id, Entity *e,
+                               std::vector<glm::vec3> &vertices,
+                               std::vector<glm::vec2> &UV) {
+  _components[id] = std::make_unique<RenderComponent>(id, e, program->programID,
+                                                      vertices, UV);
   auto ptr = _components[id].get();
   // ptr->init(program->programID);
   e->add_component(ptr);
@@ -110,8 +107,8 @@ void RenderSystem::destroy() {
 }
 
 // void RenderSystem::render() {
-    // glfwSetInputMode(_wm->_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+// glfwSetInputMode(_wm->_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 
-     // glfwMakeContextCurrent(_wm->_window);
+// glfwMakeContextCurrent(_wm->_window);
 
 // }
