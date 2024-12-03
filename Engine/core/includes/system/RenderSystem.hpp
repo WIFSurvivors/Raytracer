@@ -11,7 +11,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <memory>
 #include <vector>
-
+#include <map>
 /**
  *	RenderSystem class, that is resposible for:
  *	- ~~Window Managing~~
@@ -41,8 +41,8 @@ struct RenderSystem : public System {
 
   Component *create_component(uuid id, Entity *e) override;
   RenderComponent *create_component(uuid id, Entity *e,
-                                    std::vector<glm::vec3> &vertices,
-                                    std::vector<glm::vec2> &UV);
+                                    const std::vector<glm::vec3> &vertices,
+                                    const std::vector<glm::vec2> &UV);
 
   //  temporal
   //  we need, this because Render System is responsible for the window and

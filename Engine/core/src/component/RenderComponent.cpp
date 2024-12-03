@@ -99,6 +99,6 @@ void RenderComponent::setTextures() {
   glBindTexture(GL_TEXTURE_2D, _textureID);
 }
 
-void RenderComponent::move(glm::vec3 dir) {
+void RenderComponent::translate(glm::vec3 dir) {
   _modelMatrix = glm::translate(_modelMatrix, dir);
 }
