@@ -1,4 +1,5 @@
 #include "includes/WindowManager.hpp"
+#include "GLFW/glfw3.h"
 #include <iostream>
 
 void WindowManager::processInput(GLFWwindow *window) {
@@ -16,8 +17,6 @@ void WindowManager::framebuffer_size_callback(GLFWwindow *window, int width,
 
 WindowManager::WindowManager() { _initGLFW(); }
 
-void WindowManager::draw() {}
-
 void WindowManager::updateInput() {
   glfwPollEvents();
   processInput(_window);
@@ -34,6 +33,10 @@ void WindowManager::updateInput() {
 void WindowManager::swapBuffers() { glfwSwapBuffers(_window); }
 
 bool WindowManager::shouldClose() { return !glfwWindowShouldClose(_window); }
+void WindowManager::close() {
+  glfwSetWindowShouldClose(_window, GLFW_FALSE);
+  // glfwDestroyWindow(_window);
+}
 
 glm::vec2 WindowManager::getMousePos() { return _mousePos; }
 
@@ -42,14 +45,15 @@ glm::ivec2 WindowManager::getScreenSize() const { return _screenSize; }
 double WindowManager::get_time() { return glfwGetTime(); }
 
 bool WindowManager::_initGLFW() {
-   	if(!glfwInit()) {
-        std::cout << "Failed to init glfw\n";
-        return false;
-	}
+  if (!glfwInit()) {
+    std::cout << "Failed to init glfw\n";
+    return false;
+  }
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+  glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
   // glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
 
 #ifdef __APPLE__
@@ -71,4 +75,9 @@ bool WindowManager::_initGLFW() {
   glfwSetInputMode(_window, GLFW_STICKY_KEYS, GL_TRUE);
   glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
   return true;
+}
+
+void WindowManager::update() {
+  updateInput();
+  glfwSwapBuffers(_window);
 }

@@ -12,6 +12,9 @@ using System.Windows.Shapes;
 using System.Net.Sockets;
 using tcp_client;
 using Microsoft.Win32;
+using System.Diagnostics;
+using System.Windows.Interop;
+using System.Runtime.InteropServices;
 
 namespace RaytracerGUI
 {
@@ -21,12 +24,43 @@ namespace RaytracerGUI
     public partial class MainWindow : Window
     {
         private EcsApi? _ecsApi;
-
+        private string selectedUUID;
+        private GLFWLoader loader;
+        private IntPtr hWndParent;
         public MainWindow()
         {
             InitializeComponent();
             this.Background = (Brush)Application.Current.Resources["WindowBackgroundColor"];
-            _ecsApi = new EcsApi("127.0.0.1", 51234);
+            StartOtherExe("../../../../../Engine/build/TopLevelProject.exe");
+            bool connection = false;
+
+            while (!connection)
+            {
+                try
+                {
+                    _ecsApi = new EcsApi("127.0.0.1", 51234);
+
+                    // initial root-request
+                    selectedUUID = _ecsApi.get_root();
+                    tbxLog.AppendText(selectedUUID);
+                    connection = true; // connection was successful
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBoxResult result = MessageBox.Show(ex.Message + "\n" +
+                        "Please start the \"TopLevelProject.exe\" and try again!",
+                        "Connection Error",
+                        MessageBoxButton.OKCancel,
+                        MessageBoxImage.Error);
+
+                    if (result == MessageBoxResult.Cancel)
+                    {
+                        // close application
+                        Application.Current.Shutdown();
+                        break;
+                    }
+                }
+            }
 
         }
 
@@ -70,6 +104,38 @@ namespace RaytracerGUI
         }
 
 
+
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            hWndParent = new WindowInteropHelper(this).Handle;
+            loader = new GLFWLoader(this, hWndParent);
+            loader.WindowLoaded();
+
+        }
+
+
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (loader != null)
+            {
+                loader.CloseWindow();
+            }
+            //_ecsApi.close_RS();
+
+
+        }
+
+        private void RenderArea_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (loader != null)
+            {
+                loader.OnResize();
+            }
+        }
+
+
         //Button clicks
         private void generalButtonClick(object sender, RoutedEventArgs e)
         {
@@ -84,8 +150,6 @@ namespace RaytracerGUI
                 {
                     case "btnLeft":
                         tbxLog.AppendText(button + " was clicked! \n");
-                        string msg = _ecsApi.get_root();
-                        tbxLog.AppendText(msg);
                         tbxLog.ScrollToEnd();
                         break;
 
@@ -117,8 +181,26 @@ namespace RaytracerGUI
                     case "btnLog":
                         tbxLog.AppendText($"{DateTime.Now}: Log entry added.\n");
                         tbxLog.ScrollToEnd();
+                        TreeBuilder treeBuilder = new TreeBuilder(selectedUUID, trv_Entities);
                         break;
                 }
+            }
+        }
+
+        private void StartOtherExe(string exePath)
+        {
+            try
+            {
+                ProcessStartInfo startInfo = new ProcessStartInfo
+                {
+                    FileName = exePath,
+                    UseShellExecute = false
+                };
+                Process.Start(startInfo);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to start the executable. Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }

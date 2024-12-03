@@ -26,6 +26,10 @@ std::unique_ptr<TcpCommand> TcpCommandFactory::create_command(ParsedTcpCommand p
     std::cout << "Create GetRootCommand from message: " << std::endl;
     return std::make_unique<GetRootCommand>();
   }
+  else if (parsed_command.command.compare(CLOSE_RENDER_COMMAND) == 0) {
+    std::cout << "Create CloseRenderCommand from message: " << std::endl;
+    return std::make_unique<CloseRenderCommand>();
+  }
   else {
     std::cout << "Unknown command" << std::endl;
   }

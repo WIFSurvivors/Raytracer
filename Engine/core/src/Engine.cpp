@@ -2,27 +2,28 @@
 #include "includes/utility/SimpleLogger.hpp"
 
 class TcpServer;
-Engine::Engine() { init(); }
+Engine::Engine() { init_server(); }
 
-void Engine::init() {
+void Engine::init_server() {
   SimpleLogger::print("Engine::init()");
   try {
     _tcp_server->start();
   } catch (const std::exception &e) {
     SimpleLogger::print("Error: " + std::string(e.what()));
   }
-  _render_system.init();
 }
 
 void Engine::startLoop() {
-  RenderComponent comp{get_active_uuid_manager()->getNewUUID(), _scene.get_root().lock().get(), _render_system.program->programID};
-  comp.init(_render_system.program->programID);
-  _render_system._component = std::make_unique<RenderComponent>(comp);
-  _render_system.render();
-  comp.destroy();
-  _render_system.destroy();
-}
-
-UUIDManager *Engine::get_active_uuid_manager() {
-  return _scene.get_uuid_manager();
+  float t0, t1, dt;
+  while (_wm.shouldClose()) {
+    SimpleLogger::print("1");
+    t0 = t1;
+    SimpleLogger::print("2");
+    t1 = _wm.get_time();
+    dt = t1 - t0;
+    _scene.update(dt);
+    SimpleLogger::print("3");
+    _wm.update();
+    SimpleLogger::print("4");
+  }
 }

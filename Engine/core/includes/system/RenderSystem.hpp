@@ -10,8 +10,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <memory>
 #include <vector>
-
-
+#include <map>
 /**
  *	RenderSystem class, that is resposible for:
  *	- ~~Window Managing~~
@@ -39,27 +38,39 @@ struct RenderSystem {
   void update(const float dt); // represents render
   void destroy();
 
+  RenderComponent *create_component(uuid id, Entity *e,
+                                    const std::vector<glm::vec3> &vertices,
+                                    const std::vector<glm::vec2> &UV);
+
   //  temporal
   //  we need, this because Render System is responsible for the window and
   //  input handling
-  void render();
-  std::unique_ptr<RenderComponent> _component;
-  std::unique_ptr<Shader> program;
+  // void render();
+  // std::unique_ptr<RenderComponent> _component;
 
 private:
   WindowManager *_wm;
 
+  std::unique_ptr<Shader> program;
 
-  GLuint mouseUniformID; // a bit cringe... but it stays here for now
+  // GLuint mouseUniformID; // a bit cringe... but it stays here for now
   GLuint _vao;
   std::vector<glm::vec3> v = {glm::vec3{-0.5f, -0.5f, 0.0f},
                               glm::vec3{0.5f, -0.5f, 0.0f},
                               glm::vec3{0.0f, 0.5f, 0.0f}};
-
+  glm::vec3 _cameraPosition;
+  glm::vec3 _cameraDirection;
+  float _fov;
+  glm::mat4 _viewMatrix;
+  glm::mat4 _projectionMatrix;
+  GLuint _timeU;
+  GLuint _cameraU;
+  GLuint _projU;
+  GLuint _viewU;
   //  GLuint _porgramID;
   //  GLuint _computeID;
   //
   //  Not sure about this
-
+  std::map<uuid, std::unique_ptr<RenderComponent>> _components{};
   std::unique_ptr<Shader> compute;
 };
