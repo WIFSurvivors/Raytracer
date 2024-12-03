@@ -33,7 +33,10 @@ void WindowManager::updateInput() {
 void WindowManager::swapBuffers() { glfwSwapBuffers(_window); }
 
 bool WindowManager::shouldClose() { return !glfwWindowShouldClose(_window); }
-void WindowManager::close() { glfwDestroyWindow(_window); }
+void WindowManager::close() {
+  glfwSetWindowShouldClose(_window, GLFW_FALSE);
+  // glfwDestroyWindow(_window);
+}
 
 glm::vec2 WindowManager::getMousePos() { return _mousePos; }
 

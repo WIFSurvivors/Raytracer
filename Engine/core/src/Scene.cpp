@@ -1,6 +1,5 @@
 #include "includes/Scene.hpp"
 #include "includes/Engine.hpp"
-#include "includes/utility/NotImplementedError.hpp"
 #include "includes/utility/SimpleLogger.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <cassert>
