@@ -25,7 +25,7 @@ public:
   inline WindowManager *get_window_manager() { return &_wm; }
   inline Scene *get_scene() { return &_scene; }
   inline RenderSystem *get_render_system() {
-    return _scene->get_render_system();
+    return _scene.get_render_system();
   } // temporary solution
 
 private:

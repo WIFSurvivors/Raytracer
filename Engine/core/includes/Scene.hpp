@@ -33,6 +33,7 @@ struct Scene {
   void generate_sample_content();
 
   inline UUIDManager *get_uuid_manager() { return &_uuid_manager; }
+  inline RenderSystem *get_render_system() { return &_render_system; }
 
   void update(float dt);
 
