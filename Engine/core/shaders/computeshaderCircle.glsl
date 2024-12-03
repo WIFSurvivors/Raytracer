@@ -10,12 +10,6 @@ uniform vec3 cameraPos;
 uniform mat4 View;
 uniform mat4 Projection;
 
-uniform float time;
-uniform vec3 v0_no_use;
-uniform vec3 v1_no_use;
-uniform vec3 v2_no_use;
-uniform vec2 imageSize_no_use;
-
 const int hittableCount = 3;
 const int emitterCount = 1;
 
@@ -357,8 +351,6 @@ void main() {
     vec4 rayPixel = vec4(x, y, -1.0, 1.0);
 
     // Convert to eye space
-	//mat4 Projection = mat4(1.0);
-	//mat4 View = mat4(1.0);
     vec4 rayEye = inverse(Projection) * rayPixel;
     rayEye = vec4(rayEye.xy, -1.0, 0.0); // We = 0 dir
 
