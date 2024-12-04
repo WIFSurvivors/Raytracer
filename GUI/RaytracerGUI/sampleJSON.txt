@@ -1,0 +1,96 @@
+{
+    "uuid": "1a2b3c4d-5e6f-7g8h-9i0j-k1l2m3n4o5p6",
+    "name": "root",
+    "children_count": 3,
+    "children": [
+        {
+            "uuid": "7e8f9g1h-2i3j-4k5l-6m7n-8o9p0q1r2s3t",
+            "name": "environment",
+            "children_count": 2,
+            "children": [
+                {
+                    "uuid": "3a4b5c6d-7e8f-9g1h-2i3j-4k5l6m7n8o9p",
+                    "name": "sky",
+                    "children_count": 0
+                },
+                {
+                    "uuid": "5a6b7c8d-9e0f-1g2h-3i4j-5k6l7m8n9o0p",
+                    "name": "ground",
+                    "children_count": 1,
+                    "children": [
+                        {
+                            "uuid": "8d9e0f1g-2h3i-4j5k-6l7m-8n9o0p1q2r3s",
+                            "name": "grass",
+                            "children_count": 0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "9g1h2i3j-4k5l-6m7n-8o9p0q1r2s3t4u",
+            "name": "objects",
+            "children_count": 3,
+            "children": [
+                {
+                    "uuid": "0f1g2h3i-4j5k-6l7m-8n9o0p1q2r3s4t",
+                    "name": "tree",
+                    "children_count": 2,
+                    "children": [
+                        {
+                            "uuid": "6l7m8n9o-0p1q-2r3s-4t5u6v7w8x9y",
+                            "name": "leaves",
+                            "children_count": 0
+                        },
+                        {
+                            "uuid": "7m8n9o0p-1q2r-3s4t-5u6v7w8x9y0z",
+                            "name": "trunk",
+                            "children_count": 0
+                        }
+                    ]
+                },
+                {
+                    "uuid": "1q2r3s4t-5u6v-7w8x-9y0z1a2b3c4d5e",
+                    "name": "house",
+                    "children_count": 1,
+                    "children": [
+                        {
+                            "uuid": "3s4t5u6v-7w8x-9y0z1a-2b3c4d5e6f7g",
+                            "name": "roof",
+                            "children_count": 0
+                        }
+                    ]
+                },
+                {
+                    "uuid": "5u6v7w8x-9y0z1a2b-3c4d5e6f7g8h",
+                    "name": "car",
+                    "children_count": 0
+                }
+            ]
+        },
+        {
+            "uuid": "8o9p0q1r-2s3t4u5v-6w7x8y9z0a1b",
+            "name": "characters",
+            "children_count": 1,
+            "children": [
+                {
+                    "uuid": "9y0z1a2b-3c4d5e6f-7g8h9i0j1k2l",
+                    "name": "player",
+                    "children_count": 2,
+                    "children": [
+                        {
+                            "uuid": "1a2b3c4d-5e6f7g8h-9i0j1k2l3m4n",
+                            "name": "head",
+                            "children_count": 0
+                        },
+                        {
+                            "uuid": "2b3c4d5e-6f7g8h9i-0j1k2l3m4n5o",
+                            "name": "body",
+                            "children_count": 0
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

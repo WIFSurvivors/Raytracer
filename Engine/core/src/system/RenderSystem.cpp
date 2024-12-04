@@ -32,13 +32,13 @@ void RenderSystem::init() {
   glGenVertexArrays(1, &_vao);
   glBindVertexArray(_vao);
   Shader simpleShader{
-      std::make_pair(GL_VERTEX_SHADER, "../core/shaders/vertexshader.glsl"),
+      std::make_pair(GL_VERTEX_SHADER, "../../../../../Engine/core/shaders/vertexshader.glsl"),
       std::make_pair(GL_FRAGMENT_SHADER,
-                     "../core/shaders/fragmentshader.glsl")};
+                     "../../../../../Engine/core/shaders/fragmentshader.glsl")};
   program = std::make_unique<Shader>(simpleShader);
 
   Shader computeShader{std::make_pair(
-      GL_COMPUTE_SHADER, "../core/shaders/computeshaderCircle.glsl")};
+      GL_COMPUTE_SHADER, "../../../../../Engine/core/shaders/computeshaderCircle.glsl")};
   compute = std::make_unique<Shader>(computeShader);
 
   _cameraPosition = glm::vec3(0.0f, 10.0f, 10.0f);

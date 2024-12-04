@@ -44,7 +44,6 @@
         </Style.Triggers>
     </Style>
 
-
     <!-- Style for TreeView -->
     <Style TargetType="TreeView">
         <Setter Property="FontFamily" Value="pack://application:,,,/RaytracerGUI;component/fonts/#Lucida Console"/>
@@ -93,6 +92,12 @@
                 <Setter Property="Background" Value="{StaticResource WindowPrimaryColor}"/>
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <!-- Style for Rectangle -->
+    <Style TargetType="Rectangle">
+        <Setter Property="Stroke" Value="{StaticResource ComponentPrimaryColor}"/>
+        <Setter Property="StrokeThickness" Value="2"/>
     </Style>
 
     <!-- Style for TextBox -->
