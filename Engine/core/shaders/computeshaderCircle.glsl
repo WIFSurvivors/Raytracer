@@ -5,8 +5,7 @@ layout(rgba32f, binding = 0) uniform image2D textureOutput;
 
 // Model does not really exist rn so bleh
 uniform float time;
-uniform vec3 cameraPos;
-// uniform mat4 Model;
+uniform mat4 Model;
 uniform mat4 View;
 uniform mat4 Projection;
 
@@ -112,7 +111,7 @@ bool isInShadow(Sphere s[hittableCount], Ray r, int originObject, float distance
     if(tShadow > 0.0 && tShadow < distance){
       return true;
     }
-
+    
   }
 
   return false;
@@ -124,7 +123,7 @@ vec4 CalcColorWithLightSources(Sphere s[hittableCount], Ray r, Light emitter[emi
     // Color is to the start BLACK because no light reached a pixel yet
     vec3 color = vec3(0.0, 0.0, 0.0);
     vec3 reflec_accumulation = vec3(1.0, 1.0, 1.0); //Reflection in percent 100% red 100% green and blue
-
+    
     //For each bounce we want:
     for (int bounce = 0; bounce <= MAXIMAL_BOUNCES; bounce++) {
         float t = 1.0 / 0.0; // =)
@@ -151,7 +150,7 @@ vec4 CalcColorWithLightSources(Sphere s[hittableCount], Ray r, Light emitter[emi
               vec3 shadowRay = normalize(light.position - sectionPoint);
               //the distance to the light to the section point;
               float distanceToLight = length(light.position - sectionPoint);
-              //The attentuation based on Intensity = 1 / d^2
+              //The attentuation based on Intensity = 1 / d^2 
               float attenuation = 1.0 / (distanceToLight * distanceToLight);  // Inverse square law
               // Check if the shadow ray intersects other objects in its path
               bool isShadow = isInShadow(s,Ray(sectionPoint, shadowRay), index, distanceToLight);
@@ -224,9 +223,9 @@ vec4 rayColor(Ray r) {
     vec4 c2 = vec4(4.0, 0.0, -1.0, 1.0);
     vec4 c3 = vec4(0.0, -10.0, 0.0, 1.0);
 
-    Sphere s1 = Sphere(3.9, c1.xyz, vec3(0.0, 1.0, 0.0), 1.0);
-    Sphere s2 = Sphere(3.9, c2.xyz, vec3(0.5, 0.0, 0.5), 0.2);
-    Sphere s3 = Sphere(5.0, c3.xyz, vec3(1.0, 1.0, 1.0), 0.5);
+    Sphere s1 = Sphere(3.0, c1.xyz, vec3(0.0, 1.0, 0.0), 1.0);
+    Sphere s2 = Sphere(3.0, c2.xyz, vec3(0.5, 0.0, 0.5), 0.2);
+    Sphere s3 = Sphere(4.7, c3.xyz, vec3(1.0, 1.0, 1.0), 0.1);
 
     Sphere s[3];
     s[0] = s1;
@@ -234,9 +233,10 @@ vec4 rayColor(Ray r) {
     s[2] = s3;
     float t = -1.0;
     float temp = -1.0;
-
+    
     Light[1] lightSources;
-    lightSources[0] = Light(vec3(0.0,10.0,10.0),vec3(0.0,0.0,0.0), vec3(1.0,1.0,1.0),100.0);
+    vec3 position = vec3(-10.0,10.0,10.0)+3*sin(time);
+    lightSources[0] = Light(position,vec3(0.0,0.0,0.0), vec3(1.0,1.0,1.0),200.0);
     //return CalcColor(s, r);
     return CalcColorWithLightSources(s,r,lightSources);
     //t = intersectsSphere(s1, r); //
@@ -344,8 +344,7 @@ void main() {
     float x = float(pixelCoords.x * 2 - dims.x) / dims.x; // transforms to [-1.0, 1.0]
     float y = float(pixelCoords.y * 2 - dims.y) / dims.y; // transforms to [-1.0, 1.0]
 
-    // vec3 rayOrigin = vec3(0.0, 10.0, 10.0); // Ray origin should always be camera position. Current camera position is not used
-    vec3 rayOrigin = cameraPos;
+    vec3 rayOrigin = vec3(0.0, 10.0, 10.0); // Ray origin should always be camera position. Current camera position is not used
 
     //ray in clip
     vec4 rayPixel = vec4(x, y, -1.0, 1.0);
