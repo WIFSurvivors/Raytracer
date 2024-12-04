@@ -24,21 +24,28 @@ namespace RaytracerGUI
             var ecsRoot = JsonSerializer.Deserialize<EcsNode>(jsonString);
             if (ecsRoot != null)
             {
-                CreateChildItems(ecsRoot);
+                TreeViewItem rootItem = new TreeViewItem
+                {
+                    Header = ecsRoot.name
+                };
+                CreateChildItems(ecsRoot, rootItem);
+                TreeView.Items.Add(rootItem);
             }
         }
 
-        private void CreateChildItems(EcsNode ecsNode)
+        private void CreateChildItems(EcsNode ecsNode, TreeViewItem parentItem)
         {
-            TreeViewItem currentItem = new TreeViewItem();
-            currentItem.Header = ecsNode.name;
-            TreeView.Items.Add(currentItem);
-
             if (ecsNode.children != null && ecsNode.children.Count > 0)
             {
                 foreach (var child in ecsNode.children)
                 {
-                    CreateChildItems(child);
+                    TreeViewItem childItem = new TreeViewItem
+                    {
+                        Header = child.name
+                    };
+
+                    parentItem.Items.Add(childItem);
+                    CreateChildItems(child, childItem);
                 }
             }
         }

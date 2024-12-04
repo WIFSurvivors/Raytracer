@@ -67,13 +67,13 @@ public class GLFWLoader
 
     private Rect GetRenderAreaBounds()
     {
-        Point location = _mainWindow.RenderArea.TransformToAncestor(_mainWindow).Transform(new Point(0, 0));
+        Point location = _mainWindow.rctRenderArea.TransformToAncestor(_mainWindow).Transform(new Point(2, 2));
         return new Rect
         {
             X = location.X,
             Y = location.Y,
-            Width = _mainWindow.RenderArea.ActualWidth,
-            Height = _mainWindow.RenderArea.ActualHeight
+            Width = _mainWindow.rctRenderArea.ActualWidth,
+            Height = _mainWindow.rctRenderArea.ActualHeight
         };
     }
 
