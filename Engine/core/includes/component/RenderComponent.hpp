@@ -46,14 +46,14 @@ private:
   glm::mat4 _viewMatrix;       // shouldn't be here
   glm::mat4 _projectionMatrix; // shouldn't be here
 
-  std::vector<glm::vec3> vertices = {
+  std::vector<glm::vec3> _vertices = {
       glm::vec3{-1.0f, -1.0f, 0.0f}, glm::vec3{1.0f, -1.0f, 0.0f},
       glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, -1.0f, 0.0f},
       glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, 1.0f, 0.0f}};
 
-  int nvertices = 6; // Number of vertices
+  int _nvertices = 6; // Number of vertices
 
-  std::vector<glm::vec2> UV = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 0.0f},
+  std::vector<glm::vec2> _uv = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 0.0f},
                                glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 0.0f},
                                glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 1.0f}};
 
@@ -63,21 +63,4 @@ private:
   // void setVertices(); // for now does nothing but later here we can load an
   // object
   void setTextures();
-
-public:
-  RenderComponent(uuid id, Entity* e, GLuint programID, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec2>& UV):
-  Component{id, e}{
-      // init(programID);
-      _vertices = vertices;
-      // std::cout << vertices.size() << "\n";
-      _nvertices = vertices.size();
-      _uv = UV;
-      _modelMatrix = glm::mat4(1);
-      init(programID);
-  }
-  void init(GLuint programID);
-  void update(GLuint VAO);
-  void destroy();
-
-  void translate(glm::vec3 dir);
 };
