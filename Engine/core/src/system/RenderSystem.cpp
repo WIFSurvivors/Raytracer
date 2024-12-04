@@ -4,11 +4,14 @@
 #include "includes/component/RenderComponent.hpp"
 #include "includes/ShaderCompiler.hpp"
 #include "includes/utility/NotImplementedError.hpp"
+#include "includes/utility/TablePrinter.hpp"
+#include "includes/utility/SimpleLogger.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <boost/uuid/uuid_io.hpp>
 #include <memory>
 
 #include <iostream>
@@ -23,7 +26,9 @@
  *	  - Separate other functionality to the functions
  */
 
-RenderSystem::RenderSystem(WindowManager *wm) : _wm{wm} {}
+RenderSystem::RenderSystem(WindowManager *wm) : System(), _wm{wm} {
+  SimpleLogger::print("-- created entity system");
+  }
 
 void RenderSystem::init() {
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -129,3 +134,32 @@ void RenderSystem::destroy() {
 
 bool RenderSystem::remove(Component *c) { throw NotImplementedError(); }
 bool RenderSystem::remove(uuid uuid) { throw NotImplementedError(); }
+
+
+
+void RenderSystem::print() {
+  TablePrinter::printElement("RenderComponent UUID", 36);
+  std::cout << " | ";
+  TablePrinter::printElement("VBO", 12);
+  std::cout << " | ";
+  TablePrinter::printElement("textureID", 12);
+  std::cout << " | ";
+  TablePrinter::printElement("uvVBO", 12);
+  std::cout << "\n";
+  std::cout << std::string(36 + 12 + 12 + 12 + 3*3, '=');
+  std::cout << "\n";
+  for (auto const &[uuid, c] : _components) { 
+    std::cout << uuid << " | ";
+    if (c == nullptr) {
+      std::cout << "missing...\n";
+      continue;
+    }
+    TablePrinter::printElement(c->get_vbo(), 12);
+    std::cout << " | ";
+    TablePrinter::printElement(c->get_textureID(), 12);
+    std::cout << " | ";
+    TablePrinter::printElement(c->get_uvVBO(), 12);
+    std::cout << "\n";
+  }
+  std::cout << std::endl;
+}

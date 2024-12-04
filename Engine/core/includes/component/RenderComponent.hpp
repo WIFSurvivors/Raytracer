@@ -33,6 +33,10 @@ struct RenderComponent : Component {
 
   void translate(glm::vec3 dir);
 
+  inline const GLuint get_vbo() {return _vbo;}
+  inline const GLuint get_textureID() {return _textureID;}
+  inline const GLuint get_uvVBO() {return _textureID;}
+
 private:
   GLuint _vbo;
   GLuint _textureID;

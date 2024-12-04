@@ -53,6 +53,8 @@ struct RenderSystem : public System {
   bool remove(Component *c) override;
   bool remove(uuid uuid) override;
 
+  void print();
+
 private:
   WindowManager *_wm;
 
