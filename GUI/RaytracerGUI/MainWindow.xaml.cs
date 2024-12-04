@@ -133,11 +133,10 @@ namespace RaytracerGUI
             if (loader != null)
             {
                 loader.OnResize();
-                //Rectangle rctRenderArea = sender as Rectangle;
-                //MessageBox.Show(rctRenderArea.ActualHeight + "\n" + rctRenderArea.ActualWidth);
+                this.UpdateLayout();
+
             }
         }
-
 
         //Button clicks
         private void generalButtonClick(object sender, RoutedEventArgs e)

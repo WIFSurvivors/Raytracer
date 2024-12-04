@@ -110,7 +110,7 @@ Closing="Window_Closing">
                 <RowDefinition Height="180" x:Name="GUIBottom"/>
             </Grid.RowDefinitions>
             <!--Preview Picture-->
-            <Rectangle Name="rctRenderArea" Grid.Row="0" Margin="5"  SizeChanged="rctRenderArea_SizeChanged"/>
+            <Rectangle Name="rctRenderArea" Grid.Row="0" Margin="5"  SizeChanged="rctRenderArea_SizeChanged" />
             <!--GuiBottom-->
             <Grid HorizontalAlignment="Stretch" Grid.Row="1">
                 <Grid.ColumnDefinitions>
