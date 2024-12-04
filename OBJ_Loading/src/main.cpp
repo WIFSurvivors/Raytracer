@@ -94,36 +94,28 @@ int main() {
     triangles[i*3 + 2 ] = vetexList[i*3].z;
   }
 
-	tinybvh::bvhvec3 O( 0.5f, 0.5f, -1 );
-	tinybvh::bvhvec3 D( 0.1f, 0, 2 );
-	tinybvh::Ray ray( O, D );
   tinybvh::BVH bvh;
   bvh.Build(triangles, vetexList.size()/3);
-  bvh.Convert( tinybvh::BVH::WALD_32BYTE, tinybvh::BVH::VERBOSE, true );
-  
+  bvh.Convert( tinybvh::BVH::WALD_32BYTE, tinybvh::BVH::VERBOSE, true);
   bvh.Refit( tinybvh::BVH::VERBOSE );
 
   std::cout << "Nodes : " << bvh.NodeCount(tinybvh::BVH::WALD_32BYTE) << "  Node: " << (bvh.usedBVHNodes) <<std::endl;
   assert( bvh.bvhNode != 0);
-  auto* leftnode = &bvh.bvhNode[0];
-  auto* rightnode = &bvh.bvhNode[1];
-  std::cout << "left : " << leftnode->aabbMax.x <<std::endl;
-  std::cout << "right : " << rightnode->aabbMax.x <<std::endl;
+  auto* leftnode = &bvh.verbose[0];
+  auto* rightnode = &bvh.verbose[1];
+  
+  //std::cout << "left : " << leftnode->aabbMax.x <<std::endl;
+  //std::cout << "right : " << rightnode->aabbMax.x <<std::endl;
   unsigned retVal =0, nodeIdx=0, stack[64],stackPtr=0;
   while(1){
-    const auto& n = bvh.bvhNode[nodeIdx];
-    std::cout << n.aabbMax.x << std::endl;
-    std::cout << n.aabbMax.y << std::endl;
-    std::cout << n.aabbMax.z << std::endl;
-
-    std::cout << " " << std::endl;
-    std::cout << n.aabbMin.x << std::endl;
-    std::cout << n.aabbMin.y << std::endl;
-    std::cout << n.aabbMin.z << std::endl;
-    std::cout << "---" << std::endl;
-    retVal++;
-    if(n.isLeaf()) { if (stackPtr==0) break; else nodeIdx = stack[--stackPtr];}
+    const auto& n = bvh.verbose[nodeIdx];
+    if(n.isLeaf()) {
+	  if (stackPtr==0) break; 
+	  else nodeIdx = stack[--stackPtr];
+	  std::cout << "test: " << n.firstTri << std::endl;
+	}
     else nodeIdx = n.leftFirst, stack[stackPtr++] = n.leftFirst+1; 
   }
 }
+
 
