@@ -19,7 +19,7 @@ void Engine::startLoop() {
     t0 = t1;
     t1 = _wm.get_time();
     dt = t1 - t0;
-    _scene.update(dt);
+    _scene.update(t1);
     _wm.update();
   }
 }

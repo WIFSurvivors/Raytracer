@@ -66,11 +66,11 @@ Closing="Window_Closing">
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TreeView Name="trv_Entities" Grid.Row="0">
+                    <TreeView Name="trvEntities" Grid.Row="0">
                         <TreeViewItem Header="Entity 1" />
                     </TreeView>
 
-                    <TreeView Name="trv_Components" Grid.Row="1">
+                    <TreeView Name="trvComponents" Grid.Row="1">
                         <TreeViewItem Header="Component Category 1">
                             <TreeViewItem Header="Component 1.1" />
                             <TreeViewItem Header="Component 1.2">
@@ -89,13 +89,13 @@ Closing="Window_Closing">
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <ListBox Name="lbx_Entity" Grid.Row="0">
+                    <ListBox Name="lbxEntity" Grid.Row="0">
                         <ListBoxItem Content="Entity Option 1" />
                         <ListBoxItem Content="Entity Option 2" />
                         <ListBoxItem Content="Entity Option 3" />
                     </ListBox>
 
-                    <ListBox Name="lbx_Component" Grid.Row="1">
+                    <ListBox Name="lbxComponent" Grid.Row="1">
                         <ListBoxItem Content="Component Option 1" />
                         <ListBoxItem Content="Component Option 2" />
                         <ListBoxItem Content="Component Option 3" />
@@ -110,10 +110,7 @@ Closing="Window_Closing">
                 <RowDefinition Height="180" x:Name="GUIBottom"/>
             </Grid.RowDefinitions>
             <!--Preview Picture-->
-            <Border Grid.Row="0" Margin="5">
-                <Rectangle Name="RenderArea" Grid.Row="1" Grid.Column="1" Stroke="#008800" SizeChanged="RenderArea_SizeChanged"/>
-            </Border>
-
+            <Rectangle Name="rctRenderArea" Grid.Row="0" Margin="5"  SizeChanged="rctRenderArea_SizeChanged" />
             <!--GuiBottom-->
             <Grid HorizontalAlignment="Stretch" Grid.Row="1">
                 <Grid.ColumnDefinitions>

@@ -15,6 +15,7 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace RaytracerGUI
 {
@@ -127,14 +128,15 @@ namespace RaytracerGUI
 
         }
 
-        private void RenderArea_SizeChanged(object sender, SizeChangedEventArgs e)
+        private void rctRenderArea_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (loader != null)
             {
                 loader.OnResize();
+                this.UpdateLayout();
+
             }
         }
-
 
         //Button clicks
         private void generalButtonClick(object sender, RoutedEventArgs e)
@@ -181,7 +183,20 @@ namespace RaytracerGUI
                     case "btnLog":
                         tbxLog.AppendText($"{DateTime.Now}: Log entry added.\n");
                         tbxLog.ScrollToEnd();
-                        TreeBuilder treeBuilder = new TreeBuilder(selectedUUID, trv_Entities);
+
+                        // TreeBuilder testing
+                        string jsonTestString;
+                        try
+                        {
+                            jsonTestString = File.ReadAllText(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\sampleJSON.txt");
+                        }
+                        catch (Exception ex)
+                        {
+                            jsonTestString = selectedUUID;
+                        }
+                        new TreeBuilder(jsonTestString, trvEntities);
+                        jsonTestString = selectedUUID;
+                        new TreeBuilder(jsonTestString, trvComponents);
                         break;
                 }
             }
@@ -194,7 +209,8 @@ namespace RaytracerGUI
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
                     FileName = exePath,
-                    UseShellExecute = false
+                    UseShellExecute = false,
+                    WindowStyle = ProcessWindowStyle.Minimized
                 };
                 Process.Start(startInfo);
             }
