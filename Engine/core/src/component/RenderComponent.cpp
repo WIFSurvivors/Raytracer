@@ -111,5 +111,5 @@ void RenderComponent::setTextures() {
 }
 
 void RenderComponent::translate(glm::vec3 dir) {
-    _modelMatrix = glm::translate(_modelMatrix, dir);
+  _modelMatrix = glm::translate(_modelMatrix, dir);
 }
