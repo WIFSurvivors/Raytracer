@@ -1,9 +1,6 @@
 #pragma once
 
-// #include "includes/Component.hpp"
-// #include "includes/Entity.hpp"
 #include <boost/uuid/uuid.hpp>
-#include <cstdint>
 #include <string>
 #include <memory>
 
@@ -27,7 +24,8 @@ struct System {
   virtual Component *create_component(uuid id, Entity *e);
 
   /**
-   * Entity are responsible for representing components in 3D space.
+   * Entity arestd::vector<glm::vec3>& vertices, std::vector<glm::vec2>& UV
+   * responsible for representing components in 3D space.
    */
   virtual std::shared_ptr<Entity> create_entity(const std::string &name,
                                                 uuid id);

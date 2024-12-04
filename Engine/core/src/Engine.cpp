@@ -16,14 +16,10 @@ void Engine::init_server() {
 void Engine::startLoop() {
   float t0, t1, dt;
   while (_wm.shouldClose()) {
-    //SimpleLogger::print("1");
     t0 = t1;
-    //SimpleLogger::print("2");
     t1 = _wm.get_time();
     dt = t1 - t0;
     _scene.update(t1);
-    //SimpleLogger::print("3");
     _wm.update();
-    //SimpleLogger::print("4");
   }
 }

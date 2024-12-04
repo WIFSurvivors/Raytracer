@@ -3,14 +3,23 @@
 #include <glm/ext/matrix_transform.hpp>
 
 #include "includes/component/RenderComponent.hpp"
-#include "glm/ext/matrix_clip_space.hpp"
 
-#include <iostream>
+#include "includes/utility/SimpleLogger.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
+RenderComponent::RenderComponent(uuid id, Entity *e, GLuint programID,
+                                 const std::vector<glm::vec3> &vertices,
+                                 const std::vector<glm::vec2> &UV)
+    : Component{id, e} {
+  _vertices = vertices;
+  _nvertices = vertices.size();
+  _uv = UV;
+  _modelMatrix = glm::mat4(1);
+  init(programID);
+}
 
 void RenderComponent::init(GLuint programID) {
-  std::cout << "rc: a\n";
+  SimpleLogger::print("RenderComponent::init()");
   //  TODO:
   //  - Understand the index of the generic vertex attribute
   //  (glVertexAttribPointer())
@@ -43,11 +52,11 @@ void RenderComponent::init(GLuint programID) {
   _modelU = glGetUniformLocation(programID, "MVP");
 }
 
-void RenderComponent::update() {
+void RenderComponent::update(const float dt) {
   //  TODO:
   //  - Better MVP calculation (e.g. we don't need to call glm::mat4(1) every
   //  time) Calculation for the Model Matrix
-      //glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+  // glBindBuffer(GL_ARRAY_BUFFER, _vbo);
   glUniform1i(_textU, 0);
   //  GL_FALSE is for transpose
   glUniformMatrix4fv(_modelU, 1, GL_FALSE, &_modelMatrix[0][0]);
@@ -102,5 +111,5 @@ void RenderComponent::setTextures() {
 }
 
 void RenderComponent::translate(glm::vec3 dir) {
-    _modelMatrix = glm::translate(_modelMatrix, dir);
+  _modelMatrix = glm::translate(_modelMatrix, dir);
 }

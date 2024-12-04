@@ -22,7 +22,7 @@ void SimpleComponent::init() {
   std::cout << "\n";
 }
 
-void SimpleComponent::update(float dt) {
+void SimpleComponent::update(const float dt) {
   // std::cout << "--- update | ";
   // print();
   // std::cout << "\n";

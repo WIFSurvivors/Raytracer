@@ -7,8 +7,9 @@
 
 Scene::Scene(Engine *e)
     : _root{create_root("root")}, _render_system{e->get_window_manager()} {
-  generate_sample_content();
   _render_system.init();
+
+  generate_sample_content();
 }
 
 Scene::Scene(Engine *e, uuid id)
@@ -62,8 +63,15 @@ void Scene::print() { _root->print(); }
 void Scene::generate_sample_content() {
   _uuid_manager.print();
   _entity_system.print();
+  _render_system.print();
+//   _simple_system.print_all_components();
 
-  SimpleLogger::print(std::string(10, '-'));
+  SimpleLogger::print("\n");
+  SimpleLogger::print(std::string(100, '*'));
+  SimpleLogger::print("\n");
+
+  
+  // ============== ENTITY + SIMPLE COMPONENT ==============
 
   auto e1 = create_entity("camera");
   e1->set_local_position(glm::vec3{0, 1, 2});
@@ -72,27 +80,13 @@ void Scene::generate_sample_content() {
   auto e3 = create_entity("cube", e1);
   e3->set_local_position(glm::vec3{-2, 6, 7});
 
-  SimpleLogger::print(std::string(10, '-'));
-
-  _uuid_manager.print();
-  _entity_system.print();
-
-  SimpleLogger::print(std::string(10, '-'));
-
   auto new_uuid = _uuid_manager.getNewUUID(&_simple_system);
   auto c1 = _simple_system.create_component(new_uuid, e1.get());
   new_uuid = _uuid_manager.getNewUUID(&_simple_system);
   auto c2 = _simple_system.create_component(new_uuid, e3.get(), -56);
 
-  SimpleLogger::print(std::string(10, '-'));
+  // =================== RENDER SYSTEM =====================
 
-  _uuid_manager.print();
-  _entity_system.print();
-  _simple_system.print_all_components();
-
-  // ============== RENDER SYSTEM ========================
-
-  _render_system.init();
   std::vector<glm::vec3> v1 = {
       glm::vec3{-1.0f, -1.0f, 0.0f}, glm::vec3{1.0f, -1.0f, 0.0f},
       glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, -1.0f, 0.0f},
@@ -112,10 +106,20 @@ void Scene::generate_sample_content() {
                                glm::vec2{0.0f, 1.0f}};
 
   auto root_ptr = get_root().lock();
-  _render_system.create_component(_uuid_manager.getNewUUID(), root_ptr.get(),
+  _render_system.create_component(_uuid_manager.getNewUUID(&_render_system), root_ptr.get(),
                                   v2, u2);
-  _render_system.create_component(_uuid_manager.getNewUUID(), root_ptr.get(),
+  _render_system.create_component(_uuid_manager.getNewUUID(&_render_system), root_ptr.get(),
                                   v3, u3);
+
+  
+  SimpleLogger::print("\n");
+  SimpleLogger::print(std::string(100, '*'));
+  SimpleLogger::print("\n");
+
+  _uuid_manager.print();
+  _entity_system.print();
+  _render_system.print();
+//   _simple_system.print_all_components();
 }
 
 // currently only tell the render system to update itself

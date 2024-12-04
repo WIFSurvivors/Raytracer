@@ -1,5 +1,6 @@
 #pragma once
 
+#include "includes/system/System.hpp"
 #include "includes/component/RenderComponent.hpp"
 #include "includes/ShaderCompiler.hpp"
 #include "includes/WindowManager.hpp"
@@ -30,7 +31,7 @@
  *	- Jeb, i dont know what to do: implement create_component()
  *	- Do we really need a separate class for shaders
  */
-struct RenderSystem {
+struct RenderSystem : public System {
 
   explicit RenderSystem(WindowManager *wm);
 
@@ -38,6 +39,7 @@ struct RenderSystem {
   void update(const float dt); // represents render
   void destroy();
 
+  Component *create_component(uuid id, Entity *e) override;
   RenderComponent *create_component(uuid id, Entity *e,
                                     const std::vector<glm::vec3> &vertices,
                                     const std::vector<glm::vec2> &UV);
@@ -47,6 +49,11 @@ struct RenderSystem {
   //  input handling
   // void render();
   // std::unique_ptr<RenderComponent> _component;
+
+  bool remove(Component *c) override;
+  bool remove(uuid uuid) override;
+
+  void print();
 
 private:
   WindowManager *_wm;

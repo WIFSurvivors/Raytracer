@@ -65,6 +65,7 @@ void EntitySystem::print() {
     std::cout << e->get_world_position();
     std::cout << "\n";
   }
+  std::cout << std::endl;
 }
 EntitySystem::EntitySystem() : System() {
   SimpleLogger::print("-- created entity system");

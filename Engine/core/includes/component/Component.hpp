@@ -16,7 +16,7 @@ struct Component {
 
   /// @brief Use to update component's logic each tick
   /// @param dt Time step
-  virtual void update(float dt);
+  virtual void update(const float dt);
 
   /// @brief Use to delete references to external objects
   virtual void destroy();

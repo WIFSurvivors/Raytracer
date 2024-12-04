@@ -5,8 +5,6 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <vector>
-#include <iostream>
-#include <utility>
 
 /**
  *    RenderComponent class:
@@ -25,48 +23,48 @@
  */
 // class RenderComponent  : public virtual Component{
 
-class RenderComponent: public Component{
+struct RenderComponent : Component {
+  RenderComponent(uuid id, Entity *e, GLuint programID,
+                  const std::vector<glm::vec3> &vertices,
+                  const std::vector<glm::vec2> &UV);
+  void init(GLuint programID);
+  void update(float dt);
+  void destroy();
+
+  void translate(glm::vec3 dir);
+
+  inline const GLuint get_vbo() {return _vbo;}
+  inline const GLuint get_textureID() {return _textureID;}
+  inline const GLuint get_uvVBO() {return _textureID;}
+
 private:
   GLuint _vbo;
   GLuint _textureID;
   GLuint _uvVBO;
 
-  // glm::mat4 _translationMatrix;
-  // glm::mat4 _rotationMatrix;
-  // glm::mat4 _scaleMatrix;
+  glm::mat4 _translationMatrix;
+  glm::mat4 _rotationMatrix;
+  glm::mat4 _scaleMatrix;
   glm::mat4 _modelMatrix;
 
-  // glm::mat4 _viewMatrix;       // shouldn't be here
-  // glm::mat4 _projectionMatrix; // shouldn't be here
+  glm::mat4 _viewMatrix;       // shouldn't be here
+  glm::mat4 _projectionMatrix; // shouldn't be here
 
-  std::vector<glm::vec3> _vertices;
+  std::vector<glm::vec3> _vertices = {
+      glm::vec3{-1.0f, -1.0f, 0.0f}, glm::vec3{1.0f, -1.0f, 0.0f},
+      glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, -1.0f, 0.0f},
+      glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, 1.0f, 0.0f}};
 
   int _nvertices = 6; // Number of vertices
 
-  std::vector<glm::vec2> _uv;
+  std::vector<glm::vec2> _uv = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 0.0f},
+                               glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 0.0f},
+                               glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 1.0f}};
 
   GLuint _textU;
   GLuint _modelU;
-  // GLuint mvpUniformID;
 
   // void setVertices(); // for now does nothing but later here we can load an
   // object
   void setTextures();
-
-public:
-  RenderComponent(uuid id, Entity* e, GLuint programID, const std::vector<glm::vec3>& vertices, const std::vector<glm::vec2>& UV):
-  Component{id, e}{
-      // init(programID);
-      _vertices = vertices;
-      // std::cout << vertices.size() << "\n";
-      _nvertices = vertices.size();
-      _uv = UV;
-      _modelMatrix = glm::mat4(1);
-      init(programID);
-  }
-  void init(GLuint programID);
-  void update();
-  void destroy();
-
-  void translate(glm::vec3 dir);
 };
