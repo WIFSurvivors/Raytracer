@@ -6,6 +6,5 @@ CameraComponent::CameraComponent(uuid id, Entity *e, float fov)
     : Component(id, e), _fov(fov) {}
 
 void CameraComponent::init() {}
-
 void CameraComponent::update(const float dt) {}
 void CameraComponent::destroy() {}
