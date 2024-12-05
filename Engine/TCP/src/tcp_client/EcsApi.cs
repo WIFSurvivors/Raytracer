@@ -45,5 +45,8 @@ public class EcsApi
     public string delete_component() {
         return "DeleteComponent";
     }
+    public string get_all_entities() {
+        return _client.Send("GetChildEntities 642f2f09-7044-4ede-bfff-94a2d6718434");
+    }
     
 }
