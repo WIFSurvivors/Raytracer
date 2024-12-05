@@ -40,6 +40,11 @@ std::unique_ptr<TcpCommand> TcpCommandFactory::create_command(ParsedTcpCommand p
 
     return std::make_unique<GetComponentsCommand>(_uuid);
   }
+  else if (parsed_command.command.compare(GET_ENTITIY_OPTIONS_COMMAND) == 0) {
+    std::cout << "Create GetEntityOptionsCommand from message: " << std::endl;
+
+    return std::make_unique<GetEntityOptionsCommand>(_uuid);
+  }
   else {
     std::cout << "Unknown command" << std::endl;
   }
