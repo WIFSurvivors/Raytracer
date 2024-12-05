@@ -12,10 +12,11 @@ public class Gui
             int port = 51234;
             EcsApi api = new EcsApi(host, port);
             // Send first message
-            String uuid1 = api.move_entity("213123", 1.0f, 2.0f, 3.0f);
+            //String uuid1 = api.move_entity("213123", 1.0f, 2.0f, 3.0f);
             // Send second message
-            String uuid2 = api.rotate_entity("213213", 1.0f, 2.0f, 3.0f);
+            //String uuid2 = api.rotate_entity("213213", 1.0f, 2.0f, 3.0f);
             //client.Close();
+            string test = api.get_all_entities();
             string message = api.get_root();
         }
         catch (ArgumentNullException e)
