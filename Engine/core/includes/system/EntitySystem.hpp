@@ -17,6 +17,9 @@ struct EntitySystem : public System {
   std::shared_ptr<Entity> create_entity(const std::string &, uuid id,
                                         std::shared_ptr<Entity> parent);
 
+  inline const auto &get_entities() const { return _entities; }
+
+
   bool remove(uuid id) override;
   bool remove(Entity *e) override;
 
