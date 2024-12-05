@@ -48,5 +48,8 @@ public class EcsApi
     public string get_child_entities(string UUID) {
         return _client.Send(string.Format("GetChildEntities {0}", UUID));
     }
+    public string get_entity_options(string UUID) {
+        return _client.Send(string.Format("GetEntityOptions {0}", UUID));
+    }
     
 }
