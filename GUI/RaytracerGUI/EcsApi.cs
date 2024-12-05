@@ -24,11 +24,14 @@ public class EcsApi
     {
         return _client.Send("GetRoot");
     }
-    public string get_entity(String UUID)
+    public string get_child_entities(string UUID) {
+        return _client.Send(string.Format("GetChildEntities {0}", UUID));
+    }
+    public string get_entity_options(String UUID)
     {
         return "GetEntity";
     }
-    public string get_component(String UUID)
+    public string get_components(String UUID)
     {
         return "GetComponent";
     }
