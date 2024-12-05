@@ -1,5 +1,4 @@
 #pragma once
-#include "includes/utility/SimpleLogger.hpp"
 #include "includes/Entity.hpp"
 #include "includes/component/SimpleComponent.hpp"
 #include "includes/system/System.hpp"
