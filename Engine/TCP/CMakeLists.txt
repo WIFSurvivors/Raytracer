@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.30.0)
 project(tcp-test VERSION 0.0.1 DESCRIPTION "TCP Server and Client in CPP using Boost")
 
-set(BOOST_INCLUDE_LIBRARIES thread filesystem system program_options asio date_time json)
+set(BOOST_INCLUDE_LIBRARIES thread filesystem system program_options asio date_time json uuid)
 set(BOOST_ENABLE_CMAKE ON)
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON) #clangd req.
@@ -25,6 +25,7 @@ target_link_libraries(tcp
   #Boost::thread
   # Boost::program_options
   Boost::json
+  Boost::uuid
 )
 if (WIN32)
   target_link_libraries(tcp PUBLIC ws2_32 mswsock)
@@ -49,6 +50,7 @@ target_link_libraries(test_tcp
   Boost::asio
   Boost::thread
   Boost::json
+  Boost::uuid
 )
 IF(TOPLEVEL)
   target_link_libraries(test_tcp PRIVATE core)
