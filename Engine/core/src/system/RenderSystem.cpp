@@ -38,7 +38,7 @@ void RenderSystem::init() {
 
   std::filesystem::path shader_folder(SHADER_ABSOLUTE_PATH);
   std::filesystem::path compute_shader_file =
-      shader_folder / "computeshaderCircle.glsl";
+      shader_folder / "computeShaderWithTriangles.glsl";
   std::filesystem::path vertex_shader_file =
       shader_folder / "vertexshader.glsl";
   std::filesystem::path fragment_shader_file =
@@ -86,7 +86,9 @@ void RenderSystem::update(const float dt) {
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
 
   auto screen_size = _wm->getScreenSize();
-  glDispatchCompute(screen_size.x, screen_size.y, 1);
+  int groupsX = (screen_size.x + 16 - 1) / 16;
+  int groupsY = (screen_size.y + 16 - 1) / 16;
+  glDispatchCompute(groupsX, groupsY, 1);
   glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
   // Setup fragment and vertex shader
