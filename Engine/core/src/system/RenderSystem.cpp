@@ -28,34 +28,38 @@
 
 RenderSystem::RenderSystem(WindowManager *wm) : System(), _wm{wm} {
   SimpleLogger::print("-- created entity system");
-  }
+}
 
 void RenderSystem::init() {
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cout << "Failed to initialize GLAD" << std::endl;
     return;
   }
-  
+
   std::filesystem::path shader_folder(SHADER_ABSOLUTE_PATH);
-  std::filesystem::path compute_shader_file = shader_folder / "computeshaderCircle.glsl";
-  std::filesystem::path vertex_shader_file = shader_folder / "vertexshader.glsl";
-  std::filesystem::path fragment_shader_file = shader_folder / "fragmentshader.glsl";
-  
+  std::filesystem::path compute_shader_file =
+      shader_folder / "computeshaderCircle.glsl";
+  std::filesystem::path vertex_shader_file =
+      shader_folder / "vertexshader.glsl";
+  std::filesystem::path fragment_shader_file =
+      shader_folder / "fragmentshader.glsl";
+
   std::cout << "FILE PATH: " << fragment_shader_file.string() << std::endl;
-  glGenVertexArrays(1, &_vao);	
+  glGenVertexArrays(1, &_vao);
   glBindVertexArray(_vao);
   /*Shader simpleShader{*/
-  /*    std::make_pair(GL_VERTEX_SHADER, "../../../../../Engine/core/shaders/vertexshader.glsl"),*/
+  /*    std::make_pair(GL_VERTEX_SHADER,
+   * "../../../../../Engine/core/shaders/vertexshader.glsl"),*/
   /*    std::make_pair(GL_FRAGMENT_SHADER,*/
   /*                   "../../../../../Engine/core/shaders/fragmentshader.glsl")};*/
- 
+
   Shader simpleShader{
       std::make_pair(GL_VERTEX_SHADER, vertex_shader_file.string()),
-      std::make_pair(GL_FRAGMENT_SHADER,fragment_shader_file.string())};
+      std::make_pair(GL_FRAGMENT_SHADER, fragment_shader_file.string())};
   program = std::make_unique<Shader>(simpleShader);
 
-  Shader computeShader{std::make_pair(
-      GL_COMPUTE_SHADER, compute_shader_file.string())};
+  Shader computeShader{
+      std::make_pair(GL_COMPUTE_SHADER, compute_shader_file.string())};
   compute = std::make_unique<Shader>(computeShader);
 
   _cameraPosition = glm::vec3(0.0f, 10.0f, 10.0f);
@@ -145,8 +149,6 @@ void RenderSystem::destroy() {
 bool RenderSystem::remove(Component *c) { throw NotImplementedError(); }
 bool RenderSystem::remove(uuid uuid) { throw NotImplementedError(); }
 
-
-
 void RenderSystem::print() {
   TablePrinter::printElement("RenderComponent UUID", 36);
   std::cout << " | ";
@@ -156,9 +158,9 @@ void RenderSystem::print() {
   std::cout << " | ";
   TablePrinter::printElement("uvVBO", 12);
   std::cout << "\n";
-  std::cout << std::string(36 + 12 + 12 + 12 + 3*3, '=');
+  std::cout << std::string(36 + 12 + 12 + 12 + 3 * 3, '=');
   std::cout << "\n";
-  for (auto const &[uuid, c] : _components) { 
+  for (auto const &[uuid, c] : _components) {
     std::cout << uuid << " | ";
     if (c == nullptr) {
       std::cout << "missing...\n";
