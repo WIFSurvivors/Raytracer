@@ -81,6 +81,7 @@ void RenderSystem::update(const float dt) {
   //  Setup compute shader
   compute->activateShader();
   glUniform1f(_timeU, dt);
+
   if(_cs && _cs->get_main_camera()){
   	_cameraPosition = _cs->get_main_camera()->get_entity()->get_world_position();
   }else {
@@ -88,6 +89,7 @@ void RenderSystem::update(const float dt) {
 	_cameraPosition = glm::vec3{0., 0., +10.};
   }
   glUniform3fv(_cameraU, 1, &_cameraPosition[0]);
+  
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
 
