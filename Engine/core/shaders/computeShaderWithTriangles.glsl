@@ -150,9 +150,9 @@ vec4 proccessRay(Triangle cube[hittableCount], Ray r, Light emitter[emitterCount
     push(r);
     while (!isEmpty()) {
         Ray currentRay = pop();
-
+		if (currentRay.depth == -1) break;
         // Terminate if the recursion depth is too high
-        if (currentRay.depth >= 5) break;
+        if (currentRay.depth >= 5) continue;
 
         float t = 5e+10;
         int index = -1;
