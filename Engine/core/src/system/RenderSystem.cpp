@@ -40,8 +40,9 @@ void RenderSystem::init() {
   std::filesystem::path compute_shader_file = shader_folder / "computeshaderCircle.glsl";
   std::filesystem::path vertex_shader_file = shader_folder / "vertexshader.glsl";
   std::filesystem::path fragment_shader_file = shader_folder / "fragmentshader.glsl";
+  
   std::cout << "FILE PATH: " << fragment_shader_file.string() << std::endl;
-  glGenVertexArrays(1, &_vao);
+  glGenVertexArrays(1, &_vao);	
   glBindVertexArray(_vao);
   /*Shader simpleShader{*/
   /*    std::make_pair(GL_VERTEX_SHADER, "../../../../../Engine/core/shaders/vertexshader.glsl"),*/
@@ -49,12 +50,12 @@ void RenderSystem::init() {
   /*                   "../../../../../Engine/core/shaders/fragmentshader.glsl")};*/
  
   Shader simpleShader{
-      std::make_pair(GL_VERTEX_SHADER, vertex_shader_file.c_str()),
-      std::make_pair(GL_FRAGMENT_SHADER,fragment_shader_file.c_str())};
+      std::make_pair(GL_VERTEX_SHADER, vertex_shader_file.string()),
+      std::make_pair(GL_FRAGMENT_SHADER,fragment_shader_file.string())};
   program = std::make_unique<Shader>(simpleShader);
 
   Shader computeShader{std::make_pair(
-      GL_COMPUTE_SHADER, compute_shader_file.c_str())};
+      GL_COMPUTE_SHADER, compute_shader_file.string())};
   compute = std::make_unique<Shader>(computeShader);
 
   _cameraPosition = glm::vec3(0.0f, 10.0f, 10.0f);

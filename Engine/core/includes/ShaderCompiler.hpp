@@ -25,8 +25,8 @@ struct Shader {
 
   template <typename... Args> Shader(Args... paths) {
     //  GLenum shaderType
-    static_assert((std::is_same_v<Args, std::pair<int, const char *>> && ...),
-                  "Failed: Arguments of ShaderCompiler not of type char*");
+    // static_assert((std::is_same_v<Args, std::pair<int, const char *>> && ...),
+                //   "Failed: Arguments of ShaderCompiler not of type char*");
     glCreateShader(GL_VERTEX_SHADER);
     loadFiles(paths...);
     shaderLinker();
@@ -39,7 +39,7 @@ private:
     (..., loadFile(paths));
   }
 
-  void loadFile(std::pair<GLenum, const char *> ShaderPath) {
+  void loadFile(std::pair<GLenum, const std::string> ShaderPath) {
 
     std::string ShaderCode;
     std::ifstream ShaderFile;
@@ -64,7 +64,7 @@ private:
     glShaderSource(shaderID, 1, &shaderChar, NULL);
     glCompileShader(shaderID);
 
-    if (!checkCompileStatus(shaderID, ShaderPath.second))
+    if (!checkCompileStatus(shaderID, ShaderPath.second.c_str()))
       return;
 
     shaderIDs[ShaderPath.first] = shaderID;
