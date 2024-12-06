@@ -82,10 +82,7 @@ void Scene::generate_sample_content() {
   e3->set_local_position(glm::vec3{-2, 6, 7});
 
   auto new_uuid = _uuid_manager.getNewUUID(&_simple_system);
-  auto c0 = _camera_system.create_component(new_uuid, e1.get());
-  new_uuid = _uuid_manager.getNewUUID(&_simple_system);
-  auto c1 = _camera_system.create_component(new_uuid, e2.get());
-//   _camera_system.set_main_camera(c1);
+  auto c1 = _camera_system.create_component(new_uuid, e1.get());
   new_uuid = _uuid_manager.getNewUUID(&_simple_system);
   auto c2 = _simple_system.create_component(new_uuid, e3.get(), -56);
 
