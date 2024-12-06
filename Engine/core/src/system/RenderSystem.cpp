@@ -26,7 +26,7 @@
  *	  - Separate other functionality to the functions
  */
 
-RenderSystem::RenderSystem(WindowManager *wm) : System(), _wm{wm} {
+RenderSystem::RenderSystem(WindowManager *wm, CameraSystem* cs) : System(), _wm{wm}, _cs{cs} {
   SimpleLogger::print("-- created entity system");
 }
 
@@ -81,6 +81,12 @@ void RenderSystem::update(const float dt) {
   //  Setup compute shader
   compute->activateShader();
   glUniform1f(_timeU, dt);
+  if(_cs && _cs->get_main_camera()){
+  	_cameraPosition = _cs->get_main_camera()->get_entity()->get_world_position();
+  }else {
+	SimpleLogger::print("-- ERROR: No main camera found -> using 0., 0., +10.");
+	_cameraPosition = glm::vec3{0., 0., 0.};
+  }
   glUniform3fv(_cameraU, 1, &_cameraPosition[0]);
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);

@@ -6,14 +6,14 @@
 #include <format>
 
 Scene::Scene(Engine *e)
-    : _root{create_root("root")}, _render_system{e->get_window_manager()} {
+    : _root{create_root("root")}, _render_system{e->get_window_manager(), &_camera_system} {
   _render_system.init();
 
   generate_sample_content();
 }
 
 Scene::Scene(Engine *e, uuid id)
-    : _root{create_root("root", id)}, _render_system{e->get_window_manager()} {
+    : _root{create_root("root", id)}, _render_system{e->get_window_manager(), &_camera_system} {
   // does not generate sample content
   // this should be called when loading from json
   _render_system.init();
@@ -75,7 +75,7 @@ void Scene::generate_sample_content() {
   // ============== ENTITY + SIMPLE COMPONENT ==============
 
   auto e1 = create_entity("camera");
-  e1->set_local_position(glm::vec3{0, 0, +10});
+  e1->set_local_position(glm::vec3{0, +10, +10});
   auto e2 = create_entity("circle1");
   e2->set_local_rotation(glm::vec3{45, 0, 0});
   auto e3 = create_entity("circle2", e1);
@@ -83,6 +83,9 @@ void Scene::generate_sample_content() {
 
   auto new_uuid = _uuid_manager.getNewUUID(&_simple_system);
   auto c0 = _camera_system.create_component(new_uuid, e1.get());
+  new_uuid = _uuid_manager.getNewUUID(&_simple_system);
+  auto c1 = _camera_system.create_component(new_uuid, e2.get());
+//   _camera_system.set_main_camera(c1);
   new_uuid = _uuid_manager.getNewUUID(&_simple_system);
   auto c2 = _simple_system.create_component(new_uuid, e3.get(), -56);
 

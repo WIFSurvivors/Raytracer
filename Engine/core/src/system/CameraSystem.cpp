@@ -40,7 +40,7 @@ void CameraSystem::set_main_camera(CameraComponent *cc) {
   _main_camera = cc;
   _main_camera->set_is_main_camera(true);
   SimpleLogger::print(std::format(
-      "Set new main camera ({})\t-> camera is on entity \"{}\"({})",
+      "Set new main camera ({})\n\t-> camera is on entity \"{}\"({})",
       boost::uuids::to_string(_main_camera->get_uuid()),
       _main_camera->get_entity()->get_name(),
       boost::uuids::to_string(_main_camera->get_entity()->get_uuid())));
@@ -61,7 +61,7 @@ void CameraSystem::print(){
       std::cout << "missing...\n";
       continue;
     }
-    TablePrinter::printElement(c->get_fov(), 14);
+    TablePrinter::printElement(c->get_fov(), 12);
     std::cout << " | ";
     TablePrinter::printElement(c->is_main_camera()? " * " : "", 14);
     std::cout << "\n";

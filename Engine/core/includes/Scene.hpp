@@ -45,8 +45,8 @@ private:
 
   EntitySystem _entity_system{};
   SimpleSystem _simple_system{};
-  RenderSystem _render_system;
   CameraSystem _camera_system{};
+  RenderSystem _render_system;
 
   UUIDManager _uuid_manager{};
 

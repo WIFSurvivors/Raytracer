@@ -1,6 +1,7 @@
 #pragma once
 
 #include "includes/system/System.hpp"
+#include "includes/system/CameraSystem.hpp"
 #include "includes/component/RenderComponent.hpp"
 #include "includes/ShaderCompiler.hpp"
 #include "includes/WindowManager.hpp"
@@ -33,7 +34,7 @@
  */
 struct RenderSystem : public System {
 
-  explicit RenderSystem(WindowManager *wm);
+  RenderSystem(WindowManager *wm, CameraSystem* cs);
   
   void init();
   void update(const float dt); // represents render
@@ -57,6 +58,7 @@ struct RenderSystem : public System {
 
 private:
   WindowManager *_wm;
+  CameraSystem* _cs;
 
   std::unique_ptr<Shader> program;
 
