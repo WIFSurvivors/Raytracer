@@ -16,6 +16,9 @@ set(CORE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 set(BOOST_INCLUDE_LIBRARIES uuid)
 set(BOOST_ENABLE_CMAKE ON)
 
+
+set(ABSOLUTE_SHADER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/shaders/")
+
 FetchContent_Declare(
   glad
   GIT_REPOSITORY  https://github.com/Dav1dde/glad.git
@@ -50,8 +53,8 @@ set(GLM_INCLUDE_DIRS "${glm_SOURCE_DIR}")
 
 file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/includes/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/includes/*.h)
-
-
+message(STATUS "Shader absolute path: ${ABSOLUTE_SHADER_PATH}")
+add_definitions(-DSHADER_ABSOLUTE_PATH="${ABSOLUTE_SHADER_PATH}")
 # add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} )
 # target_include_directories(${PROJECT_NAME} PUBLIC 
 # ${GLAD_INCLUDE_DIRS}
