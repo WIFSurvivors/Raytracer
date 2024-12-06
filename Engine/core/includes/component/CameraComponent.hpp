@@ -1,3 +1,5 @@
+#pragma once
+
 #include "includes/component/Component.hpp"
 // #include "includes/system/CameraSystem.hpp"
 

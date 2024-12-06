@@ -5,6 +5,7 @@
 #include "includes/system/System.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <optional>
+#include <memory>
 #include <map>
 
 typedef boost::uuids::uuid uuid;

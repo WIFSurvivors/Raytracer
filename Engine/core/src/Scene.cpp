@@ -76,6 +76,7 @@ void Scene::generate_sample_content() {
 
   auto e1 = create_entity("camera");
   e1->set_local_position(glm::vec3{+0, +10, +10});
+  e1->set_local_rotation(glm::vec3{+0, +15, -5}); // doesn't do anything yet
   auto e2 = create_entity("circle1");
   e2->set_local_rotation(glm::vec3{45, 0, 0});
   auto e3 = create_entity("circle2", e1);
