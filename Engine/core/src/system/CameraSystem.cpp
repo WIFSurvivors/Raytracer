@@ -1,7 +1,10 @@
 #include "includes/system/CameraSystem.hpp"
 #include "includes/utility/SimpleLogger.hpp"
+#include <boost/uuid/uuid_io.hpp>
 
-CameraSystem::CameraSystem() {}
+CameraSystem::CameraSystem() {
+  SimpleLogger::print("-- CameraSystem initialized");
+}
 
 CameraComponent *CameraSystem::create_component(uuid id, Entity *e) {
   _components[id] = std::make_unique<CameraComponent>(id, e);
@@ -23,12 +26,10 @@ bool CameraSystem::remove(Component *c) { return remove(c->get_uuid()); }
 bool CameraSystem::remove(uuid id) { return _components.erase(id); }
 
 std::optional<CameraComponent *> CameraSystem::get_component(uuid id) {
-  auto it = std::find_if(_components.begin(), _components.end(),
-                         [id](auto&& c) { return c.first == id; });
-  if (it != _components.end()) {
-    return std::nullopt;
+  if (_components.contains(id)) {
+    return std::make_optional(_components[id].get());
   }
-  return std::make_optional(it->second.get());
+  return {};
 }
 
 void CameraSystem::set_main_camera(CameraComponent *cc) {
@@ -37,4 +38,9 @@ void CameraSystem::set_main_camera(CameraComponent *cc) {
   }
   _main_camera = cc;
   _main_camera->set_is_main_camera(true);
+  SimpleLogger::print(std::format(
+      "Set new main camera ({})\t-> camera is on entity \"{}\"({})",
+      boost::uuids::to_string(_main_camera->get_uuid()),
+      _main_camera->get_entity()->get_name(),
+      boost::uuids::to_string(_main_camera->get_entity()->get_uuid())));
 }
