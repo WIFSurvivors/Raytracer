@@ -34,7 +34,7 @@ struct Light {
 
 /*********************************************************************************/
 // VARIABLES
-const int hittableCount = 24;
+const int hittableCount = 36;
 const int emitterCount = 1;
 const int MAX_RECURSION_DEPTH = 3;
 
@@ -129,7 +129,6 @@ float intersectsTriangle(Triangle v, Ray r) {
     return -1.0;
 }
 
-
 bool isInShadowTriangle(Triangle cube[hittableCount], Ray r, int originObject, float distance) {
     for (int i = 0; i < hittableCount; i++) {
         if (i == originObject) {
@@ -155,8 +154,8 @@ vec4 proccessRay(Triangle cube[hittableCount], Ray r, Light emitter[emitterCount
         // Terminate if the recursion depth is too high
         if (currentRay.depth >= 5) break;
 
-        float t = 5e+10; 
-		int index = -1;
+        float t = 5e+10;
+        int index = -1;
 
         // Find the closest intersection
         for (int i = 0; i < hittableCount; i++) {
@@ -268,9 +267,10 @@ vec4 CalcColorWithLightSourcesTriangle(Triangle cube[hittableCount], Ray r, Ligh
 }
 
 vec4 rayColor(Ray r) {
-    Triangle[12] trianglesCube1 = createCube(vec3(0.0, 2.0, 0.0));
-    Triangle[12] trianglesCube2 = createCube(vec3(0.0, -2.0, 0.0));
-    Triangle[24] merged;
+    Triangle[12] trianglesCube1 = createCube(vec3(2.0, 0.0, 0.0));
+    Triangle[12] trianglesCube2 = createCube(vec3(-2.0, 0.0, 0.0));
+    Triangle[12] trianglesCube3 = createCube(vec3(0.0, -2.0, 0.0));
+    Triangle[36] merged;
 
     // Copy triangles from the first cube
     for (int i = 0; i < 12; i++) {
@@ -282,10 +282,14 @@ vec4 rayColor(Ray r) {
         merged[i + 12] = trianglesCube2[i];
     }
 
+    for (int i = 0; i < 12; i++) {
+        merged[i + 24] = trianglesCube3[i];
+    }
+
     Light[1] lightSources;
     vec3 position = vec3(0.0, 10.0, 3.0) + 3 * sin(time);
     lightSources[0] = Light(position, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 100.0);
-    return proccessRay(merged, r, lightSources);
+    return CalcColorWithLightSourcesTriangle(merged, r, lightSources);
 }
 
 void main() {
