@@ -75,14 +75,14 @@ void Scene::generate_sample_content() {
   // ============== ENTITY + SIMPLE COMPONENT ==============
 
   auto e1 = create_entity("camera");
-  e1->set_local_position(glm::vec3{0, 0, 10});
-  auto e2 = create_entity("cat");
+  e1->set_local_position(glm::vec3{0, 0, +10});
+  auto e2 = create_entity("circle1");
   e2->set_local_rotation(glm::vec3{45, 0, 0});
-  auto e3 = create_entity("cube", e1);
+  auto e3 = create_entity("circle2", e1);
   e3->set_local_position(glm::vec3{-2, 6, 7});
 
   auto new_uuid = _uuid_manager.getNewUUID(&_simple_system);
-  auto c1 = _camera_system.create_component(new_uuid, e1.get());
+  auto c0 = _camera_system.create_component(new_uuid, e1.get());
   new_uuid = _uuid_manager.getNewUUID(&_simple_system);
   auto c2 = _simple_system.create_component(new_uuid, e3.get(), -56);
 
