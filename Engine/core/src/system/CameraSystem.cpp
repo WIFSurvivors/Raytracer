@@ -1,5 +1,6 @@
 #include "includes/system/CameraSystem.hpp"
 #include "includes/utility/SimpleLogger.hpp"
+#include "includes/utility/TablePrinter.hpp"
 #include <boost/uuid/uuid_io.hpp>
 
 CameraSystem::CameraSystem() {
@@ -43,4 +44,38 @@ void CameraSystem::set_main_camera(CameraComponent *cc) {
       boost::uuids::to_string(_main_camera->get_uuid()),
       _main_camera->get_entity()->get_name(),
       boost::uuids::to_string(_main_camera->get_entity()->get_uuid())));
+}
+
+void CameraSystem::print(){
+  TablePrinter::printElement("CameraComponent UUID", 36);
+  std::cout << " | ";
+  TablePrinter::printElement("fov", 12);
+  std::cout << " | ";
+  TablePrinter::printElement("is main camera", 14);
+  std::cout << "\n";
+  std::cout << std::string(36 + 12 + 14 + 2*3, '=');
+  std::cout << "\n";
+  for (auto const &[uuid, c] : _components) { 
+    std::cout << uuid << " | ";
+    if (c == nullptr) {
+      std::cout << "missing...\n";
+      continue;
+    }
+    TablePrinter::printElement(c->get_fov(), 14);
+    std::cout << " | ";
+    TablePrinter::printElement(c->is_main_camera()? " * " : "", 14);
+    std::cout << "\n";
+  }
+  std::cout << std::endl;
+}
+
+void CameraSystem::sample_update_move_main_camera(float t1){
+	if(!_main_camera) return;
+
+	auto ent = _main_camera->get_entity();
+	auto y = ent->get_local_position().y;
+
+
+
+
 }

@@ -21,6 +21,11 @@ struct CameraSystem : public System {
   std::optional<CameraComponent *> get_component(uuid id);
 
   void set_main_camera(CameraComponent *cc);
+  inline CameraComponent *get_main_camera() const { return _main_camera; }
+
+  void print();
+
+  void sample_update_move_main_camera(float dt);
 
 private:
   std::map<uuid, std::unique_ptr<CameraComponent>> _components{};

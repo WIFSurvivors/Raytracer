@@ -28,7 +28,7 @@
 
 RenderSystem::RenderSystem(WindowManager *wm) : System(), _wm{wm} {
   SimpleLogger::print("-- created entity system");
-  }
+}
 
 void RenderSystem::init() {
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -39,13 +39,13 @@ void RenderSystem::init() {
   glGenVertexArrays(1, &_vao);
   glBindVertexArray(_vao);
   Shader simpleShader{
-      std::make_pair(GL_VERTEX_SHADER, "../../../../../Engine/core/shaders/vertexshader.glsl"),
+      std::make_pair(GL_VERTEX_SHADER, "../core/shaders/vertexshader.glsl"),
       std::make_pair(GL_FRAGMENT_SHADER,
-                     "../../../../../Engine/core/shaders/fragmentshader.glsl")};
+                     "../core/shaders/fragmentshader.glsl")};
   program = std::make_unique<Shader>(simpleShader);
 
   Shader computeShader{std::make_pair(
-      GL_COMPUTE_SHADER, "../../../../../Engine/core/shaders/computeshaderCircle.glsl")};
+      GL_COMPUTE_SHADER, "../core/shaders/computeshaderCircle.glsl")};
   compute = std::make_unique<Shader>(computeShader);
 
   _cameraPosition = glm::vec3(0.0f, 10.0f, 10.0f);
@@ -135,8 +135,6 @@ void RenderSystem::destroy() {
 bool RenderSystem::remove(Component *c) { throw NotImplementedError(); }
 bool RenderSystem::remove(uuid uuid) { throw NotImplementedError(); }
 
-
-
 void RenderSystem::print() {
   TablePrinter::printElement("RenderComponent UUID", 36);
   std::cout << " | ";
@@ -146,9 +144,9 @@ void RenderSystem::print() {
   std::cout << " | ";
   TablePrinter::printElement("uvVBO", 12);
   std::cout << "\n";
-  std::cout << std::string(36 + 12 + 12 + 12 + 3*3, '=');
+  std::cout << std::string(36 + 12 + 12 + 12 + 3 * 3, '=');
   std::cout << "\n";
-  for (auto const &[uuid, c] : _components) { 
+  for (auto const &[uuid, c] : _components) {
     std::cout << uuid << " | ";
     if (c == nullptr) {
       std::cout << "missing...\n";
