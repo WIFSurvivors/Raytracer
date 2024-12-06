@@ -85,7 +85,7 @@ void RenderSystem::update(const float dt) {
   	_cameraPosition = _cs->get_main_camera()->get_entity()->get_world_position();
   }else {
 	SimpleLogger::print("-- ERROR: No main camera found -> using 0., 0., +10.");
-	_cameraPosition = glm::vec3{0., 0., 0.};
+	_cameraPosition = glm::vec3{0., 0., +10.};
   }
   glUniform3fv(_cameraU, 1, &_cameraPosition[0]);
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);

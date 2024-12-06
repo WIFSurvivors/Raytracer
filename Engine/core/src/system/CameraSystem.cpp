@@ -2,6 +2,7 @@
 #include "includes/utility/SimpleLogger.hpp"
 #include "includes/utility/TablePrinter.hpp"
 #include <boost/uuid/uuid_io.hpp>
+#include <cmath>
 
 CameraSystem::CameraSystem() {
   SimpleLogger::print("-- CameraSystem initialized");
@@ -73,9 +74,9 @@ void CameraSystem::sample_update_move_main_camera(float t1){
 	if(!_main_camera) return;
 
 	auto ent = _main_camera->get_entity();
-	auto y = ent->get_local_position().y;
-
-
-
-
+	auto pos = ent->get_local_position();
+	
+	auto dt_sin = std::sin(t1 * 2.5) * 10;
+	pos.y = dt_sin;
+	ent->set_local_position(pos);
 }

@@ -75,7 +75,7 @@ void Scene::generate_sample_content() {
   // ============== ENTITY + SIMPLE COMPONENT ==============
 
   auto e1 = create_entity("camera");
-  e1->set_local_position(glm::vec3{0, +10, +10});
+  e1->set_local_position(glm::vec3{+0, +10, +10});
   auto e2 = create_entity("circle1");
   e2->set_local_rotation(glm::vec3{45, 0, 0});
   auto e3 = create_entity("circle2", e1);
@@ -128,4 +128,7 @@ void Scene::generate_sample_content() {
 }
 
 // currently only tell the render system to update itself
-void Scene::update(float dt) { _render_system.update(dt); }
+void Scene::update(float dt) { 
+	_camera_system.sample_update_move_main_camera(dt);
+	_render_system.update(dt); 
+	}
