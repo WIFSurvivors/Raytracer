@@ -47,11 +47,6 @@ void RenderSystem::init() {
   std::cout << "FILE PATH: " << fragment_shader_file.string() << std::endl;
   glGenVertexArrays(1, &_vao);
   glBindVertexArray(_vao);
-  /*Shader simpleShader{*/
-  /*    std::make_pair(GL_VERTEX_SHADER,
-   * "../../../../../Engine/core/shaders/vertexshader.glsl"),*/
-  /*    std::make_pair(GL_FRAGMENT_SHADER,*/
-  /*                   "../../../../../Engine/core/shaders/fragmentshader.glsl")};*/
 
   Shader simpleShader{
       std::make_pair(GL_VERTEX_SHADER, vertex_shader_file.string()),
