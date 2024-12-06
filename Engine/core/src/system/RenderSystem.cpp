@@ -35,7 +35,7 @@ void RenderSystem::init() {
     std::cout << "Failed to initialize GLAD" << std::endl;
     return;
   }
-
+  
   std::filesystem::path shader_folder(SHADER_ABSOLUTE_PATH);
   std::filesystem::path compute_shader_file =
       shader_folder / "computeshaderCircle.glsl";

@@ -34,7 +34,7 @@
 struct RenderSystem : public System {
 
   explicit RenderSystem(WindowManager *wm);
-
+  
   void init();
   void update(const float dt); // represents render
   void destroy();

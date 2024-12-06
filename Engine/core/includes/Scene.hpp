@@ -4,6 +4,7 @@
 #include "includes/system/SimpleSystem.hpp"
 #include "includes/system/EntitySystem.hpp"
 #include "includes/system/RenderSystem.hpp"
+#include "includes/system/CameraSystem.hpp"
 #include "includes/UUIDManager.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <memory>
@@ -45,9 +46,9 @@ private:
   EntitySystem _entity_system{};
   SimpleSystem _simple_system{};
   RenderSystem _render_system;
+  CameraSystem _camera_system{};
 
   UUIDManager _uuid_manager{};
-  //   WindowManager _wm{}; // will probably end up in engine
 
   std::shared_ptr<Entity> _root;
 };

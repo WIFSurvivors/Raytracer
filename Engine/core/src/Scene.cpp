@@ -64,6 +64,7 @@ void Scene::generate_sample_content() {
   _uuid_manager.print();
   _entity_system.print();
   _render_system.print();
+  _camera_system.print();
 //   _simple_system.print_all_components();
 
   SimpleLogger::print("\n");
@@ -74,14 +75,14 @@ void Scene::generate_sample_content() {
   // ============== ENTITY + SIMPLE COMPONENT ==============
 
   auto e1 = create_entity("camera");
-  e1->set_local_position(glm::vec3{0, 1, 2});
+  e1->set_local_position(glm::vec3{0, 0, 10});
   auto e2 = create_entity("cat");
   e2->set_local_rotation(glm::vec3{45, 0, 0});
   auto e3 = create_entity("cube", e1);
   e3->set_local_position(glm::vec3{-2, 6, 7});
 
   auto new_uuid = _uuid_manager.getNewUUID(&_simple_system);
-  auto c1 = _simple_system.create_component(new_uuid, e1.get());
+  auto c1 = _camera_system.create_component(new_uuid, e1.get());
   new_uuid = _uuid_manager.getNewUUID(&_simple_system);
   auto c2 = _simple_system.create_component(new_uuid, e3.get(), -56);
 
@@ -119,6 +120,7 @@ void Scene::generate_sample_content() {
   _uuid_manager.print();
   _entity_system.print();
   _render_system.print();
+  _camera_system.print();
 //   _simple_system.print_all_components();
 }
 
