@@ -99,7 +99,7 @@ int main() {
   bvh.Convert( tinybvh::BVH::WALD_32BYTE, tinybvh::BVH::VERBOSE, true);
   bvh.Refit( tinybvh::BVH::VERBOSE );
 
-  std::cout << "Nodes : " << bvh.NodeCount(tinybvh::BVH::WALD_32BYTE) << "  Node: " << (bvh.usedBVHNodes) <<std::endl;
+  std::cout << "Nodes : " << bvh.NodeCount(tinybvh::BVH::VERBOSE) << "  Node: " << (bvh.usedBVHNodes) <<std::endl;
   assert( bvh.bvhNode != 0);
   auto* leftnode = &bvh.verbose[0];
   auto* rightnode = &bvh.verbose[1];
@@ -107,15 +107,21 @@ int main() {
   //std::cout << "left : " << leftnode->aabbMax.x <<std::endl;
   //std::cout << "right : " << rightnode->aabbMax.x <<std::endl;
   unsigned retVal =0, nodeIdx=0, stack[64],stackPtr=0;
+  std::cout << "Triangle Count: " << bvh.triCount << std::endl;
   while(1){
     const auto& n = bvh.verbose[nodeIdx];
+	std::cout << n.triCount << std::endl;
     if(n.isLeaf()) {
 	  if (stackPtr==0) break; 
 	  else nodeIdx = stack[--stackPtr];
-	  std::cout << "test: " << n.firstTri << std::endl;
+	  std::cout << "FirstTriangle: " << n.firstTri << std::endl;
+	  std::cout << "x: " << bvh.triIdx[n.firstTri] << std::endl;
+	  std::cout << "y: " << bvh.triIdx[n.firstTri + 1] << std::endl;
+	  std::cout << "z: " << bvh.triIdx[n.firstTri + 2] << std::endl;
 	}
-    else nodeIdx = n.leftFirst, stack[stackPtr++] = n.leftFirst+1; 
+    else nodeIdx = n.left, stack[stackPtr++] = n.right; 
   }
+  
 }
 
 
