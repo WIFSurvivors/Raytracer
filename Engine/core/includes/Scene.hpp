@@ -47,6 +47,7 @@ private:
   SimpleSystem _simple_system{};
   CameraSystem _camera_system{};
   RenderSystem _render_system;
+  CameraSystem _camera_system{};
 
   UUIDManager _uuid_manager{};
 
