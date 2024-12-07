@@ -6,8 +6,7 @@
 #include <format>
 
 Scene::Scene(Engine *e)
-    : _uuid_manager{}, _entity_system{}, _simple_system{}, _camera_system{},
-      _render_system{e->get_window_manager(), &_camera_system},
+    : _render_system{e->get_window_manager(), &_camera_system},
       _root{create_root("root")} {
   _render_system.init();
 
@@ -15,8 +14,7 @@ Scene::Scene(Engine *e)
 }
 
 Scene::Scene(Engine *e, uuid id)
-    : _uuid_manager{}, _entity_system{}, _simple_system{}, _camera_system{},
-      _render_system{e->get_window_manager(), &_camera_system},
+    : _render_system{e->get_window_manager(), &_camera_system},
       _root{create_root("root", id)} {
   // does not generate sample content
   // this should be called when loading from json
@@ -69,7 +67,6 @@ void Scene::generate_sample_content() {
   _entity_system.print();
   _render_system.print();
   _camera_system.print();
-  //   _simple_system.print_all_components();
 
   SimpleLogger::print("\n");
   SimpleLogger::print(std::string(100, '*'));
@@ -87,8 +84,6 @@ void Scene::generate_sample_content() {
 
   auto new_uuid = _uuid_manager.getNewUUID(&_camera_system);
   auto c1 = _camera_system.create_component(new_uuid, e1.get());
-  new_uuid = _uuid_manager.getNewUUID(&_simple_system);
-  auto c2 = _simple_system.create_component(new_uuid, e3.get(), -56);
 
   // =================== RENDER SYSTEM =====================
 
@@ -124,18 +119,10 @@ void Scene::generate_sample_content() {
   _entity_system.print();
   _render_system.print();
   _camera_system.print();
-  //   _simple_system.print_all_components();
 }
 
 // currently only tell the render system to update itself
 void Scene::update(float dt) {
-	
-  _uuid_manager.print();
-  _entity_system.print();
-  _render_system.print();
-  _camera_system.print();
-  SimpleLogger::print("Scene::update 1");
   _camera_system.sample_update_move_main_camera(dt);
-  SimpleLogger::print("Scene::update 2");
   _render_system.update(dt);
 }

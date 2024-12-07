@@ -11,7 +11,7 @@
 #include "glm/ext.hpp"
 
 CameraSystem::CameraSystem() {
-  SimpleLogger::print("-- CameraSystem initialized");
+  SimpleLogger::print("-- created camera system");
 }
 
 CameraComponent *CameraSystem::create_component(uuid id, Entity *e) {
@@ -56,16 +56,16 @@ void CameraSystem::set_main_camera(CameraComponent *cc) {
       boost::uuids::to_string(_main_camera->get_entity()->get_uuid())));
 }
 
-void CameraSystem::print(){
+void CameraSystem::print() {
   TablePrinter::printElement("CameraComponent UUID", 36);
   std::cout << " | ";
   TablePrinter::printElement("fov", 12);
   std::cout << " | ";
   TablePrinter::printElement("is main camera", 14);
   std::cout << "\n";
-  std::cout << std::string(36 + 12 + 14 + 2*3, '=');
+  std::cout << std::string(36 + 12 + 14 + 2 * 3, '=');
   std::cout << "\n";
-  for (auto const &[uuid, c] : _components) { 
+  for (auto const &[uuid, c] : _components) {
     std::cout << uuid << " | ";
     if (c == nullptr) {
       std::cout << "missing...\n";
@@ -73,29 +73,20 @@ void CameraSystem::print(){
     }
     TablePrinter::printElement(c->get_fov(), 12);
     std::cout << " | ";
-    TablePrinter::printElement(c->is_main_camera()? " * " : "", 14);
+    TablePrinter::printElement(c->is_main_camera() ? " * " : "", 14);
     std::cout << "\n";
   }
   std::cout << std::endl;
 }
 
-void CameraSystem::sample_update_move_main_camera(float t1){
-  SimpleLogger::print("CameraSystem::sample_update_move_main_camera 1");
-	if(!_main_camera) return;
+void CameraSystem::sample_update_move_main_camera(float t1) {
+  if (!_main_camera)
+    return;
 
-  SimpleLogger::print("CameraSystem::sample_update_move_main_camera 2");
-	auto ent = _main_camera->get_entity();
-  SimpleLogger::print(std::format("Entity? {}", ent == nullptr));
-  SimpleLogger::print("CameraSystem::sample_update_move_main_camera 3");
-	auto pos = ent->get_local_position();
-	std::cout << "Pos?" << pos << "\n";
-	
-  SimpleLogger::print("CameraSystem::sample_update_move_main_camera 4");
-	auto dt_sin = std::sin(t1 * 2.5) * 10;
-  SimpleLogger::print("CameraSystem::sample_update_move_main_camera 5");
-	pos.y = dt_sin;
-	std::cout << "Pos?" << pos << "\n";
-  SimpleLogger::print("CameraSystem::sample_update_move_main_camera 6");
-	ent->set_local_position(pos);
-  SimpleLogger::print("CameraSystem::sample_update_move_main_camera 7");
+  auto ent = _main_camera->get_entity();
+  auto pos = ent->get_local_position();
+
+  auto dt_sin = std::sin(t1 * 2.5) * 10;
+  pos.y = dt_sin;
+  ent->set_local_position(pos);
 }

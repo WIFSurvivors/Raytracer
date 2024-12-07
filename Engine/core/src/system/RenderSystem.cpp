@@ -27,7 +27,7 @@
  */
 
 RenderSystem::RenderSystem(WindowManager *wm, CameraSystem* cs) : System(), _wm{wm}, _cs{cs} {
-  SimpleLogger::print("-- created entity system");
+  SimpleLogger::print("-- created render system");
 }
 
 void RenderSystem::init() {
@@ -126,6 +126,7 @@ RenderComponent *
 RenderSystem::create_component(uuid id, Entity *e,
                                const std::vector<glm::vec3> &vertices,
                                const std::vector<glm::vec2> &UV) {
+  SimpleLogger::print("-- create render component");
   _components[id] = std::make_unique<RenderComponent>(id, e, program->programID,
                                                       vertices, UV);
   auto ptr = _components[id].get();
