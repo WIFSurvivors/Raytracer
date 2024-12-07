@@ -14,12 +14,17 @@ void Engine::init_server() {
 }
 
 void Engine::startLoop() {
+  SimpleLogger::print("Engine::startLoop()");
   float t0, t1, dt;
   while (_wm.shouldClose()) {
+  SimpleLogger::print("Engine::Loop 1");
     t0 = t1;
     t1 = _wm.get_time();
     dt = t1 - t0;
+  SimpleLogger::print("Engine::Loop 2");
     _scene.update(t1);
+  SimpleLogger::print("Engine::Loop 3");
     _wm.update();
+  SimpleLogger::print("Engine::Loop 4");
   }
 }

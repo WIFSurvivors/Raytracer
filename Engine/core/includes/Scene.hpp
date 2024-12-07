@@ -43,12 +43,12 @@ private:
   std::shared_ptr<Entity> create_root(const std::string &name);
   std::shared_ptr<Entity> create_root(const std::string &name, uuid id);
 
-  EntitySystem _entity_system{};
-  SimpleSystem _simple_system{};
-  CameraSystem _camera_system{};
-  RenderSystem _render_system;
+  UUIDManager _uuid_manager;
 
-  UUIDManager _uuid_manager{};
+  EntitySystem _entity_system;
+  SimpleSystem _simple_system;
+  CameraSystem _camera_system;
+  RenderSystem _render_system;
 
   std::shared_ptr<Entity> _root;
 };

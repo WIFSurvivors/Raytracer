@@ -6,14 +6,18 @@
 #include <format>
 
 Scene::Scene(Engine *e)
-    : _root{create_root("root")}, _render_system{e->get_window_manager(), &_camera_system} {
+    : _uuid_manager{}, _entity_system{}, _simple_system{}, _camera_system{},
+      _render_system{e->get_window_manager(), &_camera_system},
+      _root{create_root("root")} {
   _render_system.init();
 
   generate_sample_content();
 }
 
 Scene::Scene(Engine *e, uuid id)
-    : _root{create_root("root", id)}, _render_system{e->get_window_manager(), &_camera_system} {
+    : _uuid_manager{}, _entity_system{}, _simple_system{}, _camera_system{},
+      _render_system{e->get_window_manager(), &_camera_system},
+      _root{create_root("root", id)} {
   // does not generate sample content
   // this should be called when loading from json
   _render_system.init();
@@ -65,13 +69,12 @@ void Scene::generate_sample_content() {
   _entity_system.print();
   _render_system.print();
   _camera_system.print();
-//   _simple_system.print_all_components();
+  //   _simple_system.print_all_components();
 
   SimpleLogger::print("\n");
   SimpleLogger::print(std::string(100, '*'));
   SimpleLogger::print("\n");
 
-  
   // ============== ENTITY + SIMPLE COMPONENT ==============
 
   auto e1 = create_entity("camera");
@@ -82,7 +85,7 @@ void Scene::generate_sample_content() {
   auto e3 = create_entity("circle2", e1);
   e3->set_local_position(glm::vec3{-2, 6, 7});
 
-  auto new_uuid = _uuid_manager.getNewUUID(&_simple_system);
+  auto new_uuid = _uuid_manager.getNewUUID(&_camera_system);
   auto c1 = _camera_system.create_component(new_uuid, e1.get());
   new_uuid = _uuid_manager.getNewUUID(&_simple_system);
   auto c2 = _simple_system.create_component(new_uuid, e3.get(), -56);
@@ -108,12 +111,11 @@ void Scene::generate_sample_content() {
                                glm::vec2{0.0f, 1.0f}};
 
   auto root_ptr = get_root().lock();
-  _render_system.create_component(_uuid_manager.getNewUUID(&_render_system), root_ptr.get(),
-                                  v2, u2);
-  _render_system.create_component(_uuid_manager.getNewUUID(&_render_system), root_ptr.get(),
-                                  v3, u3);
+  _render_system.create_component(_uuid_manager.getNewUUID(&_render_system),
+                                  root_ptr.get(), v2, u2);
+  _render_system.create_component(_uuid_manager.getNewUUID(&_render_system),
+                                  root_ptr.get(), v3, u3);
 
-  
   SimpleLogger::print("\n");
   SimpleLogger::print(std::string(100, '*'));
   SimpleLogger::print("\n");
@@ -122,11 +124,18 @@ void Scene::generate_sample_content() {
   _entity_system.print();
   _render_system.print();
   _camera_system.print();
-//   _simple_system.print_all_components();
+  //   _simple_system.print_all_components();
 }
 
 // currently only tell the render system to update itself
-void Scene::update(float dt) { 
-	_camera_system.sample_update_move_main_camera(dt);
-	_render_system.update(dt); 
-	}
+void Scene::update(float dt) {
+	
+  _uuid_manager.print();
+  _entity_system.print();
+  _render_system.print();
+  _camera_system.print();
+  SimpleLogger::print("Scene::update 1");
+  _camera_system.sample_update_move_main_camera(dt);
+  SimpleLogger::print("Scene::update 2");
+  _render_system.update(dt);
+}

@@ -30,5 +30,5 @@ struct CameraSystem : public System {
 
 private:
   std::map<uuid, std::unique_ptr<CameraComponent>> _components{};
-  CameraComponent *_main_camera;
+  CameraComponent *_main_camera = nullptr;
 };

@@ -96,7 +96,7 @@ void Entity::print(int indent) {
 }
 
 glm::vec3 Entity::get_local_position() const { return _position; }
-void Entity::set_local_position(const glm::vec3 pos) { _position = pos; }
+void Entity::set_local_position(glm::vec3 pos) { _position = pos; }
 glm::vec3 Entity::get_world_position() const {
 
   // std::cout << _parent->get_name() << ": " << _parent.use_count() << "|" <<
