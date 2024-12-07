@@ -19,7 +19,7 @@ struct CameraSystem : public System {
   bool remove(uuid uuid) override;
 
   inline const auto &get_components() const { return _components; }
-  std::optional<CameraComponent *> get_component(uuid id);
+  std::optional<Component *> get_component(uuid id);
 
   void set_main_camera(CameraComponent *cc);
   inline CameraComponent *get_main_camera() const { return _main_camera; }

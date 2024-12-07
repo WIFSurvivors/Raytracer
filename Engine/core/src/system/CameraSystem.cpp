@@ -35,7 +35,7 @@ CameraComponent *CameraSystem::create_component(uuid id, Entity *e, float fov) {
 bool CameraSystem::remove(Component *c) { return remove(c->get_uuid()); }
 bool CameraSystem::remove(uuid id) { return _components.erase(id); }
 
-std::optional<CameraComponent *> CameraSystem::get_component(uuid id) {
+std::optional<Component *> CameraSystem::get_component(uuid id) {
   if (_components.contains(id)) {
     return std::make_optional(_components[id].get());
   }
