@@ -7,6 +7,9 @@
 #include "includes/utility/TablePrinter.hpp"
 #include "includes/utility/SimpleLogger.hpp"
 
+
+#include "includes/utility/bvhtree.hpp"
+
 #include <GLFW/glfw3.h>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
@@ -70,6 +73,14 @@ void RenderSystem::init() {
   _cameraU = glGetUniformLocation(compute->programID, "cameraPos");
   _projU = glGetUniformLocation(compute->programID, "Projection");
   _viewU = glGetUniformLocation(compute->programID, "View");
+  
+
+  std::cout << "HERRRREE\n";
+  Triangle t;
+  std::vector<Triangle> triforce = t.createCubeInObjectSpace();
+  BVH tree{triforce};
+
+
 }
 
 void RenderSystem::update(const float dt) {
