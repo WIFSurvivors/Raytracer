@@ -13,7 +13,7 @@ public class EcsApi
         }
         catch (System.Net.Sockets.SocketException ex)
         {
-            throw new InvalidOperationException("Could not establish a TCP connection. No TCP server found.", ex);
+            throw new InvalidOperationException("Could not establish a TCP connection.", ex);
         }
     }
     public string close_RS()
