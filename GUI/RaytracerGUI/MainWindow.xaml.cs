@@ -32,36 +32,6 @@ namespace RaytracerGUI
         {
             InitializeComponent();
             this.Background = (Brush)Application.Current.Resources["WindowBackgroundColor"];
-            StartOtherExe("../../../../../Engine/build/TopLevelProject.exe");
-            bool connection = false;
-
-            while (!connection)
-            {
-                try
-                {
-                    _ecsApi = new EcsApi("127.0.0.1", 51234);
-
-                    // initial root-request
-                    selectedUUID = _ecsApi.get_root();
-                    tbxLog.AppendText(selectedUUID);
-                    connection = true; // connection was successful
-                }
-                catch (InvalidOperationException ex)
-                {
-                    MessageBoxResult result = MessageBox.Show(ex.Message + "\n" +
-                        "Please start the \"TopLevelProject.exe\" and try again!",
-                        "Connection Error",
-                        MessageBoxButton.OKCancel,
-                        MessageBoxImage.Error);
-
-                    if (result == MessageBoxResult.Cancel)
-                    {
-                        // close application
-                        Application.Current.Shutdown();
-                        break;
-                    }
-                }
-            }
 
         }
 
@@ -178,6 +148,41 @@ namespace RaytracerGUI
                     case "btnRy":
                         tbxLog.AppendText(button + "  was clicked! \n");
                         tbxLog.ScrollToEnd();
+                        break;
+
+                    case "btnConnect":
+                        bool connection = false;
+
+                        while (!connection)
+                        {
+                            try
+                            {
+                                StartOtherExe("../../../../../Engine/build/TopLevelProject.exe");
+                                _ecsApi = new EcsApi("127.0.0.1", 51234);
+
+                                // initial root-request
+                                selectedUUID = _ecsApi.get_root();
+                                tbxLog.AppendText(selectedUUID);
+                                connection = true; // connection was successful 
+
+                                clickedButton.Background = (Brush)FindResource("WindowPrimaryColor");
+                                clickedButton.Foreground = Brushes.Black;
+
+                            }
+                            catch (InvalidOperationException ex)
+                            {
+                                MessageBoxResult result = MessageBox.Show(ex.Message + "\n" +
+                                    "Unable to start \"TopLevelProject.exe\"!",
+                                    "Connection Error",
+                                    MessageBoxButton.OKCancel,
+                                    MessageBoxImage.Error);
+
+                                if (result == MessageBoxResult.Cancel)
+                                {
+                                    break;
+                                }
+                            }
+                        }
                         break;
 
                     case "btnLog":
