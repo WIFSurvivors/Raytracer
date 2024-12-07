@@ -96,8 +96,8 @@ void RenderSystem::init() {
   // glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo_tree);
 
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_triangle);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, triforce.size() * sizeof(Triangle),
-               triforce.data(), GL_STATIC_DRAW);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, tree.triangles.size() * sizeof(Triangle),
+               tree.triangles.data(), GL_STATIC_DRAW);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3,
                    ssbo_triangle); // Bind to binding point 1
 }

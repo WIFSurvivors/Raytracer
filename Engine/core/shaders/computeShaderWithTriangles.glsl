@@ -23,7 +23,7 @@ struct BVHNode {
     int isLeaf; // 1 if leaf, 0 if internal
 };
 
-layout(std140, binding = 1) buffer BVHSSBO {
+layout(std430, binding = 1) buffer BVHSSBO {
     BVHNode nodes[]; // Flattened BVH nodes
 };
 

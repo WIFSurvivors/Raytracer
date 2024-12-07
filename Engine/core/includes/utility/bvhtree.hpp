@@ -72,7 +72,6 @@ struct BVHNode {
 };
 
 class BVH {
-  std::vector<Triangle> triangles;
   std::vector<int> indices;
   int maxleafsize;
   std::shared_ptr<BVHNode> root = nullptr;
@@ -264,6 +263,8 @@ public:
       }
     }
   }
+  std::vector<Triangle> triangles;
+
   // Made by gpt
   void printFlattened() {
     std::cout << "\nFlattened BVH Nodes:\n";
