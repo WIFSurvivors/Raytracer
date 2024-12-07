@@ -7,7 +7,6 @@
 #include "includes/utility/TablePrinter.hpp"
 #include "includes/utility/SimpleLogger.hpp"
 
-
 #include "includes/utility/bvhtree.hpp"
 
 #include <GLFW/glfw3.h>
@@ -73,27 +72,34 @@ void RenderSystem::init() {
   _cameraU = glGetUniformLocation(compute->programID, "cameraPos");
   _projU = glGetUniformLocation(compute->programID, "Projection");
   _viewU = glGetUniformLocation(compute->programID, "View");
-  
 
   std::cout << "HERRRREE\n";
-  Triangle t;
-  std::vector<Triangle> triforce = t.createCubeInObjectSpace();
+
+  std::vector<Triangle> triforce2 = createCube(glm::vec3{0.0f,-2.0f,0.0f});
+  std::vector<Triangle> triforce1 = createCube(glm::vec3{2.0f,0.0f,0.0f});
+  std::vector<Triangle> triforce3 = createCube(glm::vec3{-2.0f,0.0f,0.0f});
+
+  std::vector<Triangle> triforce = triforce1;
+  triforce.insert(triforce.end(), triforce2.begin(),triforce2.end());
+  triforce.insert(triforce.end(), triforce3.begin(),triforce3.end());
+  std::cout<< triforce.size() << std::endl;
+
   BVH tree{triforce};
   tree.flatten();
-  //tree.printFlattened();
+  tree.printFlattened();
 
-  glGenBuffers(1, &ssbo_tree);
+  // glGenBuffers(1, &ssbo_tree);
   glGenBuffers(1, &ssbo_triangle);
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, tree.ssboData.size() * sizeof(SSBOBVHNode), tree.ssboData.data(), GL_STATIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo_tree);
+  // glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);
+  // glBufferData(GL_SHADER_STORAGE_BUFFER, tree.ssboData.size() *
+  // sizeof(SSBOBVHNode), tree.ssboData.data(), GL_STATIC_DRAW);
+  // glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo_tree);
 
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_triangle);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, triforce.size() * sizeof(Triangle), triforce.data(), GL_STATIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo_triangle); // Bind to binding point 1
-
-
-
+  glBufferData(GL_SHADER_STORAGE_BUFFER, triforce.size() * sizeof(Triangle),
+               triforce.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3,
+                   ssbo_triangle); // Bind to binding point 1
 }
 
 void RenderSystem::update(const float dt) {

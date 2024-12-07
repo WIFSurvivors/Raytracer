@@ -5,54 +5,45 @@
 #include <sstream>
 #include <string>
 
-struct Triangle {
+struct alignas(16) Triangle {
   glm::vec3 v0;
+  float pad0; // Pad to 16 bytes
   glm::vec3 v1;
+  float pad1; // Pad to 16 bytes
   glm::vec3 v2;
+  float pad2; // Pad to 16 bytes
 
-  std::vector<Triangle> createCubeInObjectSpace() {
-    std::vector<Triangle> cube;
-
-    // Define the 8 vertices of a unit cube centered at the origin
-    static glm::vec3 vertices[8] = {
-        {-1.0f, -1.0f, -1.0f}, // 0: Bottom-left-back
-        {1.0f, -1.0f, -1.0f},  // 1: Bottom-right-back
-        {1.0f, 1.0f, -1.0f},   // 2: Top-right-back
-        {-1.0f, 1.0f, -1.0f},  // 3: Top-left-back
-        {-1.0f, -1.0f, 1.0f},  // 4: Bottom-left-front
-        {1.0f, -1.0f, 1.0f},   // 5: Bottom-right-front
-        {1.0f, 1.0f, 1.0f},    // 6: Top-right-front
-        {-1.0f, 1.0f, 1.0f}    // 7: Top-left-front
-    };
-
-    // Define the 12 triangles (2 per face)
-    // Back face
-    cube.push_back({vertices[0], vertices[1], vertices[2]});
-    cube.push_back({vertices[0], vertices[2], vertices[3]});
-
-    // Front face
-    cube.push_back({vertices[4], vertices[5], vertices[6]});
-    cube.push_back({vertices[4], vertices[6], vertices[7]});
-
-    // Left face
-    cube.push_back({vertices[0], vertices[3], vertices[7]});
-    cube.push_back({vertices[0], vertices[7], vertices[4]});
-
-    // Right face
-    cube.push_back({vertices[1], vertices[5], vertices[6]});
-    cube.push_back({vertices[1], vertices[6], vertices[2]});
-
-    // Bottom face
-    cube.push_back({vertices[0], vertices[4], vertices[5]});
-    cube.push_back({vertices[0], vertices[5], vertices[1]});
-
-    // Top face
-    cube.push_back({vertices[3], vertices[2], vertices[6]});
-    cube.push_back({vertices[3], vertices[6], vertices[7]});
-
-    return cube;
-  }
+  Triangle(const glm::vec3 &v0, const glm::vec3 &v1, const glm::vec3 &v2)
+      : v0(v0), pad0(0.0f), v1(v1), pad1(0.0f), v2(v2), pad2(0.0f) {}
 };
+
+inline std::vector<Triangle> createCube(const glm::vec3& origin) {
+    return std::vector<Triangle>{
+        // Front face
+        Triangle(glm::vec3(-1.0f, -1.0f, 1.0f) + origin, glm::vec3(1.0f, -1.0f, 1.0f) + origin, glm::vec3(1.0f, 1.0f, 1.0f) + origin),
+        Triangle(glm::vec3(-1.0f, -1.0f, 1.0f) + origin, glm::vec3(1.0f, 1.0f, 1.0f) + origin, glm::vec3(-1.0f, 1.0f, 1.0f) + origin),
+
+        // Back face
+        Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin, glm::vec3(-1.0f, 1.0f, -1.0f) + origin, glm::vec3(1.0f, 1.0f, -1.0f) + origin),
+        Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin, glm::vec3(1.0f, 1.0f, -1.0f) + origin, glm::vec3(1.0f, -1.0f, -1.0f) + origin),
+
+        // Left face
+        Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin, glm::vec3(-1.0f, -1.0f, 1.0f) + origin, glm::vec3(-1.0f, 1.0f, 1.0f) + origin),
+        Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin, glm::vec3(-1.0f, 1.0f, 1.0f) + origin, glm::vec3(-1.0f, 1.0f, -1.0f) + origin),
+
+        // Right face
+        Triangle(glm::vec3(1.0f, -1.0f, -1.0f) + origin, glm::vec3(1.0f, 1.0f, 1.0f) + origin, glm::vec3(1.0f, -1.0f, 1.0f) + origin),
+        Triangle(glm::vec3(1.0f, -1.0f, -1.0f) + origin, glm::vec3(1.0f, 1.0f, -1.0f) + origin, glm::vec3(1.0f, 1.0f, 1.0f) + origin),
+
+        // Top face
+        Triangle(glm::vec3(-1.0f, 1.0f, -1.0f) + origin, glm::vec3(-1.0f, 1.0f, 1.0f) + origin, glm::vec3(1.0f, 1.0f, 1.0f) + origin),
+        Triangle(glm::vec3(-1.0f, 1.0f, -1.0f) + origin, glm::vec3(1.0f, 1.0f, 1.0f) + origin, glm::vec3(1.0f, 1.0f, -1.0f) + origin),
+
+        // Bottom face
+        Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin, glm::vec3(1.0f, -1.0f, 1.0f) + origin, glm::vec3(-1.0f, -1.0f, 1.0f) + origin),
+        Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin, glm::vec3(1.0f, -1.0f, -1.0f) + origin, glm::vec3(1.0f, -1.0f, 1.0f) + origin)
+    };
+}
 
 struct SSBOBVHNode {
   glm::vec3 bboxMin;
@@ -189,7 +180,8 @@ class BVH {
       /*for (int i = start; i < end; i++) {*/
       /*  const Triangle &t = triangles[indices[i]];*/
       /*  std::cout << "Triangle " << i << ": " << vec3ToString(t.v0) << ", "*/
-      /*            << vec3ToString(t.v1) << ", " << vec3ToString(t.v2) << "\n";*/
+      /*            << vec3ToString(t.v1) << ", " << vec3ToString(t.v2) <<
+       * "\n";*/
       /*}*/
 
       return node;

@@ -23,7 +23,7 @@ struct BVHNode {
     int isLeaf; // 1 if leaf, 0 if internal
 };
 
-layout(std430, binding = 1) buffer BVHSSBO {
+layout(std140, binding = 1) buffer BVHSSBO {
     BVHNode nodes[]; // Flattened BVH nodes
 };
 
@@ -33,7 +33,7 @@ struct Triangle {
     vec3 v2;
 };
 
-layout(std430, binding = 2) buffer TriangleSSBO {
+layout(std430, binding = 3) buffer TriangleSSBO {
     Triangle trianglesBuffer[];
 };
 
@@ -52,7 +52,7 @@ struct Light {
 
 /*********************************************************************************/
 // VARIABLES
-const int hittableCount = 12;
+const int hittableCount = 36;
 const int emitterCount = 1;
 const int MAX_RECURSION_DEPTH = 3;
 
@@ -186,7 +186,7 @@ bool isInShadowTriangle(Triangle cube[hittableCount], Ray r, int originObject, f
 }
 
 bool isInShadowTriangle2(Ray r, int originObject, float distance) {
-    for (int i = 0; i < 12; i++) {
+    for (int i = 0; i < hittableCount; i++) {
         if (i == originObject) {
             continue;
         }
@@ -369,7 +369,7 @@ vec4 proccessRaySSBO(Ray r, Light emitter[emitterCount]) {
         int index = -1;
 
         // Find the closest intersection
-        for (int i = 0; i < 12; i++) {
+        for (int i = 0; i < hittableCount; i++) {
             float temp = intersectsTriangle(trianglesBuffer[i], currentRay);
             if (temp < t && temp > 0.0) {
                 t = temp;
