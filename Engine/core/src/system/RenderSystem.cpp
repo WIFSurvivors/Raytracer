@@ -26,8 +26,8 @@
  *	  - Separate other functionality to the functions
  */
 
-RenderSystem::RenderSystem(WindowManager *wm) : System(), _wm{wm} {
-  SimpleLogger::print("-- created entity system");
+RenderSystem::RenderSystem(WindowManager *wm, CameraSystem* cs) : System(), _wm{wm}, _cs{cs} {
+  SimpleLogger::print("-- created render system");
 }
 
 void RenderSystem::init() {
@@ -35,7 +35,7 @@ void RenderSystem::init() {
     std::cout << "Failed to initialize GLAD" << std::endl;
     return;
   }
-
+  
   std::filesystem::path shader_folder(SHADER_ABSOLUTE_PATH);
   std::filesystem::path compute_shader_file =
       shader_folder / "computeshaderCircle.glsl";
@@ -81,7 +81,15 @@ void RenderSystem::update(const float dt) {
   //  Setup compute shader
   compute->activateShader();
   glUniform1f(_timeU, dt);
+
+  if(_cs && _cs->get_main_camera()){
+  	_cameraPosition = _cs->get_main_camera()->get_entity()->get_world_position();
+  }else {
+	SimpleLogger::print("-- ERROR: No main camera found -> using 0., 0., +10.");
+	_cameraPosition = glm::vec3{0., 0., +10.};
+  }
   glUniform3fv(_cameraU, 1, &_cameraPosition[0]);
+  
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
 
@@ -118,6 +126,7 @@ RenderComponent *
 RenderSystem::create_component(uuid id, Entity *e,
                                const std::vector<glm::vec3> &vertices,
                                const std::vector<glm::vec2> &UV) {
+  SimpleLogger::print("-- create render component");
   _components[id] = std::make_unique<RenderComponent>(id, e, program->programID,
                                                       vertices, UV);
   auto ptr = _components[id].get();

@@ -1,6 +1,7 @@
 #include "includes/system/SimpleSystem.hpp"
 #include "includes/Entity.hpp"
 #include "includes/component/SimpleComponent.hpp"
+#include "includes/utility/SimpleLogger.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <iostream>
 #include <memory>

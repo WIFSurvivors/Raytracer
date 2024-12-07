@@ -14,6 +14,7 @@ void Engine::init_server() {
 }
 
 void Engine::startLoop() {
+  SimpleLogger::print("Engine::startLoop()");
   float t0, t1, dt;
   while (_wm.shouldClose()) {
     t0 = t1;
