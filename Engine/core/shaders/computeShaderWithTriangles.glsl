@@ -13,10 +13,28 @@ uniform vec3 cameraPos;
 /*********************************************************************************/
 //STRUCTS
 
+struct BVHNode {
+    vec3 bboxMin; // Minimum of bounding box
+    vec3 bboxMax; // Maximum of bounding box
+    int leftChild; // Index of the left child (-1 if leaf)
+    int rightChild; // Index of the right child (-1 if leaf)
+    int start; // Start index of primitives (leaf only)
+    int count; // Number of primitives (leaf only)
+    int isLeaf; // 1 if leaf, 0 if internal
+};
+
+layout(std430, binding = 1) buffer BVHSSBO {
+    BVHNode nodes[]; // Flattened BVH nodes
+};
+
 struct Triangle {
     vec3 v0;
     vec3 v1;
     vec3 v2;
+};
+
+layout(std430, binding = 2) buffer TriangleSSBO {
+    Triangle trianglesBuffer[];
 };
 
 struct Ray {
@@ -34,13 +52,17 @@ struct Light {
 
 /*********************************************************************************/
 // VARIABLES
-const int hittableCount = 36;
+const int hittableCount = 12;
 const int emitterCount = 1;
 const int MAX_RECURSION_DEPTH = 3;
 
 const int STACK_SIZE = 128;
 Ray stack[STACK_SIZE];
 int stackTop = 0;
+
+const int BVH_STACK_SIZE = 128;
+int bvh_stack[BVH_STACK_SIZE];
+int bvhStackTop = 0;
 
 /*********************************************************************************/
 Triangle[12] createCube(vec3 origin) {
@@ -79,6 +101,13 @@ void push(Ray ray) {
     }
 }
 
+void pushb(int index) {
+    if (bvhStackTop < BVH_STACK_SIZE) {
+        bvh_stack[bvhStackTop] = index;
+        bvhStackTop++;
+    }
+}
+
 // Pop a ray from the stack
 Ray pop() {
     if (stackTop > 0) {
@@ -89,9 +118,22 @@ Ray pop() {
     return Ray(vec3(0.0), vec3(0.0), -1);
 }
 
+int popb() {
+    if (bvhStackTop > 0) {
+        bvhStackTop--;
+        return bvh_stack[bvhStackTop];
+    }
+    // Return a dummy ray if the stack is empty
+    return -1;
+}
+
 // Check if the stack is empty
 bool isEmpty() {
     return stackTop == 0;
+}
+
+bool bvh_isEmpty() {
+    return bvhStackTop == 0;
 }
 
 vec3 getTriangleCenter(Triangle tri) {
@@ -143,14 +185,117 @@ bool isInShadowTriangle(Triangle cube[hittableCount], Ray r, int originObject, f
     return false;
 }
 
-vec4 proccessRay(Triangle cube[hittableCount], Ray r, Light emitter[emitterCount]) {
+bool isInShadowTriangle2(Ray r, int originObject, float distance) {
+    for (int i = 0; i < 12; i++) {
+        if (i == originObject) {
+            continue;
+        }
+        float tShadow = intersectsTriangle(trianglesBuffer[i], r);
+        if (tShadow > 0.0 && tShadow < distance) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+bool intersectsBox(vec3 bboxMin, vec3 bboxMax, Ray ray) {
+    vec3 invDir = 1.0 / ray.direction;
+    vec3 tMin = (bboxMin - ray.origin) * invDir;
+    vec3 tMax = (bboxMax - ray.origin) * invDir;
+
+    vec3 t1 = min(tMin, tMax);
+    vec3 t2 = max(tMin, tMax);
+
+    float tNear = max(max(t1.x, t1.y), t1.z);
+    float tFar = min(min(t2.x, t2.y), t2.z);
+
+    return tNear <= tFar && tFar > 0.0;
+}
+
+vec4 proccessRayBVH(Ray r, Light emitter[emitterCount]) {
     vec3 color = vec3(0.0);
     vec3 reflec_accumulation = vec3(1.0); // Reflection strength
 
     push(r);
     while (!isEmpty()) {
         Ray currentRay = pop();
-		if (currentRay.depth == -1) break;
+        if (currentRay.depth == -1) break;
+        // Terminate if the recursion depth is too high
+        if (currentRay.depth >= 5) continue;
+        float t = 5e+10;
+        int index = -1;
+
+        pushb(0); // Push Root node;
+        while (!bvh_isEmpty()) {
+            int currentNodeIndex = popb();
+            if (currentNodeIndex == -1) continue;
+            BVHNode currentNode = nodes[currentNodeIndex];
+            if (!intersectsBox(currentNode.bboxMin, currentNode.bboxMax, currentRay)) {
+                continue;
+            }
+
+            if (currentNode.isLeaf == 1) {
+                for (int i = 0; i < currentNode.count; i++) {
+                    int primitivIndex = currentNode.start + i;
+                    float temp = intersectsTriangle(trianglesBuffer[primitivIndex], currentRay);
+                    if (temp < t && temp > 0.0) {
+                        t = temp;
+                        index = primitivIndex;
+                    }
+                }
+            } else {
+                if (currentNode.rightChild >= 0) pushb(currentNode.rightChild);
+                if (currentNode.leftChild >= 0) pushb(currentNode.leftChild);
+            }
+        }
+
+        if (t > 0.0 && index >= 0) {
+            // Intersection point & normal
+            vec3 sectionPoint = currentRay.origin + t * currentRay.direction;
+            vec3 edge1 = trianglesBuffer[index].v1 - trianglesBuffer[index].v0;
+            vec3 edge2 = trianglesBuffer[index].v2 - trianglesBuffer[index].v0;
+            vec3 N = normalize(cross(edge1, edge2));
+            vec3 localColor = vec3(0.0);
+            bool anyLightHit = false;
+
+            for (int lIndex = 0; lIndex < emitterCount; lIndex++) {
+                Light light = emitter[lIndex];
+
+                vec3 shadowRay = normalize(light.position - sectionPoint);
+                float distanceToLight = length(light.position - sectionPoint);
+                float attenuation = 1.0 / (distanceToLight * distanceToLight);
+
+                bool isShadow = isInShadowTriangle2(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
+
+                if (!isShadow) {
+                    float diffuse = max(dot(N, shadowRay), 0.0);
+                    vec3 lighting = reflec_accumulation * light.color * vec3(0.4, 0.0, 0.2) * light.intensity * diffuse * attenuation;
+                    localColor += lighting;
+                    anyLightHit = true;
+                }
+            }
+
+            color += localColor;
+            if (anyLightHit && length(reflec_accumulation) > 0.01) {
+                vec3 reflecDirection = reflect(currentRay.direction, N);
+                reflec_accumulation *= 0.8;
+                Ray nextRay = Ray(sectionPoint + 0.01 * N, reflecDirection, currentRay.depth + 1);
+                push(nextRay);
+            }
+        }
+    }
+    return vec4(color, 1.0);
+}
+
+vec4 proccessRay1(Triangle cube[hittableCount], Ray r, Light emitter[emitterCount]) {
+    vec3 color = vec3(0.0);
+    vec3 reflec_accumulation = vec3(1.0); // Reflection strength
+
+    push(r);
+    while (!isEmpty()) {
+        Ray currentRay = pop();
+        if (currentRay.depth == -1) break;
         // Terminate if the recursion depth is too high
         if (currentRay.depth >= 5) continue;
 
@@ -186,6 +331,72 @@ vec4 proccessRay(Triangle cube[hittableCount], Ray r, Light emitter[emitterCount
                 float attenuation = 1.0 / (distanceToLight * distanceToLight);
 
                 bool isShadow = isInShadowTriangle(cube, Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
+
+                if (!isShadow) {
+                    float diffuse = max(dot(N, shadowRay), 0.0);
+                    vec3 lighting = reflec_accumulation * light.color * vec3(0.4, 0.0, 0.2) * light.intensity * diffuse * attenuation;
+                    localColor += lighting;
+                    anyLightHit = true;
+                }
+            }
+
+            color += localColor;
+
+            if (anyLightHit && length(reflec_accumulation) > 0.01) {
+                vec3 reflecDirection = reflect(currentRay.direction, N);
+                reflec_accumulation *= 0.8; // Reduce reflection strength
+                Ray nextRay = Ray(sectionPoint + 0.01 * N, reflecDirection, currentRay.depth + 1);
+                push(nextRay);
+            }
+        }
+    }
+
+    return vec4(color, 1.0);
+}
+
+vec4 proccessRaySSBO(Ray r, Light emitter[emitterCount]) {
+    vec3 color = vec3(0.0);
+    vec3 reflec_accumulation = vec3(1.0); // Reflection strength
+
+    push(r);
+    while (!isEmpty()) {
+        Ray currentRay = pop();
+        if (currentRay.depth == -1) break;
+        // Terminate if the recursion depth is too high
+        if (currentRay.depth >= 5) continue;
+
+        float t = 5e+10;
+        int index = -1;
+
+        // Find the closest intersection
+        for (int i = 0; i < 12; i++) {
+            float temp = intersectsTriangle(trianglesBuffer[i], currentRay);
+            if (temp < t && temp > 0.0) {
+                t = temp;
+                index = i;
+            }
+        }
+
+        if (t > 0.0 && index >= 0) {
+            // Intersection point & normal
+            vec3 sectionPoint = currentRay.origin + t * currentRay.direction;
+            vec3 edge1 = trianglesBuffer[index].v1 - trianglesBuffer[index].v0;
+            vec3 edge2 = trianglesBuffer[index].v2 - trianglesBuffer[index].v0;
+            vec3 N = normalize(cross(edge1, edge2));
+
+            // Accumulate light contribution from all light sources first
+            vec3 localColor = vec3(0.0);
+            bool anyLightHit = false;
+
+            for (int lIndex = 0; lIndex < emitterCount; lIndex++) {
+                Light light = emitter[lIndex];
+
+                // Shadow ray setup
+                vec3 shadowRay = normalize(light.position - sectionPoint);
+                float distanceToLight = length(light.position - sectionPoint);
+                float attenuation = 1.0 / (distanceToLight * distanceToLight);
+
+                bool isShadow = isInShadowTriangle2( Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
 
                 if (!isShadow) {
                     float diffuse = max(dot(N, shadowRay), 0.0);
@@ -288,8 +499,9 @@ vec4 rayColor(Ray r) {
 
     Light[1] lightSources;
     vec3 position = vec3(0.0, 10.0, 3.0) + 3 * sin(time);
-    lightSources[0] = Light(position, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 100.0);
-    return CalcColorWithLightSourcesTriangle(merged, r, lightSources);
+    lightSources[0] = Light(position, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 1000.0);
+    return proccessRaySSBO(r, lightSources);
+    //return CalcColorWithLightSourcesTriangle(trianglesCube1, r, lightSources);
 }
 
 void main() {

@@ -79,6 +79,19 @@ void RenderSystem::init() {
   Triangle t;
   std::vector<Triangle> triforce = t.createCubeInObjectSpace();
   BVH tree{triforce};
+  tree.flatten();
+  //tree.printFlattened();
+
+  glGenBuffers(1, &ssbo_tree);
+  glGenBuffers(1, &ssbo_triangle);
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, tree.ssboData.size() * sizeof(SSBOBVHNode), tree.ssboData.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo_tree);
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_triangle);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, triforce.size() * sizeof(Triangle), triforce.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo_triangle); // Bind to binding point 1
+
 
 
 }
