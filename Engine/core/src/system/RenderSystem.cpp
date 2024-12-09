@@ -3,6 +3,7 @@
 #include "includes/component/Component.hpp"
 #include "includes/component/RenderComponent.hpp"
 #include "includes/ShaderCompiler.hpp"
+#include "includes/utility/Canvas.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 #include "includes/utility/TablePrinter.hpp"
 #include "includes/utility/SimpleLogger.hpp"
@@ -70,6 +71,8 @@ void RenderSystem::init() {
   _cameraU = glGetUniformLocation(compute->programID, "cameraPos");
   _projU = glGetUniformLocation(compute->programID, "Projection");
   _viewU = glGetUniformLocation(compute->programID, "View");
+
+  _canvas = std::make_unique<Canvas>(program->programID);
 }
 
 void RenderSystem::update(const float dt) {
@@ -96,6 +99,7 @@ void RenderSystem::update(const float dt) {
   for (auto &&c : _components) {
     c.second->update(dt);
   }
+  _canvas->update(dt);
   // Input
   // processInput(_window);
 
@@ -133,13 +137,6 @@ void RenderSystem::destroy() {
 
   glfwTerminate();
 }
-
-// void RenderSystem::render() {
-// glfwSetInputMode(_wm->_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-// glfwMakeContextCurrent(_wm->_window);
-
-// }
 
 bool RenderSystem::remove(Component *c) { throw NotImplementedError(); }
 bool RenderSystem::remove(uuid uuid) { throw NotImplementedError(); }

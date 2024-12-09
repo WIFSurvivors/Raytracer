@@ -4,6 +4,7 @@
 #include "includes/component/RenderComponent.hpp"
 #include "includes/ShaderCompiler.hpp"
 #include "includes/WindowManager.hpp"
+#include "includes/utility/Canvas.hpp"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -44,12 +45,6 @@ struct RenderSystem : public System {
                                     const std::vector<glm::vec3> &vertices,
                                     const std::vector<glm::vec2> &UV);
 
-  //  temporal
-  //  we need, this because Render System is responsible for the window and
-  //  input handling
-  // void render();
-  // std::unique_ptr<RenderComponent> _component;
-
   bool remove(Component *c) override;
   bool remove(uuid uuid) override;
 
@@ -74,10 +69,8 @@ private:
   GLuint _cameraU;
   GLuint _projU;
   GLuint _viewU;
-  //  GLuint _porgramID;
-  //  GLuint _computeID;
-  //
-  //  Not sure about this
+
+  std::unique_ptr<Canvas> _canvas;
   std::map<uuid, std::unique_ptr<RenderComponent>> _components{};
   std::unique_ptr<Shader> compute;
 };
