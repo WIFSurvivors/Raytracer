@@ -26,7 +26,7 @@
  *	  - Separate other functionality to the functions
  */
 
-RenderSystem::RenderSystem(WindowManager *wm, CameraSystem* cs) : System(), _wm{wm}, _cs{cs} {
+RenderSystem::RenderSystem(WindowManager *wm, CameraSystem* cs) : ISystem(), _wm{wm}, _cs{cs} {
   SimpleLogger::print("-- created render system");
 }
 

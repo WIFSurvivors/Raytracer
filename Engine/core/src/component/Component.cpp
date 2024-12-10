@@ -9,6 +9,13 @@ Component::Component(uuid id, Entity *e) : _uuid{id}, _entity{e} {
   assert(e != nullptr && "Entity is a nullptr");
   e->add_component(this);
 }
+
+Component::~Component() {
+  if (_entity != nullptr) {
+    get_entity()->remove_component(this);
+  }
+}
+
 void Component::init() {}
 
 void Component::update(float dt) {}

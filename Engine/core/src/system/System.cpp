@@ -1,30 +1,42 @@
 #include "includes/system/System.hpp"
 #include "includes/utility/NotSupportedError.hpp"
 #include "includes/utility/NotImplementedError.hpp"
+#include "includes/utility/SimpleLogger.hpp"
+#include <boost/uuid/uuid_io.hpp>
 
-std::optional<Component *> System::get_component(uuid id) {}
-
-Component *System::create_component(uuid uuid, Entity *e) {
-  throw NotSupportedError{};
+template <is_base_of_component T>
+T *ISystem<T>::create_component(uuid uuid, Entity *e) {
+  SimpleLogger::print("-- create component");
+  _components[id] = std::make_unique<T>(id, e);
+  auto ptr = _components[id].get();
+  e->add_component(ptr);
+  return ptr; // pointer can be used by child classes for further configuration
 }
 
-std::shared_ptr<Entity> System::create_entity(const std::string &name,
-                                              uuid uuid) {
-  throw NotSupportedError{};
+template <is_base_of_component T>
+std::optional<T *> ISystem<T>::get_component(uuid id) {
+  return _components[id];
 }
 
-std::optional<Component *> System::get_component(uuid id) {
-  throw NotSupportedError{};
+template <is_base_of_component T> bool ISystem<T>::remove(T *c) {
+  return remove(c->get_uuid());
 }
 
-std::optional<Entity *> System::get_entity(uuid id) {
-  throw NotSupportedError{};
+template <is_base_of_component T> bool ISystem<T>::remove(uuid id) {
+  // Because each component is a unique_ptr, it will call deconstructor of
+  // Component on destruction, which in turn will remove itself from it's linked
+  // entity
+  SimpleLogger::print(std::format("-- ! removing component with UUID {}",
+                                  boost::uuids::to_string(uuid)));
+  return _components.erase(id);
 }
 
-bool System::remove(Component *c) { throw NotSupportedError{}; }
-bool System::remove(Entity *e) { throw NotSupportedError{}; }
+template <is_base_of_component T> void ISystem<T>::clear() {
+  SimpleLogger::print("-- !! clearing all components from system");
+  _components.clear();
+}
 
-
-void System::print() {
-  throw NotImplementedError{};
+template <is_base_of_component T> void ISystem<T>::print() {
+  // probably ues ostringstream for this
+  // or just std::string? (i do like std::format uwu)
 }

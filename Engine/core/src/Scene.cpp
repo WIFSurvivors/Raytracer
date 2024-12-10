@@ -32,7 +32,7 @@ std::shared_ptr<Entity> Scene::create_root(const std::string &name, uuid id) {
   SimpleLogger::print(
       std::format("-- scene: create_root(name, uuid): \"{}\", {}", name,
                   boost::uuids::to_string(id)));
-  return _entity_system.create_root(name, id);
+  return _entity_system.create_root_entity(name, id);
 }
 
 std::weak_ptr<Entity> Scene::get_root() { return _root; }

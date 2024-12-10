@@ -14,7 +14,7 @@ typedef boost::uuids::uuid uuid;
 struct Entity;
 struct Engine;
 struct SimpleSystem;
-struct EntitySystem;
+struct EntityStorage;
 
 struct Scene {
   explicit Scene(Engine *e);
@@ -45,7 +45,7 @@ private:
 
   UUIDManager _uuid_manager{};
 
-  EntitySystem _entity_system{};
+  EntityStorage _entity_system{};
   SimpleSystem _simple_system{};
   CameraSystem _camera_system{};
   RenderSystem _render_system;

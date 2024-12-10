@@ -10,7 +10,7 @@
 
 typedef boost::uuids::uuid uuid;
 
-struct CameraSystem : public System {
+struct CameraSystem : public ISystem {
   CameraSystem();
 
   CameraComponent *create_component(uuid id, Entity *e) override;

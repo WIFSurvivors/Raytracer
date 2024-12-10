@@ -19,6 +19,7 @@ CameraComponent *CameraSystem::create_component(uuid id, Entity *e) {
   _components[id] = std::make_unique<CameraComponent>(id, e);
   auto ptr = _components[id].get();
   e->add_component(ptr);
+
   std::cout << "MC nullptr?" << (_main_camera == nullptr) << "\n";
   if (_main_camera == nullptr) {
     set_main_camera(ptr);
@@ -82,6 +83,9 @@ void CameraSystem::print() {
 void CameraSystem::sample_update_move_main_camera(float t1) {
   if (!_main_camera)
     return;
+
+  // this is btw a very non-optimal way of moving an object
+  // ideally, we store the inital position *somewhere* for this type of movement
 
   auto ent = _main_camera->get_entity();
   auto pos = ent->get_local_position();

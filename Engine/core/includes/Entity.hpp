@@ -51,10 +51,10 @@ struct Entity : public std::enable_shared_from_this<Entity> {
 
 private:
   friend std::shared_ptr<Entity>
-  EntitySystem::create_root(const std::string &name, uuid id);
+  EntityStorage::create_root_entity(const std::string &name, uuid id);
 
   friend std::shared_ptr<Entity>
-  EntitySystem::create_entity(const std::string &name, uuid id,
+  EntityStorage::create_entity(const std::string &name, uuid id,
                               std::shared_ptr<Entity> parent);
 
   static std::shared_ptr<Entity> create(const std::string &name, uuid id,

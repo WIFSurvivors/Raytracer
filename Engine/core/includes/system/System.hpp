@@ -1,74 +1,72 @@
 #pragma once
 
+#include "includes/component/Component.hpp"
+
 #include <boost/uuid/uuid.hpp>
 #include <string>
+#include <memory>
 #include <optional>
 #include <memory>
 #include <map>
+#include <type_traits>
+#include <map>
+#include <algorithm>
 
 typedef boost::uuids::uuid uuid;
 
 struct Entity;
-struct Component;
+
+template <typename T>
+concept is_base_of_component = std::is_base_of<Component, T>::value;
 
 /*
 A System handles UUID to Component or Entity bindings and can provide
 system-wide attributes and methods.
 */
-// template <class T> // components :)
-struct System {
-  System() = default;
-  virtual ~System() = default;
-
-  /**
-   * A component is always linked to an entity. It is recommended to overwrite
-   * return type suited for the system.
-   */
-  virtual Component *create_component(uuid id, Entity *e);
-
-  /**
-   * Entity arestd::vector<glm::vec3>& vertices, std::vector<glm::vec2>& UV
-   * responsible for representing components in 3D space.
-   */
-  virtual std::shared_ptr<Entity> create_entity(const std::string &name,
-                                                uuid id);
+template <is_base_of_component T> struct ISystem {
+  ISystem() = default;
+  virtual ~ISystem() = default;
 
   /**
    * Get Component stored in this system. Will return std::nullopt when UUID is
    * not found.
    */
-  virtual std::optional<Component *> get_component(uuid id);
+  virtual std::optional<T *> get_component(uuid id);
 
   /**
-   * Get Entity stored in this system. Will return std::nullopt when UUID is
-   * not found.
+   * Removes Component from container by component pointer.
+   * This will call remove(uuid)
    */
-  virtual std::optional<Entity *> get_entity(uuid id);
+  bool remove(T *c);
 
   /**
-   * When removing a component, it also needs to be removed from it's designated
-   * entity. Each component knows it's entity. (easy)
+   * Removes Component from container by uuid.
+   * This will also remove it's link to it's entity.
    */
-  virtual bool remove(Component *c);
+  virtual bool remove(uuid uuid);
 
   /**
-   * When removing an entity, we also need to remove all it's child entites
-   * (easy) as well as all it's components. The latter is more difficult,
-   * because components can be part of different system.
+   * Removes all components from container. This will call remove(uuid) on all
+   * components.
    */
-  virtual bool remove(Entity *e);
+  void clear();
 
   /**
-   * Depending on the uuid, you are either removing an entity or component. A
-   * system usually only supports one of those types and should return false or
-   * error when uuid is not found.
+   * Prints all components of the system
    */
-  virtual bool remove(uuid uuid) = 0;
-
-  virtual void clear() = 0;
-
-  virtual void print();
+  void print();
 
 protected:
-//   std::map<uuid, T> _components; // HOW TO DO THIS FOR ENTITY?!?!?!?
+  virtual void print_component() = 0;
+
+  /**
+   * A component is always linked to an entity. It is recommended to overwrite
+   * return type suited for the system.
+   * This method is not public, because the user is advised to implement their
+   * own method to allow for extra parameters. It is advised to then call this
+   * function as a first step!
+   */
+  virtual T *create_component(uuid id, Entity *e);
+
+  std::map<uuid, std::unique_ptr<T>> _components;
 };

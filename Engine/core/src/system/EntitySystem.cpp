@@ -10,7 +10,11 @@
 // #include "glm/vec3.hpp"
 #include "glm/ext.hpp"
 
-std::shared_ptr<Entity> EntitySystem::create_root(const std::string &name,
+EntityStorage::EntityStorage() {
+  SimpleLogger::print("-- created entity storage");
+}
+
+std::shared_ptr<Entity> EntityStorage::create_root_entity(const std::string &name,
                                                   uuid id) {
   auto e = Entity::create(name, id);
   _entities[id] = e.get();
@@ -18,14 +22,18 @@ std::shared_ptr<Entity> EntitySystem::create_root(const std::string &name,
 }
 
 std::shared_ptr<Entity>
-EntitySystem::create_entity(const std::string &name, uuid id,
+EntityStorage::create_entity(const std::string &name, uuid id,
                             std::shared_ptr<Entity> parent) {
   auto e = Entity::create(name, id, parent);
   _entities[id] = e.get();
   return e;
 }
 
-bool EntitySystem::remove(uuid id) {
+std::optional<Entity *> EntityStorage::get_entity(uuid id){
+	return _entities[id];
+}
+
+bool EntityStorage::remove(uuid id) {
   auto it = std::find_if(_entities.begin(), _entities.end(),
                          [id](const auto &e) { return e.first == id; });
   if (it != _entities.end()) {
@@ -35,7 +43,7 @@ bool EntitySystem::remove(uuid id) {
   return false;
 }
 
-bool EntitySystem::remove(Entity *e) {
+bool EntityStorage::remove(Entity *e) {
   auto it = std::find_if(_entities.begin(), _entities.end(),
                          [e](const auto &val) { return val.second == e; });
   if (it != _entities.end()) {
@@ -45,8 +53,8 @@ bool EntitySystem::remove(Entity *e) {
   return false;
 }
 
-void EntitySystem::print() {
-  TablePrinter::printElement("EntitySystem: UUID", 36);
+void EntityStorage::print() {
+  TablePrinter::printElement("EntityStorage: UUID", 36);
   std::cout << " | ";
   TablePrinter::printElement("Entity Name", 12);
   std::cout << " | ";
@@ -66,7 +74,4 @@ void EntitySystem::print() {
     std::cout << "\n";
   }
   std::cout << std::endl;
-}
-EntitySystem::EntitySystem() : System() {
-  SimpleLogger::print("-- created entity system");
 }

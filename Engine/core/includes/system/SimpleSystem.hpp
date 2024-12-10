@@ -8,7 +8,7 @@
 
 typedef boost::uuids::uuid uuid;
 
-struct SimpleSystem : public System {
+struct SimpleSystem : public ISystem {
   SimpleSystem();
 
   SimpleComponent *create_component(uuid id, Entity *e) override;

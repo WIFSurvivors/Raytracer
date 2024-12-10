@@ -12,13 +12,13 @@ struct UUIDManager {
   UUIDManager();
 
   uuid getNewUUID();
-  uuid getNewUUID(System *s);
+  uuid getNewUUID(ISystem *s);
 
-  System *get_system(uuid id);
+  ISystem *get_system(uuid id);
 
   void print();
 
 private:
   boost::uuids::random_generator gen{};
-  std::map<uuid, System *> _uuid_system_mapping{};
+  std::map<uuid, ISystem *> _uuid_system_mapping{};
 };
