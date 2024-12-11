@@ -55,7 +55,7 @@ private:
 
   friend std::shared_ptr<Entity>
   EntityStorage::create_entity(const std::string &name, uuid id,
-                              std::shared_ptr<Entity> parent);
+                               std::shared_ptr<Entity> parent);
 
   static std::shared_ptr<Entity> create(const std::string &name, uuid id,
                                         std::shared_ptr<Entity> parent);

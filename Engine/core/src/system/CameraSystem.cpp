@@ -14,37 +14,14 @@ CameraSystem::CameraSystem() {
   SimpleLogger::print("-- created camera system");
 }
 
-CameraComponent *CameraSystem::create_component(uuid id, Entity *e) {
-  SimpleLogger::print("-- create camera component");
-  _components[id] = std::make_unique<CameraComponent>(id, e);
-  auto ptr = _components[id].get();
-  e->add_component(ptr);
-
-  std::cout << "MC nullptr?" << (_main_camera == nullptr) << "\n";
-  if (_main_camera == nullptr) {
-    set_main_camera(ptr);
-  }
-  return ptr;
-}
-
 CameraComponent *CameraSystem::create_component(uuid id, Entity *e, float fov) {
+  SimpleLogger::print("-- create camera component");
   auto c = create_component(id, e);
   c->set_fov(fov);
   return c;
 }
 
-bool CameraSystem::remove(Component *c) { return remove(c->get_uuid()); }
-bool CameraSystem::remove(uuid id) { return _components.erase(id); }
-
-std::optional<Component *> CameraSystem::get_component(uuid id) {
-  if (_components.contains(id)) {
-    return std::make_optional(_components[id].get());
-  }
-  return {};
-}
-
 void CameraSystem::set_main_camera(CameraComponent *cc) {
-  SimpleLogger::print("-- set main cam");
   if (_main_camera != nullptr) {
     _main_camera->set_is_main_camera(false);
   }
@@ -57,7 +34,7 @@ void CameraSystem::set_main_camera(CameraComponent *cc) {
       boost::uuids::to_string(_main_camera->get_entity()->get_uuid())));
 }
 
-void CameraSystem::print() {
+void CameraSystem::print_component(CameraComponent &c) {
   TablePrinter::printElement("CameraComponent UUID", 36);
   std::cout << " | ";
   TablePrinter::printElement("fov", 12);
