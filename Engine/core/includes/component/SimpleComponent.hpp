@@ -3,22 +3,16 @@
 #include "includes/component/Component.hpp"
 #include "includes/Entity.hpp"
 
-struct SimpleComponent : Component {
+struct SimpleComponent : public Component {
   //   explicit SimpleComponent(std::weak_ptr<Entity> e);
   SimpleComponent(uuid id, Entity *e);
   SimpleComponent(uuid id, Entity *e, int value);
-  void init() override;
+
   void update(const float dt) override;
-  void destroy() override;
-  // virtual ~SimpleComponent() override;
 
-  void set_value(int value);
-  int get_value();
-
-  void print() override;
+  inline void set_value(int value) { _value = value; };
+  inline int get_value() { return _value; }
 
 private:
   int _value{};
-
-  void print_class_content();
 };

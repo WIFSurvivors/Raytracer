@@ -18,6 +18,10 @@ RenderComponent::RenderComponent(uuid id, Entity *e, GLuint programID,
   init(programID);
 }
 
+RenderComponent::~RenderComponent(){
+	destroy();
+}
+
 void RenderComponent::init(GLuint programID) {
   SimpleLogger::print("RenderComponent::init()");
   //  TODO:

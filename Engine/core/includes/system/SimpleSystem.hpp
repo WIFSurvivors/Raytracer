@@ -8,27 +8,16 @@
 
 typedef boost::uuids::uuid uuid;
 
-struct SimpleSystem : public ISystem {
+struct SimpleSystem : public ISystem<SimpleComponent> {
   SimpleSystem();
 
-  SimpleComponent *create_component(uuid id, Entity *e) override;
   SimpleComponent *create_component(uuid id, Entity *e, int value);
-  bool remove(Component *c) override;
-  bool remove(uuid uuid) override;
 
-  void clear();
-
-  inline const auto &get_components() const { return _components; }
-  // bool remove_component(SimpleComponent *c);
-
-  void print_all_components();
-
-  // void init() const;
   void update(const float dt);
-  // void destroy() const;
 
 private:
-  std::map<uuid, std::unique_ptr<SimpleComponent>> _components{};
+  using ISystem::create_component;
+  void print_component(const SimpleComponent& c) override;
 };
 
 // template<class T> requires

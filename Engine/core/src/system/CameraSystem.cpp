@@ -10,7 +10,7 @@
 // #include "glm/vec3.hpp"
 #include "glm/ext.hpp"
 
-CameraSystem::CameraSystem() {
+CameraSystem::CameraSystem() : ISystem{} {
   SimpleLogger::print("-- created camera system");
 }
 
@@ -34,7 +34,22 @@ void CameraSystem::set_main_camera(CameraComponent *cc) {
       boost::uuids::to_string(_main_camera->get_entity()->get_uuid())));
 }
 
-void CameraSystem::print_component(CameraComponent &c) {
+void CameraSystem::sample_update_move_main_camera(float t1) {
+  if (!_main_camera)
+    return;
+
+  // this is btw a very non-optimal way of moving an object
+  // ideally, we store the inital position *somewhere* for this type of movement
+
+  auto ent = _main_camera->get_entity();
+  auto pos = ent->get_local_position();
+
+  auto dt_sin = std::sin(t1 * 2.5) * 10;
+  pos.y = dt_sin;
+  ent->set_local_position(pos);
+}
+
+void CameraSystem::print_component(const CameraComponent &c) {
   TablePrinter::printElement("CameraComponent UUID", 36);
   std::cout << " | ";
   TablePrinter::printElement("fov", 12);
@@ -55,19 +70,4 @@ void CameraSystem::print_component(CameraComponent &c) {
     std::cout << "\n";
   }
   std::cout << std::endl;
-}
-
-void CameraSystem::sample_update_move_main_camera(float t1) {
-  if (!_main_camera)
-    return;
-
-  // this is btw a very non-optimal way of moving an object
-  // ideally, we store the inital position *somewhere* for this type of movement
-
-  auto ent = _main_camera->get_entity();
-  auto pos = ent->get_local_position();
-
-  auto dt_sin = std::sin(t1 * 2.5) * 10;
-  pos.y = dt_sin;
-  ent->set_local_position(pos);
 }

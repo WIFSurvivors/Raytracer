@@ -12,18 +12,18 @@
 #include <map>
 
 // typedef boost::uuids::uuid uuid;
-
 struct Entity;
 
 template <typename T>
 concept is_base_of_component = std::is_base_of<Component, T>::value;
 
 /*
-A System handles UUID to Component or Entity bindings and can provide
-system-wide attributes and methods.
-*/
+ * A System creates Components by binding them to UUID and Entity. Additionally
+ * it can provide system-wide attributes and methods.
+ */
 template <is_base_of_component T> struct ISystem {
   using uuid = boost::uuids::uuid;
+
   ISystem() = default;
   virtual ~ISystem() = default;
 
@@ -65,7 +65,7 @@ protected:
    */
   T *create_component(uuid id, Entity *e);
 
-  virtual void print_component(T &c) = 0;
+  virtual void print_component(const T &c) = 0;
 
   std::map<uuid, std::unique_ptr<T>> _components;
 };

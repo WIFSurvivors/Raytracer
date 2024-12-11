@@ -9,7 +9,7 @@ T *ISystem<T>::create_component(uuid id, Entity *e) {
   SimpleLogger::print("-- create component");
   _components[id] = std::make_unique<T>(id, e);
   auto ptr = _components[id].get();
-  e->add_component(ptr);
+  // e->add_component(ptr); // this is handled in Component Constructor!!
   return ptr; // pointer can be used by child classes for further configuration
 }
 

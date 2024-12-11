@@ -16,10 +16,6 @@ Component::~Component() {
   }
 }
 
-void Component::init() {}
-
-void Component::update(float dt) {}
-
-void Component::destroy() {}
+void Component::update(const float dt) {}
 
 uuid Component::get_uuid() { return _uuid; }

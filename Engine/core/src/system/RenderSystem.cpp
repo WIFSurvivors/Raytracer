@@ -28,6 +28,7 @@
 
 RenderSystem::RenderSystem(WindowManager *wm, CameraSystem* cs) : ISystem(), _wm{wm}, _cs{cs} {
   SimpleLogger::print("-- created render system");
+  // init(); // ? just do here ? 
 }
 
 void RenderSystem::init() {
@@ -110,23 +111,12 @@ void RenderSystem::update(const float dt) {
   // update(glfwGetTime());
 }
 
-Component *RenderSystem::create_component(uuid id, Entity *e) {
-  throw NotImplementedError();
-  /*
-  _components[id] =
-      std::make_unique<RenderComponent>(id, e, program->programID);
-  auto ptr = _components[id].get();
-  // ptr->init(program->programID);
-  e->add_component(ptr);
-  return ptr;
-  */
-}
-
 RenderComponent *
 RenderSystem::create_component(uuid id, Entity *e,
                                const std::vector<glm::vec3> &vertices,
                                const std::vector<glm::vec2> &UV) {
   SimpleLogger::print("-- create render component");
+  // CHANGE RC CONSTRUCTR :C
   _components[id] = std::make_unique<RenderComponent>(id, e, program->programID,
                                                       vertices, UV);
   auto ptr = _components[id].get();
@@ -150,10 +140,7 @@ void RenderSystem::destroy() {
 
 // }
 
-bool RenderSystem::remove(Component *c) { throw NotImplementedError(); }
-bool RenderSystem::remove(uuid uuid) { throw NotImplementedError(); }
-
-void RenderSystem::print() {
+void RenderSystem::print_component(const RenderComponent &c) {
   TablePrinter::printElement("RenderComponent UUID", 36);
   std::cout << " | ";
   TablePrinter::printElement("VBO", 12);

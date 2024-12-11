@@ -10,6 +10,9 @@
 
 typedef boost::uuids::uuid uuid;
 
+/**
+ * Handles currently active main camera, which is used by RenderSystem.
+ */
 struct CameraSystem : public ISystem<CameraComponent> {
   CameraSystem();
 
@@ -22,9 +25,10 @@ struct CameraSystem : public ISystem<CameraComponent> {
 
 protected:
   // CameraComponent *create_component(uuid id, Entity *e);
-  void print_component(CameraComponent &c) override;
+  void print_component(const CameraComponent &c) override;
 
 private:
   using ISystem::create_component;
+
   CameraComponent *_main_camera = nullptr;
 };
