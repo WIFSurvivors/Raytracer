@@ -136,7 +136,7 @@ Closing="Window_Closing">
                         <Button Name="btnLog" Content="Log" Style="{StaticResource PrimaryButtonStyle}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="40" Click="generalButtonClick"/>
                     </Grid>
                     <TextBox Name="tbxLog" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" AcceptsReturn="True" VerticalAlignment="Top" Grid.Row="1"/>
-                    <Button Name="btnConnect" Content="Connect" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="3" VerticalAlignment="Center"  Margin="10" Click="generalButtonClick" />
+                    <Button Name="btnConnect" Content="Connect" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="3" VerticalAlignment="Center"  Margin="10" Click="btnConnect_Click" />
                     
 
                 </Grid>

@@ -87,7 +87,7 @@ namespace RaytracerGUI
         }
 
 
-        public void WindowLoaded()
+        public bool WindowLoaded()
         {
 
             hWndGLFW = FindGLFWWindow();
@@ -99,7 +99,7 @@ namespace RaytracerGUI
                 if (!IsWindow(hWndGLFW) || !IsWindowVisible(hWndGLFW) || !IsWindowEnabled(hWndGLFW))
                 {
                     MessageBox.Show("GLFW window is not responding or not in a valid state.");
-                    return;
+                    return false;
                 }
 
                 // Set the GLFW window as a child of the WPF window
@@ -108,7 +108,7 @@ namespace RaytracerGUI
                 {
                     uint error = GetLastError();
                     MessageBox.Show($"Failed to set parent for GLFW window. Error code: {error}");
-                    return;
+                    return false;
                 }
 
                 // Adjust window styles
@@ -122,15 +122,14 @@ namespace RaytracerGUI
                 if (!moveResult)
                 {
                     MessageBox.Show("Failed to move GLFW window.");
+                    return false;
                 }
 
                 // Show the GLFW window
                 ShowWindow(hWndGLFW, SW_SHOW);
+                return true;
             }
-            else
-            {
-                MessageBox.Show("GLFW window not found. Make sure it is created before loading the WPF window.");
-            }
+            return false;
         }
 
         private IntPtr FindGLFWWindow()

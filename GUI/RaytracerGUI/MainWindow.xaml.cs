@@ -28,6 +28,9 @@ namespace RaytracerGUI
         private string selectedUUID;
         private GLFWLoader loader;
         private IntPtr hWndParent;
+
+        bool connection = false;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -75,42 +78,18 @@ namespace RaytracerGUI
         }
 
 
-
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            hWndParent = new WindowInteropHelper(this).Handle;
-            loader = new GLFWLoader(this, hWndParent);
-            loader.WindowLoaded();
-
-        }
-
-
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            if (loader != null)
-            {
-                loader.CloseWindow();
-            }
-            //_ecsApi.close_RS();
-
-
-        }
-
-        private void rctRenderArea_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            if (loader != null)
-            {
-                loader.OnResize();
-                this.UpdateLayout();
-
-            }
-        }
-
         //Button clicks
         private void generalButtonClick(object sender, RoutedEventArgs e)
         {
+            if (!connection)
+            {
+                MessageBox.Show("No connection established. Please connect to the server first.",
+                                "Connection Error",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Warning);
+                return;
+            }
+
             Button clickedButton = sender as Button;
 
             if (clickedButton != null)
@@ -150,41 +129,6 @@ namespace RaytracerGUI
                         tbxLog.ScrollToEnd();
                         break;
 
-                    case "btnConnect":
-                        bool connection = false;
-
-                        while (!connection)
-                        {
-                            try
-                            {
-                                StartOtherExe("../../../../../Engine/build/TopLevelProject.exe");
-                                _ecsApi = new EcsApi("127.0.0.1", 51234);
-
-                                // initial root-request
-                                selectedUUID = _ecsApi.get_root();
-                                tbxLog.AppendText(selectedUUID);
-                                connection = true; // connection was successful 
-
-                                clickedButton.Background = (Brush)FindResource("WindowPrimaryColor");
-                                clickedButton.Foreground = Brushes.Black;
-
-                            }
-                            catch (InvalidOperationException ex)
-                            {
-                                MessageBoxResult result = MessageBox.Show(ex.Message + "\n" +
-                                    "Unable to start \"TopLevelProject.exe\"!",
-                                    "Connection Error",
-                                    MessageBoxButton.OKCancel,
-                                    MessageBoxImage.Error);
-
-                                if (result == MessageBoxResult.Cancel)
-                                {
-                                    break;
-                                }
-                            }
-                        }
-                        break;
-
                     case "btnLog":
                         tbxLog.AppendText($"{DateTime.Now}: Log entry added.\n");
                         tbxLog.ScrollToEnd();
@@ -206,6 +150,82 @@ namespace RaytracerGUI
                 }
             }
         }
+
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            hWndParent = new WindowInteropHelper(this).Handle;
+            loader = new GLFWLoader(this, hWndParent);
+        
+            if (!loader.WindowLoaded() && connection)
+            {
+                MessageBox.Show("GLFW window not found. Make sure it is created before loading the WPF window.");
+            }
+
+        }
+
+
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (loader != null)
+            {
+                loader.CloseWindow();
+            }
+            //_ecsApi.close_RS();
+
+
+        }
+
+        private void btnConnect_Click(object sender, RoutedEventArgs e)
+        {
+            Button clickedButton = sender as Button;
+
+            while (!connection)
+            {
+                try
+                {
+                    StartOtherExe("../../../../../Engine/build/TopLevelProject.exe");
+                    _ecsApi = new EcsApi("127.0.0.1", 51234);
+
+                    // initial root-request
+                    selectedUUID = _ecsApi.get_root();
+                    tbxLog.AppendText(selectedUUID);
+                    connection = true; // connection was successful 
+
+                    clickedButton.Background = (Brush)FindResource("WindowPrimaryColor");
+                    clickedButton.Foreground = Brushes.Black;
+
+                    Window_Loaded(sender, e);
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    MessageBoxResult result = MessageBox.Show(ex.Message + "\n" +
+                        "Unable to start \"TopLevelProject.exe\"!",
+                        "Connection Error",
+                        MessageBoxButton.OKCancel,
+                        MessageBoxImage.Error);
+
+                    if (result == MessageBoxResult.Cancel)
+                    {
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        private void rctRenderArea_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (loader != null)
+            {
+                loader.OnResize();
+                this.UpdateLayout();
+
+            }
+        }
+      
 
         private void StartOtherExe(string exePath)
         {
