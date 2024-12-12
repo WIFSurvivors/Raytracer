@@ -87,15 +87,30 @@ void RenderSystem::init() {
 
   TreeBuilder builder{};
   builder.prepareSSBOData();
+  builder.checkData();
 
   //
   std::cout << "SIZE:  " << sizeof(SSBONodes) << std::endl;
 
   glGenBuffers(1, &ssbo_tree);
+  glGenBuffers(1,&ssbo_indices);
+  glGenBuffers(1,&ssbo_vertex);
+  
   glGenBuffers(1, &ssbo_triangle);
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);
+
   glBufferData(GL_SHADER_STORAGE_BUFFER, builder.ssboData.size() * sizeof(SSBONodes), builder.ssboData.data(), GL_STATIC_DRAW);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo_tree);
+  
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_indices);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, builder.triIdxData.size() * sizeof(uint32_t), builder.triIdxData.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, ssbo_indices);
+
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_vertex);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, builder.vertex.size() * sizeof(Vec3Padded), builder.vertex.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, ssbo_vertex);
 
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_triangle);
   glBufferData(GL_SHADER_STORAGE_BUFFER,

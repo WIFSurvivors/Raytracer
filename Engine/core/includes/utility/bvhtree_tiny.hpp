@@ -1,3 +1,4 @@
+#include <iostream>
 #include <memory>
 #define TINYBVH_IMPLEMENTATION
 #include "tiny_bvh.h"
@@ -8,7 +9,7 @@
 #include <cstdlib>
 #include <cstdio>
 #endif
-
+#include <sstream>
 #include <glm/vec3.hpp>
 
 struct alignas(16) Triangle {
@@ -21,6 +22,15 @@ struct alignas(16) Triangle {
 
   Triangle(const glm::vec3 &v0, const glm::vec3 &v1, const glm::vec3 &v2)
       : v0(v0), pad0(0.0f), v1(v1), pad1(0.0f), v2(v2), pad2(0.0f) {}
+
+  std::string toString() const {
+    std::ostringstream oss;
+    oss << "Triangle:\n";
+    oss << "  v0: (" << v0.x << ", " << v0.y << ", " << v0.z << ")\n";
+    oss << "  v1: (" << v1.x << ", " << v1.y << ", " << v1.z << ")\n";
+    oss << "  v2: (" << v2.x << ", " << v2.y << ", " << v2.z << ")\n";
+    return oss.str();
+  }
 };
 
 inline std::vector<Triangle> createCube(const glm::vec3 &origin) {
@@ -98,19 +108,50 @@ struct SSBONodes {
   float pad4;
 };
 
+struct Vec3Padded {
+  glm::vec3 data;
+  float pad;
+};
+
 struct TreeBuilder {
 
   tinybvh::BVH tree;
   std::vector<SSBONodes> ssboData;
   std::vector<Triangle> triangles;
+  std::vector<uint32_t> triIdxData;
+  std::vector<Vec3Padded> vertex;
 
   TreeBuilder() {
-    std::vector<Triangle> cube = createCube(glm::vec3{0.0f});
+    std::vector<Triangle> cube = createCube(glm::vec3{0.0f, 0.0f, 0.0f});
+
+    std::vector<Triangle> t = {
+        Triangle(glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec3(1.0f, -1.0f, 1.0f),
+                 glm::vec3(1.0f, 1.0f, 1.0f)),
+        Triangle(glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f),
+                 glm::vec3(-1.0f, 1.0f, 1.0f)),
+        Triangle(glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(1.0f, 1.0f, -1.0f),
+                 glm::vec3(-1.0f, 1.0f, -1.0f)),
+
+    };
     std::vector<tinybvh::bvhvec4> bvhData = convertToBVHFormat(cube);
 
     tree.Build(bvhData.data(), cube.size());
-    tree.Compact(tinybvh::BVH::WALD_32BYTE);
-    tinybvh::BVH::BVHNode n;
+    // tree.Compact(tinybvh::BVH::WALD_32BYTE);
+    triIdxData.assign(tree.triIdx, tree.triIdx + tree.triCount);
+
+    if (tree.verts) { // Ensure verts is not null
+      for (uint32_t i = 0; i < tree.triCount * 3; ++i) {
+        const auto &v = tree.verts[i];
+        vertex.push_back(
+            Vec3Padded(glm::vec3(v.x, v.y, v.z), 0.0f)); // Convert to glm::vec3
+      }
+    }
+
+    // Debug print vertices
+    for (const auto &v : vertex) {
+      std::cout << "Vertex: (" << v.data.x << ", " << v.data.y << ", "
+                << v.data.z << ")" << std::endl;
+    }
   }
 
   void prepareSSBOData() {
@@ -143,15 +184,14 @@ struct TreeBuilder {
           uint32_t index = tree.triIdx[node.leftFirst + j];
           uint32_t vIndex = index * 3;
           Triangle t = Triangle{
-              glm::vec3(tree.verts[vIndex].x, tree.verts[vIndex].y,
-                        tree.verts[vIndex].z),
-              glm::vec3(tree.verts[vIndex + 1].x, tree.verts[vIndex + 1].y,
-                        tree.verts[vIndex + 1].z),
-              glm::vec3(tree.verts[vIndex + 2].x, tree.verts[vIndex + 2].y,
-                        tree.verts[vIndex + 2].z)};
+              glm::vec3(vertex[vIndex].data.x, vertex[vIndex].data.y,
+                        vertex[vIndex].data.z),
+              glm::vec3(vertex[vIndex + 1].data.x, vertex[vIndex + 1].data.y,
+                        vertex[vIndex + 1].data.z),
+              glm::vec3(vertex[vIndex + 2].data.x, vertex[vIndex + 2].data.y,
+                        vertex[vIndex + 2].data.z)};
           triangles.push_back(t);
         }
-
       } else {
         nodessbo.leftchild = node.leftFirst;
         nodessbo.rightchild = node.leftFirst + 1;
@@ -163,4 +203,22 @@ struct TreeBuilder {
     }
   }
 
+  void checkData() {
+    for (uint32_t i = 0; i < tree.idxCount; ++i) {
+      std::cout << "triIdx[" << i << "] = " << tree.triIdx[i] << std::endl;
+    }
+    for (uint32_t i = 0; i < tree.triCount * 3; ++i) {
+      std::cout << "vertex[" << i << "] = ( " << vertex[i].data.x << " , "
+                << vertex[i].data.y << " , " << vertex[i].data.z << " ) \n";
+    }
+
+    for (uint32_t i = 0; i < tree.usedBVHNodes; i++) {
+      const auto &node = ssboData[i];
+      std::cout << "Node[" << i << "] : \n";
+      std::cout << "\t Left Child: " << node.leftchild << std::endl;
+      std::cout << "\t Right Child: " << node.rightchild << std::endl;
+      std::cout << "\t start: " << node.start << std::endl;
+      std::cout << "\t count: " << node.count << std::endl;
+    }
+  }
 };

@@ -63,6 +63,8 @@ private:
   // GLuint mouseUniformID; // a bit cringe... but it stays here for now
   GLuint ssbo_tree;
   GLuint ssbo_triangle;
+  GLuint ssbo_vertex;
+  GLuint ssbo_indices;
   GLuint _vao;
   std::vector<glm::vec3> v = {glm::vec3{-0.5f, -0.5f, 0.0f},
                               glm::vec3{0.5f, -0.5f, 0.0f},
