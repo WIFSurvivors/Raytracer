@@ -210,6 +210,35 @@ namespace RaytracerGUI
                            
                         }
                         break;
+
+                    case "btnToggleB":
+                        tbxLog.AppendText(button + "  was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        if (gridButtons.Visibility == Visibility.Visible)
+                        {
+                            gridButtons.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            gridSliders.Visibility = Visibility.Collapsed;
+                            gridButtons.Visibility = Visibility.Visible;
+                        }
+                        break;
+
+                    case "btnToggleS":
+                        tbxLog.AppendText(button + "  was clicked! \n");
+                        tbxLog.ScrollToEnd();
+                        if (gridSliders.Visibility == Visibility.Visible)
+                        {
+                            gridSliders.Visibility = Visibility.Collapsed;
+                        }
+                        else
+                        {
+                            gridButtons.Visibility = Visibility.Collapsed;
+                            gridSliders.Visibility = Visibility.Visible;
+                           
+                        }
+                        break;
                 }
             }
         }
