@@ -12,7 +12,7 @@ SimpleSystem::SimpleSystem() { SimpleLogger::print("-- created simple system"); 
 
 SimpleComponent *SimpleSystem::create_component(uuid id, Entity *e, int value) {
   SimpleLogger::print("-- create simple component");
-  auto c = create_component(id, e);
+  auto c = create_component_base(id, e);
   c->set_value(value);
   return c;
 }

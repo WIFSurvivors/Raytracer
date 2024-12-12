@@ -11,30 +11,30 @@
  */
 
 // T -> type
-template <class T> struct IStorage { // better name: IUUIDAccess ??
-  using uuid = boost::uuids::uuid;
+// template <class T> struct IStorage { // better name: IUUIDAccess ??
+//   using uuid = boost::uuids::uuid;
 
-  IStorage() = default;
-  virtual ~IStorage() = default;
+//   IStorage() = default;
+//   virtual ~IStorage() = default;
 
-  /**
-   * Get Object stored in this system. Will return std::nullopt when UUID is
-   * not found.
-   */
-  std::optional<T *> get(uuid id);
+//   /**
+//    * Get Object stored in this system. Will return std::nullopt when UUID is
+//    * not found.
+//    */
+//   std::optional<T *> get(uuid id);
   
-  /**
-   * Removes Object from container by component pointer.
-   * This will call remove(uuid)
-   */
-  bool remove(T *c);
+//   /**
+//    * Removes Object from container by component pointer.
+//    * This will call remove(uuid)
+//    */
+//   bool remove(T *c);
 
-  /**
-   * Removes Object from container by uuid.
-   * This will also remove it's link to it's entity.
-   */
-  bool remove(uuid uuid);
+//   /**
+//    * Removes Object from container by uuid.
+//    * This will also remove it's link to it's entity.
+//    */
+//   bool remove(uuid uuid);
 
-private:
-  std::map<uuid, T> _storage;
-};
+// private:
+//   std::map<uuid, T> _storage;
+// };

@@ -64,5 +64,5 @@ void UUIDManager::print() {
 }
 
 bool UUIDManager::remove_uuid(uuid id) {
-
+	return false;
 }

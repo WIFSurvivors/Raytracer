@@ -16,6 +16,11 @@
 
 #include <iostream>
 #include <filesystem>
+
+#ifndef SHADER_ABSOLUTE_PATH
+#define SHADER_ABSOLUTE_PATH "wawawaww"
+#endif
+
 /**
  *	TODO:
  *	- Think about projection clipping space
@@ -116,6 +121,8 @@ RenderSystem::create_component(uuid id, Entity *e,
                                const std::vector<glm::vec3> &vertices,
                                const std::vector<glm::vec2> &UV) {
   SimpleLogger::print("-- create render component");
+//   auto c = create_component_base(id, e); // ADD THIS
+  
   // CHANGE RC CONSTRUCTR :C
   _components[id] = std::make_unique<RenderComponent>(id, e, program->programID,
                                                       vertices, UV);

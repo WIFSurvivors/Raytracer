@@ -16,8 +16,11 @@ CameraSystem::CameraSystem() : System{} {
 
 CameraComponent *CameraSystem::create_component(uuid id, Entity *e, float fov) {
   SimpleLogger::print("-- create camera component");
-  auto c = create_component(id, e);
+  auto c = create_component_base(id, e);
   c->set_fov(fov);
+  if(!_main_camera){
+	set_main_camera(c);
+  }
   return c;
 }
 

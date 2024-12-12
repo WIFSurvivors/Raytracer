@@ -70,11 +70,11 @@ bool Entity::remove_child_entity(std::shared_ptr<Entity> e) {
 
 
 // remove magic number
-// void Entity::print() { print(4); }
+void Entity::print() { print(4); }
 
-// void Entity::print(int indent) {
-//   std::cout << "E: " << _name << "(" << _uuid
-//             << ") | components: " << _components.size() << "\n";
+void Entity::print(int indent) {
+  std::cout << "E: " << _name << "(" << _uuid
+            << ") | components: " << _components.size() << "\n";
 
 //   for (auto &&c : _components) {
 //     for (int i = 0; i < indent; i++)
@@ -89,7 +89,7 @@ bool Entity::remove_child_entity(std::shared_ptr<Entity> e) {
 //       std::cout << " ";
 //     e->print(new_indent);
 //   }
-// }
+}
 
 glm::vec3 Entity::get_world_position() const {
   if (auto p = _parent.lock()) {

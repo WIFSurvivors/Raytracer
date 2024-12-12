@@ -15,7 +15,3 @@ IComponent::~IComponent() {
     get_entity()->remove_component(this);
   }
 }
-
-void IComponent::update(const float dt) {}
-
-uuid IComponent::get_uuid() { return _uuid; }

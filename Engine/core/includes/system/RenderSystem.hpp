@@ -54,7 +54,8 @@ struct RenderSystem : public System<RenderComponent> {
   void print_component(const RenderComponent &c) override;
 
 private:
-  using System::create_component;
+  using typename System::uuid;
+  using System::create_component_base;
 
   WindowManager *_wm;
   CameraSystem* _cs;

@@ -1,6 +1,6 @@
 #pragma once
 #include "includes/component/Component.hpp"
-#include "includes/system/EntitySystem.hpp"
+#include "includes/system/EntityStorage.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <glm/vec3.hpp>
 #include <memory>
@@ -45,18 +45,19 @@ struct Entity : public std::enable_shared_from_this<Entity> {
   glm::vec3 get_world_scale() const;
 
   inline uuid get_uuid() { return _uuid; }
-  //   void print();
+  void print();
 
   inline const std::string &get_name() { return _name; }
   inline void set_name(const std::string &name) { _name = name; }
 
 private:
-  friend std::shared_ptr<Entity>
-  EntityStorage::create_root_entity(const std::string &name, uuid id);
+  friend class EntityStorage;
+  //   friend std::shared_ptr<Entity>
+  //   EntityStorage::create_root_entity(const std::string &name, uuid id);
 
-  friend std::shared_ptr<Entity>
-  EntityStorage::create_entity(const std::string &name, uuid id,
-                               std::shared_ptr<Entity> parent);
+  friend class std::shared_ptr<Entity>;
+  //   EntityStorage::create_entity(const std::string &name, uuid id,
+  //                                std::shared_ptr<Entity> parent);
 
   static std::shared_ptr<Entity> create(const std::string &name, uuid id,
                                         std::shared_ptr<Entity> parent);
@@ -74,7 +75,4 @@ private:
   std::vector<IComponent *> _components{};
 
   void print(int indent);
-  // int _parent_uuid{};
-  // std::vector<long> _child_entities_uuids{};
-  // std::vector<long> _component_uuids{};
 };

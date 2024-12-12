@@ -18,6 +18,10 @@ struct UUIDManager {
 
   ISystem *get_system(uuid id);
 
+  /**
+   * This only removes an entity from the storage. If the associated Componet
+   * oder Entity hasn't been removed before, it will not be accessible anymore!
+   */
   bool remove_uuid(uuid id);
 
   void print();

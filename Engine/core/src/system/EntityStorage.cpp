@@ -1,4 +1,4 @@
-#include "includes/system/EntitySystem.hpp"
+#include "includes/system/EntityStorage.hpp"
 #include "includes/Entity.hpp"
 #include "includes/utility/SimpleLogger.hpp"
 #include "includes/utility/TablePrinter.hpp"
@@ -28,11 +28,6 @@ EntityStorage::create_entity(const std::string &name, uuid id,
   _entities[id] = e.get();
   return e;
 }
-
-std::optional<Entity *> EntityStorage::get_entity(uuid id){
-	return _entities[id];
-}
-
 bool EntityStorage::remove(uuid id) {
   auto it = std::find_if(_entities.begin(), _entities.end(),
                          [id](const auto &e) { return e.first == id; });

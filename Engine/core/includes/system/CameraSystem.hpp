@@ -28,7 +28,8 @@ protected:
   void print_component(const CameraComponent &c) override;
 
 private:
-  using System::create_component;
+  using typename System::uuid;
+//   using System::create_component_base;
 
   CameraComponent *_main_camera = nullptr;
 };

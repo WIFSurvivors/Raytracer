@@ -15,7 +15,7 @@ struct Entity;
  */
 struct EntityStorage {
   using uuid = boost::uuids::uuid;
-  
+
   EntityStorage();
 
   /**
@@ -33,7 +33,10 @@ struct EntityStorage {
    * Get Entity stored in this system. Will return std::nullopt when UUID is
    * not found.
    */
-  std::optional<Entity *> get_entity(uuid id);
+  inline std::optional<Entity *> get_entity(uuid id) {
+    return _entities.contains(id) ? std::make_optional(_entities[id])
+                                  : std::nullopt;
+  }
 
   /**
    * Removes an entity from the underlying data structure by uuid.

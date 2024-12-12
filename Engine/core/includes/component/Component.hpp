@@ -11,13 +11,11 @@ struct IComponent {
 
   /// @brief Destroy component. This will also unlink it from it's entity.
   /// Override this if your need to clean-up more resources.
-  virtual ~IComponent() = default;
+  virtual ~IComponent();
 
   /// @brief Use to update component's logic each tick
   /// @param dt Time step
-  virtual void update(const float dt);
-
-  virtual ~IComponent();
+  virtual void update(const float dt) = 0;
 
   // required by std::map<uuid, component>
   bool operator<(const IComponent &right) const { return _uuid < right._uuid; }

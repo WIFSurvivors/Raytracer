@@ -6,7 +6,7 @@
 #include <map>
 #include <memory>
 
-typedef boost::uuids::uuid uuid;
+// typedef boost::uuids::uuid uuid;
 
 struct SimpleSystem : public System<SimpleComponent> {
   SimpleSystem();
@@ -16,7 +16,8 @@ struct SimpleSystem : public System<SimpleComponent> {
   void update(const float dt);
 
 private:
-  using System::create_component;
+  using typename System::uuid;
+  using System::create_component_base;
   void print_component(const SimpleComponent& c) override;
 };
 
