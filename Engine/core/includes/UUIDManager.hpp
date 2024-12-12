@@ -2,6 +2,7 @@
 
 #include "includes/utility/SimpleLogger.hpp"
 #include "includes/system/System.hpp"
+#include "includes/Entity.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <map>
@@ -11,14 +12,18 @@ typedef boost::uuids::uuid uuid;
 struct UUIDManager {
   UUIDManager();
 
-  uuid getNewUUID();
-  uuid getNewUUID(ISystem<IComponent> *s);
+  // i don't think this should *ever* be called...
+  uuid create_uuid_ownerless();
+  uuid create_uuid(ISystem *s);
 
-  ISystem<IComponent> *get_system(uuid id);
+  ISystem *get_system(uuid id);
+
+  bool remove_uuid(uuid id);
 
   void print();
 
 private:
   boost::uuids::random_generator gen{};
-  std::map<uuid, ISystem<IComponent>*> _uuid_system_mapping{};
+  // replace IComponent with IUUIDStorage at some point?
+  std::map<uuid, ISystem *> _uuid_system_mapping{};
 };

@@ -5,7 +5,7 @@
 #include <algorithm>
 
 template <is_base_of_component T>
-T *ISystem<T>::create_component(uuid id, Entity *e) {
+T *System<T>::create_component(uuid id, Entity *e) {
   SimpleLogger::print("-- create component");
   _components[id] = std::make_unique<T>(id, e);
   auto ptr = _components[id].get();
@@ -14,29 +14,34 @@ T *ISystem<T>::create_component(uuid id, Entity *e) {
 }
 
 template <is_base_of_component T>
-std::optional<T *> ISystem<T>::get_component(uuid id) {
-  return _components[id];
+std::optional<T *> System<T>::get_component(uuid id) {
+  if (!_components.contains(id)) {
+    SimpleLogger::print(
+        std::format("-- ! component {} not found", boost::uuids::to_string(id)));
+    return {};
+  }
+  return std::make_optional(_components[id].get());
 }
 
-template <is_base_of_component T> bool ISystem<T>::remove(T *c) {
+template <is_base_of_component T> bool System<T>::remove(T *c) {
   return remove(c->get_uuid());
 }
 
-template <is_base_of_component T> bool ISystem<T>::remove(uuid id) {
+template <is_base_of_component T> bool System<T>::remove(uuid id) {
   // Because each component is a unique_ptr, it will call deconstructor of
-  // IComponent on destruction, which in turn will remove itself from it's linked
-  // entity
+  // IComponent on destruction, which in turn will remove itself from it's
+  // linked entity
   SimpleLogger::print(std::format("-- ! removing component with UUID {}",
                                   boost::uuids::to_string(id)));
   return _components.erase(id);
 }
 
-template <is_base_of_component T> void ISystem<T>::clear() {
+template <is_base_of_component T> void System<T>::clear() {
   SimpleLogger::print("-- !! clearing all components from system");
   _components.clear();
 }
 
-template <is_base_of_component T> void ISystem<T>::print() {
+template <is_base_of_component T> void System<T>::print() {
   // probably ues ostringstream for this
   // or just std::string? (i do like std::format uwu)
   std::for_each(_components.begin(), _components.end(), [this](auto &n) {

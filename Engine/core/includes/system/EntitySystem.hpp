@@ -6,8 +6,6 @@
 #include <map>
 #include <string>
 
-typedef boost::uuids::uuid uuid;
-
 struct Entity;
 
 /**
@@ -16,6 +14,8 @@ struct Entity;
  * Entities Pointers.
  */
 struct EntityStorage {
+  using uuid = boost::uuids::uuid;
+  
   EntityStorage();
 
   /**

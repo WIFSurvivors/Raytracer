@@ -19,9 +19,9 @@ struct EntityStorage;
 struct Scene {
   explicit Scene(Engine *e);
   Scene(Engine *e, uuid id);
-  ~Scene();
+  virtual ~Scene();
 
-  std::weak_ptr<Entity> get_root();
+  inline std::weak_ptr<Entity> get_root() const { return _root; }
 
   std::shared_ptr<Entity> create_entity(const std::string &name);
   std::shared_ptr<Entity> create_entity(const std::string &name, uuid id);

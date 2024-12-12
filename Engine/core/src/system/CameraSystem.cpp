@@ -10,7 +10,7 @@
 // #include "glm/vec3.hpp"
 #include "glm/ext.hpp"
 
-CameraSystem::CameraSystem() : ISystem{} {
+CameraSystem::CameraSystem() : System{} {
   SimpleLogger::print("-- created camera system");
 }
 

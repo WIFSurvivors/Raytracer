@@ -17,15 +17,24 @@ struct Entity;
 template <typename T>
 concept is_base_of_component = std::is_base_of<IComponent, T>::value;
 
+/**
+ * Parameterless System class, that can be used whenever you don't care about
+ * the underlying type T of System. Imagine this is a sort of placeholder!
+ */
+class ISystem {
+public:
+  virtual ~ISystem() = default;
+};
+
 /*
  * A System creates Components by binding them to UUID and Entity. Additionally
  * it can provide system-wide attributes and methods.
  */
-template <is_base_of_component T> struct ISystem {
+template <is_base_of_component T> struct System : public ISystem {
   using uuid = boost::uuids::uuid;
 
-  ISystem() = default;
-  virtual ~ISystem() = default;
+  System() = default;
+  virtual ~System() override = default;
 
   /**
    * Get Component stored in this system. Will return std::nullopt when UUID is

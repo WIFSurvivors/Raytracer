@@ -24,7 +24,7 @@ Scene::Scene(Engine *e, uuid id)
 Scene::~Scene() { _render_system.destroy(); }
 
 std::shared_ptr<Entity> Scene::create_root(const std::string &name) {
-  auto uuid = _uuid_manager.getNewUUID(&_entity_storage);
+  auto uuid = _uuid_manager.create_uuid_ownerless();
   return create_root(name, uuid);
 }
 
@@ -35,10 +35,8 @@ std::shared_ptr<Entity> Scene::create_root(const std::string &name, uuid id) {
   return _entity_storage.create_root_entity(name, id);
 }
 
-std::weak_ptr<Entity> Scene::get_root() { return _root; }
-
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name) {
-  auto uuid = _uuid_manager.getNewUUID(&_entity_storage);
+  auto uuid = _uuid_manager.create_uuid_ownerless();
   return create_entity(name, uuid, _root);
 }
 
@@ -49,7 +47,8 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name,
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name,
                                              std::shared_ptr<Entity> parent) {
-  return create_entity(name, _uuid_manager.getNewUUID(&_entity_storage), parent);
+  return create_entity(name, _uuid_manager.create_uuid_ownerless(),
+                       parent);
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
@@ -60,7 +59,10 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
   return _entity_storage.create_entity(name, id, parent);
 }
 
-void Scene::print() { _root->print(); }
+void Scene::print() {
+  SimpleLogger::print("CURRENTLY DOES NOTHING SRYYYYYYYYY");
+  // _root->print();
+}
 
 void Scene::generate_sample_content() {
   _uuid_manager.print();
@@ -82,8 +84,8 @@ void Scene::generate_sample_content() {
   auto e3 = create_entity("circle2", e1);
   e3->set_local_position(glm::vec3{-2, 6, 7});
 
-  auto new_uuid = _uuid_manager.getNewUUID(&_camera_system);
-  auto c1 = _camera_system.create_component(new_uuid, e1.get());
+  auto new_uuid = _uuid_manager.create_uuid(&_camera_system);
+  auto c1 = _camera_system.create_component(new_uuid, e1.get(), 60.f);
 
   // =================== RENDER SYSTEM =====================
 
@@ -106,9 +108,9 @@ void Scene::generate_sample_content() {
                                glm::vec2{0.0f, 1.0f}};
 
   auto root_ptr = get_root().lock();
-  _render_system.create_component(_uuid_manager.getNewUUID(&_render_system),
+  _render_system.create_component(_uuid_manager.create_uuid(&_render_system),
                                   root_ptr.get(), v2, u2);
-  _render_system.create_component(_uuid_manager.getNewUUID(&_render_system),
+  _render_system.create_component(_uuid_manager.create_uuid(&_render_system),
                                   root_ptr.get(), v3, u3);
 
   SimpleLogger::print("\n");

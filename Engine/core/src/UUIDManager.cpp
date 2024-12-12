@@ -3,14 +3,19 @@
 #include <iostream>
 #include <boost/uuid/uuid_io.hpp>
 #include <format>
+#include <algorithm>
 
-uuid UUIDManager::getNewUUID() {
+UUIDManager::UUIDManager() { SimpleLogger::print("-- created UUID Manager"); }
+
+uuid UUIDManager::create_uuid_ownerless() {
   auto new_uuid = gen();
+  SimpleLogger::print(std::format("-- created uuid: {} WITHOUT OWNER (most likely an entity) !!!!!",
+                                  boost::uuids::to_string(new_uuid)));
   _uuid_system_mapping[new_uuid] = nullptr;
   return new_uuid;
 }
 
-uuid UUIDManager::getNewUUID(ISystem<IComponent> *s) {
+uuid UUIDManager::create_uuid(ISystem *s) {
   auto new_uuid = gen();
   SimpleLogger::print(std::format("-- created uuid: {} for system {}",
                                   boost::uuids::to_string(new_uuid),
@@ -19,20 +24,17 @@ uuid UUIDManager::getNewUUID(ISystem<IComponent> *s) {
   return new_uuid;
 }
 
-ISystem<IComponent> *UUIDManager::get_system(uuid id) { return _uuid_system_mapping[id]; }
+ISystem *UUIDManager::get_system(uuid id) { return _uuid_system_mapping[id]; }
 
 void UUIDManager::print() {
   // get longest character lengths in list
   size_t longest_uuid = 0; // can probably be hardcoded for uuids...
   size_t longest_sys = std::string{"SYSTEM"}.length();
-  auto compare = [](auto a, auto b) {
-    return a > b ? a : b;
-  }; // just use library function...
   for (auto const &[id, sys] : _uuid_system_mapping) {
     auto size = boost::uuids::to_string(id).length();
-    longest_uuid = compare(size, longest_uuid);
+    longest_uuid = std::max(size, longest_uuid);
     size = std::string{typeid(sys).name()}.length();
-    longest_sys = compare(size, longest_sys);
+    longest_sys = std::max(size, longest_sys);
   } // this can probably be simplified by a fancy library function
     // combination...
 
@@ -61,4 +63,6 @@ void UUIDManager::print() {
   std::cout << std::endl;
 }
 
-UUIDManager::UUIDManager() { SimpleLogger::print("uuid manager 1"); }
+bool UUIDManager::remove_uuid(uuid id) {
+
+}

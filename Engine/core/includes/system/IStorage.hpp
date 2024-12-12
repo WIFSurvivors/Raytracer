@@ -9,7 +9,11 @@
  * Defines Getter via UUID by returning an optional object pointer.
  * Internal storage can be adjusted according to each system
  */
+
+// T -> type
 template <class T> struct IStorage { // better name: IUUIDAccess ??
+  using uuid = boost::uuids::uuid;
+
   IStorage() = default;
   virtual ~IStorage() = default;
 
@@ -32,4 +36,5 @@ template <class T> struct IStorage { // better name: IUUIDAccess ??
   bool remove(uuid uuid);
 
 private:
+  std::map<uuid, T> _storage;
 };
