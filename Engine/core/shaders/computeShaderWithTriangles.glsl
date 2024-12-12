@@ -252,6 +252,25 @@ bool isInShadowTriangleAlt(Ray r, int originObject, float distance) {
     return false;
 }
 
+float intersectsBoxWithDistance(vec3 bboxMin, vec3 bboxMax, Ray ray) {
+    vec3 invDir = 1.0 / ray.direction;
+    vec3 tMin = (bboxMin - ray.origin) * invDir;
+    vec3 tMax = (bboxMax - ray.origin) * invDir;
+
+    vec3 t1 = min(tMin, tMax); // Entry points
+    vec3 t2 = max(tMin, tMax); // Exit points
+
+    float tNear = max(max(t1.x, t1.y), t1.z); // Closest intersection
+    float tFar = min(min(t2.x, t2.y), t2.z); // Farthest intersection
+
+    // Check if the ray intersects the box
+    if (tNear > tFar || tFar < 0.0) {
+        return 1e10; // Large value for no intersection
+    }
+
+    return tNear > 0.0 ? tNear : tFar; // Return the valid intersection distance
+}
+
 bool intersectsBox(vec3 bboxMin, vec3 bboxMax, Ray ray) {
     vec3 invDir = 1.0 / ray.direction;
     vec3 tMin = (bboxMin - ray.origin) * invDir;
@@ -264,6 +283,49 @@ bool intersectsBox(vec3 bboxMin, vec3 bboxMax, Ray ray) {
     float tFar = min(min(t2.x, t2.y), t2.z);
 
     return tNear <= tFar && tFar > 0.0;
+}
+
+float intersectBoxDistance(vec3 bboxMin, vec3 bboxMax, Ray ray) {
+    vec3 invDir = 1.0 / ray.direction; // Compute the inverse of the ray direction
+    vec3 tMin = (bboxMin - ray.origin) * invDir;
+    vec3 tMax = (bboxMax - ray.origin) * invDir;
+
+    vec3 t1 = min(tMin, tMax); // Entry points for the ray
+    vec3 t2 = max(tMin, tMax); // Exit points for the ray
+
+    float tNear = max(max(t1.x, t1.y), t1.z); // Closest intersection
+    float tFar = min(min(t2.x, t2.y), t2.z); // Furthest intersection
+
+    // Check if ray intersects the box
+    if (tNear > tFar || tFar < 0.0) {
+        return 1e10; // Return a large value if no intersection
+    }
+
+    return tNear > 0.0 ? tNear : tFar; // Return the valid intersection distance
+}
+
+vec3 getTriangleColor(int i) {
+    // Define a color palette for the 12 triangles
+    vec3 colors[12];
+    colors[0] = vec3(1.0, 0.0, 0.0); // Red
+    colors[1] = vec3(0.0, 1.0, 0.0); // Green
+    colors[2] = vec3(0.0, 0.0, 1.0); // Blue
+    colors[3] = vec3(1.0, 1.0, 0.0); // Yellow
+    colors[4] = vec3(1.0, 0.0, 1.0); // Magenta
+    colors[5] = vec3(0.0, 1.0, 1.0); // Cyan
+    colors[6] = vec3(0.5, 0.5, 0.5); // Gray
+    colors[7] = vec3(1.0, 0.5, 0.0); // Orange
+    colors[8] = vec3(0.5, 0.0, 1.0); // Purple
+    colors[9] = vec3(0.0, 0.5, 0.5); // Teal
+    colors[10] = vec3(0.5, 1.0, 0.0); // Lime
+    colors[11] = vec3(0.0, 0.0, 0.0); // Black
+
+    // Ensure the index is within bounds
+    if (i < 0 || i >= 12) {
+        return vec3(1.0, 1.0, 1.0); // Default color (white) for out-of-bounds index
+    }
+
+    return colors[i];
 }
 
 vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount]) {
@@ -286,56 +348,75 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount]) {
 
             if (currentNode.isLeaf == 1) {
                 for (int i = 0; i < currentNode.count; ++i) {
-                    int triangleIndex = currentNode.start + i;
-                    float temp = intersectsTriangleAlt(triangleIndex, currentRay);
-					color += temp;
+                    int firstVertexIndex = triIdx[currentNode.start + i];
+                    vec3 v00 = trivertex[firstVertexIndex*3];
+                    vec3 v11 = trivertex[firstVertexIndex*3 + 1];
+                    vec3 v22 = trivertex[firstVertexIndex*3 + 2];
+                    Triangle tri = Triangle(v00, v11, v22);
+
+                    float temp = intersectsTriangle(tri, currentRay);
+                    if (temp < t && temp > 0.0) {
+                        t = temp;
+                        index = currentNode.start + i;
+                    }
                 }
             } else {
-                if (currentNode.rightChild >= 0) pushb(currentNode.rightChild);
-                if (currentNode.leftChild >= 0) pushb(currentNode.leftChild);
+                //Calculate nearest BB
+                BVHNode leftChild = nodes[currentNode.leftChild];
+                BVHNode rightChild = nodes[currentNode.rightChild];
+                float distLeft = intersectsBoxWithDistance(leftChild.bboxMin, leftChild.bboxMax, currentRay);
+                float distRight = intersectsBoxWithDistance(rightChild.bboxMin, rightChild.bboxMax, currentRay);
+
+                if (distLeft < distRight) {
+                    if (currentNode.rightChild >= 0 && distRight < 1e10) pushb(currentNode.rightChild);
+                    if (currentNode.leftChild >= 0 && distLeft < 1e10) pushb(currentNode.leftChild);
+                } else {
+                    if (currentNode.leftChild >= 0 && distLeft < 1e10) pushb(currentNode.leftChild);
+                    if (currentNode.rightChild >= 0 && distRight < 1e10) pushb(currentNode.rightChild);
+                }
             }
         }
 
-        // if (t >= 0.0 && index != -1) {
-        //
-        //     // Intersection point & normal
-        //     vec3 sectionPoint = currentRay.origin + t * currentRay.direction;
-        //
-        //     uint v = triIdx[index] * 3;
-        //     vec3 edge1 = trivertex[v + 1] - trivertex[v];
-        //     vec3 edge2 = trivertex[v + 2] - trivertex[v];
-        //
-        //     // vec3 edge1 = trianglesBuffer[index].v1 - trianglesBuffer[index].v0;
-        //     // vec3 edge2 = trianglesBuffer[index].v2 - trianglesBuffer[index].v0;
-        //     vec3 N = normalize(cross(edge1, edge2));
-        //     vec3 localColor = vec3(0.0);
-        //     bool anyLightHit = false;
-        //
-        //     for (int lIndex = 0; lIndex < emitterCount; lIndex++) {
-        //         Light light = emitter[lIndex];
-        //
-        //         vec3 shadowRay = normalize(light.position - sectionPoint);
-        //         float distanceToLight = length(light.position - sectionPoint);
-        //         float attenuation = 1.0 / (distanceToLight * distanceToLight);
-        //
-        //         bool isShadow = isInShadowTriangleAlt(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
-        //
-        //         if (!isShadow) {
-        //             float diffuse = max(dot(N, shadowRay), 0.0);
-        //             vec3 lighting = reflec_accumulation * light.color * vec3(0.4, 0.0, 0.2) * light.intensity * diffuse * attenuation;
-        //             localColor += lighting;
-        //             anyLightHit = true;
-        //         }
-        //     }
-        //
-        //     color += localColor;
-        //     if (anyLightHit && length(reflec_accumulation) > 0.01) {
-        //         vec3 reflecDirection = reflect(currentRay.direction, N);
-        //         reflec_accumulation *= 0.8;
-        //         Ray nextRay = Ray(sectionPoint + 0.01 * N, reflecDirection, currentRay.depth + 1);
-        //         push(nextRay);
-        //     }
-        // }
+        if (t >= 0.0 && index != -1) {
+
+            // Intersection point & normal
+            vec3 sectionPoint = currentRay.origin + t * currentRay.direction;
+
+            uint v = triIdx[index] * 3;
+            vec3 edge1 = trivertex[v + 1] - trivertex[v];
+            vec3 edge2 = trivertex[v + 2] - trivertex[v];
+
+            // vec3 edge1 = trianglesBuffer[index].v1 - trianglesBuffer[index].v0;
+            // vec3 edge2 = trianglesBuffer[index].v2 - trianglesBuffer[index].v0;
+            vec3 N = normalize(cross(edge1, edge2));
+            vec3 localColor = vec3(0.0);
+            bool anyLightHit = false;
+
+            for (int lIndex = 0; lIndex < emitterCount; lIndex++) {
+                Light light = emitter[lIndex];
+
+                vec3 shadowRay = normalize(light.position - sectionPoint);
+                float distanceToLight = length(light.position - sectionPoint);
+                float attenuation = 1.0 / (distanceToLight * distanceToLight);
+
+                bool isShadow = isInShadowTriangleAlt(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
+
+                if (!isShadow) {
+                    float diffuse = max(dot(N, shadowRay), 0.0);
+                    vec3 lighting = reflec_accumulation * light.color * vec3(0.4, 0.0, 0.2) * light.intensity * diffuse * attenuation;
+                    localColor += lighting;
+                    anyLightHit = true;
+                }
+            }
+
+            color += localColor;
+            if (anyLightHit && length(reflec_accumulation) > 0.01) {
+                vec3 reflecDirection = reflect(currentRay.direction, N);
+                reflec_accumulation *= 0.8;
+                Ray nextRay = Ray(sectionPoint + 0.01 * N, reflecDirection, currentRay.depth + 1);
+                push(nextRay);
+            }
+        }
     }
     return vec4(color, 0.0);
 }

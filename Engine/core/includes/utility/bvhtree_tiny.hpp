@@ -122,21 +122,22 @@ struct TreeBuilder {
   std::vector<Vec3Padded> vertex;
 
   TreeBuilder() {
-    std::vector<Triangle> cube = createCube(glm::vec3{0.0f, 0.0f, 0.0f});
+    std::vector<Triangle> cube = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
+	
+  std::vector<Triangle> triforce1 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
+  std::vector<Triangle> triforce2 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
+  std::vector<Triangle> triforce3 = createCube(glm::vec3{-2.0f, 0.0f, 0.0f});
 
-    std::vector<Triangle> t = {
-        Triangle(glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec3(1.0f, -1.0f, 1.0f),
-                 glm::vec3(1.0f, 1.0f, 1.0f)),
-        Triangle(glm::vec3(-1.0f, -1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f),
-                 glm::vec3(-1.0f, 1.0f, 1.0f)),
-        Triangle(glm::vec3(-1.0f, -1.0f, -1.0f), glm::vec3(1.0f, 1.0f, -1.0f),
-                 glm::vec3(-1.0f, 1.0f, -1.0f)),
+  std::vector<Triangle> triforce = triforce1;
+  triforce.insert(triforce.end(), triforce2.begin(), triforce2.end());
+  triforce.insert(triforce.end(), triforce3.begin(), triforce3.end());
 
-    };
-    std::vector<tinybvh::bvhvec4> bvhData = convertToBVHFormat(cube);
+	
 
-    tree.Build(bvhData.data(), cube.size());
-    // tree.Compact(tinybvh::BVH::WALD_32BYTE);
+    std::vector<tinybvh::bvhvec4> bvhData = convertToBVHFormat(triforce);
+
+    tree.Build(bvhData.data(), triforce.size());
+    tree.Compact(tinybvh::BVH::WALD_32BYTE);
     triIdxData.assign(tree.triIdx, tree.triIdx + tree.triCount);
 
     if (tree.verts) { // Ensure verts is not null
@@ -213,6 +214,7 @@ struct TreeBuilder {
     }
 
     for (uint32_t i = 0; i < tree.usedBVHNodes; i++) {
+
       const auto &node = ssboData[i];
       std::cout << "Node[" << i << "] : \n";
       std::cout << "\t Left Child: " << node.leftchild << std::endl;
@@ -220,5 +222,8 @@ struct TreeBuilder {
       std::cout << "\t start: " << node.start << std::endl;
       std::cout << "\t count: " << node.count << std::endl;
     }
+	
+	
+    
   }
 };
