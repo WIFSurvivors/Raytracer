@@ -31,6 +31,7 @@ namespace RaytracerGUI
         private GLFWLoader loader;
         private IntPtr hWndParent;
         private TreeBuilder entityBuilder;
+        private TreeBuilder entityOptionsBuilder;
 
         bool connection = false;
 
@@ -323,7 +324,7 @@ namespace RaytracerGUI
                     string name = tagData.Name;       // Access Name
                     int childrenCount = tagData.Children; // Access Children count
 
-                    tbxLog.AppendText($"{header} was clicked with UUID: {uuid}, Name: {name}, Children: {childrenCount}\n");
+                    //tbxLog.AppendText($"{header} was clicked with UUID: {uuid}, Name: {name}, Children: {childrenCount}\n");
 
                     UpdateEntities(uuid, e);
                     UpdateEntitiesList(uuid, e);
@@ -336,18 +337,17 @@ namespace RaytracerGUI
 
             }
         }
-
         private void UpdateEntities(string uuid, RoutedPropertyChangedEventArgs<object> e)
         {
             string? ecsJsonNode = _ecsApi.get_child_entities(uuid);
-            tbxLog.AppendText("Entity Update : JSON\n\n " + ecsJsonNode + "\n\n");
+            //tbxLog.AppendText("Entity Update : JSON\n\n " + ecsJsonNode + "\n\n");
 
 
             // Deserialize the JSON
             var updatedNode = JsonSerializer.Deserialize<EcsNode>(ecsJsonNode);
             if (updatedNode == null)
             {
-                tbxLog.AppendText("JSON = null.\n");
+                tbxLog.AppendText("EntitiyJSON = null.\n");
                 return;
             }
 
@@ -359,18 +359,31 @@ namespace RaytracerGUI
 
                 // Rebuild the children based on the new data
                 entityBuilder.CreateChildItems(updatedNode, selectedItem);
-                tbxLog.AppendText($"Updated children for UUID: {uuid}\n");
+                //tbxLog.AppendText($"Updated children for UUID: {uuid}\n");
             }
-
-
-
         }
         private void UpdateEntitiesList(string uuid, RoutedPropertyChangedEventArgs<object> e)
         {
-            tbxLog.AppendText("EntityList Update\n");
+            string? ecsJsonNode = _ecsApi.get_entity_options(uuid);
+            tbxLog.AppendText("EntityList Update : JSON\n\n " + ecsJsonNode + "\n\n");
+
+
+            if (ecsJsonNode == null)
+            {
+                tbxLog.AppendText("JSON = null.\n");
+                return;
+            }
+
+            entityOptionsBuilder = new TreeBuilder(trvEntitiesOptions);
+            entityOptionsBuilder.BuildTreeFromEntityOptions(ecsJsonNode);
+
         }
 
 
+        private void trvEntitiesOptions_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+           
+        }
 
         //Components Update
         private void trvComponents_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
