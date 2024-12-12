@@ -141,37 +141,74 @@ Closing="Window_Closing">
 
                 </Grid>
 
-                <!--Preview Buttons-->
-                <Grid Height="180" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Column="1">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+                <Grid Height="180" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="10"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Name="btnLeft" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"  Margin="10" Click="generalButtonClick">
-                        <Image Source="/images/arrow-left.png" Width="30" Height="30"/>
-                    </Button>
-                    <Button Name="btnRight" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
-                        <Image Source="/images/arrow-right.png" Width="30" Height="30"/>
-                    </Button>
-                    <Button Name="btnUp" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
-                        <Image Source="/images/arrow-up.png" Width="30" Height="30"/>
-                    </Button>
-                    <Button Name="btnDown" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Top" Margin="10" Click="generalButtonClick">
-                        <Image Source="/images/arrow-down.png" Width="30" Height="30"/>
-                    </Button>
-                    <Button Name="btnRx" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Top" Margin="10" Click="generalButtonClick">
-                        <Image Source="/images/arrow-rotate-x.png" Width="30" Height="30"/>
-                    </Button>
-                    <Button Name="btnRy" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" Margin="10" Click="generalButtonClick">
-                        <Image Source="/images/arrow-rotate-y.png" Width="30" Height="30"/>
-                    </Button>
+
+                    <!--Control Buttons-->
+                    <Grid Name="gridButtons" Height="180" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Name="btnLeft" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom"  Margin="10" Click="generalButtonClick">
+                            <Image Source="/images/arrow-left.png" Width="30" Height="30"/>
+                        </Button>
+                        <Button Name="btnRight" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick">
+                            <Image Source="/images/arrow-right.png" Width="30" Height="30"/>
+                        </Button>
+                        <Button Name="btnUp" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick">
+                            <Image Source="/images/arrow-up.png" Width="30" Height="30"/>
+                        </Button>
+                        <Button Name="btnDown" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
+                            <Image Source="/images/arrow-down.png" Width="30" Height="30"/>
+                        </Button>
+                        <Button Name="btnRx" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
+                            <Image Source="/images/arrow-rotate-x.png" Width="30" Height="30"/>
+                        </Button>
+                        <Button Name="btnRy" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
+                            <Image Source="/images/arrow-rotate-y.png" Width="30" Height="30"/>
+                        </Button>
+                    </Grid>
+
+                    <!--Sliders-->
+                    <Grid Name="gridSliders" Visibility="Collapsed" Height="180" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Slider Name="sldX" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5"/>
+                        <Slider Name="sldY" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5"/>
+                        <Slider Name="sldZ" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5"/>
+                    </Grid>
+
+                    <Grid Grid.Column="1" HorizontalAlignment="Right">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+
+                        <Button Name="btnToggleB"  Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="10" Height="80" Click="generalButtonClick"/>
+                        <Button Name="btnToggleS"  Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" VerticalAlignment="Top" HorizontalAlignment="Right" Width="10" Height="80" Click="generalButtonClick"/>
+
+                    </Grid>
+
+                    
                 </Grid>
+
+                
+                
             </Grid>
         </Grid>
     </Grid>
