@@ -16,6 +16,8 @@ using System.Diagnostics;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Reflection.PortableExecutable;
+using System.Text.Json;
 
 namespace RaytracerGUI
 {
@@ -25,9 +27,10 @@ namespace RaytracerGUI
     public partial class MainWindow : Window
     {
         private EcsApi? _ecsApi;
-        private string selectedUUID;
+        private string ReceivedEcsJsonString;
         private GLFWLoader loader;
         private IntPtr hWndParent;
+        private TreeBuilder entityBuilder;
 
         bool connection = false;
 
@@ -41,12 +44,15 @@ namespace RaytracerGUI
         //Menu clicks
         private void generalMenuClick(object sender, RoutedEventArgs e)
         {
-            MenuItem clickedMenuItem = sender as MenuItem;
+            MenuItem? clickedMenuItem = sender as MenuItem;
+            OpenFileDialog openFileDialog;
+            string filePath = "";
 
             if (clickedMenuItem != null)
             {
                 // get variable name
                 string item = clickedMenuItem.Name;
+                
 
                 switch (item)
                 {
@@ -54,7 +60,7 @@ namespace RaytracerGUI
                         tbxLog.AppendText(item + " was clicked! \n");
                         tbxLog.ScrollToEnd();
 
-                        OpenFileDialog openFileDialog = new OpenFileDialog
+                        openFileDialog = new OpenFileDialog
                         {
                             Filter = "OBJ and MTL Files (*.obj;*.mtl)|*.obj;*.mtl",
                             Title = "Select a .obj or .mtl file"
@@ -62,7 +68,43 @@ namespace RaytracerGUI
 
                         if (openFileDialog.ShowDialog() == true)
                         {
-                            string filePath = openFileDialog.FileName;
+                            filePath = openFileDialog.FileName;
+                        }
+                        break;
+
+                    case "mniImport":
+                        tbxLog.AppendText(item + " was clicked! \n");
+                        tbxLog.ScrollToEnd();
+
+                        openFileDialog = new OpenFileDialog
+                        {
+                            Filter = "JSON File (*.json)|*.json",
+                            Title = "Select a JSON Scene file",
+                            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads"
+                        };
+
+                        if (openFileDialog.ShowDialog() == true)
+                        {
+                            filePath = openFileDialog.FileName;
+                            tbxLog.AppendText("ScenePath : " + filePath);
+
+                        }
+
+                        if (_ecsApi != null)
+                        {
+
+                            try
+                            {
+                                // send JSON path
+                                string pathSentStatus = _ecsApi.post_ScenePath(filePath);
+                                tbxLog.AppendText("pathSentStatus : " + pathSentStatus);
+
+
+                            }
+                            catch (InvalidOperationException ex)
+                            {
+                               //TODO
+                            }
                         }
                         break;
 
@@ -90,7 +132,7 @@ namespace RaytracerGUI
                 return;
             }
 
-            Button clickedButton = sender as Button;
+            Button? clickedButton = sender as Button;
 
             if (clickedButton != null)
             {
@@ -134,18 +176,9 @@ namespace RaytracerGUI
                         tbxLog.ScrollToEnd();
 
                         // TreeBuilder testing
-                        string jsonTestString;
-                        try
-                        {
-                            jsonTestString = File.ReadAllText(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\sampleJSON.txt");
-                        }
-                        catch (Exception ex)
-                        {
-                            jsonTestString = selectedUUID;
-                        }
-                        new TreeBuilder(jsonTestString, trvEntities);
-                        jsonTestString = selectedUUID;
-                        new TreeBuilder(jsonTestString, trvComponents);
+                        
+                        entityBuilder = new TreeBuilder(trvEntities);
+                        entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
                         break;
 
                     case "btnToggleB":
@@ -208,7 +241,7 @@ namespace RaytracerGUI
 
         private void btnConnect_Click(object sender, RoutedEventArgs e)
         {
-            Button clickedButton = sender as Button;
+            Button? clickedButton = sender as Button;
 
             while (!connection)
             {
@@ -218,8 +251,8 @@ namespace RaytracerGUI
                     _ecsApi = new EcsApi("127.0.0.1", 51234);
 
                     // initial root-request
-                    selectedUUID = _ecsApi.get_root();
-                    tbxLog.AppendText(selectedUUID);
+                    ReceivedEcsJsonString = _ecsApi.get_root();
+                    tbxLog.AppendText(ReceivedEcsJsonString);
                     connection = true; // connection was successful 
 
                     clickedButton.Background = (Brush)FindResource("WindowPrimaryColor");
@@ -273,5 +306,98 @@ namespace RaytracerGUI
                 MessageBox.Show($"Failed to start the executable. Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+
+
+
+
+        //Entities Update
+        private void trvEntities_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue is TreeViewItem selectedItem)
+            {
+                string header = selectedItem.Header.ToString();
+                if (selectedItem.Tag is TreeItemData tagData)
+                {
+                    string uuid = tagData.UUID;       // Access UUID
+                    string name = tagData.Name;       // Access Name
+                    int childrenCount = tagData.Children; // Access Children count
+
+                    tbxLog.AppendText($"{header} was clicked with UUID: {uuid}, Name: {name}, Children: {childrenCount}\n");
+
+                    UpdateEntities(uuid, e);
+                    UpdateEntitiesList(uuid, e);
+                    UpdateComponents(uuid, e);
+                }
+                else
+                {
+                    tbxLog.AppendText($"{header} was clicked, but no valid Tag data found.\n");
+                }
+
+            }
+        }
+
+        private void UpdateEntities(string uuid, RoutedPropertyChangedEventArgs<object> e)
+        {
+            string? ecsJsonNode = _ecsApi.get_child_entities(uuid);
+            tbxLog.AppendText("Entity Update : JSON\n\n " + ecsJsonNode + "\n\n");
+
+
+            // Deserialize the JSON
+            var updatedNode = JsonSerializer.Deserialize<EcsNode>(ecsJsonNode);
+            if (updatedNode == null)
+            {
+                tbxLog.AppendText("JSON = null.\n");
+                return;
+            }
+
+            // Locate the TreeViewItem in the TreeView
+            if (e.NewValue is TreeViewItem selectedItem)
+            {
+                // Clear existing children
+                selectedItem.Items.Clear();
+
+                // Rebuild the children based on the new data
+                entityBuilder.CreateChildItems(updatedNode, selectedItem);
+                tbxLog.AppendText($"Updated children for UUID: {uuid}\n");
+            }
+
+
+
+        }
+        private void UpdateEntitiesList(string uuid, RoutedPropertyChangedEventArgs<object> e)
+        {
+            tbxLog.AppendText("EntityList Update\n");
+        }
+
+
+
+        //Components Update
+        private void trvComponents_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue is TreeViewItem selectedItem)
+            {
+                string header = selectedItem.Header.ToString();
+                string uuid = selectedItem.Tag.ToString();
+                tbxLog.AppendText(header + "  was clicked with uuid " + uuid + "\n");
+
+                // Run your method here
+                UpdateEntities(header,e);
+                UpdateEntitiesList(header, e);
+                UpdateComponents(header, e);
+            }
+        }
+        private void UpdateComponents(string uuid, RoutedPropertyChangedEventArgs<object> e)
+        {
+            tbxLog.AppendText("Component Update\n");
+        }
+        private void UpdateComponentsList(string uuid, RoutedPropertyChangedEventArgs<object> e)
+        {
+            tbxLog.AppendText("ComponentList Update\n");
+        }
+
+
+
+
     }
 }

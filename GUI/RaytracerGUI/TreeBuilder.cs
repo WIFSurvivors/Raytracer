@@ -12,28 +12,35 @@ namespace RaytracerGUI
     {
         public TreeView TreeView { get; private set; }
 
-        public TreeBuilder(string jsonString, TreeView treeView)
+        public TreeBuilder(TreeView treeView)
         {
             TreeView = treeView;
-            BuildTreeFromJson(jsonString);
         }
 
-        private void BuildTreeFromJson(string jsonString)
+        public void BuildTreeFromJson(string jsonString)
         {
             TreeView.Items.Clear();
-            var ecsRoot = JsonSerializer.Deserialize<EcsNode>(jsonString);
-            if (ecsRoot != null)
+            var jsonRoot = JsonSerializer.Deserialize<EcsNode>(jsonString);
+            if (jsonRoot != null)
             {
                 TreeViewItem rootItem = new TreeViewItem
                 {
-                    Header = ecsRoot.name
+                    Header = jsonRoot.name,
+                    Tag = new TreeItemData
+                    {
+                        UUID = jsonRoot.uuid,
+                        Name = jsonRoot.name,
+                        Children = jsonRoot.children_count
+                    }
                 };
-                CreateChildItems(ecsRoot, rootItem);
+
+                CreateChildItems(jsonRoot, rootItem);
                 TreeView.Items.Add(rootItem);
+                ToolTipService.SetToolTip(rootItem, jsonRoot.uuid);
             }
         }
 
-        private void CreateChildItems(EcsNode ecsNode, TreeViewItem parentItem)
+        public void CreateChildItems(EcsNode ecsNode, TreeViewItem parentItem)
         {
             if (ecsNode.children != null && ecsNode.children.Count > 0)
             {
@@ -41,11 +48,24 @@ namespace RaytracerGUI
                 {
                     TreeViewItem childItem = new TreeViewItem
                     {
-                        Header = child.name
+                        Header = child.name,
+                        Tag = new TreeItemData
+                        {
+                            UUID = child.uuid,
+                            Name = child.name,
+                            Children = child.children_count
+                        }
                     };
 
+                    if (child.children_count > 0)
+                    {
+                        childItem.Items.Add(new TreeItemData());
+                    }
+
                     parentItem.Items.Add(childItem);
+                    parentItem.IsExpanded = true;
                     CreateChildItems(child, childItem);
+                    ToolTipService.SetToolTip(childItem, child.uuid);
                 }
             }
         }
