@@ -57,17 +57,81 @@ namespace RaytracerGUI
                         }
                     };
 
+
+                    //Add dummy node to tree to show arrow
                     if (child.children_count > 0)
                     {
                         childItem.Items.Add(new TreeItemData());
                     }
 
                     parentItem.Items.Add(childItem);
+                    //Expand on mouseclick
                     parentItem.IsExpanded = true;
                     CreateChildItems(child, childItem);
                     ToolTipService.SetToolTip(childItem, child.uuid);
                 }
             }
         }
+
+
+        public void BuildTreeFromEntityOptions(string jsonString)
+        {
+            TreeView.Items.Clear();
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            // Deserialize with the case-insensitive option
+            var jsonData = JsonSerializer.Deserialize<EntityOptionsData>(jsonString, options);
+
+            if (jsonData != null)
+            {
+                var rootItem = new TreeViewItem
+                {
+                    Header = "Name: "+ jsonData.Name,
+                    Tag = jsonData.UUID
+                };
+
+
+                if (jsonData.Options == null)
+                {
+                    jsonData.Options = new Dictionary<string, Dictionary<string, string>>(); // Initialize if null
+
+                }
+
+                // Populate the options as child nodes
+                foreach (var category in jsonData.Options)
+                {
+                    var categoryItem = new TreeViewItem
+                    {
+                        Header = category.Key, // Translation, rotation, scale
+                    };
+
+                    foreach (var property in category.Value)
+                    {
+                        var propertyItem = new TreeViewItem
+                        {
+                            Header = $"{property.Key}: {property.Value}" // x: 0.000, y: 0.000, etc.
+                        };
+                        categoryItem.Items.Add(propertyItem);
+                        propertyItem.IsExpanded = true;
+                    }
+
+                    rootItem.Items.Add(categoryItem);
+                    categoryItem.IsExpanded = true;
+                    
+                }
+                
+                
+                // Add root to the TreeView
+                TreeView.Items.Add(rootItem);
+                rootItem.IsExpanded = true;
+            }
+        }
+
+
+        
+        }
     }
-}

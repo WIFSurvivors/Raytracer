@@ -78,11 +78,7 @@ Closing="Window_Closing">
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <ListBox Name="lbxEntity" Grid.Row="0">
-                        <ListBoxItem Content="Entity Option 1" />
-                        <ListBoxItem Content="Entity Option 2" />
-                        <ListBoxItem Content="Entity Option 3" />
-                    </ListBox>
+                    <TreeView Name="trvEntitiesOptions" Grid.Row="0" SelectedItemChanged="trvEntitiesOptions_SelectedItemChanged"></TreeView>
 
                     <ListBox Name="lbxComponent" Grid.Row="1">
                         <ListBoxItem Content="Component Option 1" />
