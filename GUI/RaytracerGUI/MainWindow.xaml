@@ -66,21 +66,10 @@ Closing="Window_Closing">
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TreeView Name="trvEntities" Grid.Row="0">
-                        <TreeViewItem Header="Entity 1" />
-                    </TreeView>
+                    <TreeView Name="trvEntities" Grid.Row="0" SelectedItemChanged="trvEntities_SelectedItemChanged"> </TreeView>
+                    <TreeView Name="trvComponents" Grid.Row="1" SelectedItemChanged="trvComponents_SelectedItemChanged" ></TreeView>
 
-                    <TreeView Name="trvComponents" Grid.Row="1">
-                        <TreeViewItem Header="Component Category 1">
-                            <TreeViewItem Header="Component 1.1" />
-                            <TreeViewItem Header="Component 1.2">
-                                <TreeViewItem Header="Component Category 1" />
-                            </TreeViewItem>
-                        </TreeViewItem>
-                        <TreeViewItem Header="Component Category 2">
-                            <TreeViewItem Header="Component 2.1" />
-                        </TreeViewItem>
-                    </TreeView>
+
                 </Grid>
 
                 <Grid Grid.Column="1">
@@ -135,7 +124,7 @@ Closing="Window_Closing">
                         <TextBox BorderThickness="0"/>
                         <Button Name="btnLog" Content="Log" Style="{StaticResource PrimaryButtonStyle}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="40" Click="generalButtonClick"/>
                     </Grid>
-                    <TextBox Name="tbxLog" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" AcceptsReturn="True" VerticalAlignment="Top" Grid.Row="1"/>
+                    <TextBox Name="tbxLog" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" AcceptsReturn="True" VerticalAlignment="Top" Grid.Row="1" TextWrapping="Wrap"/>
                     <Button Name="btnConnect" Content="Connect" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="3" VerticalAlignment="Center"  Margin="10" Click="btnConnect_Click" />
                     
 
