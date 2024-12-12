@@ -527,8 +527,8 @@ vec4 rayColor(Ray r) {
     Light[1] lightSources;
     vec3 position = vec3(0.0, 10.0, 3.0) + 3 * sin(time);
     lightSources[0] = Light(position, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 1000.0);
-    // return proccessRaySSBO(r, lightSources);
-    return proccessRayBVH(r, lightSources);
+    return proccessRaySSBO(r, lightSources);
+    //return proccessRayBVH(r, lightSources);
     //return CalcColorWithLightSourcesTriangle(trianglesCube1, r, lightSources);
 }
 

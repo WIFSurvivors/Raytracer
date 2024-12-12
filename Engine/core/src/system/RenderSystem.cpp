@@ -7,7 +7,7 @@
 #include "includes/utility/TablePrinter.hpp"
 #include "includes/utility/SimpleLogger.hpp"
 
-#include "includes/utility/bvhtree.hpp"
+#include "includes/utility/bvhtree_tiny.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glm/ext/matrix_transform.hpp>
@@ -85,22 +85,21 @@ void RenderSystem::init() {
   triforce.insert(triforce.end(), triforce3.begin(), triforce3.end());
   std::cout << triforce.size() << std::endl;
 
-  BVH tree{triforce2};
-  tree.flatten();
-  tree.prepareSSBOData();
-  tree.printFlattened();
+  TreeBuilder builder{};
+  builder.prepareSSBOData();
+
   //
-  std::cout << "SIZE:  " << sizeof(SSBOBVHNode) << std::endl;
+  std::cout << "SIZE:  " << sizeof(SSBONodes) << std::endl;
 
   glGenBuffers(1, &ssbo_tree);
   glGenBuffers(1, &ssbo_triangle);
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, tree.ssboData.size() * sizeof(SSBOBVHNode), tree.ssboData.data(), GL_STATIC_DRAW);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, builder.ssboData.size() * sizeof(SSBONodes), builder.ssboData.data(), GL_STATIC_DRAW);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo_tree);
 
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_triangle);
   glBufferData(GL_SHADER_STORAGE_BUFFER,
-               tree.triangles.size() * sizeof(Triangle), tree.triangles.data(),
+               builder.triangles.size() * sizeof(Triangle), builder.triangles.data(),
                GL_STATIC_DRAW);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo_triangle);
 }
