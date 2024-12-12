@@ -2,9 +2,9 @@
 #include "includes/component/Component.hpp"
 
 CameraComponent::CameraComponent(uuid id, Entity *e)
-    : Component(id, e), _fov(60.f) {}
+    : IComponent(id, e), _fov(60.f) {}
 
 CameraComponent::CameraComponent(uuid id, Entity *e, float fov)
-    : Component(id, e), _fov(fov) {}
+    : IComponent(id, e), _fov(fov) {}
 
 void CameraComponent::update(const float dt) {}

@@ -10,7 +10,7 @@ uuid UUIDManager::getNewUUID() {
   return new_uuid;
 }
 
-uuid UUIDManager::getNewUUID(ISystem *s) {
+uuid UUIDManager::getNewUUID(ISystem<IComponent> *s) {
   auto new_uuid = gen();
   SimpleLogger::print(std::format("-- created uuid: {} for system {}",
                                   boost::uuids::to_string(new_uuid),
@@ -19,7 +19,7 @@ uuid UUIDManager::getNewUUID(ISystem *s) {
   return new_uuid;
 }
 
-ISystem *UUIDManager::get_system(uuid id) { return _uuid_system_mapping[id]; }
+ISystem<IComponent> *UUIDManager::get_system(uuid id) { return _uuid_system_mapping[id]; }
 
 void UUIDManager::print() {
   // get longest character lengths in list

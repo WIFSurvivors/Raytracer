@@ -22,7 +22,7 @@ private:
 
 // template<class T> requires
 // struct system{
-//     virtual bool add_component(Component c) = 0;
+//     virtual bool add_component(IComponent c) = 0;
 // };
 
 // template<class T, class U>
@@ -43,9 +43,9 @@ private:
 // template <class T>
 // struct system{
 
-//     bool add_component(derived<Component> c);
-//     bool remove_component(derived<Component> c);
+//     bool add_component(derived<IComponent> c);
+//     bool remove_component(derived<IComponent> c);
 
 // private:
-//     std::vector<derived<Component>> _components;
+//     std::vector<derived<IComponent>> _components;
 // };

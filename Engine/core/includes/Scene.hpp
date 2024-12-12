@@ -45,7 +45,7 @@ private:
 
   UUIDManager _uuid_manager{};
 
-  EntityStorage _entity_system{};
+  EntityStorage _entity_storage{};
   SimpleSystem _simple_system{};
   CameraSystem _camera_system{};
   RenderSystem _render_system;

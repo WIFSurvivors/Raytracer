@@ -23,7 +23,7 @@
  */
 // class RenderComponent  : public virtual Component{
 
-struct RenderComponent : public Component {
+struct RenderComponent : public IComponent {
   RenderComponent(uuid id, Entity *e, GLuint programID,
                   const std::vector<glm::vec3> &vertices,
                   const std::vector<glm::vec2> &UV);

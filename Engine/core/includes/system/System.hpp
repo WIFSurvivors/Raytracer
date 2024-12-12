@@ -15,7 +15,7 @@
 struct Entity;
 
 template <typename T>
-concept is_base_of_component = std::is_base_of<Component, T>::value;
+concept is_base_of_component = std::is_base_of<IComponent, T>::value;
 
 /*
  * A System creates Components by binding them to UUID and Entity. Additionally

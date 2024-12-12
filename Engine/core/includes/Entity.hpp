@@ -20,10 +20,10 @@ struct Entity : public std::enable_shared_from_this<Entity> {
 
   inline std::shared_ptr<Entity> get_ptr() { return shared_from_this(); }
 
-  std::optional<Component *> get_component(uuid id);
+  std::optional<IComponent *> get_component(uuid id);
 
-  void add_component(Component *c);
-  bool remove_component(Component *c);
+  void add_component(IComponent *c);
+  bool remove_component(IComponent *c);
   bool remove_component(uuid id);
 
   void add_child_entity(std::shared_ptr<Entity> e);
@@ -71,7 +71,7 @@ private:
 
   std::weak_ptr<Entity> _parent{};
   std::vector<std::shared_ptr<Entity>> _child_entities{};
-  std::vector<Component *> _components{};
+  std::vector<IComponent *> _components{};
 
   void print(int indent);
   // int _parent_uuid{};

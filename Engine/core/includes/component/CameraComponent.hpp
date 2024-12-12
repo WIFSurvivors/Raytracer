@@ -5,7 +5,7 @@
 
 struct CameraSystem;
 
-struct CameraComponent : public Component {
+struct CameraComponent : public IComponent {
   CameraComponent(uuid id, Entity *e);
   CameraComponent(uuid id, Entity *e, float fov);
 

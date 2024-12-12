@@ -22,22 +22,22 @@ std::shared_ptr<Entity> Entity::create(const std::string &name, uuid id,
   return e;
 }
 
-std::optional<Component *> Entity::get_component(uuid id) {
+std::optional<IComponent *> Entity::get_component(uuid id) {
   auto it = std::find_if(_components.begin(), _components.end(),
-                         [id](Component *c) { return c->get_uuid() == id; });
+                         [id](IComponent *c) { return c->get_uuid() == id; });
 
   if (it == _components.end())
     return std::nullopt; // same as "return {};"
 
-  return std::make_optional<Component *>(*it);
+  return std::make_optional<IComponent *>(*it);
 }
 
-void Entity::add_component(Component *c) {
+void Entity::add_component(IComponent *c) {
 	// maybe TODO? check if component already exists here
   _components.push_back(c);
 }
 
-bool Entity::remove_component(Component *c) {
+bool Entity::remove_component(IComponent *c) {
   auto it = std::find(_components.begin(), _components.end(), c);
   if (it != _components.end()) {
     _components.erase(it);
@@ -48,7 +48,7 @@ bool Entity::remove_component(Component *c) {
 
 bool Entity::remove_component(uuid id) {
   auto it = std::find_if(_components.begin(), _components.end(),
-                         [id](Component *c) { return c->get_uuid() == id; });
+                         [id](IComponent *c) { return c->get_uuid() == id; });
   if (it != _components.end()) {
     _components.erase(it);
     return true;

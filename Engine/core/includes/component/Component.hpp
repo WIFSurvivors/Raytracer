@@ -5,22 +5,22 @@ typedef boost::uuids::uuid uuid;
 
 struct Entity; // forward declaration due to child-parent structure
 
-struct Component {
+struct IComponent {
   /// @brief Create new component with an uuid and link it to an entity.
-  Component(uuid id, Entity *e);
+  IComponent(uuid id, Entity *e);
 
   /// @brief Destroy component. This will also unlink it from it's entity.
   /// Override this if your need to clean-up more resources.
-  virtual ~Component() = default;
+  virtual ~IComponent() = default;
 
   /// @brief Use to update component's logic each tick
   /// @param dt Time step
   virtual void update(const float dt);
 
-  virtual ~Component();
+  virtual ~IComponent();
 
   // required by std::map<uuid, component>
-  bool operator<(const Component &right) const { return _uuid < right._uuid; }
+  bool operator<(const IComponent &right) const { return _uuid < right._uuid; }
 
   inline uuid get_uuid() { return _uuid; }
   inline Entity *get_entity() { return _entity; }

@@ -9,7 +9,7 @@ T *ISystem<T>::create_component(uuid id, Entity *e) {
   SimpleLogger::print("-- create component");
   _components[id] = std::make_unique<T>(id, e);
   auto ptr = _components[id].get();
-  // e->add_component(ptr); // this is handled in Component Constructor!!
+  // e->add_component(ptr); // this is handled in IComponent Constructor!!
   return ptr; // pointer can be used by child classes for further configuration
 }
 
@@ -24,7 +24,7 @@ template <is_base_of_component T> bool ISystem<T>::remove(T *c) {
 
 template <is_base_of_component T> bool ISystem<T>::remove(uuid id) {
   // Because each component is a unique_ptr, it will call deconstructor of
-  // Component on destruction, which in turn will remove itself from it's linked
+  // IComponent on destruction, which in turn will remove itself from it's linked
   // entity
   SimpleLogger::print(std::format("-- ! removing component with UUID {}",
                                   boost::uuids::to_string(id)));

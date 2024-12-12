@@ -24,7 +24,7 @@ Scene::Scene(Engine *e, uuid id)
 Scene::~Scene() { _render_system.destroy(); }
 
 std::shared_ptr<Entity> Scene::create_root(const std::string &name) {
-  auto uuid = _uuid_manager.getNewUUID(&_entity_system);
+  auto uuid = _uuid_manager.getNewUUID(&_entity_storage);
   return create_root(name, uuid);
 }
 
@@ -32,13 +32,13 @@ std::shared_ptr<Entity> Scene::create_root(const std::string &name, uuid id) {
   SimpleLogger::print(
       std::format("-- scene: create_root(name, uuid): \"{}\", {}", name,
                   boost::uuids::to_string(id)));
-  return _entity_system.create_root_entity(name, id);
+  return _entity_storage.create_root_entity(name, id);
 }
 
 std::weak_ptr<Entity> Scene::get_root() { return _root; }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name) {
-  auto uuid = _uuid_manager.getNewUUID(&_entity_system);
+  auto uuid = _uuid_manager.getNewUUID(&_entity_storage);
   return create_entity(name, uuid, _root);
 }
 
@@ -49,7 +49,7 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name,
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name,
                                              std::shared_ptr<Entity> parent) {
-  return create_entity(name, _uuid_manager.getNewUUID(&_entity_system), parent);
+  return create_entity(name, _uuid_manager.getNewUUID(&_entity_storage), parent);
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
@@ -57,14 +57,14 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
   SimpleLogger::print(std::format(
       "-- scene: create_entity(name, uuid, parent): \"{}\", {}, \"{}\"", name,
       boost::uuids::to_string(id), parent->get_name()));
-  return _entity_system.create_entity(name, id, parent);
+  return _entity_storage.create_entity(name, id, parent);
 }
 
 void Scene::print() { _root->print(); }
 
 void Scene::generate_sample_content() {
   _uuid_manager.print();
-  _entity_system.print();
+  _entity_storage.print();
   _render_system.print();
   _camera_system.print();
 
@@ -116,7 +116,7 @@ void Scene::generate_sample_content() {
   SimpleLogger::print("\n");
 
   _uuid_manager.print();
-  _entity_system.print();
+  _entity_storage.print();
   _render_system.print();
   _camera_system.print();
 }
