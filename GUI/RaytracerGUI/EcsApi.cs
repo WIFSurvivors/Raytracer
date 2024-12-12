@@ -67,4 +67,10 @@ public class EcsApi
         return "DeleteComponent";
     }
 
+    public string post_ScenePath(String path)
+    {
+        String returnValue = _client.Send(String.Format("PostScenePathCommand"));
+        return "ScenePath " + returnValue;
+    }
+
 }
