@@ -13,15 +13,31 @@ uniform vec3 cameraPos;
 /*********************************************************************************/
 //STRUCTS
 
+// struct BVHNode {
+//     vec3 bboxMin; // Minimum of bounding box
+//     vec3 bboxMax; // Maximum of bounding box
+//     int leftChild; // Index of the left child (-1 if leaf)
+//     int rightChild; // Index of the right child (-1 if leaf)
+//     int start; // Start index of primitives (leaf only)
+//     int count; // Number of primitives (leaf only)
+//     int isLeaf; // 1 if leaf, 0 if internal
+// };
+
 struct BVHNode {
     vec3 bboxMin; // Minimum of bounding box
+    float pad0;   // Padding for alignment
     vec3 bboxMax; // Maximum of bounding box
+    float pad1;   // Padding for alignment
     int leftChild; // Index of the left child (-1 if leaf)
     int rightChild; // Index of the right child (-1 if leaf)
-    int start; // Start index of primitives (leaf only)
-    int count; // Number of primitives (leaf only)
-    int isLeaf; // 1 if leaf, 0 if internal
+    int start;     // Start index of primitives (leaf only)
+    int count;     // Number of primitives (leaf only)
+    int isLeaf;    // 1 if leaf, 0 if internal
+    int pad2;      // Padding to align struct size to a multiple of 16 bytes
+    int pad3;      // Padding to align struct size to a multiple of 16 bytes
+    int pad4;      // Padding to align struct size to a multiple of 16 bytes
 };
+
 
 layout(std430, binding = 1) buffer BVHSSBO {
     BVHNode nodes[]; // Flattened BVH nodes
@@ -52,7 +68,7 @@ struct Light {
 
 /*********************************************************************************/
 // VARIABLES
-const int hittableCount = 36;
+const int hittableCount = 12;
 const int emitterCount = 1;
 const int MAX_RECURSION_DEPTH = 3;
 
@@ -211,6 +227,17 @@ bool intersectsBox(vec3 bboxMin, vec3 bboxMax, Ray ray) {
     float tFar = min(min(t2.x, t2.y), t2.z);
 
     return tNear <= tFar && tFar > 0.0;
+}
+
+vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount]){
+    vec3 color = vec3(0.0);
+    vec3 reflec_accumulation = vec3(1.0); // Reflection strength
+	for (int i = 0; i<43; i++){
+
+	  color = vec3(float(i) / float(43));
+	}
+
+  return vec4(color,0.0);
 }
 
 vec4 proccessRayBVH(Ray r, Light emitter[emitterCount]) {
@@ -500,7 +527,8 @@ vec4 rayColor(Ray r) {
     Light[1] lightSources;
     vec3 position = vec3(0.0, 10.0, 3.0) + 3 * sin(time);
     lightSources[0] = Light(position, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 1000.0);
-    return proccessRaySSBO(r, lightSources);
+    // return proccessRaySSBO(r, lightSources);
+    return proccessRayBVH(r, lightSources);
     //return CalcColorWithLightSourcesTriangle(trianglesCube1, r, lightSources);
 }
 

@@ -75,31 +75,33 @@ void RenderSystem::init() {
 
   std::cout << "HERRRREE\n";
 
-  std::vector<Triangle> triforce2 = createCube(glm::vec3{0.0f,-2.0f,0.0f});
-  std::vector<Triangle> triforce1 = createCube(glm::vec3{2.0f,0.0f,0.0f});
-  std::vector<Triangle> triforce3 = createCube(glm::vec3{-2.0f,0.0f,0.0f});
+  std::vector<Triangle> triforce2 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
+  std::vector<Triangle> triforce1 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
+  std::vector<Triangle> triforce3 = createCube(glm::vec3{-2.0f, 0.0f, 0.0f});
 
   std::vector<Triangle> triforce = triforce1;
-  triforce.insert(triforce.end(), triforce2.begin(),triforce2.end());
-  triforce.insert(triforce.end(), triforce3.begin(),triforce3.end());
-  std::cout<< triforce.size() << std::endl;
+  triforce.insert(triforce.end(), triforce2.begin(), triforce2.end());
+  triforce.insert(triforce.end(), triforce3.begin(), triforce3.end());
+  std::cout << triforce.size() << std::endl;
 
-  BVH tree{triforce};
+  BVH tree{triforce2};
   tree.flatten();
+  tree.prepareSSBOData();
   tree.printFlattened();
+  //
+  std::cout << "SIZE:  " << sizeof(SSBOBVHNode) << std::endl;
 
-  // glGenBuffers(1, &ssbo_tree);
+  glGenBuffers(1, &ssbo_tree);
   glGenBuffers(1, &ssbo_triangle);
-  // glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);
-  // glBufferData(GL_SHADER_STORAGE_BUFFER, tree.ssboData.size() *
-  // sizeof(SSBOBVHNode), tree.ssboData.data(), GL_STATIC_DRAW);
-  // glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo_tree);
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, tree.ssboData.size() * sizeof(SSBOBVHNode), tree.ssboData.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo_tree);
 
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_triangle);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, tree.triangles.size() * sizeof(Triangle),
-               tree.triangles.data(), GL_STATIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3,
-                   ssbo_triangle); // Bind to binding point 1
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               tree.triangles.size() * sizeof(Triangle), tree.triangles.data(),
+               GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo_triangle);
 }
 
 void RenderSystem::update(const float dt) {

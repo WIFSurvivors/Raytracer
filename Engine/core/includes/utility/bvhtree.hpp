@@ -17,42 +17,69 @@ struct alignas(16) Triangle {
       : v0(v0), pad0(0.0f), v1(v1), pad1(0.0f), v2(v2), pad2(0.0f) {}
 };
 
-inline std::vector<Triangle> createCube(const glm::vec3& origin) {
-    return std::vector<Triangle>{
-        // Front face
-        Triangle(glm::vec3(-1.0f, -1.0f, 1.0f) + origin, glm::vec3(1.0f, -1.0f, 1.0f) + origin, glm::vec3(1.0f, 1.0f, 1.0f) + origin),
-        Triangle(glm::vec3(-1.0f, -1.0f, 1.0f) + origin, glm::vec3(1.0f, 1.0f, 1.0f) + origin, glm::vec3(-1.0f, 1.0f, 1.0f) + origin),
+inline std::vector<Triangle> createCube(const glm::vec3 &origin) {
+  return std::vector<Triangle>{// Front face
+                               Triangle(glm::vec3(-1.0f, -1.0f, 1.0f) + origin,
+                                        glm::vec3(1.0f, -1.0f, 1.0f) + origin,
+                                        glm::vec3(1.0f, 1.0f, 1.0f) + origin),
+                               Triangle(glm::vec3(-1.0f, -1.0f, 1.0f) + origin,
+                                        glm::vec3(1.0f, 1.0f, 1.0f) + origin,
+                                        glm::vec3(-1.0f, 1.0f, 1.0f) + origin),
 
-        // Back face
-        Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin, glm::vec3(-1.0f, 1.0f, -1.0f) + origin, glm::vec3(1.0f, 1.0f, -1.0f) + origin),
-        Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin, glm::vec3(1.0f, 1.0f, -1.0f) + origin, glm::vec3(1.0f, -1.0f, -1.0f) + origin),
+                               // Back face
+                               Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin,
+                                        glm::vec3(-1.0f, 1.0f, -1.0f) + origin,
+                                        glm::vec3(1.0f, 1.0f, -1.0f) + origin),
+                               Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin,
+                                        glm::vec3(1.0f, 1.0f, -1.0f) + origin,
+                                        glm::vec3(1.0f, -1.0f, -1.0f) + origin),
 
-        // Left face
-        Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin, glm::vec3(-1.0f, -1.0f, 1.0f) + origin, glm::vec3(-1.0f, 1.0f, 1.0f) + origin),
-        Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin, glm::vec3(-1.0f, 1.0f, 1.0f) + origin, glm::vec3(-1.0f, 1.0f, -1.0f) + origin),
+                               // Left face
+                               Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin,
+                                        glm::vec3(-1.0f, -1.0f, 1.0f) + origin,
+                                        glm::vec3(-1.0f, 1.0f, 1.0f) + origin),
+                               Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin,
+                                        glm::vec3(-1.0f, 1.0f, 1.0f) + origin,
+                                        glm::vec3(-1.0f, 1.0f, -1.0f) + origin),
 
-        // Right face
-        Triangle(glm::vec3(1.0f, -1.0f, -1.0f) + origin, glm::vec3(1.0f, 1.0f, 1.0f) + origin, glm::vec3(1.0f, -1.0f, 1.0f) + origin),
-        Triangle(glm::vec3(1.0f, -1.0f, -1.0f) + origin, glm::vec3(1.0f, 1.0f, -1.0f) + origin, glm::vec3(1.0f, 1.0f, 1.0f) + origin),
+                               // Right face
+                               Triangle(glm::vec3(1.0f, -1.0f, -1.0f) + origin,
+                                        glm::vec3(1.0f, 1.0f, 1.0f) + origin,
+                                        glm::vec3(1.0f, -1.0f, 1.0f) + origin),
+                               Triangle(glm::vec3(1.0f, -1.0f, -1.0f) + origin,
+                                        glm::vec3(1.0f, 1.0f, -1.0f) + origin,
+                                        glm::vec3(1.0f, 1.0f, 1.0f) + origin),
 
-        // Top face
-        Triangle(glm::vec3(-1.0f, 1.0f, -1.0f) + origin, glm::vec3(-1.0f, 1.0f, 1.0f) + origin, glm::vec3(1.0f, 1.0f, 1.0f) + origin),
-        Triangle(glm::vec3(-1.0f, 1.0f, -1.0f) + origin, glm::vec3(1.0f, 1.0f, 1.0f) + origin, glm::vec3(1.0f, 1.0f, -1.0f) + origin),
+                               // Top face
+                               Triangle(glm::vec3(-1.0f, 1.0f, -1.0f) + origin,
+                                        glm::vec3(-1.0f, 1.0f, 1.0f) + origin,
+                                        glm::vec3(1.0f, 1.0f, 1.0f) + origin),
+                               Triangle(glm::vec3(-1.0f, 1.0f, -1.0f) + origin,
+                                        glm::vec3(1.0f, 1.0f, 1.0f) + origin,
+                                        glm::vec3(1.0f, 1.0f, -1.0f) + origin),
 
-        // Bottom face
-        Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin, glm::vec3(1.0f, -1.0f, 1.0f) + origin, glm::vec3(-1.0f, -1.0f, 1.0f) + origin),
-        Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin, glm::vec3(1.0f, -1.0f, -1.0f) + origin, glm::vec3(1.0f, -1.0f, 1.0f) + origin)
-    };
+                               // Bottom face
+                               Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin,
+                                        glm::vec3(1.0f, -1.0f, 1.0f) + origin,
+                                        glm::vec3(-1.0f, -1.0f, 1.0f) + origin),
+                               Triangle(glm::vec3(-1.0f, -1.0f, -1.0f) + origin,
+                                        glm::vec3(1.0f, -1.0f, -1.0f) + origin,
+                                        glm::vec3(1.0f, -1.0f, 1.0f) + origin)};
 }
 
 struct SSBOBVHNode {
   glm::vec3 bboxMin;
+  float pad0;
   glm::vec3 bboxMax;
+  float pad1;
   int leftChild;  // Left child index (-1 if leaf)
   int rightChild; // Right child index (-1 if leaf)
   int start;      // Start index of primitives (only for leaves)
   int count;      // Number of primitives (only for leaves)
   int isLeaf;     // 1 if leaf, 0 if internal
+  float pad2;
+  float pad3;
+  float pad4;
 };
 
 struct BoundingBox {
@@ -264,7 +291,6 @@ public:
     }
   }
   std::vector<Triangle> triangles;
-
   // Made by gpt
   void printFlattened() {
     std::cout << "\nFlattened BVH Nodes:\n";
@@ -291,9 +317,14 @@ public:
 
   std::vector<SSBOBVHNode> ssboData;
 
-  void
-  prepareSSBOData(const std::vector<std::shared_ptr<BVHNode>> &flattenedNodes) {
+  void prepareSSBOData() {
+    ssboData.reserve(flattenedNodes.size());
     for (const auto &n : flattenedNodes) {
+      if (!n) {
+        std::cerr << "Error: Null node encountered in flattenedNodes.\n";
+        continue;
+      }
+
       SSBOBVHNode node;
       node.bboxMin = n->box.min;
       node.bboxMax = n->box.max;
@@ -302,7 +333,14 @@ public:
       node.start = n->start;
       node.count = n->count;
       node.isLeaf = n->isLeaf ? 1 : 0;
+      node.pad0 = 0.0f;
+      node.pad1 = 0.0f;
+      node.pad2 = 0.0f;
+      node.pad3 = 0.0f;
+      node.pad4 = 0.0f;
       ssboData.push_back(node);
     }
   }
+
+
 };
