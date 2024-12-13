@@ -51,7 +51,6 @@ struct Entity : public std::enable_shared_from_this<Entity> {
   inline void set_name(const std::string &name) { _name = name; }
   inline const auto &get_components() const { return _components; }
 
-
 private:
   friend class EntityStorage;
   //   friend std::shared_ptr<Entity>

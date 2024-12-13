@@ -3,19 +3,36 @@
 #include "includes/utility/JsonConverter.hpp"
 
 std::string GetEntityOptionsCommand::execute(Engine *e) {
-    Entity* entity = nullptr;
-    if(auto e_sys = dynamic_cast<EntitySystem*>(e->get_active_uuid_manager()->get_system(_uuid)))
-    {
-        auto entity = std::make_shared<Entity>(*e_sys->get_entities().at(_uuid));
-        return boost::json::serialize(entity_options_to_json(entity));
-    }
+     try {
+        auto scene = e->get_scene();
+        if (!scene) {
+            std::cerr << "Scene is null" << std::endl;
+            return "Scene is null";
+        }
 
-    if(entity)
-    {
-        std::cout << "Entity found" << std::endl;
-        return "GetEntityOptionsCommand executed for entity: " + entity->get_name();
-    }   
-    
-  return "Entity not found";
+        auto entity_ptr = (*scene)[_uuid];
+        if (!entity_ptr) {
+            std::cerr << "Entity not found for UUID: " << boost::uuids::to_string(_uuid) << std::endl;
+            return "Entity not found";
+        }
+
+        auto entity = *entity_ptr;
+        if (!entity) {
+            std::cerr << "Entity is null for UUID: " << boost::uuids::to_string(_uuid) << std::endl;
+            return "Entity is null";
+        }
+
+        auto entity_json = entity_options_to_json(std::make_shared<Entity>(*entity));
+        return boost::json::serialize(entity_json);
+    } catch (const std::bad_alloc& e) {
+        std::cerr << "Memory allocation failed: " << e.what() << std::endl;
+        return "Memory allocation failed";
+    } catch (const std::exception& e) {
+        std::cerr << "Exception: " << e.what() << std::endl;
+        return "Exception occurred";
+    } catch (...) {
+        std::cerr << "Unknown exception occurred" << std::endl;
+        return "Unknown exception occurred";
+    }
 }
 int GetEntityOptionsCommand::undo() { return 0; }

@@ -6,9 +6,9 @@
 
 std::string GetComponentsCommand::execute(Engine *e) {
     Entity* entity = nullptr;
-    if(auto e_sys = dynamic_cast<EntitySystem*>(e->get_active_uuid_manager()->get_system(_uuid)))
+    if(auto entity = *(*(e->get_scene()))[_uuid])    
     {
-        auto entity = std::make_shared<Entity>(*e_sys->get_entities().at(_uuid));
+        auto components = entity->get_components();
         //return boost::json::serialize(entity_to_json());
     }
 

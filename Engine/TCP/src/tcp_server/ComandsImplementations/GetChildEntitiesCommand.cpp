@@ -6,18 +6,16 @@
 
 std::string GetChildEntitiesCommand::execute(Engine *e) {
     Entity* entity = nullptr;
-    if(auto e_sys = dynamic_cast<EntitySystem*>(e->get_active_uuid_manager()->get_system(_uuid)))
+    std::cout << boost::uuids::to_string(_uuid) << std::endl;
+    if(auto entity = *(*(e->get_scene()))[_uuid])
     {
-        auto entity = std::make_shared<Entity>(*e_sys->get_entities().at(_uuid));
-        return boost::json::serialize(entity_to_json(entity));
+       if (!entity)
+        {
+            return "Entity not found";
+        }
+        return boost::json::serialize(entity_to_json(std::make_shared<Entity>(*entity)));
     }
-
-    if(entity)
-    {
-        std::cout << "Entity found" << std::endl;
-        return "GetChildEntitiesCommand executed for entity: " + entity->get_name();
-    }   
     
-  return "Entity not found";
+  return "End of GetChildEntitiesCommand";
 }
 int GetChildEntitiesCommand::undo() { return 0; }
