@@ -1,7 +1,7 @@
 #include "includes/WindowManager.hpp"
-#include "GLFW/glfw3.h"
 #include <iostream>
 
+#ifdef SHOW_UI
 void WindowManager::processInput(GLFWwindow *window) {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, true);
@@ -81,3 +81,25 @@ void WindowManager::update() {
   updateInput();
   glfwSwapBuffers(_window);
 }
+
+#else
+
+WindowManager::WindowManager() { _initGLFW(); }
+
+void WindowManager::updateInput() {}
+
+void WindowManager::swapBuffers() { }
+
+bool WindowManager::shouldClose() { return false; }
+void WindowManager::close() { }
+
+glm::vec2 WindowManager::getMousePos() { return _mousePos; }
+
+glm::ivec2 WindowManager::getScreenSize() const { return _screenSize; }
+
+double WindowManager::get_time() { return 0.; }
+
+bool WindowManager::_initGLFW() { return false; }
+
+void WindowManager::update() {}
+#endif
