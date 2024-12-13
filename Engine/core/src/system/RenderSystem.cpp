@@ -60,8 +60,8 @@ void RenderSystem::init() {
       std::make_pair(GL_COMPUTE_SHADER, compute_shader_file.string())};
   compute = std::make_unique<Shader>(computeShader);
 
-  _cameraPosition = glm::vec3(0.0f, 10.0f, 10.0f);
-  _cameraDirection = glm::vec3(0.0f, 0.0f, 0.0f);
+  _cameraPosition = glm::vec3(0.0f, 8.0f, 15.0f);
+  _cameraDirection = glm::vec3(0.0f, 3.0f, 0.0f);
   _viewMatrix =
       glm::lookAt(_cameraPosition, _cameraDirection, glm::vec3(0, 1, 0));
   //  TODO:
@@ -109,7 +109,7 @@ void RenderSystem::init() {
   glBufferData(GL_SHADER_STORAGE_BUFFER, builder.triIdxData.size() * sizeof(uint32_t), builder.triIdxData.data(), GL_STATIC_DRAW);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, ssbo_indices);
 
-
+  //Depracated lol
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_triangle);
   glBufferData(GL_SHADER_STORAGE_BUFFER,
                builder.triangles.size() * sizeof(Triangle), builder.triangles.data(),

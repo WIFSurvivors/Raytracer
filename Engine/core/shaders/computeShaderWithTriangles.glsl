@@ -92,7 +92,7 @@ struct Light {
 // VARIABLES
 const int hittableCount = 12;
 const int emitterCount = 1;
-const int MAX_RECURSION_DEPTH = 3;
+const int MAX_RECURSION_DEPTH = 4;
 
 const int STACK_SIZE = 128;
 Ray stack[STACK_SIZE];
@@ -349,7 +349,7 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount]) {
     push(r);
     while (!isEmpty()) {
         Ray currentRay = pop();
-        if (currentRay.depth >= 5) continue;
+        if (currentRay.depth >= MAX_RECURSION_DEPTH) continue;
         float t = 5e+10;
         int index = -1;
 
@@ -401,8 +401,6 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount]) {
             vec3 edge1 = trivertex[v + 1] - trivertex[v];
             vec3 edge2 = trivertex[v + 2] - trivertex[v];
 
-            // vec3 edge1 = trianglesBuffer[index].v1 - trianglesBuffer[index].v0;
-            // vec3 edge2 = trianglesBuffer[index].v2 - trianglesBuffer[index].v0;
             vec3 N = normalize(cross(edge1, edge2));
             vec3 localColor = vec3(0.0);
             bool anyLightHit = false;
@@ -727,8 +725,8 @@ vec4 rayColor(Ray r) {
     }
 
     Light[1] lightSources;
-    vec3 position = vec3(0.0, 10.0, 3.0) + 3 * sin(time);
-    lightSources[0] = Light(position, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 100.0);
+    vec3 position = vec3(0.0, 0.0 + 3 * tan(time), 5 + 3 * sin(time));
+    lightSources[0] = Light(position, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 10.0);
     //return proccessRaySSBO(r, lightSources);
     return proccessRayBVHAlt(r, lightSources);
     //return CalcColorWithLightSourcesTriangle(trianglesCube1, r, lightSources);

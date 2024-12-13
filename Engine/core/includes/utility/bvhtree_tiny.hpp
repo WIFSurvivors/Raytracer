@@ -135,10 +135,14 @@ struct TreeBuilder {
     std::vector<Triangle> triforce1 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
     std::vector<Triangle> triforce2 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
     std::vector<Triangle> triforce3 = createCube(glm::vec3{-2.0f, 0.0f, 0.0f});
+    std::vector<Triangle> triforce4 = createCube(glm::vec3{0.0f, 0.0f, -2.0f});
+    std::vector<Triangle> triforce5 = createCube(glm::vec3{0.0f, 2.0f, 0.0f});
 
     std::vector<Triangle> triforce = triforce1;
     triforce.insert(triforce.end(), triforce2.begin(), triforce2.end());
     triforce.insert(triforce.end(), triforce3.begin(), triforce3.end());
+    triforce.insert(triforce.end(), triforce4.begin(), triforce4.end());
+    triforce.insert(triforce.end(), triforce5.begin(), triforce5.end());
 
     std::vector<tinybvh::bvhvec4> bvhData = convertToBVHFormat(triforce);
 
@@ -166,6 +170,10 @@ struct TreeBuilder {
                              0.3f}); // Sky blue, moderately reflective
     mats.push_back(Materials{glm::vec3(0.8f, 0.2f, 0.2f),
                              0.4f}); // Bright red, more reflective
+    mats.push_back(Materials{glm::vec3(0.1f, 0.6f, 0.5f),
+                             0.3f}); // Bright red, more reflective
+    mats.push_back(Materials{glm::vec3(0.0f, 0.6f, 0.9f),
+                             0.6f}); // Bright red, more reflective
 
     uint32_t materialIndex = 0;
     for (size_t i = 0; i < triforce1.size(); ++i) {
@@ -179,6 +187,17 @@ struct TreeBuilder {
     for (size_t i = 0; i < triforce3.size(); ++i) {
       matIndx.push_back(materialIndex);
     }
+
+    materialIndex = 3;
+    for (size_t i = 0; i < triforce4.size(); ++i) {
+      matIndx.push_back(materialIndex);
+    }
+
+    materialIndex = 4;
+    for (size_t i = 0; i < triforce5.size(); ++i) {
+      matIndx.push_back(materialIndex);
+    }
+
     std::vector<uint32_t> rearrangedMatIndx(tree.triCount);
 
     for (size_t i = 0; i < tree.triCount; ++i) {
