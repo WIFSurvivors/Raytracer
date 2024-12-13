@@ -68,3 +68,23 @@ inline boost::json::object entity_options_to_json(const std::shared_ptr<Entity>&
     return obj;
 }
 
+inline boost::json::object component_to_json(const std::shared_ptr<IComponent>& component) {
+    boost::json::object obj;
+    obj["uuid"] = boost::uuids::to_string(component->get_uuid());
+    //obj["type"] = component->get_type();
+    return obj;
+}
+
+inline boost::json::object components_to_json(std::vector<IComponent *> components) {
+    boost::json::object obj;
+    boost::json::object obc;
+    boost::json::array arr;
+    for (const auto& component : components) {
+        obc["uuid"] = boost::uuids::to_string(component->get_uuid());
+        
+        arr.push_back(std::move(obc));
+    }
+    obj["components"] = std::move(arr);
+    return obj;
+}
+
