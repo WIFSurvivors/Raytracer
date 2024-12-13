@@ -48,6 +48,17 @@ struct Triangle {
     vec3 v2;
 };
 
+
+struct Material{
+  vec3 color; 
+  float reflection;
+};
+
+
+layout(std430, binding = 5) buffer MaterialBuffer {
+    Material materials[];
+};
+
 layout(std430, binding = 3) buffer TriangleSSBO {
     Triangle trianglesBuffer[];
 };
@@ -58,6 +69,10 @@ layout(std430, binding = 4) buffer VertexBuffer {
 
 layout(std430, binding = 2) buffer TriIndexBuffer {
     int triIdx[];
+};
+
+layout(std430, binding = 6) buffer MatIndexBuffer {
+    int matIndex[];
 };
 
 struct Ray {
@@ -382,7 +397,7 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount]) {
             // Intersection point & normal
             vec3 sectionPoint = currentRay.origin + t * currentRay.direction;
 
-            uint v = triIdx[index] * 3;
+            int v = triIdx[index] * 3;
             vec3 edge1 = trivertex[v + 1] - trivertex[v];
             vec3 edge2 = trivertex[v + 2] - trivertex[v];
 
@@ -403,7 +418,7 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount]) {
 
                 if (!isShadow) {
                     float diffuse = max(dot(N, shadowRay), 0.0);
-                    vec3 lighting = reflec_accumulation * light.color * vec3(0.4, 0.0, 0.2) * light.intensity * diffuse * attenuation;
+                    vec3 lighting = reflec_accumulation * light.color * materials[matIndex[index]].color * light.intensity * diffuse * attenuation;
                     localColor += lighting;
                     anyLightHit = true;
                 }
@@ -412,7 +427,7 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount]) {
             color += localColor;
             if (anyLightHit && length(reflec_accumulation) > 0.01) {
                 vec3 reflecDirection = reflect(currentRay.direction, N);
-                reflec_accumulation *= 0.8;
+                reflec_accumulation *= materials[matIndex[index]].reflection;
                 Ray nextRay = Ray(sectionPoint + 0.01 * N, reflecDirection, currentRay.depth + 1);
                 push(nextRay);
             }
@@ -713,7 +728,7 @@ vec4 rayColor(Ray r) {
 
     Light[1] lightSources;
     vec3 position = vec3(0.0, 10.0, 3.0) + 3 * sin(time);
-    lightSources[0] = Light(position, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 1000.0);
+    lightSources[0] = Light(position, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 100.0);
     //return proccessRaySSBO(r, lightSources);
     return proccessRayBVHAlt(r, lightSources);
     //return CalcColorWithLightSourcesTriangle(trianglesCube1, r, lightSources);

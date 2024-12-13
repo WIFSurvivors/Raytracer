@@ -95,6 +95,8 @@ void RenderSystem::init() {
   glGenBuffers(1, &ssbo_tree);
   glGenBuffers(1,&ssbo_indices);
   glGenBuffers(1,&ssbo_vertex);
+  glGenBuffers(1,&ssbo_mats);
+  glGenBuffers(1,&ssbo_matsIDX);
   
   glGenBuffers(1, &ssbo_triangle);
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);
@@ -108,15 +110,24 @@ void RenderSystem::init() {
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, ssbo_indices);
 
 
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_vertex);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, builder.vertex.size() * sizeof(Vec3Padded), builder.vertex.data(), GL_STATIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, ssbo_vertex);
-
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_triangle);
   glBufferData(GL_SHADER_STORAGE_BUFFER,
                builder.triangles.size() * sizeof(Triangle), builder.triangles.data(),
                GL_STATIC_DRAW);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo_triangle);
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_vertex);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, builder.vertex.size() * sizeof(Vec3Padded), builder.vertex.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, ssbo_vertex);
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_mats);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, builder.mats.size() * sizeof(Materials), builder.mats.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, ssbo_mats);
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_matsIDX);
+  glBufferData(GL_SHADER_STORAGE_BUFFER, builder.matIndx.size() * sizeof(uint32_t), builder.matIndx.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, ssbo_matsIDX);
+
 }
 
 void RenderSystem::update(const float dt) {

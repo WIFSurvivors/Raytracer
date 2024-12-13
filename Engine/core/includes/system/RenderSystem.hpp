@@ -65,6 +65,8 @@ private:
   GLuint ssbo_triangle;
   GLuint ssbo_vertex;
   GLuint ssbo_indices;
+  GLuint ssbo_mats;
+  GLuint ssbo_matsIDX;
   GLuint _vao;
   std::vector<glm::vec3> v = {glm::vec3{-0.5f, -0.5f, 0.0f},
                               glm::vec3{0.5f, -0.5f, 0.0f},

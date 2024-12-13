@@ -113,6 +113,11 @@ struct Vec3Padded {
   float pad;
 };
 
+struct alignas(16) Materials {
+  glm::vec3 color;
+  float reflection;
+};
+
 struct TreeBuilder {
 
   tinybvh::BVH tree;
@@ -120,19 +125,20 @@ struct TreeBuilder {
   std::vector<Triangle> triangles;
   std::vector<uint32_t> triIdxData;
   std::vector<Vec3Padded> vertex;
+  std::vector<Materials> mats;
+
+  std::vector<uint32_t> matIndx;
 
   TreeBuilder() {
     std::vector<Triangle> cube = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
-	
-  std::vector<Triangle> triforce1 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
-  std::vector<Triangle> triforce2 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
-  std::vector<Triangle> triforce3 = createCube(glm::vec3{-2.0f, 0.0f, 0.0f});
 
-  std::vector<Triangle> triforce = triforce1;
-  triforce.insert(triforce.end(), triforce2.begin(), triforce2.end());
-  triforce.insert(triforce.end(), triforce3.begin(), triforce3.end());
+    std::vector<Triangle> triforce1 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
+    std::vector<Triangle> triforce2 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
+    std::vector<Triangle> triforce3 = createCube(glm::vec3{-2.0f, 0.0f, 0.0f});
 
-	
+    std::vector<Triangle> triforce = triforce1;
+    triforce.insert(triforce.end(), triforce2.begin(), triforce2.end());
+    triforce.insert(triforce.end(), triforce3.begin(), triforce3.end());
 
     std::vector<tinybvh::bvhvec4> bvhData = convertToBVHFormat(triforce);
 
@@ -153,6 +159,33 @@ struct TreeBuilder {
       std::cout << "Vertex: (" << v.data.x << ", " << v.data.y << ", "
                 << v.data.z << ")" << std::endl;
     }
+
+    mats.push_back(Materials{glm::vec3(0.8f, 0.2f, 0.8f),
+                             0.2f}); // Light gray, slightly reflective
+    mats.push_back(Materials{glm::vec3(0.2f, 0.6f, 0.1f),
+                             0.3f}); // Sky blue, moderately reflective
+    mats.push_back(Materials{glm::vec3(0.8f, 0.2f, 0.2f),
+                             0.4f}); // Bright red, more reflective
+
+    uint32_t materialIndex = 0;
+    for (size_t i = 0; i < triforce1.size(); ++i) {
+      matIndx.push_back(materialIndex);
+    }
+    materialIndex = 1;
+    for (size_t i = 0; i < triforce2.size(); ++i) {
+      matIndx.push_back(materialIndex);
+    }
+    materialIndex = 2;
+    for (size_t i = 0; i < triforce3.size(); ++i) {
+      matIndx.push_back(materialIndex);
+    }
+    std::vector<uint32_t> rearrangedMatIndx(tree.triCount);
+
+    for (size_t i = 0; i < tree.triCount; ++i) {
+      rearrangedMatIndx[i] = matIndx[triIdxData[i]];
+    }
+
+    matIndx = rearrangedMatIndx;
   }
 
   void prepareSSBOData() {
@@ -222,8 +255,5 @@ struct TreeBuilder {
       std::cout << "\t start: " << node.start << std::endl;
       std::cout << "\t count: " << node.count << std::endl;
     }
-	
-	
-    
   }
 };
