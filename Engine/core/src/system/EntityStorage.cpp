@@ -49,24 +49,20 @@ bool EntityStorage::remove(Entity *e) {
 }
 
 void EntityStorage::print() {
-  TablePrinter::printElement("EntityStorage: UUID", 36);
-  std::cout << " | ";
-  TablePrinter::printElement("Entity Name", 12);
-  std::cout << " | ";
-  TablePrinter::printElement("Position", 34);
-  std::cout << "\n";
-  std::cout << std::string(36 + 12 + 34 + 3, '=');
-  std::cout << "\n";
-  for (auto const &[uuid, e] : _entities) {
-    std::cout << uuid << " | ";
-    if (e == nullptr) {
-      std::cout << "missing...\n";
-      continue;
-    }
-    TablePrinter::printElement(e->get_name(), 12);
-    std::cout << " | ";
-    std::cout << e->get_world_position();
-    std::cout << "\n";
+  VariadicTable<std::string, std::string, size_t, size_t, std::string> vt(
+      {"Entity UUID", "Entity Name", "CE", "CC", "World Position"});
+
+  for (const auto &[id, e] : _entities) {
+    vt.addRow(boost::uuids::to_string(id),
+			  e->get_name(),
+			  e->get_child_entities().size(),
+			  e->_components.size(),
+			  glm::to_string(e->get_world_position())
+			  /*, e->get_world_position()*/); // <- unfortunately looks weird :C
   }
+  vt.print(std::cout);
+  std::cout << "Legend: \n"
+			<< "\t-CE = Count Child Entities\n"
+			<< "\t-CC = Count Components\n";
   std::cout << std::endl;
 }

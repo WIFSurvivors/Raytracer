@@ -117,6 +117,19 @@ void Scene::generate_sample_content() {
   SimpleLogger::print(std::string(100, '*'));
   SimpleLogger::print("\n");
 
+  auto sys = _uuid_manager.get_system(c1->get_uuid());
+  auto csys = static_cast<CameraSystem*>(sys);
+  auto occ = csys->get_component(c1->get_uuid()); // you ideally already know the uuid :3
+  if(occ.has_value()){
+	auto cc = occ.value();
+	cc->get_fov(); // ... do something with component ...
+  	SimpleLogger::print("YAY");
+  }
+
+  SimpleLogger::print("\n");
+  SimpleLogger::print(std::string(100, '*'));
+  SimpleLogger::print("\n");
+
   _uuid_manager.print();
   _entity_storage.print();
   _render_system.print();

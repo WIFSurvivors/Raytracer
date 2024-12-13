@@ -35,8 +35,8 @@
  */
 struct RenderSystem : public System<RenderComponent> {
 
-  RenderSystem(WindowManager *wm, CameraSystem* cs);
-  
+  RenderSystem(WindowManager *wm, CameraSystem *cs);
+
   void init();
   void update(const float dt); // represents render
   void destroy();
@@ -45,20 +45,23 @@ struct RenderSystem : public System<RenderComponent> {
                                     const std::vector<glm::vec3> &vertices,
                                     const std::vector<glm::vec2> &UV);
 
+  inline virtual std::string get_system_name() const override {
+    return "Render System";
+  }
+
   //  temporal
   //  we need, this because Render System is responsible for the window and
   //  input handling
   // void render();
   // std::unique_ptr<RenderComponent> _component;
-
-  void print_component(const RenderComponent &c) override;
+  void print() override;
 
 private:
-  using typename System::uuid;
   using System::create_component_base;
+  using typename System::uuid;
 
   WindowManager *_wm;
-  CameraSystem* _cs;
+  CameraSystem *_cs;
 
   std::unique_ptr<Shader> program;
 

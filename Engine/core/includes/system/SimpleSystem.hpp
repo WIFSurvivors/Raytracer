@@ -15,10 +15,15 @@ struct SimpleSystem : public System<SimpleComponent> {
 
   void update(const float dt);
 
+  void print() override;
+
+  inline virtual std::string get_system_name() const override {
+    return "Simple System";
+  }
+
 private:
-  using typename System::uuid;
   using System::create_component_base;
-  void print_component(const SimpleComponent& c) override;
+  using typename System::uuid;
 };
 
 // template<class T> requires

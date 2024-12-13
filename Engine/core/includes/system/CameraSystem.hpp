@@ -23,13 +23,14 @@ struct CameraSystem : public System<CameraComponent> {
 
   void sample_update_move_main_camera(float dt);
 
-protected:
-  // CameraComponent *create_component(uuid id, Entity *e);
-  void print_component(const CameraComponent &c) override;
+  inline virtual std::string get_system_name() const override {
+    return "Camera System";
+  }
+
+  void print() override;
 
 private:
   using typename System::uuid;
-//   using System::create_component_base;
 
   CameraComponent *_main_camera = nullptr;
 };

@@ -2,6 +2,7 @@
 
 #include "includes/component/Component.hpp"
 #include "includes/utility/SimpleLogger.hpp"
+#include "includes/utility/VariadicTable.hpp"
 #include "includes/Entity.hpp"
 
 #include <boost/uuid/uuid.hpp>
@@ -27,6 +28,8 @@ concept is_base_of_component = std::is_base_of<IComponent, T>::value;
 class ISystem {
 public:
   virtual ~ISystem() = default;
+
+  inline virtual std::string get_system_name() const = 0;
 };
 
 /*
@@ -83,15 +86,22 @@ template <is_base_of_component T> struct System : public ISystem {
   /**
    * Prints all components of the system
    */
-  void print() {
-    // probably ues ostringstream for this
-    // or just std::string? (i do like std::format uwu)
-    std::for_each(_components.begin(), _components.end(), [this](auto &n) {
-      std::cout << boost::uuids::to_string(n.first) << " : ";
-      print_component(*(n.second.get())); // make print return std::string ...
-      std::cout << "\n";
-    });
-  }
+  virtual void print() = 0;
+//   {
+// 	VariadicTable<std::string, int> vt({"UUID", "sample :3"}, 10);
+
+//     std::for_each(_components.begin(), _components.end(), [this, &vt](auto &n) mutable {
+// 	  vt.addRow(boost::uuids::to_string(n.first), 123);
+//     //   print_component(*(n.second.get())); 
+//       std::cout << "\n";
+//     });
+
+// 	// vt.addRow("Cody", 180.2, 40, "John");
+// 	// vt.addRow("David", 175.3, 38, "Andrew");
+// 	// vt.addRow("Robert", 140.3, 27, "Fande");
+
+// 	vt.print(std::cout);
+//   }
 
 protected:
   /**
@@ -108,8 +118,6 @@ protected:
     return ptr; // pointer can be used by child classes for further
                 // configuration
   }
-
-  virtual void print_component(const T &c) = 0;
 
   std::map<uuid, std::unique_ptr<T>> _components;
 };

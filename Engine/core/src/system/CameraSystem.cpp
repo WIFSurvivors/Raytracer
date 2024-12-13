@@ -18,8 +18,8 @@ CameraComponent *CameraSystem::create_component(uuid id, Entity *e, float fov) {
   SimpleLogger::print("-- create camera component");
   auto c = create_component_base(id, e);
   c->set_fov(fov);
-  if(!_main_camera){
-	set_main_camera(c);
+  if (!_main_camera) {
+    set_main_camera(c);
   }
   return c;
 }
@@ -52,25 +52,18 @@ void CameraSystem::sample_update_move_main_camera(float t1) {
   ent->set_local_position(pos);
 }
 
-void CameraSystem::print_component(const CameraComponent &c) {
-  TablePrinter::printElement("CameraComponent UUID", 36);
-  std::cout << " | ";
-  TablePrinter::printElement("fov", 12);
-  std::cout << " | ";
-  TablePrinter::printElement("is main camera", 14);
-  std::cout << "\n";
-  std::cout << std::string(36 + 12 + 14 + 2 * 3, '=');
-  std::cout << "\n";
-  for (auto const &[uuid, c] : _components) {
-    std::cout << uuid << " | ";
-    if (c == nullptr) {
-      std::cout << "missing...\n";
-      continue;
-    }
-    TablePrinter::printElement(c->get_fov(), 12);
-    std::cout << " | ";
-    TablePrinter::printElement(c->is_main_camera() ? " * " : "", 14);
-    std::cout << "\n";
+void CameraSystem::print() {
+  VariadicTable<std::string, bool, float, std::string> vt(
+      {"CameraComponent UUID", "Main?", "FoV", "Entity Name"});
+
+  for (const auto &[key, value] : _components) {
+    vt.addRow(boost::uuids::to_string(key),
+              value->is_main_camera(),
+			  value->get_fov(),
+			  value->get_entity()->get_name());
   }
+
+  std::cout << std::boolalpha;
+  vt.print(std::cout);
   std::cout << std::endl;
 }

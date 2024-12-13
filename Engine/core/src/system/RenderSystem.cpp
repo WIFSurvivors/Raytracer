@@ -147,29 +147,18 @@ void RenderSystem::destroy() {
 
 // }
 
-void RenderSystem::print_component(const RenderComponent &c) {
-  TablePrinter::printElement("RenderComponent UUID", 36);
-  std::cout << " | ";
-  TablePrinter::printElement("VBO", 12);
-  std::cout << " | ";
-  TablePrinter::printElement("textureID", 12);
-  std::cout << " | ";
-  TablePrinter::printElement("uvVBO", 12);
-  std::cout << "\n";
-  std::cout << std::string(36 + 12 + 12 + 12 + 3 * 3, '=');
-  std::cout << "\n";
-  for (auto const &[uuid, c] : _components) {
-    std::cout << uuid << " | ";
-    if (c == nullptr) {
-      std::cout << "missing...\n";
-      continue;
-    }
-    TablePrinter::printElement(c->get_vbo(), 12);
-    std::cout << " | ";
-    TablePrinter::printElement(c->get_textureID(), 12);
-    std::cout << " | ";
-    TablePrinter::printElement(c->get_uvVBO(), 12);
-    std::cout << "\n";
+void RenderSystem::print() {
+  VariadicTable<std::string, GLint, GLint, GLint, std::string> vt(
+      {"RenderComponent UUID", "VBO", "TextureID", "UV VBO", "Entity Name"});
+
+  for (const auto &[key, value] : _components) {
+    vt.addRow(boost::uuids::to_string(key),
+              value->get_vbo(),
+			  value->get_textureID(),
+			  value->get_uvVBO(),
+			  value->get_entity()->get_name());
   }
+
+  vt.print(std::cout);
   std::cout << std::endl;
 }
