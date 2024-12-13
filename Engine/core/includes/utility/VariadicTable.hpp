@@ -263,9 +263,8 @@ protected:
   template <typename TupleType, typename StreamType>
   void print_each(TupleType && t, StreamType & stream)
   {
-	// NOLINTBEGIN
+	// NOLINTNEXTLINE
     print_each(std::forward<TupleType>(t), stream, std::integral_constant<size_t, 0>());
-	// NOLINTEND
   }
 
   /**
