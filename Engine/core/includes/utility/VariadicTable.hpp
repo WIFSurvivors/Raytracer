@@ -179,7 +179,7 @@ protected:
 
   // Otherwise
   template <typename T>
-  static left_type justify(int64 /*secondchoice*/)
+  static left_type justify(int64_t /*secondchoice*/)
   {
     return std::left;
   }
@@ -258,12 +258,12 @@ protected:
   }
 
   /**
-   * his is what gets called first
+   * This is what gets called first
    */
   template <typename TupleType, typename StreamType>
   void print_each(TupleType && t, StreamType & stream)
   {
-    print_each(std::forward<TupleType>(t), stream, std::integral_constant<size_t, 0>());
+    print_each(reinterpret_cast<TupleType>(t), stream, std::integral_constant<size_t, 0>());
   }
 
   /**

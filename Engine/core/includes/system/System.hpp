@@ -14,6 +14,7 @@
 #include <map>
 #include <type_traits>
 #include <map>
+#include <string>
 
 // typedef boost::uuids::uuid uuid;
 struct Entity;
@@ -87,23 +88,7 @@ template <is_base_of_component T> struct System : public ISystem {
    * Prints all components of the system
    */
   virtual void print() = 0;
-  //   {
-  // 	VariadicTable<std::string, int> vt({"UUID", "sample :3"}, 10);
-
-  //     std::for_each(_components.begin(), _components.end(), [this, &vt](auto
-  //     &n) mutable {
-  // 	  vt.addRow(boost::uuids::to_string(n.first), 123);
-  //     //   print_component(*(n.second.get()));
-  //       std::cout << "\n";
-  //     });
-
-  // 	// vt.addRow("Cody", 180.2, 40, "John");
-  // 	// vt.addRow("David", 175.3, 38, "Andrew");
-  // 	// vt.addRow("Robert", 140.3, 27, "Fande");
-
-  // 	vt.print(std::cout);
-  //   }
-
+  
 protected:
   /**
    * A component is always linked to an entity.

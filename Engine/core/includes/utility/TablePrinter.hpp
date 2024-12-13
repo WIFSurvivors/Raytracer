@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <iomanip>
+#include <string>
 
 class TablePrinter {
 public:
