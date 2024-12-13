@@ -31,6 +31,14 @@ if(USE_AVX)
   endif()
 endif()
 
+if(CMAKE_SYSTEM_PROCESSOR MATCHES "aarch64")
+  message(STATUS "Targeting ARM64 architecture.")
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options(-march=armv8-a)
+  elseif(MSVC)
+    add_compile_options(/arch:ARM64)
+  endif()
+endif()
 
 
 FetchContent_Declare(
