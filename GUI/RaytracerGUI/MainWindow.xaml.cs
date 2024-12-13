@@ -362,7 +362,7 @@ namespace RaytracerGUI
                 //tbxLog.AppendText($"Updated children for UUID: {uuid}\n");
             }
         }
-        private void UpdateEntitiesList(string uuid, RoutedPropertyChangedEventArgs<object> e)
+        public void UpdateEntitiesList(string uuid, RoutedPropertyChangedEventArgs<object>? e)
         {
             string? ecsJsonNode = _ecsApi.get_entity_options(uuid);
             tbxLog.AppendText("EntityList Update : JSON\n\n " + ecsJsonNode + "\n\n");
