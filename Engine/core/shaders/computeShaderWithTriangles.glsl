@@ -90,7 +90,7 @@ struct Light {
 
 /*********************************************************************************/
 // VARIABLES
-const int hittableCount = 12;
+const int hittableCount = 60;
 const int emitterCount = 1;
 const int MAX_RECURSION_DEPTH = 4;
 
