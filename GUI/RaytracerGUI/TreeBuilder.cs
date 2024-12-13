@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 using System.Xml.Linq;
 
 namespace RaytracerGUI
@@ -113,8 +114,25 @@ namespace RaytracerGUI
                     {
                         var propertyItem = new TreeViewItem
                         {
-                            Header = $"{property.Key}: {property.Value}" // x: 0.000, y: 0.000, etc.
+                            Header = $"{property.Key}: ",
+                            Tag = property.Key // Store the property key for easy reference
                         };
+
+                        // Create a TextBox to make the property value editable
+                        var textBox = new TextBox
+                        {
+                            Text = property.Value, // Set initial value
+                            VerticalAlignment = VerticalAlignment.Center
+                        };
+
+                        // Handle TextChanged event to update value when user edits it
+                        textBox.TextChanged += (sender, e) =>
+                        {
+                        
+                        };
+
+                        // Add the TextBox to the TreeViewItem
+                        propertyItem.Items.Add(textBox);
                         categoryItem.Items.Add(propertyItem);
                         propertyItem.IsExpanded = true;
                     }
@@ -131,7 +149,16 @@ namespace RaytracerGUI
             }
         }
 
+        private T FindParent<T>(DependencyObject child) where T : DependencyObject
+        {
+            DependencyObject parent = VisualTreeHelper.GetParent(child);
+            if (parent == null) return null;
 
-        
+            if (parent is T)
+                return (T)parent;
+
+            return FindParent<T>(parent);
         }
+
+    }
     }
