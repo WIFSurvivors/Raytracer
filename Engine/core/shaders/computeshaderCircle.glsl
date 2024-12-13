@@ -8,6 +8,7 @@ uniform float time;
 uniform mat4 Model;
 uniform mat4 View;
 uniform mat4 Projection;
+uniform vec3 cameraPos;
 
 const int hittableCount = 3;
 const int emitterCount = 1;
@@ -344,7 +345,8 @@ void main() {
     float x = float(pixelCoords.x * 2 - dims.x) / dims.x; // transforms to [-1.0, 1.0]
     float y = float(pixelCoords.y * 2 - dims.y) / dims.y; // transforms to [-1.0, 1.0]
 
-    vec3 rayOrigin = vec3(0.0, 10.0, 10.0); // Ray origin should always be camera position. Current camera position is not used
+    //vec3 rayOrigin = vec3(10.0, 10.0, 50.0); // Ray origin should always be camera position. Current camera position is not used
+	vec3 rayOrigin = cameraPos;
 
     //ray in clip
     vec4 rayPixel = vec4(x, y, -1.0, 1.0);

@@ -6,14 +6,16 @@
 #include <format>
 
 Scene::Scene(Engine *e)
-    : _root{create_root("root")}, _render_system{e->get_window_manager()} {
+    : _render_system{e->get_window_manager(), &_camera_system},
+      _root{create_root("root")} {
   _render_system.init();
 
   generate_sample_content();
 }
 
 Scene::Scene(Engine *e, uuid id)
-    : _root{create_root("root", id)}, _render_system{e->get_window_manager()} {
+    : _render_system{e->get_window_manager(), &_camera_system},
+      _root{create_root("root", id)} {
   // does not generate sample content
   // this should be called when loading from json
   _render_system.init();
@@ -22,7 +24,7 @@ Scene::Scene(Engine *e, uuid id)
 Scene::~Scene() { _render_system.destroy(); }
 
 std::shared_ptr<Entity> Scene::create_root(const std::string &name) {
-  auto uuid = _uuid_manager.getNewUUID(&_entity_system);
+  auto uuid = _uuid_manager.create_uuid_ownerless();
   return create_root(name, uuid);
 }
 
@@ -30,13 +32,11 @@ std::shared_ptr<Entity> Scene::create_root(const std::string &name, uuid id) {
   SimpleLogger::print(
       std::format("-- scene: create_root(name, uuid): \"{}\", {}", name,
                   boost::uuids::to_string(id)));
-  return _entity_system.create_root(name, id);
+  return _entity_storage.create_root_entity(name, id);
 }
 
-std::weak_ptr<Entity> Scene::get_root() { return _root; }
-
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name) {
-  auto uuid = _uuid_manager.getNewUUID(&_entity_system);
+  auto uuid = _uuid_manager.create_uuid_ownerless();
   return create_entity(name, uuid, _root);
 }
 
@@ -47,7 +47,8 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name,
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name,
                                              std::shared_ptr<Entity> parent) {
-  return create_entity(name, _uuid_manager.getNewUUID(&_entity_system), parent);
+  return create_entity(name, _uuid_manager.create_uuid_ownerless(),
+                       parent);
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
@@ -55,35 +56,36 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
   SimpleLogger::print(std::format(
       "-- scene: create_entity(name, uuid, parent): \"{}\", {}, \"{}\"", name,
       boost::uuids::to_string(id), parent->get_name()));
-  return _entity_system.create_entity(name, id, parent);
+  return _entity_storage.create_entity(name, id, parent);
 }
 
-void Scene::print() { _root->print(); }
+void Scene::print() {
+  SimpleLogger::print("CURRENTLY DOES NOTHING SRYYYYYYYYY");
+  // _root->print();
+}
 
 void Scene::generate_sample_content() {
   _uuid_manager.print();
-  _entity_system.print();
+  _entity_storage.print();
   _render_system.print();
-//   _simple_system.print_all_components();
+  _camera_system.print();
 
   SimpleLogger::print("\n");
   SimpleLogger::print(std::string(100, '*'));
   SimpleLogger::print("\n");
 
-  
   // ============== ENTITY + SIMPLE COMPONENT ==============
 
   auto e1 = create_entity("camera");
-  e1->set_local_position(glm::vec3{0, 1, 2});
-  auto e2 = create_entity("cat");
+  e1->set_local_position(glm::vec3{+0, +10, +10});
+  e1->set_local_rotation(glm::vec3{+0, +15, -5}); // doesn't do anything yet
+  auto e2 = create_entity("circle1");
   e2->set_local_rotation(glm::vec3{45, 0, 0});
-  auto e3 = create_entity("cube", e1);
+  auto e3 = create_entity("circle2", e1);
   e3->set_local_position(glm::vec3{-2, 6, 7});
 
-  auto new_uuid = _uuid_manager.getNewUUID(&_simple_system);
-  auto c1 = _simple_system.create_component(new_uuid, e1.get());
-  new_uuid = _uuid_manager.getNewUUID(&_simple_system);
-  auto c2 = _simple_system.create_component(new_uuid, e3.get(), -56);
+  auto new_uuid = _uuid_manager.create_uuid(&_camera_system);
+  auto c1 = _camera_system.create_component(new_uuid, e1.get(), 60.f);
 
   // =================== RENDER SYSTEM =====================
 
@@ -106,21 +108,23 @@ void Scene::generate_sample_content() {
                                glm::vec2{0.0f, 1.0f}};
 
   auto root_ptr = get_root().lock();
-  _render_system.create_component(_uuid_manager.getNewUUID(&_render_system), root_ptr.get(),
-                                  v2, u2);
-  _render_system.create_component(_uuid_manager.getNewUUID(&_render_system), root_ptr.get(),
-                                  v3, u3);
+  _render_system.create_component(_uuid_manager.create_uuid(&_render_system),
+                                  root_ptr.get(), v2, u2);
+  _render_system.create_component(_uuid_manager.create_uuid(&_render_system),
+                                  root_ptr.get(), v3, u3);
 
-  
   SimpleLogger::print("\n");
   SimpleLogger::print(std::string(100, '*'));
   SimpleLogger::print("\n");
 
   _uuid_manager.print();
-  _entity_system.print();
+  _entity_storage.print();
   _render_system.print();
-//   _simple_system.print_all_components();
+  _camera_system.print();
 }
 
 // currently only tell the render system to update itself
-void Scene::update(float dt) { _render_system.update(dt); }
+void Scene::update(float dt) {
+  _camera_system.sample_update_move_main_camera(dt);
+  _render_system.update(dt);
+}

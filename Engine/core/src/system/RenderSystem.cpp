@@ -16,6 +16,11 @@
 
 #include <iostream>
 #include <filesystem>
+
+#ifndef SHADER_ABSOLUTE_PATH
+#define SHADER_ABSOLUTE_PATH "wawawaww"
+#endif
+
 /**
  *	TODO:
  *	- Think about projection clipping space
@@ -26,8 +31,9 @@
  *	  - Separate other functionality to the functions
  */
 
-RenderSystem::RenderSystem(WindowManager *wm) : System(), _wm{wm} {
-  SimpleLogger::print("-- created entity system");
+RenderSystem::RenderSystem(WindowManager *wm, CameraSystem* cs) : System(), _wm{wm}, _cs{cs} {
+  SimpleLogger::print("-- created render system");
+  // init(); // ? just do here ? 
 }
 
 void RenderSystem::init() {
@@ -35,7 +41,7 @@ void RenderSystem::init() {
     std::cout << "Failed to initialize GLAD" << std::endl;
     return;
   }
-
+  
   std::filesystem::path shader_folder(SHADER_ABSOLUTE_PATH);
   std::filesystem::path compute_shader_file =
       shader_folder / "computeshaderCircle.glsl";
@@ -81,7 +87,15 @@ void RenderSystem::update(const float dt) {
   //  Setup compute shader
   compute->activateShader();
   glUniform1f(_timeU, dt);
+
+  if(_cs && _cs->get_main_camera()){
+  	_cameraPosition = _cs->get_main_camera()->get_entity()->get_world_position();
+  }else {
+	SimpleLogger::print("-- ERROR: No main camera found -> using 0., 0., +10.");
+	_cameraPosition = glm::vec3{0., 0., +10.};
+  }
   glUniform3fv(_cameraU, 1, &_cameraPosition[0]);
+  
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
 
@@ -102,22 +116,14 @@ void RenderSystem::update(const float dt) {
   // update(glfwGetTime());
 }
 
-Component *RenderSystem::create_component(uuid id, Entity *e) {
-  throw NotImplementedError();
-  /*
-  _components[id] =
-      std::make_unique<RenderComponent>(id, e, program->programID);
-  auto ptr = _components[id].get();
-  // ptr->init(program->programID);
-  e->add_component(ptr);
-  return ptr;
-  */
-}
-
 RenderComponent *
 RenderSystem::create_component(uuid id, Entity *e,
                                const std::vector<glm::vec3> &vertices,
                                const std::vector<glm::vec2> &UV) {
+  SimpleLogger::print("-- create render component");
+//   auto c = create_component_base(id, e); // ADD THIS
+  
+  // CHANGE RC CONSTRUCTR :C
   _components[id] = std::make_unique<RenderComponent>(id, e, program->programID,
                                                       vertices, UV);
   auto ptr = _components[id].get();
@@ -141,10 +147,7 @@ void RenderSystem::destroy() {
 
 // }
 
-bool RenderSystem::remove(Component *c) { throw NotImplementedError(); }
-bool RenderSystem::remove(uuid uuid) { throw NotImplementedError(); }
-
-void RenderSystem::print() {
+void RenderSystem::print_component(const RenderComponent &c) {
   TablePrinter::printElement("RenderComponent UUID", 36);
   std::cout << " | ";
   TablePrinter::printElement("VBO", 12);

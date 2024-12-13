@@ -1,6 +1,7 @@
 #pragma once
 
 #include "includes/system/System.hpp"
+#include "includes/system/CameraSystem.hpp"
 #include "includes/component/RenderComponent.hpp"
 #include "includes/ShaderCompiler.hpp"
 #include "includes/WindowManager.hpp"
@@ -12,6 +13,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+
 /**
  *	RenderSystem class, that is resposible for:
  *	- ~~Window Managing~~
@@ -31,15 +33,14 @@
  *	- Jeb, i dont know what to do: implement create_component()
  *	- Do we really need a separate class for shaders
  */
-struct RenderSystem : public System {
+struct RenderSystem : public System<RenderComponent> {
 
-  explicit RenderSystem(WindowManager *wm);
-
+  RenderSystem(WindowManager *wm, CameraSystem* cs);
+  
   void init();
   void update(const float dt); // represents render
   void destroy();
 
-  Component *create_component(uuid id, Entity *e) override;
   RenderComponent *create_component(uuid id, Entity *e,
                                     const std::vector<glm::vec3> &vertices,
                                     const std::vector<glm::vec2> &UV);
@@ -50,13 +51,14 @@ struct RenderSystem : public System {
   // void render();
   // std::unique_ptr<RenderComponent> _component;
 
-  bool remove(Component *c) override;
-  bool remove(uuid uuid) override;
-
-  void print();
+  void print_component(const RenderComponent &c) override;
 
 private:
+  using typename System::uuid;
+  using System::create_component_base;
+
   WindowManager *_wm;
+  CameraSystem* _cs;
 
   std::unique_ptr<Shader> program;
 

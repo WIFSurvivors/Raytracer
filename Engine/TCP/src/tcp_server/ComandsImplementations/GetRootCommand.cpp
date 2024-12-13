@@ -30,8 +30,9 @@ std::string GetRootCommand::execute(Engine * engine)
     if (auto root_entity = engine->get_scene()->get_root().lock())
     {
         boost::json::object root_json = entity_to_json(root_entity);
-        std::cout << boost::json::serialize(root_json) << std::endl;
-        return boost::json::serialize(root_json);
+        std::string message = boost::json::serialize(root_json);
+        std::cout << message << std::endl;
+        return message;
     } 
     else {
         std::cout << "Root entity is null" << std::endl;

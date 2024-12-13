@@ -24,15 +24,17 @@ public class EcsApi
     {
         return _client.Send("GetRoot");
     }
-    public string get_child_entities(string UUID) {
+    public string get_child_entities(string UUID)
+    {
         return _client.Send(string.Format("GetChildEntities {0}", UUID));
     }
-    public string get_entity_options(string UUID) {
+    public string get_entity_options(string UUID)
+    {
         return _client.Send(string.Format("GetEntityOptions {0}", UUID));
     }
     public string get_components(String UUID)
     {
-        return "GetComponent";
+        return _client.Send(string.Format("GetComponents {0}", UUID));
     }
     public string create_entity()
     {

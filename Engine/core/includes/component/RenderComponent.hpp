@@ -23,14 +23,16 @@
  */
 // class RenderComponent  : public virtual Component{
 
-struct RenderComponent : Component {
+struct RenderComponent : public IComponent {
   RenderComponent(uuid id, Entity *e, GLuint programID,
                   const std::vector<glm::vec3> &vertices,
                   const std::vector<glm::vec2> &UV);
-  void init(GLuint programID);
-  void update(float dt);
-  void destroy();
+  virtual ~RenderComponent();
 
+  void update(float dt) override;
+
+  // in theory not required? entity controls the position of an object
+  // update modelMatrix based on the entity instead
   void translate(glm::vec3 dir);
 
   inline const GLuint get_vbo() {return _vbo;}
@@ -38,6 +40,9 @@ struct RenderComponent : Component {
   inline const GLuint get_uvVBO() {return _textureID;}
 
 private:
+  void init(GLuint programID);
+  void destroy();
+
   GLuint _vbo;
   GLuint _textureID;
   GLuint _uvVBO;

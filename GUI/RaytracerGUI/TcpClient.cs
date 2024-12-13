@@ -23,7 +23,7 @@ namespace tcp_client
                 Console.WriteLine("Sent: {0}", message);
 
                 // Receive response
-                data = new Byte[256];
+                data = new Byte[512];
                 String responseData = String.Empty;
                 Int32 bytes = stream.Read(data, 0, data.Length);
                 responseData = Encoding.ASCII.GetString(data, 0, bytes);

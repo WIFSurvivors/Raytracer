@@ -19,6 +19,9 @@ public class EcsApi
     public string get_component(String UUID) {
         return "GetComponent";
     }
+    public string get_components(String UUID) {
+        return _client.Send(string.Format("GetComponents {0}", UUID));
+    }
     public string create_entity() {
         return "CreateEntity";
     }

@@ -1,5 +1,4 @@
 #pragma once
-#include "includes/utility/SimpleLogger.hpp"
 #include "includes/Entity.hpp"
 #include "includes/component/SimpleComponent.hpp"
 #include "includes/system/System.hpp"
@@ -7,34 +6,24 @@
 #include <map>
 #include <memory>
 
-typedef boost::uuids::uuid uuid;
+// typedef boost::uuids::uuid uuid;
 
-struct SimpleSystem : public System {
+struct SimpleSystem : public System<SimpleComponent> {
   SimpleSystem();
 
-  SimpleComponent *create_component(uuid id, Entity *e) override;
   SimpleComponent *create_component(uuid id, Entity *e, int value);
-  bool remove(Component *c) override;
-  bool remove(uuid uuid) override;
 
-  void clear();
-
-  inline const auto &get_components() const { return _components; }
-  // bool remove_component(SimpleComponent *c);
-
-  void print_all_components();
-
-  // void init() const;
   void update(const float dt);
-  // void destroy() const;
 
 private:
-  std::map<uuid, std::unique_ptr<SimpleComponent>> _components{};
+  using typename System::uuid;
+  using System::create_component_base;
+  void print_component(const SimpleComponent& c) override;
 };
 
 // template<class T> requires
 // struct system{
-//     virtual bool add_component(Component c) = 0;
+//     virtual bool add_component(IComponent c) = 0;
 // };
 
 // template<class T, class U>
@@ -55,9 +44,9 @@ private:
 // template <class T>
 // struct system{
 
-//     bool add_component(derived<Component> c);
-//     bool remove_component(derived<Component> c);
+//     bool add_component(derived<IComponent> c);
+//     bool remove_component(derived<IComponent> c);
 
 // private:
-//     std::vector<derived<Component>> _components;
+//     std::vector<derived<IComponent>> _components;
 // };

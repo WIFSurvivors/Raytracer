@@ -53,7 +53,7 @@ namespace RaytracerGUI
             {
                 // get variable name
                 string item = clickedMenuItem.Name;
-                
+
 
                 switch (item)
                 {
@@ -104,7 +104,7 @@ namespace RaytracerGUI
                             }
                             catch (InvalidOperationException ex)
                             {
-                               //TODO
+                                //TODO
                             }
                         }
                         break;
@@ -177,7 +177,7 @@ namespace RaytracerGUI
                         tbxLog.ScrollToEnd();
 
                         // TreeBuilder testing
-                        
+
                         entityBuilder = new TreeBuilder(trvEntities);
                         entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
                         break;
@@ -207,7 +207,7 @@ namespace RaytracerGUI
                         {
                             gridButtons.Visibility = Visibility.Collapsed;
                             gridSliders.Visibility = Visibility.Visible;
-                           
+
                         }
                         break;
                 }
@@ -219,7 +219,7 @@ namespace RaytracerGUI
         {
             hWndParent = new WindowInteropHelper(this).Handle;
             loader = new GLFWLoader(this, hWndParent);
-        
+
             if (!loader.WindowLoaded() && connection)
             {
                 MessageBox.Show("GLFW window not found. Make sure it is created before loading the WPF window.");
@@ -288,7 +288,7 @@ namespace RaytracerGUI
 
             }
         }
-      
+
 
         private void StartOtherExe(string exePath)
         {
@@ -395,14 +395,14 @@ namespace RaytracerGUI
                 tbxLog.AppendText(header + "  was clicked with uuid " + uuid + "\n");
 
                 // Run your method here
-                UpdateEntities(header,e);
+                UpdateEntities(header, e);
                 UpdateEntitiesList(header, e);
                 UpdateComponents(header, e);
             }
         }
         private void UpdateComponents(string uuid, RoutedPropertyChangedEventArgs<object> e)
         {
-            tbxLog.AppendText("Component Update\n");
+            tbxLog.AppendText("Component Update\n" + _ecsApi.get_components(uuid)); // bsp "GetComponents 0"
         }
         private void UpdateComponentsList(string uuid, RoutedPropertyChangedEventArgs<object> e)
         {

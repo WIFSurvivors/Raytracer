@@ -44,6 +44,7 @@ void TcpServer::read_message() {
             std::string msg(_buffer.data(), length);
             std::cout << "Data received: " << msg << std::endl;
             std::string return_value = _command_manager.execute_command(msg);
+            std::cout << "Data sent: " << return_value << std::endl;
             boost::asio::write(_socket, boost::asio::buffer(return_value));
             read_message();
         } else {
