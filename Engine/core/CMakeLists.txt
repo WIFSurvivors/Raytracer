@@ -20,11 +20,15 @@ set(BOOST_ENABLE_CMAKE ON)
 set(ABSOLUTE_SHADER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/shaders/")
 
 
+option(USE_AVX "Enable AVX and AVX2" OFF)
+
+if(USE_AVX)
 # Enable AVX and AVX2
-if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
-    add_compile_options(-mavx -mavx2)
-elseif(MSVC)
-    add_compile_options(/arch:AVX2)
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+	  add_compile_options(-mavx -mavx2)
+  elseif(MSVC)
+	  add_compile_options(/arch:AVX2)
+  endif()
 endif()
 
 
