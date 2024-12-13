@@ -7,28 +7,31 @@
 #include <optional>
 #include <memory>
 #include <map>
+#include <string>
 
 typedef boost::uuids::uuid uuid;
 
-struct CameraSystem : public System {
+/**
+ * Handles currently active main camera, which is used by RenderSystem.
+ */
+struct CameraSystem : public System<CameraComponent> {
   CameraSystem();
 
-  CameraComponent *create_component(uuid id, Entity *e) override;
   CameraComponent *create_component(uuid id, Entity *e, float fov);
-  bool remove(Component *c) override;
-  bool remove(uuid uuid) override;
-
-  inline const auto &get_components() const { return _components; }
-  std::optional<CameraComponent *> get_component(uuid id);
 
   void set_main_camera(CameraComponent *cc);
   inline CameraComponent *get_main_camera() const { return _main_camera; }
 
-  void print();
-
   void sample_update_move_main_camera(float dt);
 
+  inline std::string get_system_name() const override {
+    return "Camera System";
+  }
+
+  void print() override;
+
 private:
-  std::map<uuid, std::unique_ptr<CameraComponent>> _components{};
+  using typename System::uuid;
+
   CameraComponent *_main_camera = nullptr;
 };

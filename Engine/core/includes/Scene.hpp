@@ -2,7 +2,7 @@
 
 #include "includes/system/System.hpp"
 #include "includes/system/SimpleSystem.hpp"
-#include "includes/system/EntitySystem.hpp"
+#include "includes/system/EntityStorage.hpp"
 #include "includes/system/RenderSystem.hpp"
 #include "includes/system/CameraSystem.hpp"
 #include "includes/UUIDManager.hpp"
@@ -10,18 +10,33 @@
 #include <memory>
 #include <string>
 
-typedef boost::uuids::uuid uuid;
 struct Entity;
 struct Engine;
 struct SimpleSystem;
-struct EntitySystem;
+struct EntityStorage;
 
 struct Scene {
-  explicit Scene(Engine *e);
-  Scene(Engine *e, uuid id);
-  ~Scene();
+  using uuid = boost::uuids::uuid;
 
-  std::weak_ptr<Entity> get_root();
+  /**
+   * Construct a default scene and the required system, managers and so on.
+   */
+  explicit Scene(Engine *e);
+
+  /**
+   * Construct an empty scene and provides the scene root the specified UUID.
+   */
+  Scene(Engine *e, uuid id);
+  virtual ~Scene();
+
+  inline std::weak_ptr<Entity> get_root() const { return _root; }
+  inline std::optional<Entity *> get_entity(uuid id) {
+    return _entity_storage.get_entity(id);
+  }
+
+  std::optional<Entity *> operator[](uuid id) {
+    return _entity_storage.get_entity(id);
+  }
 
   std::shared_ptr<Entity> create_entity(const std::string &name);
   std::shared_ptr<Entity> create_entity(const std::string &name, uuid id);
@@ -30,14 +45,19 @@ struct Scene {
   std::shared_ptr<Entity> create_entity(const std::string &name, uuid id,
                                         std::shared_ptr<Entity> parent);
 
+//   bool remove(Entity* e);
+//   bool remove(uuid id);
+
   void print();
 
   void generate_sample_content();
+  
+  void update(float dt);
 
   inline UUIDManager *get_uuid_manager() { return &_uuid_manager; }
+  inline EntityStorage *get_entity_storage() { return &_entity_storage; }
   inline RenderSystem *get_render_system() { return &_render_system; }
 
-  void update(float dt);
 
 private:
   std::shared_ptr<Entity> create_root(const std::string &name);
@@ -45,7 +65,7 @@ private:
 
   UUIDManager _uuid_manager{};
 
-  EntitySystem _entity_system{};
+  EntityStorage _entity_storage{};
   SimpleSystem _simple_system{};
   CameraSystem _camera_system{};
   RenderSystem _render_system;

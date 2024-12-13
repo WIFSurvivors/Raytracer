@@ -1,10 +1,10 @@
 #include "includes/component/CameraComponent.hpp"
 #include "includes/component/Component.hpp"
 
-CameraComponent::CameraComponent(uuid id, Entity *e) : Component(id, e) {}
-CameraComponent::CameraComponent(uuid id, Entity *e, float fov)
-    : Component(id, e), _fov(fov) {}
+CameraComponent::CameraComponent(uuid id, Entity *e)
+    : IComponent(id, e), _fov(60.f) {}
 
-void CameraComponent::init() {}
+CameraComponent::CameraComponent(uuid id, Entity *e, float fov)
+    : IComponent(id, e), _fov(fov) {}
+
 void CameraComponent::update(const float dt) {}
-void CameraComponent::destroy() {}

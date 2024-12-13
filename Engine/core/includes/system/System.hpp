@@ -1,52 +1,109 @@
 #pragma once
 
+#include "includes/component/Component.hpp"
+#include "includes/utility/SimpleLogger.hpp"
+#include "includes/utility/VariadicTable.hpp"
+#include "includes/Entity.hpp"
+
 #include <boost/uuid/uuid.hpp>
-#include <string>
+#include <boost/uuid/uuid_io.hpp>
+#include <algorithm>
 #include <memory>
+#include <optional>
+#include <memory>
+#include <map>
+#include <type_traits>
+#include <map>
+#include <string>
 
-typedef boost::uuids::uuid uuid;
-
+// typedef boost::uuids::uuid uuid;
 struct Entity;
-struct Component;
+
+template <typename T>
+concept is_base_of_component = std::is_base_of<IComponent, T>::value;
+
+/**
+ * Parameterless System class, that can be used whenever you don't care about
+ * the underlying type T of System. Imagine this is a sort of placeholder!
+ */
+class ISystem {
+public:
+  virtual ~ISystem() = default;
+
+  inline virtual std::string get_system_name() const = 0;
+};
 
 /*
-A System handles UUID to Component or Entity bindings and can provide
-system-wide attributes and methods.
-*/
-struct System {
+ * A System creates Components by binding them to UUID and Entity. Additionally
+ * it can provide system-wide attributes and methods.
+ */
+template <is_base_of_component T> struct System : public ISystem {
+  using uuid = boost::uuids::uuid;
+
   System() = default;
-  virtual ~System() = default;
+  ~System() override = default;
 
   /**
-   * A component is always linked to an entity. It is recommended to overwrite
-   * return type suited for the system.
+   * Get Component stored in this system. Will return std::nullopt when UUID is
+   * not found.
    */
-  virtual Component *create_component(uuid id, Entity *e);
+  std::optional<T *> get_component(uuid id) {
+    if (!_components.contains(id)) {
+      SimpleLogger::print(std::format("-- ! component {} not found",
+                                      boost::uuids::to_string(id)));
+      return {};
+    }
+    return std::make_optional(_components[id].get());
+  }
 
   /**
-   * Entity arestd::vector<glm::vec3>& vertices, std::vector<glm::vec2>& UV
-   * responsible for representing components in 3D space.
+   * Removes Component from container by component pointer.
+   * This will call remove(uuid)
    */
-  virtual std::shared_ptr<Entity> create_entity(const std::string &name,
-                                                uuid id);
+  bool remove(T *c) { return remove(c->get_uuid()); }
 
   /**
-   * When removing a component, it also needs to be removed from it's designated
-   * entity. Each component knows it's entity. (easy)
+   * Removes Component from container by uuid.
+   * This will also remove it's link to it's entity.
    */
-  virtual bool remove(Component *c);
+  bool remove(uuid id) {
+    // Because each component is a unique_ptr, it will call deconstructor of
+    // IComponent on destruction, which in turn will remove itself from it's
+    // linked entity
+    SimpleLogger::print(std::format("-- ! removing component with UUID {}",
+                                    boost::uuids::to_string(id)));
+    return _components.erase(id);
+  }
 
   /**
-   * When removing an entity, we also need to remove all it's child entites
-   * (easy) as well as all it's components. The latter is more difficult,
-   * because components can be part of different system.
+   * Removes all components from container. Assumption is, that each component's
+   * deconstructor handles deletion properly!
    */
-  virtual bool remove(Entity *e);
+  void clear() {
+    SimpleLogger::print("-- !! clearing all components from system");
+    _components.clear();
+  }
 
   /**
-   * Depending on the uuid, you are either removing an entity or component. A
-   * system usually only supports one of those types and should return false or
-   * error when uuid is not found.
+   * Prints all components of the system
    */
-  virtual bool remove(uuid uuid) = 0;
+  virtual void print() = 0;
+  
+protected:
+  /**
+   * A component is always linked to an entity.
+   * This method is not public, because the user should implement their
+   * own method to allow for extra parameters. It is advised to then call this
+   * function as a first step!
+   */
+  T *create_component_base(uuid id, Entity *e) {
+    SimpleLogger::print("-- create component");
+    _components[id] = std::make_unique<T>(id, e);
+    auto ptr = _components[id].get();
+    // e->add_component(ptr); // this is handled in IComponent Constructor!!
+    return ptr; // pointer can be used by child classes for further
+                // configuration
+  }
+
+  std::map<uuid, std::unique_ptr<T>> _components;
 };

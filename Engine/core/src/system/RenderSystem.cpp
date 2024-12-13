@@ -16,6 +16,11 @@
 
 #include <iostream>
 #include <filesystem>
+
+#ifndef SHADER_ABSOLUTE_PATH
+#define SHADER_ABSOLUTE_PATH "wawawaww"
+#endif
+
 /**
  *	TODO:
  *	- Think about projection clipping space
@@ -28,6 +33,7 @@
 
 RenderSystem::RenderSystem(WindowManager *wm, CameraSystem* cs) : System(), _wm{wm}, _cs{cs} {
   SimpleLogger::print("-- created render system");
+  // init(); // ? just do here ? 
 }
 
 void RenderSystem::init() {
@@ -110,23 +116,14 @@ void RenderSystem::update(const float dt) {
   // update(glfwGetTime());
 }
 
-Component *RenderSystem::create_component(uuid id, Entity *e) {
-  throw NotImplementedError();
-  /*
-  _components[id] =
-      std::make_unique<RenderComponent>(id, e, program->programID);
-  auto ptr = _components[id].get();
-  // ptr->init(program->programID);
-  e->add_component(ptr);
-  return ptr;
-  */
-}
-
 RenderComponent *
 RenderSystem::create_component(uuid id, Entity *e,
                                const std::vector<glm::vec3> &vertices,
                                const std::vector<glm::vec2> &UV) {
   SimpleLogger::print("-- create render component");
+//   auto c = create_component_base(id, e); // ADD THIS
+  
+  // CHANGE RC CONSTRUCTR :C
   _components[id] = std::make_unique<RenderComponent>(id, e, program->programID,
                                                       vertices, UV);
   auto ptr = _components[id].get();
@@ -150,32 +147,18 @@ void RenderSystem::destroy() {
 
 // }
 
-bool RenderSystem::remove(Component *c) { throw NotImplementedError(); }
-bool RenderSystem::remove(uuid uuid) { throw NotImplementedError(); }
-
 void RenderSystem::print() {
-  TablePrinter::printElement("RenderComponent UUID", 36);
-  std::cout << " | ";
-  TablePrinter::printElement("VBO", 12);
-  std::cout << " | ";
-  TablePrinter::printElement("textureID", 12);
-  std::cout << " | ";
-  TablePrinter::printElement("uvVBO", 12);
-  std::cout << "\n";
-  std::cout << std::string(36 + 12 + 12 + 12 + 3 * 3, '=');
-  std::cout << "\n";
-  for (auto const &[uuid, c] : _components) {
-    std::cout << uuid << " | ";
-    if (c == nullptr) {
-      std::cout << "missing...\n";
-      continue;
-    }
-    TablePrinter::printElement(c->get_vbo(), 12);
-    std::cout << " | ";
-    TablePrinter::printElement(c->get_textureID(), 12);
-    std::cout << " | ";
-    TablePrinter::printElement(c->get_uvVBO(), 12);
-    std::cout << "\n";
+  VariadicTable<std::string, GLint, GLint, GLint, std::string> vt(
+      {"RenderComponent UUID", "VBO", "TextureID", "UV VBO", "Entity Name"});
+
+  for (const auto &[key, value] : _components) {
+    vt.addRow(boost::uuids::to_string(key),
+              value->get_vbo(),
+			  value->get_textureID(),
+			  value->get_uvVBO(),
+			  value->get_entity()->get_name());
   }
+
+  vt.print(std::cout);
   std::cout << std::endl;
 }

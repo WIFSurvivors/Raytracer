@@ -13,6 +13,8 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <string>
+
 /**
  *	RenderSystem class, that is resposible for:
  *	- ~~Window Managing~~
@@ -32,33 +34,35 @@
  *	- Jeb, i dont know what to do: implement create_component()
  *	- Do we really need a separate class for shaders
  */
-struct RenderSystem : public System {
+struct RenderSystem : public System<RenderComponent> {
 
-  RenderSystem(WindowManager *wm, CameraSystem* cs);
-  
+  RenderSystem(WindowManager *wm, CameraSystem *cs);
+
   void init();
   void update(const float dt); // represents render
   void destroy();
 
-  Component *create_component(uuid id, Entity *e) override;
   RenderComponent *create_component(uuid id, Entity *e,
                                     const std::vector<glm::vec3> &vertices,
                                     const std::vector<glm::vec2> &UV);
+
+  inline std::string get_system_name() const override {
+    return "Render System";
+  }
 
   //  temporal
   //  we need, this because Render System is responsible for the window and
   //  input handling
   // void render();
   // std::unique_ptr<RenderComponent> _component;
-
-  bool remove(Component *c) override;
-  bool remove(uuid uuid) override;
-
-  void print();
+  void print() override;
 
 private:
+  using System::create_component_base;
+  using typename System::uuid;
+
   WindowManager *_wm;
-  CameraSystem* _cs;
+  CameraSystem *_cs;
 
   std::unique_ptr<Shader> program;
 
