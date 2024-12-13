@@ -16,6 +16,7 @@ void Engine::init_server() {
 void Engine::startLoop() {
   SimpleLogger::print("Engine::startLoop()");
   float t0, t1, dt;
+  #ifdef SHOW_UI
   while (_wm.shouldClose()) {
     t0 = t1;
     t1 = _wm.get_time();
@@ -23,4 +24,9 @@ void Engine::startLoop() {
     _scene.update(t1);
     _wm.update();
   }
+  #else
+  while(true){
+
+  }
+  #endif
 }

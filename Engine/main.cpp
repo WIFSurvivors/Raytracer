@@ -2,6 +2,10 @@
 #include "includes/Engine.hpp"
 #include "includes/utility/SimpleLogger.hpp"
 
+// #ifndef SHOW_UI
+// #define SHOW_UI
+// #endif
+
 int main() {
   SimpleLogger::print("=== APP STARTED ===");
   Engine engine{};

@@ -21,8 +21,8 @@
  *RenderComponent)
  *  - implement better way to store number of vertices
  */
-// class RenderComponent  : public virtual Component{
 
+#ifdef SHOW_UI
 struct RenderComponent : public IComponent {
   RenderComponent(uuid id, Entity *e, GLuint programID,
                   const std::vector<glm::vec3> &vertices,
@@ -73,3 +73,29 @@ private:
   // object
   void setTextures();
 };
+#else
+struct RenderComponent : public IComponent {
+  RenderComponent(uuid id, Entity *e, GLuint programID,
+                  const std::vector<glm::vec3> &vertices,
+                  const std::vector<glm::vec2> &UV);
+  virtual ~RenderComponent();
+
+  void update(float dt) override;
+
+  // in theory not required? entity controls the position of an object
+  // update modelMatrix based on the entity instead
+  void translate(glm::vec3 dir);
+
+  inline const GLuint get_vbo() {return 0;}
+  inline const GLuint get_textureID() {return 0;}
+  inline const GLuint get_uvVBO() {return 0;}
+
+private:
+  void init(GLuint programID);
+  void destroy();
+
+  // void setVertices(); // for now does nothing but later here we can load an
+  // object
+  void setTextures();
+};
+#endif
