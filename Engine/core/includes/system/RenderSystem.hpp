@@ -13,6 +13,7 @@
 #include <memory>
 #include <vector>
 #include <map>
+#include <string>
 
 /**
  *	RenderSystem class, that is resposible for:
@@ -45,7 +46,7 @@ struct RenderSystem : public System<RenderComponent> {
                                     const std::vector<glm::vec3> &vertices,
                                     const std::vector<glm::vec2> &UV);
 
-  inline virtual std::string get_system_name() const override {
+  inline std::string get_system_name() const override {
     return "Render System";
   }
 

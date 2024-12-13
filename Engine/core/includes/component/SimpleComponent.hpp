@@ -10,7 +10,7 @@ struct SimpleComponent : public IComponent {
 
   void update(const float dt) override;
 
-  inline void set_value(int value) { _value = value; };
+  inline void set_value(int value) { _value = value; }
   inline int get_value() { return _value; }
 
 private:

@@ -7,6 +7,7 @@
 #include <optional>
 #include <memory>
 #include <map>
+#include <string>
 
 typedef boost::uuids::uuid uuid;
 
@@ -23,7 +24,7 @@ struct CameraSystem : public System<CameraComponent> {
 
   void sample_update_move_main_camera(float dt);
 
-  inline virtual std::string get_system_name() const override {
+  inline std::string get_system_name() const override {
     return "Camera System";
   }
 

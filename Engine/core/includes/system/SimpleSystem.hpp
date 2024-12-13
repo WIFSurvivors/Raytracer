@@ -5,6 +5,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <map>
 #include <memory>
+#include <string>
 
 // typedef boost::uuids::uuid uuid;
 
@@ -17,7 +18,7 @@ struct SimpleSystem : public System<SimpleComponent> {
 
   void print() override;
 
-  inline virtual std::string get_system_name() const override {
+  inline std::string get_system_name() const override {
     return "Simple System";
   }
 

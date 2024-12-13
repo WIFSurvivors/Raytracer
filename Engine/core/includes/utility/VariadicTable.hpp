@@ -19,6 +19,8 @@
 #include <cmath>
 #include <algorithm>
 #include <limits>
+#include <utility>
+#include <string>
 
 /**
  * Used to specify the column format
@@ -177,7 +179,7 @@ protected:
 
   // Otherwise
   template <typename T>
-  static left_type justify(long /*secondchoice*/)
+  static left_type justify(int64 /*secondchoice*/)
   {
     return std::left;
   }
