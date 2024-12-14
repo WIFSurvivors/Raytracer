@@ -7,7 +7,11 @@
 // #endif
 
 int main() {
-  SimpleLogger::print("=== APP STARTED ===");
+#if SHOW_UI
+  SimpleLogger::print("=== APP STARTED === UI ENABLED");
+#else
+  SimpleLogger::print("=== APP STARTED === UI DISABLED");
+#endif
   Engine engine{};
   engine.startLoop();
   SimpleLogger::print("=== APP ENDED ===");

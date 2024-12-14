@@ -35,8 +35,7 @@
  *	- Do we really need a separate class for shaders
  */
 
-// #define SHOW_UI
-#ifdef SHOW_UI
+#if SHOW_UI
 struct RenderSystem : public System<RenderComponent> {
 
   RenderSystem(WindowManager *wm, CameraSystem *cs);

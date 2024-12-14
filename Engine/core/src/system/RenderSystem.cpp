@@ -30,7 +30,7 @@
  *	  - e.g. Call it something else
  *	  - Separate other functionality to the functions
  */
-#ifdef SHOW_UI
+#if SHOW_UI
 RenderSystem::RenderSystem(WindowManager *wm, CameraSystem* cs) : System(), _wm{wm}, _cs{cs} {
   SimpleLogger::print("-- created render system");
   // init(); // ? just do here ? 

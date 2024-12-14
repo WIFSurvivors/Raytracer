@@ -16,17 +16,15 @@ void Engine::init_server() {
 void Engine::startLoop() {
   SimpleLogger::print("Engine::startLoop()");
   float t0, t1, dt;
-  #ifdef SHOW_UI
+  #if SHOW_UI
   while (_wm.shouldClose()) {
+  #else
+  while (true) {
+  #endif
     t0 = t1;
-    t1 = _wm.get_time();
+    t1 += 0.1f; // fixed time step! CAN BE WAY TOO FAST
     dt = t1 - t0;
     _scene.update(t1);
     _wm.update();
   }
-  #else
-  while(true){
-
-  }
-  #endif
 }

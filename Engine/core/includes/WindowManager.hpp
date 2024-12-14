@@ -1,14 +1,14 @@
 #pragma once
 
-#include "glad/glad.h"
-#ifdef SHOW_UI
+#if SHOW_UI
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #endif
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
-#ifdef SHOW_UI
+#if SHOW_UI
 struct WindowManager {
   //  This function is called, whenever the window size changes
   static void framebuffer_size_callback(GLFWwindow *window, int new_width,

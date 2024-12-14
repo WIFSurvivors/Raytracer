@@ -7,7 +7,7 @@
 #include "includes/utility/SimpleLogger.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
-#ifdef SHOW_UI
+#if SHOW_UI
 RenderComponent::RenderComponent(uuid id, Entity *e, GLuint programID,
                                  const std::vector<glm::vec3> &vertices,
                                  const std::vector<glm::vec2> &UV)

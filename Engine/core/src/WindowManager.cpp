@@ -1,7 +1,7 @@
 #include "includes/WindowManager.hpp"
 #include <iostream>
 
-#ifdef SHOW_UI
+#if SHOW_UI
 void WindowManager::processInput(GLFWwindow *window) {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, true);

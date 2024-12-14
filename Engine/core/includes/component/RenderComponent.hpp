@@ -22,7 +22,7 @@
  *  - implement better way to store number of vertices
  */
 
-#ifdef SHOW_UI
+#if SHOW_UI
 struct RenderComponent : public IComponent {
   RenderComponent(uuid id, Entity *e, GLuint programID,
                   const std::vector<glm::vec3> &vertices,

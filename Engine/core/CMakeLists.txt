@@ -18,7 +18,7 @@ set(BOOST_ENABLE_CMAKE ON)
 
 
 set(ABSOLUTE_SHADER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/shaders/")
-add_compile_definitions(SHOW_UI)
+option(SHOW_UI "Show UI, which means WindowManager and RenderSystem are active" ON)
 
 FetchContent_Declare(
   glad
@@ -55,8 +55,15 @@ set(GLM_INCLUDE_DIRS "${glm_SOURCE_DIR}")
 file(GLOB_RECURSE SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/includes/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/includes/*.h)
 message(STATUS "Shader absolute path: ${ABSOLUTE_SHADER_PATH}")
-message(STATUS "Show UI? ${USE_GUI} ... DOES THIS SHOW TRUE/FALSE?")
-add_definitions(-DSHADER_ABSOLUTE_PATH="${ABSOLUTE_SHADER_PATH}")
+add_definitions(-DSHADER_ABSOLUTE_PATH="${ABSOLUTE_SHADER_PATH}") # out-dated!
+
+# THANKS CHAT GPT! <3
+# Convert to numeric 0/1
+message(STATUS "Show UI: ${SHOW_UI}")
+# Convert ENABLE_FEATURE to a numeric value
+set(SHOW_UI_NUM $<IF:$<BOOL:${SHOW_UI}>,1,0>)
+add_compile_definitions(SHOW_UI=${SHOW_UI_NUM})
+
 # add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} )
 # target_include_directories(${PROJECT_NAME} PUBLIC 
 # ${GLAD_INCLUDE_DIRS}
