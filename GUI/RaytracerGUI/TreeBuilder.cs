@@ -75,7 +75,7 @@ namespace RaytracerGUI
         }
 
 
-        public void BuildTreeFromEntityOptions(string jsonString)
+        public void BuildTreeFromOptions(string jsonString)
         {
             TreeView.Items.Clear();
 

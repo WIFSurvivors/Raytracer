@@ -66,9 +66,8 @@ Closing="Window_Closing">
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TreeView Name="trvEntities" Grid.Row="0" SelectedItemChanged="trvEntities_SelectedItemChanged"> </TreeView>
-                    <TreeView Name="trvComponents" Grid.Row="1" SelectedItemChanged="trvComponents_SelectedItemChanged" ></TreeView>
-
+                    <TreeView Name="trvEntities" Grid.Row="0" SelectedItemChanged="trvEntities_SelectedItemChanged"/>
+                    <TreeView Name="trvComponents" Grid.Row="1" SelectedItemChanged="trvComponents_SelectedItemChanged"/>
 
                 </Grid>
 
@@ -78,13 +77,9 @@ Closing="Window_Closing">
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TreeView Name="trvEntitiesOptions" Grid.Row="0" SelectedItemChanged="trvEntitiesOptions_SelectedItemChanged"></TreeView>
+                    <TreeView Name="trvEntitiesOptions" Grid.Row="0" SelectedItemChanged="trvEntitiesOptions_SelectedItemChanged"/>
+                    <TreeView Name="trvComponentsOptions" Grid.Row="1" SelectedItemChanged="trvComponentsOptions_SelectedItemChanged"/>
 
-                    <ListBox Name="lbxComponent" Grid.Row="1">
-                        <ListBoxItem Content="Component Option 1" />
-                        <ListBoxItem Content="Component Option 2" />
-                        <ListBoxItem Content="Component Option 3" />
-                    </ListBox>
                 </Grid>
             </Grid>
         </Grid>

@@ -33,6 +33,9 @@ namespace RaytracerGUI
         private TreeBuilder entityBuilder;
         private TreeBuilder entityOptionsBuilder;
 
+        private TreeBuilder componentBuilder;
+        private TreeBuilder componentOptionsBuilder;
+
         bool connection = false;
 
         public MainWindow()
@@ -177,10 +180,9 @@ namespace RaytracerGUI
                         tbxLog.ScrollToEnd();
 
                         // TreeBuilder testing
-
-                        entityBuilder = new TreeBuilder(trvEntities);
-                        entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
-                        break;
+                       entityBuilder = new TreeBuilder(trvEntities);
+                       entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
+                       break;
 
                     case "btnToggleB":
                         tbxLog.AppendText(button + "  was clicked! \n");
@@ -404,7 +406,7 @@ namespace RaytracerGUI
             }
 
             entityOptionsBuilder = new TreeBuilder(trvEntitiesOptions);
-            entityOptionsBuilder.BuildTreeFromEntityOptions(ecsJsonNode);
+            entityOptionsBuilder.BuildTreeFromOptions(ecsJsonNode);
 
         }
 
@@ -414,28 +416,59 @@ namespace RaytracerGUI
            
         }
 
-        //Components Update
+        /// Components Update
         private void trvComponents_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (e.NewValue is TreeViewItem selectedItem)
             {
                 string header = selectedItem.Header.ToString();
-                string uuid = selectedItem.Tag.ToString();
-                tbxLog.AppendText(header + "  was clicked with uuid " + uuid + "\n");
+                if (selectedItem.Tag is TreeItemData tagData)
+                {
+                    string uuid = tagData.UUID;       // Access UUID
+                    string name = tagData.Name;       // Access Name
+                    int childrenCount = tagData.Children; // Access Children count
 
-                // Run your method here
-                UpdateEntities(header, e);
-                UpdateEntitiesList(header, e);
-                UpdateComponents(header, e);
+                    UpdateComponentsList(uuid, e);
+                }
+                else
+                {
+                    tbxLog.AppendText($"{header} was clicked, but no valid Tag data found.\n");
+                }
             }
         }
-        private void UpdateComponents(string uuid, RoutedPropertyChangedEventArgs<object> e)
+
+        private void UpdateComponents(string uuidEntity, RoutedPropertyChangedEventArgs<object> e)
         {
-            tbxLog.AppendText("Component Update\n" + _ecsApi.get_components(uuid)); // bsp "GetComponents 0"
+            string? componentsJsonNode = _ecsApi.get_components(uuidEntity);
+            componentBuilder = new TreeBuilder(trvComponents);
+
+            if (componentsJsonNode == null)
+            {
+                tbxLog.AppendText($"No valid component data found for UUID: {uuidEntity}.\n");
+                return;
+            }
+
+            componentBuilder.BuildTreeFromJson(componentsJsonNode);
         }
-        private void UpdateComponentsList(string uuid, RoutedPropertyChangedEventArgs<object> e)
+
+        public void UpdateComponentsList(string uuid, RoutedPropertyChangedEventArgs<object>? e)
         {
-            tbxLog.AppendText("ComponentList Update\n");
+            string? componentsJsonNode = _ecsApi.get_component_options(uuid);
+            tbxLog.AppendText("ComponentList Update : JSON\n\n " + componentsJsonNode + "\n\n");
+
+            if (componentsJsonNode == null)
+            {
+                tbxLog.AppendText("JSON = null.\n");
+                return;
+            }
+
+            componentOptionsBuilder = new TreeBuilder(trvComponentsOptions);
+            componentOptionsBuilder.BuildTreeFromOptions(componentsJsonNode);
+        }
+
+        private void trvComponentsOptions_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+           
         }
 
 
