@@ -69,6 +69,7 @@ void Scene::generate_sample_content() {
   _entity_storage.print();
   _render_system.print();
   _camera_system.print();
+  _root->print();
 
   SimpleLogger::print("\n");
   SimpleLogger::print(std::string(100, '*'));
@@ -125,6 +126,8 @@ void Scene::generate_sample_content() {
 	cc->get_fov(); // ... do something with component ...
   	SimpleLogger::print("YAY");
   }
+  
+  std::cout << c1->to_json();
 
   SimpleLogger::print("\n");
   SimpleLogger::print(std::string(100, '*'));
@@ -134,6 +137,7 @@ void Scene::generate_sample_content() {
   _entity_storage.print();
   _render_system.print();
   _camera_system.print();
+  _root->print();
 }
 
 // currently only tell the render system to update itself

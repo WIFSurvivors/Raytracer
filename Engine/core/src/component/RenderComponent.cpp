@@ -3,6 +3,7 @@
 #include <glm/ext/matrix_transform.hpp>
 
 #include "includes/component/RenderComponent.hpp"
+#include "includes/utility/NotImplementedError.hpp"
 
 #include "includes/utility/SimpleLogger.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -116,4 +117,8 @@ void RenderComponent::setTextures() {
 
 void RenderComponent::translate(glm::vec3 dir) {
   _modelMatrix = glm::translate(_modelMatrix, dir);
+}
+
+void RenderComponent::to_json_details(boost::json::object &obj){
+	throw NotImplementedError();
 }
