@@ -1,6 +1,7 @@
 #pragma once
 #include "includes/component/Component.hpp"
 #include "includes/system/EntityStorage.hpp"
+#include "includes/utility/JSONConvertable.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <glm/vec3.hpp>
 #include <memory>
@@ -10,7 +11,7 @@
 
 // typedef boost::uuids::uuid uuid;
 
-struct Entity : public std::enable_shared_from_this<Entity> {
+struct Entity : public std::enable_shared_from_this<Entity>, public JSONConvertable {
   using uuid = boost::uuids::uuid;
   // make private -> will require some friend magic...
   // Entity(Private);
@@ -45,10 +46,13 @@ struct Entity : public std::enable_shared_from_this<Entity> {
   glm::vec3 get_world_scale() const;
 
   inline uuid get_uuid() { return _uuid; }
-  void print();
 
   inline const std::string &get_name() { return _name; }
   inline void set_name(const std::string &name) { _name = name; }
+  
+  boost::json::object to_json() override;
+
+  void print();
 
 private:
   friend class EntityStorage;
@@ -62,6 +66,9 @@ private:
   static std::shared_ptr<Entity> create(const std::string &name, uuid id,
                                         std::shared_ptr<Entity> parent);
   static std::shared_ptr<Entity> create(const std::string &name, uuid id);
+
+  boost::json::object self_to_json();
+  boost::json::array children_to_json();
 
   uuid _uuid{};
   std::string _name{"untitled"};
