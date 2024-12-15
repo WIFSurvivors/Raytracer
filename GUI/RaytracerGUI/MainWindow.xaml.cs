@@ -180,37 +180,8 @@ namespace RaytracerGUI
                         tbxLog.ScrollToEnd();
 
                         // TreeBuilder testing
-                       entityBuilder = new TreeBuilder(trvEntities);
-                       entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
-                       break;
-
-                    case "btnToggleB":
-                        tbxLog.AppendText(button + "  was clicked! \n");
-                        tbxLog.ScrollToEnd();
-                        if (gridButtons.Visibility == Visibility.Visible)
-                        {
-                            gridButtons.Visibility = Visibility.Collapsed;
-                        }
-                        else
-                        {
-                            gridSliders.Visibility = Visibility.Collapsed;
-                            gridButtons.Visibility = Visibility.Visible;
-                        }
-                        break;
-
-                    case "btnToggleS":
-                        tbxLog.AppendText(button + "  was clicked! \n");
-                        tbxLog.ScrollToEnd();
-                        if (gridSliders.Visibility == Visibility.Visible)
-                        {
-                            gridSliders.Visibility = Visibility.Collapsed;
-                        }
-                        else
-                        {
-                            gridButtons.Visibility = Visibility.Collapsed;
-                            gridSliders.Visibility = Visibility.Visible;
-
-                        }
+                        entityBuilder = new TreeBuilder(trvEntities);
+                        entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
                         break;
 
                     case "btnToggleB":
@@ -238,7 +209,7 @@ namespace RaytracerGUI
                         {
                             gridButtons.Visibility = Visibility.Collapsed;
                             gridSliders.Visibility = Visibility.Visible;
-                           
+
                         }
                         break;
                 }
@@ -545,7 +516,7 @@ namespace RaytracerGUI
 
         private void trvComponentsOptions_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-           
+
         }
 
 
