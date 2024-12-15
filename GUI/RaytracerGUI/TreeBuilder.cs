@@ -62,8 +62,19 @@ namespace RaytracerGUI
                     //Add dummy node to tree to show arrow
                     if (child.children_count > 0)
                     {
-                        childItem.Items.Add(new TreeItemData());
+                        var dummyItem = new TreeViewItem
+                        {
+                            Header = "",
+                            Tag = new TreeItemData
+                            {
+                                Name = "dummy",
+                                UUID = Guid.NewGuid().ToString()
+                            }
+                        };
+
+                        childItem.Items.Add(dummyItem);
                     }
+
 
                     parentItem.Items.Add(childItem);
                     //Expand on mouseclick
