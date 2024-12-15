@@ -54,8 +54,6 @@ struct Entity : public std::enable_shared_from_this<Entity>, public JSONConverta
 
   void print();
 
-  const std::string &get_name();
-  void set_name(const std::string &name);
   inline const auto &get_components() const { return _components; }
 
 

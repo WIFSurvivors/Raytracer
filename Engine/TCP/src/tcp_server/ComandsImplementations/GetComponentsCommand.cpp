@@ -47,4 +47,3 @@ std::string GetComponentsCommand::execute(Engine *e) {
   return "Entity not found";
 }
 int GetComponentsCommand::undo() { return 0; }
-

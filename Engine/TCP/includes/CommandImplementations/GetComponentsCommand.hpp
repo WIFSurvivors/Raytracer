@@ -6,7 +6,7 @@
 #define GET_COMPONENTS_COMMAND "GetComponents"
 
 struct GetComponentsCommand : public TcpCommand {
-    GetComponentsCommand(uuid_t uuid ) : TcpCommand(uuid) {};
+    GetComponentsCommand(uuid__ uuid ) : TcpCommand(uuid) {};
     std::string execute(Engine *e) override;
     int undo() override;
     private:
