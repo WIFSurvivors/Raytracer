@@ -22,7 +22,11 @@ void Engine::startLoop() {
   while (true) {
   #endif
     t0 = t1;
+  #if SHOW_UI
+    t1 = _wm.get_time();
+  #else
     t1 += 0.1f; // fixed time step! CAN BE WAY TOO FAST
+  #endif
     dt = t1 - t0;
     _scene.update(t1);
     _wm.update();
