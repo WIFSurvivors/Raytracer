@@ -216,6 +216,46 @@ namespace RaytracerGUI
             }
         }
 
+        private void SliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Slider? changedSlider = sender as Slider;
+
+            if (changedSlider != null)
+            {
+                string slider = changedSlider.Name;
+                double value = e.NewValue;
+
+                tbxLog.AppendText($"{slider} value changed to: {value}\n");
+
+                if (_ecsApi != null)
+                {
+                    try
+                    {
+                        switch (slider)
+                        {   // Send updated values to the server
+                            case "sldX":
+                                //_ecsApi.post_entity_option("x", value); 
+                                break;
+
+                            case "sldY":
+                                //_ecsApi.post_entity_option("y", value);
+                                break;
+
+                            case "sldZ":
+                                //_ecsApi.post_entity_option("z", value);
+                                break;
+                        }
+                    }
+                    catch (InvalidOperationException ex)
+                    {
+                        tbxLog.AppendText($"Error updating server with {slider}: {ex.Message}\n");
+                    }
+                }
+            }
+        }
+
+
+
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
@@ -329,7 +369,7 @@ namespace RaytracerGUI
                     //tbxLog.AppendText($"{header} was clicked with UUID: {uuid}, Name: {name}, Children: {childrenCount}\n");
 
                     UpdateEntities(uuid, e);
-                    UpdateEntitiesList(uuid, e);
+                    UpdateEntitiesOptions(uuid, e);
                     UpdateComponents(uuid, e);
                 }
                 else
@@ -364,11 +404,10 @@ namespace RaytracerGUI
                 //tbxLog.AppendText($"Updated children for UUID: {uuid}\n");
             }
         }
-        public void UpdateEntitiesList(string uuid, RoutedPropertyChangedEventArgs<object>? e)
+        public void UpdateEntitiesOptions(string uuid, RoutedPropertyChangedEventArgs<object>? e)
         {
             string? ecsJsonNode = _ecsApi.get_entity_options(uuid);
             tbxLog.AppendText("EntityList Update : JSON\n\n " + ecsJsonNode + "\n\n");
-
 
             if (ecsJsonNode == null)
             {
@@ -378,14 +417,52 @@ namespace RaytracerGUI
 
             entityOptionsBuilder = new TreeBuilder(trvEntitiesOptions);
             entityOptionsBuilder.BuildTreeFromOptions(ecsJsonNode);
-
         }
+
 
 
         private void trvEntitiesOptions_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-           
+            var selectedItem = trvEntitiesOptions.SelectedItem;
+            tbxLog.AppendText($"selectedItem: {selectedItem}\n");
+
+
+            if (selectedItem != null)
+            {
+                if (selectedItem is TextBox selectedTextBox)
+                {
+
+                    tbxLog.AppendText("selectedItem is a TextBox");
+                    switch (selectedTextBox.Name)
+                    {
+                        case "x":
+                            if (double.TryParse(selectedTextBox.Text, out double valueX))
+                            {
+                                sldX.Value = valueX;
+                            }
+                            break;
+                        case "y":
+                            if (double.TryParse(selectedTextBox.Text, out double valueY))
+                            {
+                                sldY.Value = valueY;
+                            }
+                            break;
+                        case "z":
+                            if (double.TryParse(selectedTextBox.Text, out double valueZ))
+                            {
+                                sldZ.Value = valueZ;
+                            }
+                            break;
+                    }
+                }
+                else
+                {
+                    tbxLog.AppendText($"selectedItem is not a TextBox: {selectedItem}\n");
+                }
+            }
         }
+
+
 
         /// Components Update
         private void trvComponents_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -399,7 +476,7 @@ namespace RaytracerGUI
                     string name = tagData.Name;       // Access Name
                     int childrenCount = tagData.Children; // Access Children count
 
-                    UpdateComponentsList(uuid, e);
+                    UpdateComponentsOptions(uuid, e);
                 }
                 else
                 {
@@ -422,7 +499,7 @@ namespace RaytracerGUI
             componentBuilder.BuildTreeFromJson(componentsJsonNode);
         }
 
-        public void UpdateComponentsList(string uuid, RoutedPropertyChangedEventArgs<object>? e)
+        public void UpdateComponentsOptions(string uuid, RoutedPropertyChangedEventArgs<object>? e)
         {
             string? componentsJsonNode = _ecsApi.get_component_options(uuid);
             tbxLog.AppendText("ComponentList Update : JSON\n\n " + componentsJsonNode + "\n\n");
