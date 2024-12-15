@@ -93,6 +93,9 @@ struct RenderComponent : public IComponent {
   inline const GLuint get_textureID() {return 0;}
   inline const GLuint get_uvVBO() {return 0;}
 
+protected:
+  void to_json_details(boost::json::object &obj) override;
+  
 private:
   void init(GLuint programID);
   void destroy();
