@@ -15,9 +15,10 @@
 class Engine {
 public:
   Engine();
-  virtual ~Engine() = default;
+  virtual ~Engine();
 
   void startLoop();
+  void stop_server();
 
   inline UUIDManager *get_active_uuid_manager() {
     return _scene.get_uuid_manager();

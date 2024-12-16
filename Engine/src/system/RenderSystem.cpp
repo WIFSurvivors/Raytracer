@@ -30,18 +30,20 @@
  *	  - e.g. Call it something else
  *	  - Separate other functionality to the functions
  */
-#if SHOW_UI
-RenderSystem::RenderSystem(WindowManager *wm, CameraSystem* cs) : System(), _wm{wm}, _cs{cs} {
+
+RenderSystem::RenderSystem(WindowManager *wm, CameraSystem *cs)
+    : System(), _wm{wm}, _cs{cs} {
   SimpleLogger::print("-- created render system");
-  // init(); // ? just do here ? 
+  // init(); // ? just do here ?
 }
 
 void RenderSystem::init() {
+#if SHOW_UI
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cout << "Failed to initialize GLAD" << std::endl;
     return;
   }
-  
+
   std::filesystem::path shader_folder(SHADER_ABSOLUTE_PATH);
   std::filesystem::path compute_shader_file =
       shader_folder / "computeshaderCircle.glsl";
@@ -76,9 +78,11 @@ void RenderSystem::init() {
   _cameraU = glGetUniformLocation(compute->programID, "cameraPos");
   _projU = glGetUniformLocation(compute->programID, "Projection");
   _viewU = glGetUniformLocation(compute->programID, "View");
+#endif
 }
 
 void RenderSystem::update(const float dt) {
+#if SHOW_UI
   //  Specifies the background color1
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
@@ -88,14 +92,15 @@ void RenderSystem::update(const float dt) {
   compute->activateShader();
   glUniform1f(_timeU, dt);
 
-  if(_cs && _cs->get_main_camera()){
-  	_cameraPosition = _cs->get_main_camera()->get_entity()->get_world_position();
-  }else {
-	SimpleLogger::print("-- ERROR: No main camera found -> using 0., 0., +10.");
-	_cameraPosition = glm::vec3{0., 0., +10.};
+  if (_cs && _cs->get_main_camera()) {
+    _cameraPosition =
+        _cs->get_main_camera()->get_entity()->get_world_position();
+  } else {
+    SimpleLogger::print("-- ERROR: No main camera found -> using 0., 0., +10.");
+    _cameraPosition = glm::vec3{0., 0., +10.};
   }
   glUniform3fv(_cameraU, 1, &_cameraPosition[0]);
-  
+
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
 
@@ -110,10 +115,7 @@ void RenderSystem::update(const float dt) {
   for (auto &&c : _components) {
     c.second->update(dt);
   }
-  // Input
-  // processInput(_window);
-
-  // update(glfwGetTime());
+#endif
 }
 
 RenderComponent *
@@ -121,11 +123,15 @@ RenderSystem::create_component(uuid id, Entity *e,
                                const std::vector<glm::vec3> &vertices,
                                const std::vector<glm::vec2> &UV) {
   SimpleLogger::print("-- create render component");
-//   auto c = create_component_base(id, e); // ADD THIS
-  
+  //   auto c = create_component_base(id, e); // ADD THIS
+
   // CHANGE RC CONSTRUCTR :C
-  _components[id] = std::make_unique<RenderComponent>(id, e, program->programID,
-                                                      vertices, UV);
+  int programmID = 0;
+#if SHOW_UI
+  programmID = program->programID;
+#endif
+  _components[id] =
+      std::make_unique<RenderComponent>(id, e, programmID, vertices, UV);
   auto ptr = _components[id].get();
   // ptr->init(program->programID);
   e->add_component(ptr);
@@ -133,76 +139,25 @@ RenderSystem::create_component(uuid id, Entity *e,
 }
 
 void RenderSystem::destroy() {
+#if SHOW_UI
   // _component->destroy();
 
   glDeleteVertexArrays(1, &_vao);
 
   glfwTerminate();
-}
-
-// void RenderSystem::render() {
-// glfwSetInputMode(_wm->_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-
-// glfwMakeContextCurrent(_wm->_window);
-
-// }
-
-void RenderSystem::print() {
-  VariadicTable<std::string, GLint, GLint, GLint, std::string> vt(
-      {"RenderComponent UUID", "VBO", "TextureID", "UV VBO", "Entity Name"});
-
-  for (const auto &[key, value] : _components) {
-    vt.addRow(boost::uuids::to_string(key),
-              value->get_vbo(),
-			  value->get_textureID(),
-			  value->get_uvVBO(),
-			  value->get_entity()->get_name());
-  }
-
-  vt.print(std::cout);
-  std::cout << std::endl;
-}
-#else
-RenderSystem::RenderSystem(WindowManager *wm, CameraSystem* cs) : System() {
-  SimpleLogger::print("-- created DEAD render system");
-}
-
-void RenderSystem::init() { }
-
-void RenderSystem::update(const float dt) { }
-
-RenderComponent *
-RenderSystem::create_component(uuid id, Entity *e,
-                               const std::vector<glm::vec3> &vertices,
-                               const std::vector<glm::vec2> &UV) {
-  SimpleLogger::print("-- create render component");
-//   auto c = create_component_base(id, e); // ADD THIS
-  
-  // CHANGE RC CONSTRUCTR :C
-  _components[id] = std::make_unique<RenderComponent>(id, e, 0,
-                                                      vertices, UV);
-  auto ptr = _components[id].get();
-  // ptr->init(program->programID);
-  e->add_component(ptr);
-  return ptr;
-}
-
-void RenderSystem::destroy() {}
-
-void RenderSystem::print() {
-  VariadicTable<std::string, GLint, GLint, GLint, std::string> vt(
-      {"RenderComponent UUID", "VBO", "TextureID", "UV VBO", "Entity Name"});
-
-  for (const auto &[key, value] : _components) {
-    vt.addRow(boost::uuids::to_string(key),
-              value->get_vbo(),
-			  value->get_textureID(),
-			  value->get_uvVBO(),
-			  value->get_entity()->get_name());
-  }
-
-  vt.print(std::cout);
-  std::cout << std::endl;
-}
 #endif
+}
 
+void RenderSystem::print() {
+  VariadicTable<std::string, GLint, GLint, GLint, std::string> vt(
+      {"RenderComponent UUID", "VBO", "TextureID", "UV VBO", "Entity Name"});
+
+  for (const auto &[key, value] : _components) {
+    vt.addRow(boost::uuids::to_string(key), value->get_vbo(),
+              value->get_textureID(), value->get_uvVBO(),
+              value->get_entity()->get_name());
+  }
+
+  vt.print(std::cout);
+  std::cout << std::endl;
+}

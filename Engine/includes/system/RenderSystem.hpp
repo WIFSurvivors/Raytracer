@@ -35,7 +35,6 @@
  *	- Do we really need a separate class for shaders
  */
 
-#if SHOW_UI
 struct RenderSystem : public System<RenderComponent> {
 
   RenderSystem(WindowManager *wm, CameraSystem *cs);
@@ -60,12 +59,15 @@ struct RenderSystem : public System<RenderComponent> {
   void print() override;
 
 private:
-  using System::create_component_base;
-  using typename System::uuid;
-
   WindowManager *_wm;
   CameraSystem *_cs;
 
+  using System::create_component_base;
+  using typename System::uuid;
+
+  std::map<uuid, std::unique_ptr<RenderComponent>> _components{};
+
+#if SHOW_UI
   std::unique_ptr<Shader> program;
 
   // GLuint mouseUniformID; // a bit cringe... but it stays here for now
@@ -82,39 +84,7 @@ private:
   GLuint _cameraU;
   GLuint _projU;
   GLuint _viewU;
-  
+
   std::unique_ptr<Shader> compute;
-  
-  std::map<uuid, std::unique_ptr<RenderComponent>> _components{};
-};
-#else
-struct RenderSystem : public System<RenderComponent> {
-
-  RenderSystem(WindowManager *wm, CameraSystem *cs);
-
-  void init();
-  void update(const float dt); // represents render
-  void destroy();
-
-  RenderComponent *create_component(uuid id, Entity *e,
-                                    const std::vector<glm::vec3> &vertices,
-                                    const std::vector<glm::vec2> &UV);
-
-  inline std::string get_system_name() const override {
-    return "Render System";
-  }
-
-  //  temporal
-  //  we need, this because Render System is responsible for the window and
-  //  input handling
-  // void render();
-  // std::unique_ptr<RenderComponent> _component;
-  void print() override;
-
-private:
-  using System::create_component_base;
-  using typename System::uuid;
-  
-  std::map<uuid, std::unique_ptr<RenderComponent>> _components{};
-};
 #endif
+};
