@@ -10,34 +10,6 @@ set(CMAKE_INSTALL_PREFIX "${CMAKE_SOURCE_DIR}")
 set(INSTALL_INCLUDE_DIR "${CMAKE_SOURCE_DIR}")
 
 
-add_subdirectory(includes)
-add_subdirectory(src/tcp_server)
-
-
-#FetchContent_MakeAvailable(Boost)
-#file(GLOB_RECURSE TCP_SERVER_SOURCES "src/tcp_server/*.cpp")
-
-
-#add_library(tcp STATIC ${TCP_SERVER_SOURCES})
-#message(STATUS "Boost Include: ${Boost_INCLUDE_DIRS}")
-#message(STATUS "Boost Libraries: ${Boost_LIBRARIES}")
-#target_include_directories(tcp PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_SOURCE_DIR}${Boost_INCLUDE_DIRS})
-#target_link_libraries(tcp
-#  PUBLIC 
-#  Boost::asio
-  # Boost::filesystem
-  #Boost::thread
-  # Boost::program_options
-#  Boost::json
-#  Boost::uuid
-#)
-#if (WIN32)
-#  target_link_libraries(tcp PUBLIC ws2_32 mswsock)
-#endif()
-#IF (TOPLEVEL) 
-#  target_link_libraries(tcp PUBLIC core)
-#ENDIF()
-
 # --- Adding Google Test ---
 
 
