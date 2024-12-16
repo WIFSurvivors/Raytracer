@@ -46,8 +46,11 @@ void RenderSystem::init() {
       shader_folder / "fragmentshader.glsl";
 
   std::cout << "FILE PATH: " << fragment_shader_file.string() << std::endl;
+
   glGenVertexArrays(1, &_vao);
   glBindVertexArray(_vao);
+
+
 
   Shader simpleShader{
       std::make_pair(GL_VERTEX_SHADER, vertex_shader_file.string()),
@@ -73,6 +76,8 @@ void RenderSystem::init() {
   _viewU = glGetUniformLocation(compute->programID, "View");
 
   _canvas = std::make_unique<Canvas>(program->programID);
+
+  loadSSBO();
 }
 
 void RenderSystem::update(const float dt) {
@@ -122,11 +127,21 @@ RenderComponent *
 RenderSystem::create_component(uuid id, Entity *e,
                                const std::vector<glm::vec3> &vertices,
                                const std::vector<glm::vec2> &UV) {
-  _components[id] = std::make_unique<RenderComponent>(id, e, program->programID,
-                                                      vertices, UV);
+  _components[id] = std::make_unique<RenderComponent>(id, e);
   auto ptr = _components[id].get();
-  // ptr->init(program->programID);
   e->add_component(ptr);
+  _nfaces += ptr->_nfaces;
+  _ncomponents++;
+  if(_facesSSBO != -1) {
+      // TODO
+      // implement SSBO deletion
+  }
+  if(_materialSSBO != -1) {
+      // TODO
+      // implement SSBO deletion
+  }
+  _facesSSBO = -1;
+  _materialSSBO = -1;
   return ptr;
 }
 
@@ -142,28 +157,41 @@ bool RenderSystem::remove(Component *c) { throw NotImplementedError(); }
 bool RenderSystem::remove(uuid uuid) { throw NotImplementedError(); }
 
 void RenderSystem::print() {
-  TablePrinter::printElement("RenderComponent UUID", 36);
-  std::cout << " | ";
-  TablePrinter::printElement("VBO", 12);
-  std::cout << " | ";
-  TablePrinter::printElement("textureID", 12);
-  std::cout << " | ";
-  TablePrinter::printElement("uvVBO", 12);
-  std::cout << "\n";
-  std::cout << std::string(36 + 12 + 12 + 12 + 3 * 3, '=');
-  std::cout << "\n";
-  for (auto const &[uuid, c] : _components) {
-    std::cout << uuid << " | ";
-    if (c == nullptr) {
-      std::cout << "missing...\n";
-      continue;
-    }
-    TablePrinter::printElement(c->get_vbo(), 12);
-    std::cout << " | ";
-    TablePrinter::printElement(c->get_textureID(), 12);
-    std::cout << " | ";
-    TablePrinter::printElement(c->get_uvVBO(), 12);
-    std::cout << "\n";
-  }
-  std::cout << std::endl;
+  // TablePrinter::printElement("RenderComponent UUID", 36);
+  // std::cout << " | ";
+  // TablePrinter::printElement("VBO", 12);
+  // std::cout << " | ";
+  // TablePrinter::printElement("textureID", 12);
+  // std::cout << " | ";
+  // TablePrinter::printElement("uvVBO", 12);
+  // std::cout << "\n";
+  // std::cout << std::string(36 + 12 + 12 + 12 + 3 * 3, '=');
+  // std::cout << "\n";
+  // for (auto const &[uuid, c] : _components) {
+  //   std::cout << uuid << " | ";
+  //   if (c == nullptr) {
+  //     std::cout << "missing...\n";
+  //     continue;
+  //   }
+  //   TablePrinter::printElement(c->get_vbo(), 12);
+  //   std::cout << " | ";
+  //   TablePrinter::printElement(c->get_textureID(), 12);
+  //   std::cout << " | ";
+  //   TablePrinter::printElement(c->get_uvVBO(), 12);
+  //   std::cout << "\n";
+  // }
+  // std::cout << std::endl;
+}
+
+
+void RenderSystem::loadSSBO(){
+    glGenBuffers(1, &_facesSSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, _facesSSBO);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Face)*_nfaces, nullptr, GL_STREAM_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, _facesSSBO);
+
+    glGenBuffers(1, &_materialSSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialSSBO);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Material)*_ncomponents, nullptr, GL_STREAM_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, _materialSSBO);
 }

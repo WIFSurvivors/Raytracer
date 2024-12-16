@@ -53,13 +53,15 @@ struct RenderSystem : public System {
 private:
   WindowManager *_wm;
 
+  GLuint _vao;
+  int _nfaces = 0;
+  GLuint _facesSSBO = -1;
+  int _ncomponents = 0;
+  GLuint _materialSSBO = -1;
+
+  std::unique_ptr<Shader> compute;
   std::unique_ptr<Shader> program;
 
-  // GLuint mouseUniformID; // a bit cringe... but it stays here for now
-  GLuint _vao;
-  std::vector<glm::vec3> v = {glm::vec3{-0.5f, -0.5f, 0.0f},
-                              glm::vec3{0.5f, -0.5f, 0.0f},
-                              glm::vec3{0.0f, 0.5f, 0.0f}};
   glm::vec3 _cameraPosition;
   glm::vec3 _cameraDirection;
   float _fov;
@@ -72,5 +74,6 @@ private:
 
   std::unique_ptr<Canvas> _canvas;
   std::map<uuid, std::unique_ptr<RenderComponent>> _components{};
-  std::unique_ptr<Shader> compute;
+
+  void loadSSBO();
 };
