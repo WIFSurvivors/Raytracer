@@ -9,6 +9,7 @@ set(BASE_HEADERS
     ShaderCompiler.hpp
     UUIDManager.hpp
     WindowManager.hpp
+    AssetManager.hpp
 )
 
 list(TRANSFORM BASE_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")

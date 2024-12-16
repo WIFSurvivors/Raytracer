@@ -28,6 +28,7 @@ set(BASE_SOURCES
     Scene.cpp
     UUIDManager.cpp
     WindowManager.cpp
+    AssetManager.cpp
 )
 
 list(TRANSFORM BASE_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
