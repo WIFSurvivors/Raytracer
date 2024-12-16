@@ -18,7 +18,7 @@ struct Entity : public std::enable_shared_from_this<Entity>, public JSONConverta
   Entity();
   Entity(const std::string &name, uuid id);
   Entity(const std::string &name, uuid id, std::shared_ptr<Entity> parent);
-    virtual ~Entity(); 
+
   inline std::shared_ptr<Entity> get_ptr() { return shared_from_this(); }
 
   std::optional<IComponent *> get_component(uuid id);
@@ -49,13 +49,11 @@ struct Entity : public std::enable_shared_from_this<Entity>, public JSONConverta
 
   inline const std::string &get_name() { return _name; }
   inline void set_name(const std::string &name) { _name = name; }
+  inline auto get_components() { return _components; }
   
   boost::json::object to_json() override;
 
   void print();
-
-  inline const auto &get_components() const { return _components; }
-
 
 private:
   friend class EntityStorage;

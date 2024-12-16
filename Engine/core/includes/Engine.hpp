@@ -31,7 +31,7 @@ public:
 private:
   void init_server();
   WindowManager _wm{};
+  Scene _scene{this}; // scene needs be initalized last
   std::shared_ptr<TcpServer> _tcp_server =
       std::make_shared<TcpServer>(51234, this);
-  Scene _scene{this}; // scene needs be initalized last
 };

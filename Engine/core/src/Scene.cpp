@@ -109,10 +109,10 @@ void Scene::generate_sample_content() {
                                glm::vec2{0.0f, 1.0f}};
 
   auto root_ptr = get_root().lock();
-  _render_system.create_component(_uuid_manager.create_uuid(&_render_system),
-                                  root_ptr.get(), v2, u2);
-  _render_system.create_component(_uuid_manager.create_uuid(&_render_system),
-                                  root_ptr.get(), v3, u3);
+  //_render_system.create_component(_uuid_manager.create_uuid(&_render_system),
+  //                                root_ptr.get(), v2, u2);
+  //_render_system.create_component(_uuid_manager.create_uuid(&_render_system),
+                                  // root_ptr.get(), v3, u3);
 
   SimpleLogger::print("\n");
   SimpleLogger::print(std::string(100, '*'));

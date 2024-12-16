@@ -119,7 +119,7 @@ void RenderComponent::setTextures() {
 void RenderComponent::translate(glm::vec3 dir) {
   _modelMatrix = glm::translate(_modelMatrix, dir);
 }
-	
+
 void RenderComponent::to_json_details(boost::json::object &obj){
 	throw NotImplementedError();
 }

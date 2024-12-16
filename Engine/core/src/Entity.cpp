@@ -14,11 +14,6 @@ Entity::Entity(const std::string &name, uuid id, std::shared_ptr<Entity> parent)
 std::shared_ptr<Entity> Entity::create(const std::string &name, uuid id) {
   return std::make_shared<Entity>(name, id);
 }
-Entity::~Entity()
-{
-    std::cout << "Entity::~Entity() called for UUID: " << boost::uuids::to_string(this->get_uuid()) << std::endl;
-    // Add any additional cleanup code here
-}
 
 std::shared_ptr<Entity> Entity::create(const std::string &name, uuid id,
                                        std::shared_ptr<Entity> parent) {
@@ -100,8 +95,8 @@ glm::vec3 Entity::get_world_scale() const {
 
 
 boost::json::object Entity::to_json(){
-      std::cout << "Entity::to_json() called for UUID: " << boost::uuids::to_string(_uuid) << std::endl;
     boost::json::object obj = self_to_json();
+
     boost::json::array children;
     children = std::move(children_to_json());
     obj["children"] = std::move(children);

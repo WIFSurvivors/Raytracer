@@ -1,6 +1,6 @@
 #include "includes/Engine.hpp"
 #include "includes/utility/SimpleLogger.hpp"
-
+#include <iostream>
 class TcpServer;
 Engine::Engine() { init_server(); }
 
@@ -15,6 +15,8 @@ void Engine::init_server() {
 
 void Engine::startLoop() {
   SimpleLogger::print("Engine::startLoop()");
+  std::cout << std::endl;
+  //this->get_scene()->get_entity_storage()->print();
   float t0, t1, dt;
   #if SHOW_UI
   while (_wm.shouldClose()) {
@@ -22,11 +24,7 @@ void Engine::startLoop() {
   while (true) {
   #endif
     t0 = t1;
-  #if SHOW_UI
-    t1 = _wm.get_time();
-  #else
     t1 += 0.1f; // fixed time step! CAN BE WAY TOO FAST
-  #endif
     dt = t1 - t0;
     _scene.update(t1);
     _wm.update();

@@ -13,12 +13,12 @@ std::string GetComponentsCommand::execute(Engine *e) {
         }
 
         auto entity_ptr = (*scene)[_uuid];
-        if (!entity_ptr) {
+        if (!entity_ptr.has_value()) {
             std::cerr << "Entity not found for UUID: " << boost::uuids::to_string(_uuid) << std::endl;
             return "Entity not found";
         }
 
-        auto entity = *entity_ptr;
+        auto entity = entity_ptr.value();
         if (!entity) {
             std::cerr << "Entity is null for UUID: " << boost::uuids::to_string(_uuid) << std::endl;
             return "Entity is null";
