@@ -91,7 +91,7 @@ ${GLFW_INCLUDE_DIRS}
 ${GLM_INCLUDE_DIRS}
 ${Boost_INCLUDE_DIRS}
 )
-target_link_libraries(core PUBLIC glad glfw glm::glm Boost::uuid)
+target_link_libraries(core PUBLIC glad glfw glm::glm Boost::uuid Boost::json)
 IF (TOPLEVEL)
   target_link_libraries(core PUBLIC tcp)
 ENDIF()

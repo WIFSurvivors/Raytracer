@@ -16,10 +16,10 @@ public class Gui
             // Send second message
             //String uuid2 = api.rotate_entity("213213", 1.0f, 2.0f, 3.0f);
             //client.Close();
-            string test = api.get_entity_options("d85c5a75-a2ac-4e10-ae94-25f411dd7843");
-            string message1 = api.get_child_entities("d85c5a75-a2ac-4e10-ae94-25f411dd7843");
+            string test = api.get_entity_options("ab5804c5-4e05-45b1-b7bb-812a397b37cc");
+            string message1 = api.get_child_entities("ab5804c5-4e05-45b1-b7bb-812a397b37cc");
+            string message = api.get_components("ab5804c5-4e05-45b1-b7bb-812a397b37cc");
             string message2 = api.get_root();
-            string message = api.get_components("d85c5a75-a2ac-4e10-ae94-25f411dd7843");
         }
         catch (ArgumentNullException e)
         {
