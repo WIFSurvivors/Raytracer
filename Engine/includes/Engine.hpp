@@ -28,11 +28,14 @@ public:
   inline RenderSystem *get_render_system() {
     return _scene.get_render_system();
   } // temporary solution
-
+  inline void set_tcp_server_message_received(bool value) {
+    _tcp_server_message_received = value;
+  }
 private:
   void init_server();
   WindowManager _wm{};
   Scene _scene{this}; // scene needs be initalized last
   std::shared_ptr<TcpServer> _tcp_server =
       std::make_shared<TcpServer>(51234, this);
+  bool _tcp_server_message_received = false;
 };

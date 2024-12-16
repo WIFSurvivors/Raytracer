@@ -33,6 +33,8 @@ void Engine::startLoop() {
 #else
   while (true) {
 #endif
+    while(_tcp_server_message_received) {
+    }
     t0 = t1;
     t1 += 0.1f; // fixed time step! CAN BE WAY TOO FAST
     dt = t1 - t0;

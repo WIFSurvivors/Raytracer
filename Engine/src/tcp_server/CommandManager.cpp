@@ -1,5 +1,5 @@
 #include "includes/tcp_server/CommandManager.hpp"
-
+#include "includes/Engine.hpp"
 
 void CommandManager::push(std::unique_ptr<TcpCommand> command) {
   _command_queue.push(std::move(command));
@@ -16,10 +16,12 @@ std::string CommandManager::execute_command(std::string command) {
   std::unique_ptr<TcpCommand> tcp_command =
       _factory.create_command(*parsed_command);
   if (tcp_command) {
+    _engine->set_tcp_server_message_received(true);
     std::string return_value = _executer.execute(tcp_command.get(), _engine);
     if(return_value.compare( "0") == 0){
       push(std::move(tcp_command));
     }
+    _engine->set_tcp_server_message_received(false);
     return return_value;
   } else {
     std::cout << "Failed to parse command" << std::endl;

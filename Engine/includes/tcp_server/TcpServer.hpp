@@ -16,6 +16,7 @@ struct TcpServer : public std::enable_shared_from_this<TcpServer> {
   ~TcpServer();
   void start();
   void stop();
+  void execute_commands();
 
 private:
   void do_accept();
