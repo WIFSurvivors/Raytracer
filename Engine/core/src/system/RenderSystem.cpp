@@ -77,10 +77,25 @@ void RenderSystem::init() {
 
   _canvas = std::make_unique<Canvas>(program->programID);
 
-  loadSSBO();
 }
 
 void RenderSystem::update(const float dt) {
+    if(_facesSSBO == 0) {
+        generateSSBOs();
+        int counter = 0;
+        int offset = 0;
+        for (auto &&c : _components) {
+           offset += c.second->loadSSBO(counter, offset, _facesSSBO, _materialSSBO);
+           counter++;
+        }
+    }
+
+    int counter = 0;
+
+    for(auto &&c : _components) {
+        c.second->update(_modelSSBO, counter);
+        counter++;
+    }
   //  Specifies the background color1
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
@@ -101,9 +116,6 @@ void RenderSystem::update(const float dt) {
   program->activateShader();
   glBindVertexArray(_vao);
   // _component->update();
-  for (auto &&c : _components) {
-    c.second->update(dt);
-  }
   _canvas->update(dt);
   // Input
   // processInput(_window);
@@ -132,16 +144,16 @@ RenderSystem::create_component(uuid id, Entity *e,
   e->add_component(ptr);
   _nfaces += ptr->_nfaces;
   _ncomponents++;
-  if(_facesSSBO != -1) {
+  if(_facesSSBO != 0) {
       // TODO
       // implement SSBO deletion
   }
-  if(_materialSSBO != -1) {
+  if(_materialSSBO != 0) {
       // TODO
       // implement SSBO deletion
   }
-  _facesSSBO = -1;
-  _materialSSBO = -1;
+  _facesSSBO = 0;
+  _materialSSBO = 0;
   return ptr;
 }
 
@@ -184,7 +196,7 @@ void RenderSystem::print() {
 }
 
 
-void RenderSystem::loadSSBO(){
+void RenderSystem::generateSSBOs(){
     glGenBuffers(1, &_facesSSBO);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, _facesSSBO);
     glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Face)*_nfaces, nullptr, GL_STREAM_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
@@ -193,5 +205,10 @@ void RenderSystem::loadSSBO(){
     glGenBuffers(1, &_materialSSBO);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, _materialSSBO);
     glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Material)*_ncomponents, nullptr, GL_STREAM_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
-    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, _materialSSBO);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, _materialSSBO);
+
+    glGenBuffers(1, &_modelSSBO);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, _modelSSBO);
+    glBufferData(GL_SHADER_STORAGE_BUFFER, sizeof(Material)*_ncomponents, nullptr, GL_STREAM_DRAW); //sizeof(data) only works for statically sized C/C++ arrays.
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, _modelSSBO);
 }

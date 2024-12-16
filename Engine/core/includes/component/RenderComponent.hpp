@@ -22,11 +22,13 @@ struct Material {
 struct RenderComponent : Component {
   RenderComponent(uuid id, Entity *e);
   void init();
-  void update();
+  void update(int counter, GLuint modelSSBO);
+  int loadSSBO(int counter, int offset, GLuint facesSSBO, GLuint materialSSBO);
   void destroy();
 
   int _nfaces = 0;
 
 private:
+    Material _material;
     std::vector<Face> _faces;
 };

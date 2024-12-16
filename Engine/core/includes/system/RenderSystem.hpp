@@ -55,9 +55,10 @@ private:
 
   GLuint _vao;
   int _nfaces = 0;
-  GLuint _facesSSBO = -1;
+  GLuint _facesSSBO = 0;
   int _ncomponents = 0;
-  GLuint _materialSSBO = -1;
+  GLuint _materialSSBO = 0;
+  GLuint _modelSSBO = 0;
 
   std::unique_ptr<Shader> compute;
   std::unique_ptr<Shader> program;
@@ -75,5 +76,5 @@ private:
   std::unique_ptr<Canvas> _canvas;
   std::map<uuid, std::unique_ptr<RenderComponent>> _components{};
 
-  void loadSSBO();
+  void generateSSBOs();
 };
