@@ -290,7 +290,7 @@ namespace RaytracerGUI
             {
                 try
                 {
-                    StartOtherExe("../../../../../Engine/build/TopLevelProject.exe");
+                    StartOtherExe("../../../../../Engine/build/Engine.exe");
                     _ecsApi = new EcsApi("127.0.0.1", 51234);
 
                     // initial root-request
