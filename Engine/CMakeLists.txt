@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.30.0)
-project(TopLevelProject VERSION 0.0.1 DESCRIPTION "Top Level Project")
+project(Engine VERSION 0.0.1 DESCRIPTION "Engine for TCP Server and Client in CPP using Boost")
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
@@ -30,10 +30,13 @@ FetchContent_MakeAvailable(googletest)
 add_subdirectory(core)
 add_subdirectory(TCP)
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} main.cpp ${TCP_SERVER_SOURCES} ${TCP_SERVER_HEADERS}) 
 target_include_directories(${PROJECT_NAME} PUBLIC 
 ${CMAKE_CURRENT_SOURCE_DIR}/core 
-${CMAKE_CURRENT_SOURCE_DIR}/TCP
 ${Boost_INCLUDE_DIRS}
 )
-target_link_libraries(${PROJECT_NAME} PUBLIC core tcp)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC  Boost::asio Boost::thread Boost::json Boost::uuid)
+if (WIN32)
+  target_link_libraries(${PROJECT_NAME} PUBLIC ws2_32 mswsock)
+endif()
