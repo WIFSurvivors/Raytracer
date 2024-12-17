@@ -7,11 +7,11 @@ using System.Xml.Linq;
 
 namespace RaytracerGUI
 {
-    class EcsNode
+    class EcsComponentNode
     {
-        public string uuid { get; set; }
+        //TODO not sure if needed
         public string name { get; set; }
         public int children_count { get; set; }
-        public List<EcsNode> children { get; set; }
+        public List<EcsEntityNode> children { get; set; }
     }
 }
