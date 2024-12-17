@@ -18,7 +18,6 @@ public:
   virtual ~Engine();
 
   void startLoop();
-  void stop_server();
 
   inline UUIDManager *get_active_uuid_manager() {
     return _scene.get_uuid_manager();
@@ -31,8 +30,10 @@ public:
   inline void set_tcp_server_message_received(bool value) {
     _tcp_server_message_received = value;
   }
+
 private:
   void init_server();
+  void stop_server();
   WindowManager _wm{};
   Scene _scene{this}; // scene needs be initalized last
   std::shared_ptr<TcpServer> _tcp_server =
