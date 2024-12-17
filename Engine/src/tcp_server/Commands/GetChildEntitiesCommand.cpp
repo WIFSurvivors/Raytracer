@@ -10,14 +10,14 @@ std::string GetChildEntitiesCommand::execute(Engine *e) {
     std::cout << "GetChildEntitiesCommand::execute()1" << std::endl;
     if (!scene) {
         std::cerr << "Scene pointer is null" << std::endl;
-        return "";
+        return "Scene not found";
     }
     std::cout << "GetChildEntitiesCommand::execute()2" << std::endl;
     auto entity = scene->get_entity(_uuid);
     std::cout << "GetChildEntitiesCommand::execute()3" << std::endl;
     if (!entity.has_value()) {
         std::cerr << "Entity pointer is null" << std::endl;
-        return "";
+        return "Entity not found";
     }
     std::cout << "GetChildEntitiesCommand::execute()4" << std::endl;
     auto json_entity = entity.value()->to_json();

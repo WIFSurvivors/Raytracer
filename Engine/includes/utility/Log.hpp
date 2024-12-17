@@ -8,7 +8,7 @@
 
 namespace fs = std::filesystem;
 struct Log {
-  enum class Level : unsigned int { Error = 0, Warn = 1, Message = 2, Debug = 3 };
+  enum class Level : unsigned int { Error = 0, Warn = 1, Message = 2, Debug = 3, Tcp = 4 };
 
 private:
   static std::string level_to_ansi_color(Level level) {
@@ -26,7 +26,11 @@ private:
     case Level::Debug:
       return "\033[96m"; // cyan
       break;
+    case Level::Tcp:
+      return "\033[92m"; // green
+      break;
     }
+    return Log::reset_color();
   }
 
   static std::string reset_color() {
@@ -69,6 +73,7 @@ public:
   static void error(const std::string &s) { error(s, Level::Error); }
   // disabled on release / active on verbose or sth... not done yet!!
   static void debug(const std::string &s) { print(s, Level::Debug); }
+  static void tcp(const std::string &s) { print(s, Level::Tcp); }
 
   static void set_log_level(Level level) { _log_level = level; }
 
@@ -77,6 +82,7 @@ public:
     warn("Hello :3");
     error("Hello :3");
     debug("Hello :3");
+    tcp("Hello :3");
   }
 
   static void set_log_file(std::filesystem::path s) { _log_file = s; }

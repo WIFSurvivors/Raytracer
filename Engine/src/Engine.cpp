@@ -1,8 +1,11 @@
 #include "includes/Engine.hpp"
 #include "includes/utility/Log.hpp"
+#include "includes/tcp_server/TcpServer.hpp"
 #include <iostream>
 class TcpServer;
-Engine::Engine() { init_server(); }
+Engine::Engine() : _tcp_server(std::make_shared<TcpServer>(51234, this)) { 
+  init_server();
+  }
 Engine::~Engine() { stop_server(); }
 
 void Engine::init_server() {
@@ -22,19 +25,17 @@ void Engine::stop_server() {
     Log::error("Error: " + std::string(e.what()));
   }
 }
-
+    
 void Engine::startLoop() {
   Log::message("Engine::startLoop()");
   std::cout << std::endl;
-  // this->get_scene()->get_entity_storage()->print();
   float t0, t1, dt;
 #if SHOW_UI
   while (_wm.shouldClose()) {
 #else
   while (true) {
 #endif
-    while (_tcp_server_message_received) {
-    }
+    _tcp_server->execute_command();
     t0 = t1;
     t1 += 0.1f; // fixed time step! CAN BE WAY TOO FAST
     dt = t1 - t0;
