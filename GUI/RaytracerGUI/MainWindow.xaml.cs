@@ -143,50 +143,67 @@ namespace RaytracerGUI
                 // get variable name
                 string button = clickedButton.Name;
 
+                tbxLog.AppendText(button + " was clicked! \n");
+                tbxLog.ScrollToEnd();
+
                 switch (button)
                 {
                     case "btnLeft":
-                        tbxLog.AppendText(button + " was clicked! \n");
-                        tbxLog.ScrollToEnd();
+                        //_ecsApi.post...
                         break;
 
                     case "btnRight":
-                        tbxLog.AppendText(button + " was clicked! \n");
-                        tbxLog.ScrollToEnd();
+                        //_ecsApi.post...
                         break;
 
                     case "btnUp":
-                        tbxLog.AppendText(button + " was clicked! \n");
-                        tbxLog.ScrollToEnd();
+                        //_ecsApi.post...
                         break;
 
                     case "btnDown":
-                        tbxLog.AppendText(button + " was clicked! \n");
-                        tbxLog.ScrollToEnd();
+                        //_ecsApi.post...
+                        break;
+
+                    case "btnBack":
+                        //_ecsApi.post...
+                        break;
+
+                    case "btnForward":
+                        //_ecsApi.post...
                         break;
 
                     case "btnRx":
-                        tbxLog.AppendText(button + "  was clicked! \n");
-                        tbxLog.ScrollToEnd();
+                        //_ecsApi.post...
                         break;
 
                     case "btnRy":
-                        tbxLog.AppendText(button + "  was clicked! \n");
-                        tbxLog.ScrollToEnd();
+                        //_ecsApi.post...
+                        break;
+
+                    case "btnRz":
+                        //_ecsApi.post...
                         break;
 
                     case "btnLog":
-                        tbxLog.AppendText($"{DateTime.Now}: Log entry added.\n");
-                        tbxLog.ScrollToEnd();
+
+                        if (tbxLog.Visibility == Visibility.Collapsed)
+                        {
+                            tbxLog.Visibility = Visibility.Visible;
+                            ColumnLog.Width = new GridLength(1, GridUnitType.Star);
+                        }
+                        else
+                        {
+                            tbxLog.Visibility = Visibility.Collapsed;
+                            ColumnLog.Width = new GridLength(0);
+                        }
 
                         // TreeBuilder testing
-                       entityBuilder = new TreeBuilder(trvEntities);
+                        entityBuilder = new TreeBuilder(trvEntities);
                        entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
                        break;
 
                     case "btnToggleB":
-                        tbxLog.AppendText(button + "  was clicked! \n");
-                        tbxLog.ScrollToEnd();
+
                         if (gridButtons.Visibility == Visibility.Visible)
                         {
                             gridButtons.Visibility = Visibility.Collapsed;
@@ -197,10 +214,9 @@ namespace RaytracerGUI
                             gridButtons.Visibility = Visibility.Visible;
                         }
                         break;
-
+                        
                     case "btnToggleS":
-                        tbxLog.AppendText(button + "  was clicked! \n");
-                        tbxLog.ScrollToEnd();
+
                         if (gridSliders.Visibility == Visibility.Visible)
                         {
                             gridSliders.Visibility = Visibility.Collapsed;
@@ -226,6 +242,7 @@ namespace RaytracerGUI
                 double value = e.NewValue;
 
                 tbxLog.AppendText($"{slider} value changed to: {value}\n");
+                tbxLog.ScrollToEnd();
 
                 if (_ecsApi != null)
                 {
@@ -243,6 +260,22 @@ namespace RaytracerGUI
 
                             case "sldZ":
                                 //_ecsApi.post_entity_option("z", value);
+                                break;
+
+                            case "sldRx":
+                                //_ecsApi.post...
+                                break;
+
+                            case "sldRy":
+                                //_ecsApi.post...
+                                break;
+
+                            case "sldRz":
+                                //_ecsApi.post...
+                                break;
+
+                            case "sldZoom":
+                                //_ecsApi.post...
                                 break;
                         }
                     }
