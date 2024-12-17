@@ -9,7 +9,8 @@
 // #endif
 
 int main() {
-  Log::set_log_level(Log::Level::Message);
+  Log::set_log_level(Log::Level::Debug);
+  Log::display_color_demo();
 #if SHOW_UI
   Log::message("=== APP STARTED === UI=ON");
 #else

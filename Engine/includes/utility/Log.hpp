@@ -10,17 +10,19 @@ struct Log {
 
 private:
   static std::string level_to_ansi_color(Level level) {
+    // ANSI-Coloring -> see:
+    // https://stackoverflow.com/questions/4842424/list-of-ansi-color-escape-sequences
     switch (level) {
     case Level::Error:
-      return "\033[31m"; // red
+      return "\033[91m"; // red
     case Level::Warn:
-      return "\033[33m"; // yellow
+      return "\033[93m"; // yellow
       break;
     case Level::Message:
       return "\033[39m"; // default
       break;
     case Level::Debug:
-      return "\033[36m"; // cyan
+      return "\033[96m"; // cyan
       break;
     }
   }
@@ -49,4 +51,11 @@ public:
   static void debug(const std::string &s) { print(s, Level::Debug); }
 
   static void set_log_level(Level level) { _log_level = level; }
+
+  static void display_color_demo() {
+    message("Hello :3");
+    warn("Hello :3");
+    error("Hello :3");
+    debug("Hello :3");
+  }
 };
