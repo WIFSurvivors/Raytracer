@@ -1,7 +1,7 @@
 set(UTILITY_SOURCES 
     NotImplementedError.cpp
     NotSupportedError.cpp
-    SimpleLogger.cpp
+    Log.cpp
     TablePrinter.cpp
 )
 list(TRANSFORM UTILITY_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")

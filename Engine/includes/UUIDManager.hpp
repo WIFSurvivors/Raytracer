@@ -1,6 +1,6 @@
 #pragma once
 
-#include "includes/utility/SimpleLogger.hpp"
+#include "includes/utility/Log.hpp"
 #include "includes/system/System.hpp"
 #include "includes/Entity.hpp"
 #include <boost/uuid/uuid.hpp>

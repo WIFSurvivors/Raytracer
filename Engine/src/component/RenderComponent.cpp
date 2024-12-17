@@ -5,7 +5,7 @@
 #include "includes/component/RenderComponent.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 
-#include "includes/utility/SimpleLogger.hpp"
+#include "includes/utility/Log.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
 #if SHOW_UI
@@ -20,12 +20,10 @@ RenderComponent::RenderComponent(uuid id, Entity *e, GLuint programID,
   init(programID);
 }
 
-RenderComponent::~RenderComponent(){
-	destroy();
-}
+RenderComponent::~RenderComponent() { destroy(); }
 
 void RenderComponent::init(GLuint programID) {
-  SimpleLogger::print("RenderComponent::init()");
+  Log::message("RenderComponent::init()");
   //  TODO:
   //  - Understand the index of the generic vertex attribute
   //  (glVertexAttribPointer())
@@ -120,8 +118,8 @@ void RenderComponent::translate(glm::vec3 dir) {
   _modelMatrix = glm::translate(_modelMatrix, dir);
 }
 
-void RenderComponent::to_json_details(boost::json::object &obj){
-	throw NotImplementedError();
+void RenderComponent::to_json_details(boost::json::object &obj) {
+  throw NotImplementedError();
 }
 #else
 RenderComponent::RenderComponent(uuid id, Entity *e, GLuint programID,
@@ -131,9 +129,7 @@ RenderComponent::RenderComponent(uuid id, Entity *e, GLuint programID,
   init(programID);
 }
 
-RenderComponent::~RenderComponent(){
-	destroy();
-}
+RenderComponent::~RenderComponent() { destroy(); }
 
 void RenderComponent::init(GLuint programID) {}
 
@@ -141,12 +137,11 @@ void RenderComponent::update(const float dt) {}
 
 void RenderComponent::destroy() {}
 
-void RenderComponent::setTextures() { }
+void RenderComponent::setTextures() {}
 
 void RenderComponent::translate(glm::vec3 dir) {}
 
-void RenderComponent::to_json_details(boost::json::object &obj){
-	throw NotImplementedError();
+void RenderComponent::to_json_details(boost::json::object &obj) {
+  throw NotImplementedError();
 }
 #endif
-

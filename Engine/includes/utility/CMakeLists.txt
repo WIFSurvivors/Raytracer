@@ -2,7 +2,7 @@ set(UTILITY_HEADERS
     JSONConvertable.hpp
     NotImplementedError.hpp
     NotSupportedError.hpp
-    SimpleLogger.hpp
+    Log.hpp
     TablePrinter.hpp
     VariadicTable.hpp
     JsonConverter.hpp

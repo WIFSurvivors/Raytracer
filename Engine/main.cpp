@@ -1,6 +1,6 @@
 #include "includes/tcp_server/TcpServer.hpp"
 #include "includes/Engine.hpp"
-#include "includes/utility/SimpleLogger.hpp"
+#include "includes/utility/Log.hpp"
 #include <exception>
 #include <string>
 
@@ -9,18 +9,19 @@
 // #endif
 
 int main() {
+  Log::set_log_level(Log::Level::Message);
 #if SHOW_UI
-  SimpleLogger::print("=== APP STARTED === UI ENABLED");
+  Log::message("=== APP STARTED === UI=ON");
 #else
-  SimpleLogger::print("=== APP STARTED === UI DISABLED");
+  Log::message("=== APP STARTED === UI=OFF");
 #endif
   try {
     Engine engine{};
     engine.startLoop();
   } catch (std::exception &e) {
-    SimpleLogger::print("App crashed!!!!");
-    SimpleLogger::print(std::string(e.what()));
+    Log::error("App crashed!!!!");
+    Log::error(std::string(e.what()));
   }
-  SimpleLogger::print("=== APP ENDED ===");
+  Log::message("=== APP ENDED ===");
   return 0;
 }

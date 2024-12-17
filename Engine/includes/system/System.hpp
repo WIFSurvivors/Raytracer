@@ -1,7 +1,7 @@
 #pragma once
 
 #include "includes/component/Component.hpp"
-#include "includes/utility/SimpleLogger.hpp"
+#include "includes/utility/Log.hpp"
 #include "includes/utility/VariadicTable.hpp"
 #include "includes/Entity.hpp"
 
@@ -49,8 +49,8 @@ template <is_base_of_component T> struct System : public ISystem {
    */
   std::optional<T *> get_component(uuid id) {
     if (!_components.contains(id)) {
-      SimpleLogger::print(std::format("-- ! component {} not found",
-                                      boost::uuids::to_string(id)));
+      Log::warn(std::format("-- ! component {} not found",
+                            boost::uuids::to_string(id)));
       return {};
     }
     return std::make_optional(_components[id].get());
@@ -70,8 +70,8 @@ template <is_base_of_component T> struct System : public ISystem {
     // Because each component is a unique_ptr, it will call deconstructor of
     // IComponent on destruction, which in turn will remove itself from it's
     // linked entity
-    SimpleLogger::print(std::format("-- ! removing component with UUID {}",
-                                    boost::uuids::to_string(id)));
+    Log::message(std::format("-- ! removing component with UUID {}",
+                             boost::uuids::to_string(id)));
     return _components.erase(id);
   }
 
@@ -80,7 +80,7 @@ template <is_base_of_component T> struct System : public ISystem {
    * deconstructor handles deletion properly!
    */
   void clear() {
-    SimpleLogger::print("-- !! clearing all components from system");
+    Log::message("-- !! clearing all components from system");
     _components.clear();
   }
 
@@ -88,7 +88,7 @@ template <is_base_of_component T> struct System : public ISystem {
    * Prints all components of the system
    */
   virtual void print() = 0;
-  
+
 protected:
   /**
    * A component is always linked to an entity.
@@ -97,7 +97,7 @@ protected:
    * function as a first step!
    */
   T *create_component_base(uuid id, Entity *e) {
-    SimpleLogger::print("-- create component");
+    Log::message("-- create component");
     _components[id] = std::make_unique<T>(id, e);
     auto ptr = _components[id].get();
     // e->add_component(ptr); // this is handled in IComponent Constructor!!

@@ -4,8 +4,7 @@
 #include "includes/component/RenderComponent.hpp"
 #include "includes/ShaderCompiler.hpp"
 #include "includes/utility/NotImplementedError.hpp"
-#include "includes/utility/TablePrinter.hpp"
-#include "includes/utility/SimpleLogger.hpp"
+#include "includes/utility/Log.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glm/ext/matrix_transform.hpp>
@@ -33,7 +32,7 @@
 
 RenderSystem::RenderSystem(WindowManager *wm, CameraSystem *cs)
     : System(), _wm{wm}, _cs{cs} {
-  SimpleLogger::print("-- created render system");
+  Log::message("-- created render system");
   // init(); // ? just do here ?
 }
 
@@ -96,7 +95,7 @@ void RenderSystem::update(const float dt) {
     _cameraPosition =
         _cs->get_main_camera()->get_entity()->get_world_position();
   } else {
-    SimpleLogger::print("-- ERROR: No main camera found -> using 0., 0., +10.");
+    Log::error("-- ERROR: No main camera found -> using 0., 0., +10.");
     _cameraPosition = glm::vec3{0., 0., +10.};
   }
   glUniform3fv(_cameraU, 1, &_cameraPosition[0]);
@@ -122,7 +121,7 @@ RenderComponent *
 RenderSystem::create_component(uuid id, Entity *e,
                                const std::vector<glm::vec3> &vertices,
                                const std::vector<glm::vec2> &UV) {
-  SimpleLogger::print("-- create render component");
+  Log::message("-- create render component");
   //   auto c = create_component_base(id, e); // ADD THIS
 
   // CHANGE RC CONSTRUCTR :C

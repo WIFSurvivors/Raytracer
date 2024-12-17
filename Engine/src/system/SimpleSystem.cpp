@@ -1,7 +1,7 @@
 #include "includes/system/SimpleSystem.hpp"
 #include "includes/Entity.hpp"
 #include "includes/component/SimpleComponent.hpp"
-#include "includes/utility/SimpleLogger.hpp"
+#include "includes/utility/Log.hpp"
 #include "includes/utility/VariadicTable.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <iostream>
@@ -9,12 +9,10 @@
 #include <utility>
 #include <type_traits>
 
-SimpleSystem::SimpleSystem() {
-  SimpleLogger::print("-- created simple system");
-}
+SimpleSystem::SimpleSystem() { Log::message("-- created simple system"); }
 
 SimpleComponent *SimpleSystem::create_component(uuid id, Entity *e, int value) {
-  SimpleLogger::print("-- create simple component");
+  Log::message("-- create simple component");
   auto c = create_component_base(id, e);
   c->set_value(value);
   return c;

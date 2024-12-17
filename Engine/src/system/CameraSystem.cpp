@@ -1,6 +1,5 @@
 #include "includes/system/CameraSystem.hpp"
-#include "includes/utility/SimpleLogger.hpp"
-#include "includes/utility/TablePrinter.hpp"
+#include "includes/utility/Log.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <format>
 #include <iostream>
@@ -11,11 +10,11 @@
 #include "glm/ext.hpp"
 
 CameraSystem::CameraSystem() : System{} {
-  SimpleLogger::print("-- created camera system");
+  Log::message("-- created camera system");
 }
 
 CameraComponent *CameraSystem::create_component(uuid id, Entity *e, float fov) {
-  SimpleLogger::print("-- create camera component");
+  Log::message("-- create camera component");
   auto c = create_component_base(id, e);
   c->set_fov(fov);
   if (!_main_camera) {
@@ -30,7 +29,7 @@ void CameraSystem::set_main_camera(CameraComponent *cc) {
   }
   _main_camera = cc;
   _main_camera->set_is_main_camera(true);
-  SimpleLogger::print(std::format(
+  Log::message(std::format(
       "Set new main camera ({})\n\t-> camera is on entity \"{}\"({})",
       boost::uuids::to_string(_main_camera->get_uuid()),
       _main_camera->get_entity()->get_name(),
@@ -57,10 +56,8 @@ void CameraSystem::print() {
       {"CameraComponent UUID", "Main?", "FoV", "Entity Name"});
 
   for (const auto &[key, value] : _components) {
-    vt.addRow(boost::uuids::to_string(key),
-              value->is_main_camera(),
-			  value->get_fov(),
-			  value->get_entity()->get_name());
+    vt.addRow(boost::uuids::to_string(key), value->is_main_camera(),
+              value->get_fov(), value->get_entity()->get_name());
   }
 
   std::cout << std::boolalpha;

@@ -1,6 +1,6 @@
-#include "includes/Scene.hpp"
+#include "includes/utility/Log.hpp"
 #include "includes/Engine.hpp"
-#include "includes/utility/SimpleLogger.hpp"
+#include "includes/utility/Log.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <cassert>
 #include <format>
@@ -29,9 +29,8 @@ std::shared_ptr<Entity> Scene::create_root(const std::string &name) {
 }
 
 std::shared_ptr<Entity> Scene::create_root(const std::string &name, uuid id) {
-  SimpleLogger::print(
-      std::format("-- scene: create_root(name, uuid): \"{}\", {}", name,
-                  boost::uuids::to_string(id)));
+  Log::message(std::format("-- scene: create_root(name, uuid): \"{}\", {}",
+                           name, boost::uuids::to_string(id)));
   return _entity_storage.create_root_entity(name, id);
 }
 
@@ -52,14 +51,14 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name,
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
                                              std::shared_ptr<Entity> parent) {
-  SimpleLogger::print(std::format(
+  Log::message(std::format(
       "-- scene: create_entity(name, uuid, parent): \"{}\", {}, \"{}\"", name,
       boost::uuids::to_string(id), parent->get_name()));
   return _entity_storage.create_entity(name, id, parent);
 }
 
 void Scene::print() {
-  SimpleLogger::print("CURRENTLY DOES NOTHING SRYYYYYYYYY");
+  Log::message("CURRENTLY DOES NOTHING SRYYYYYYYYY");
   // _root->print();
 }
 
@@ -70,9 +69,9 @@ void Scene::generate_sample_content() {
   _camera_system.print();
   _root->print();
 
-  SimpleLogger::print("\n");
-  SimpleLogger::print(std::string(100, '*'));
-  SimpleLogger::print("\n");
+  Log::message("\n");
+  Log::message(std::string(100, '*'));
+  Log::message("\n");
 
   // ============== ENTITY + SIMPLE COMPONENT ==============
 
@@ -113,9 +112,9 @@ void Scene::generate_sample_content() {
   _render_system.create_component(_uuid_manager.create_uuid(&_render_system),
                                   root_ptr.get(), v3, u3);
 
-  SimpleLogger::print("\n");
-  SimpleLogger::print(std::string(100, '*'));
-  SimpleLogger::print("\n");
+  Log::message("\n");
+  Log::message(std::string(100, '*'));
+  Log::message("\n");
 
   auto sys = _uuid_manager.get_system(c1->get_uuid());
   auto csys = static_cast<CameraSystem *>(sys);
@@ -124,14 +123,14 @@ void Scene::generate_sample_content() {
   if (occ.has_value()) {
     auto cc = occ.value();
     cc->get_fov(); // ... do something with component ...
-    SimpleLogger::print("YAY");
+    Log::message("YAY");
   }
 
   std::cout << c1->to_json();
 
-  SimpleLogger::print("\n");
-  SimpleLogger::print(std::string(100, '*'));
-  SimpleLogger::print("\n");
+  Log::message("\n");
+  Log::message(std::string(100, '*'));
+  Log::message("\n");
 
   _uuid_manager.print();
   _entity_storage.print();
