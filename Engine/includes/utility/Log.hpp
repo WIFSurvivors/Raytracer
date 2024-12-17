@@ -8,7 +8,7 @@
 
 namespace fs = std::filesystem;
 struct Log {
-  enum class Level : uint { Error = 0, Warn = 1, Message = 2, Debug = 3 };
+  enum class Level : unsigned int { Error = 0, Warn = 1, Message = 2, Debug = 3 };
 
 private:
   static std::string level_to_ansi_color(Level level) {
