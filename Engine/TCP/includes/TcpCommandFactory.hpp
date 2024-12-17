@@ -11,6 +11,7 @@
 #include "includes/CommandImplementations/CloseRenderCommand.hpp"
 #include "includes/CommandImplementations/GetChildEntitiesCommand.hpp"
 #include "includes/CommandImplementations/GetComponentsCommand.hpp"
+#include "includes/CommandImplementations/ImportJsonCommand.hpp"
 #include "includes/CommandImplementations/GetEntityOptionsCommand.hpp"
 #include "includes/CommandImplementations/ScaleCommand.hpp"
 #include <boost/uuid/uuid.hpp>

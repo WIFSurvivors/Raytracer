@@ -17,6 +17,7 @@ public class Gui
             string uuid3 = api.scale_entity(uuid_place, 6.0f, 2.0f, 5.0f);
             // Send second message
             String uuid2 = api.rotate_entity(uuid_place, 3.0f, 2.0f, 1.0f);
+            string uuid4 = api.json_import();
             //client.Close();
             //string test = api.get_entity_options("c9ba5b5b-eb8e-430b-badf-e4ec7c68e9e2");
             //string message = api.get_root();

@@ -5,7 +5,8 @@ TcpCommandFactory::TcpCommandFactory() {}
 std::unique_ptr<TcpCommand> TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
   std::cout << "Creating command from message: " << parsed_command.command << std::endl;
     uuid _uuid;
-    if (!parsed_command.uuid.empty())
+    std::cout << "UUID: " << parsed_command.uuid << std::endl;
+    if (!parsed_command.uuid.empty() && parsed_command.uuid.compare("null") != 0)
     {
       _uuid = boost::uuids::string_generator{}(parsed_command.uuid);
     }
@@ -41,6 +42,10 @@ std::unique_ptr<TcpCommand> TcpCommandFactory::create_command(ParsedTcpCommand p
     std::cout << "Create GetEntitiesCommand from message: " << std::endl;
 
     return std::make_unique<GetChildEntitiesCommand>(_uuid);
+  }
+  else if (parsed_command.command.compare(IMPORT_JSON_COMMAND) == 0) {
+    std::cout << "Create ImportJsonCommand from message: " << std::endl;
+    return std::make_unique<importJsonCommand>(parsed_command.parameters[0]);
   }
   else if (parsed_command.command.compare(GET_COMPONENTS_COMMAND) == 0) {
     std::cout << "Create GetComponentsCommand from message: " << std::endl;

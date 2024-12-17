@@ -16,6 +16,13 @@ public class EcsApi
             throw new InvalidOperationException("Could not establish a TCP connection.", ex);
         }
     }
+
+    public string json_import(string path) {
+        //Aktuell gibt die Engine den Inhalt der Datei an. Wird noch geändert.
+        string returnValue = _client.Send(String.Format("ImportJson null {0}", path));
+        return returnValue;
+    }
+
     public string close_RS()
     {
         return _client.Send("CloseRender");
