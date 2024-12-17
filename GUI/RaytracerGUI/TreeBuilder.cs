@@ -26,7 +26,7 @@ namespace RaytracerGUI
             try
             {
                 TreeView.Items.Clear();
-                var jsonRoot = JsonSerializer.Deserialize<EcsNode>(jsonString);
+                var jsonRoot = JsonSerializer.Deserialize<EcsEntityNode>(jsonString);
                 if (jsonRoot != null)
                 {
                     TreeViewItem rootItem = new TreeViewItem
@@ -50,7 +50,7 @@ namespace RaytracerGUI
             }
         }
 
-        public void CreateChildItems(EcsNode ecsNode, TreeViewItem parentItem)
+        public void CreateChildItems(EcsEntityNode ecsNode, TreeViewItem parentItem)
         {
             if (ecsNode.children != null && ecsNode.children.Count > 0)
             {

@@ -237,12 +237,12 @@ namespace RaytracerGUI
         {
             Slider? changedSlider = sender as Slider;
 
-            //TODO get information from textbo
+            //TODO get information (which textbox must be updated)
+            //TODO get xyz from textbox and update _ecsapi
             //var UUID;
             //var x;
             //var y;
             //var z;
-
 
             if (changedSlider != null)
             {
@@ -434,7 +434,7 @@ namespace RaytracerGUI
 
 
             // Deserialize the JSON
-            var updatedNode = JsonSerializer.Deserialize<EcsNode>(ecsJsonNode);
+            var updatedNode = JsonSerializer.Deserialize<EcsEntityNode>(ecsJsonNode);
             if (updatedNode == null)
             {
                 tbxLog.AppendText("EntitiyJSON = null.\n");
@@ -545,8 +545,12 @@ namespace RaytracerGUI
         private void UpdateComponents(string uuidEntity, RoutedPropertyChangedEventArgs<object> e)
         {
             string? componentsJsonNode = _ecsApi.get_components(uuidEntity);
-            var updatedNode = JsonSerializer.Deserialize<EcsNode>(componentsJsonNode);
-            componentBuilder = new TreeBuilder(trvComponents, this);
+            try
+            {
+                //PROBLEM: Exception when deserialized, no class for object existent:
+                //JSON: {"components":[{"uuid":"67949d3e-de96-487f-a03c-5b900da73e4b"}]}
+                var updatedNode = JsonSerializer.Deserialize<string>(componentsJsonNode);
+                componentBuilder = new TreeBuilder(trvComponents, this);
 
             if (componentsJsonNode == null)
             {
@@ -554,7 +558,13 @@ namespace RaytracerGUI
                 return;
             }
 
-            componentBuilder.BuildTreeFromJson(componentsJsonNode);
+            componentBuilder.BuildTreeFromJson(updatedNode);
+            }
+            catch (Exception ex)
+            {
+                tbxLog.AppendText("JSON is null for uuid " + uuidEntity+ "\n");
+            }
+
         }
 
         public void UpdateComponentsOptions(string uuid, RoutedPropertyChangedEventArgs<object>? e)
