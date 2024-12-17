@@ -11,33 +11,42 @@ namespace RaytracerGUI
 {
     class TreeBuilder
     {
+        private readonly MainWindow _mainWindow;
+
         public TreeView TreeView { get; private set; }
 
-        public TreeBuilder(TreeView treeView)
+        public TreeBuilder(TreeView treeView, MainWindow mainWindow)
         {
             TreeView = treeView;
+            _mainWindow = mainWindow;
         }
 
         public void BuildTreeFromJson(string jsonString)
         {
-            TreeView.Items.Clear();
-            var jsonRoot = JsonSerializer.Deserialize<EcsNode>(jsonString);
-            if (jsonRoot != null)
+            try
             {
-                TreeViewItem rootItem = new TreeViewItem
+                TreeView.Items.Clear();
+                var jsonRoot = JsonSerializer.Deserialize<EcsNode>(jsonString);
+                if (jsonRoot != null)
                 {
-                    Header = jsonRoot.name,
-                    Tag = new TreeItemData
+                    TreeViewItem rootItem = new TreeViewItem
                     {
-                        UUID = jsonRoot.uuid,
-                        Name = jsonRoot.name,
-                        Children = jsonRoot.children_count
-                    }
-                };
+                        Header = jsonRoot.name,
+                        Tag = new TreeItemData
+                        {
+                            UUID = jsonRoot.uuid,
+                            Name = jsonRoot.name,
+                            Children = jsonRoot.children_count
+                        }
+                    };
 
-                CreateChildItems(jsonRoot, rootItem);
-                TreeView.Items.Add(rootItem);
-                ToolTipService.SetToolTip(rootItem, jsonRoot.uuid);
+                    CreateChildItems(jsonRoot, rootItem);
+                    TreeView.Items.Add(rootItem);
+                    ToolTipService.SetToolTip(rootItem, jsonRoot.uuid);
+                }
+            }
+            catch (Exception e) {
+                _mainWindow.tbxLog.AppendText("\n"+e.Message);
             }
         }
 
@@ -112,47 +121,50 @@ namespace RaytracerGUI
                     jsonData.Options = new Dictionary<string, Dictionary<string, string>>(); // Initialize if null
 
                 }
-
-                // Populate the options as child nodes
-                foreach (var category in jsonData.Options)
+                try
                 {
-                    var categoryItem = new TreeViewItem
+                    // Populate the options as child nodes
+                    foreach (var category in jsonData.Options)
                     {
-                        Header = category.Key, // Translation, rotation, scale
-                    };
-
-                    foreach (var property in category.Value)
-                    {
-                        var propertyItem = new TreeViewItem
+                        var categoryItem = new TreeViewItem
                         {
-                            Header = $"{property.Key}: ",
-                            Tag = property.Key // Store the property key for easy reference
+                            Header = category.Key, // Translation, rotation, scale
                         };
 
-                        // Create a TextBox to make the property value editable
-                        var textBox = new TextBox
+                        foreach (var property in category.Value)
                         {
-                            Text = property.Value, // Set initial value
-                            VerticalAlignment = VerticalAlignment.Center
-                        };
+                            var propertyItem = new TreeViewItem
+                            {
+                                Header = $"{property.Key}: ",
+                                Tag = property.Key // Store the property key for easy reference
+                            };
 
-                        // Handle TextChanged event to update value when user edits it
-                        textBox.TextChanged += (sender, e) =>
-                        {
-                        
-                        };
+                            // Create a TextBox to make the property value editable
+                            var textBox = new TextBox
+                            {
+                                Name = property.Key, // Set the name (e.g., "x", "y", "z") for reference
+                                Text = property.Value, // Set initial value
+                                VerticalAlignment = VerticalAlignment.Center
+                            };
 
-                        // Add the TextBox to the TreeViewItem
-                        propertyItem.Items.Add(textBox);
-                        categoryItem.Items.Add(propertyItem);
-                        propertyItem.IsExpanded = true;
+                            // Handle TextChanged event to update value when user edits it
+                            textBox.TextChanged += _mainWindow.TextBox_TextChanged;
+
+                            // Add the TextBox to the TreeViewItem
+                            propertyItem.Items.Add(textBox);
+                            categoryItem.Items.Add(propertyItem);
+                            propertyItem.IsExpanded = true;
+                        }
+
+                        rootItem.Items.Add(categoryItem);
+                        categoryItem.IsExpanded = true;
+
                     }
-
-                    rootItem.Items.Add(categoryItem);
-                    categoryItem.IsExpanded = true;
-                    
                 }
-                
+                catch (Exception ex)
+                {
+                    _mainWindow.tbxLog.AppendText("\n" + ex.Message);
+                }
                 
                 // Add root to the TreeView
                 TreeView.Items.Add(rootItem);

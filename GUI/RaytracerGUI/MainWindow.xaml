@@ -101,9 +101,8 @@ Closing="Window_Closing">
 
                 <!--TCP Log-->
                 <Button Name="btnLog" Grid.Column="0" Style="{StaticResource PrimaryButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="10" Height="160" Click="generalButtonClick"/>
-                <TextBox Name="tbxLog" Grid.Column="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" AcceptsReturn="True" VerticalAlignment="Top" TextWrapping="Wrap"/>
+                <TextBox Name="tbxLog" Grid.Column="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" AcceptsReturn="True" VerticalAlignment="Top" TextChanged="tbxLog_TextChanged" TextWrapping="Wrap" />
                
-
                 <Grid Height="180" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
