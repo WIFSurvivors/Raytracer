@@ -26,6 +26,7 @@ target_link_libraries(tcp
   # Boost::program_options
   Boost::json
   Boost::uuid
+  glm
 )
 if (WIN32)
   target_link_libraries(tcp PUBLIC ws2_32 mswsock)

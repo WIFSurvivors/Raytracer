@@ -24,7 +24,13 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-
+FetchContent_Declare(
+  glm
+  GIT_REPOSITORY https://github.com/g-truc/glm.git
+  GIT_TAG master
+  GIT_PROGRESS    TRUE
+)
+FetchContent_MakeAvailable(glm)
 
 # Add subdirectories
 add_subdirectory(core)

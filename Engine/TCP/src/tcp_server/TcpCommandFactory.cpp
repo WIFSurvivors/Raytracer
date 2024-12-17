@@ -11,16 +11,23 @@ std::unique_ptr<TcpCommand> TcpCommandFactory::create_command(ParsedTcpCommand p
     }
   if (parsed_command.command.compare(MOVE_COMMAND) == 0) {
     std::cout << "Create MoveCommand" << std::endl;
-    int x = std::stoi(parsed_command.parameters[0]);
-    int y = std::stoi(parsed_command.parameters[1]);
-    int z = std::stoi(parsed_command.parameters[2]);
+    float x = std::stof(parsed_command.parameters[0]);
+    float y = std::stof(parsed_command.parameters[1]);
+    float z = std::stof(parsed_command.parameters[2]);
     return std::make_unique<MoveCommand>(_uuid, x, y, z);
   } else if (parsed_command.command.compare(ROTATE_COMMAND) == 0) {
     std::cout << "Create RotateCommand from message: " << std::endl;
-    int x = std::stoi(parsed_command.parameters[0]);
-    int y = std::stoi(parsed_command.parameters[1]);
-    int z = std::stoi(parsed_command.parameters[2]);
+    float x = std::stof(parsed_command.parameters[0]);
+    float y = std::stof(parsed_command.parameters[1]);
+    float z = std::stof(parsed_command.parameters[2]);
     return std::make_unique<RotateCommand>(_uuid, x, y, z);
+  }
+  else if(parsed_command.command.compare(SCALE_COMMAND) == 0) {
+    std::cout << "Create ScaleCommand from message: " << std::endl;
+    float x = std::stof(parsed_command.parameters[0]);
+    float y = std::stof(parsed_command.parameters[1]);
+    float z = std::stof(parsed_command.parameters[2]);
+    return std::make_unique<ScaleCommand>(_uuid, x, y, z);
   }
   else if  (parsed_command.command.compare(GET_ROOT_COMMAND) == 0) {
     std::cout << "Create GetRootCommand from message: " << std::endl;

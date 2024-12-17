@@ -12,6 +12,7 @@
 #include "includes/CommandImplementations/GetChildEntitiesCommand.hpp"
 #include "includes/CommandImplementations/GetComponentsCommand.hpp"
 #include "includes/CommandImplementations/GetEntityOptionsCommand.hpp"
+#include "includes/CommandImplementations/ScaleCommand.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/string_generator.hpp>
