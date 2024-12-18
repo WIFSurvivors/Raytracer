@@ -13,6 +13,8 @@ uniform vec3 cameraPos;
 const int hittableCount = 3;
 const int emitterCount = 1;
 
+
+
 struct Sphere {
     float r;
     vec3 C;
@@ -237,7 +239,7 @@ vec4 rayColor(Ray r) {
     
     Light[1] lightSources;
     vec3 position = vec3(-10.0,10.0,10.0)+3*sin(time);
-    lightSources[0] = Light(position,vec3(0.0,0.0,0.0), vec3(1.0,1.0,1.0),200.0);
+    lightSources[0] = Light(position,vec3(0.0,0.0,0.0), vec3(1.0,1.0,1.0),500.0);
     //return CalcColor(s, r);
     return CalcColorWithLightSources(s,r,lightSources);
     //t = intersectsSphere(s1, r); //

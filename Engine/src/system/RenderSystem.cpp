@@ -5,6 +5,7 @@
 #include "includes/ShaderCompiler.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 #include "includes/utility/Log.hpp"
+#include "includes/utility/bvhtree_tiny.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glm/ext/matrix_transform.hpp>
@@ -45,7 +46,7 @@ void RenderSystem::init() {
 
   std::filesystem::path shader_folder(SHADER_ABSOLUTE_PATH);
   std::filesystem::path compute_shader_file =
-      shader_folder / "computeshaderCircle.glsl";
+      shader_folder / "computeShaderWithTriangles.glsl";
   std::filesystem::path vertex_shader_file =
       shader_folder / "vertexshader.glsl";
   std::filesystem::path fragment_shader_file =
@@ -64,8 +65,8 @@ void RenderSystem::init() {
       std::make_pair(GL_COMPUTE_SHADER, compute_shader_file.string())};
   compute = std::make_unique<Shader>(computeShader);
 
-  _cameraPosition = glm::vec3(0.0f, 10.0f, 10.0f);
-  _cameraDirection = glm::vec3(0.0f, 0.0f, 0.0f);
+  _cameraPosition = glm::vec3(0.0f, 8.0f, 15.0f);
+  _cameraDirection = glm::vec3(0.0f, 3.0f, 0.0f);
   _viewMatrix =
       glm::lookAt(_cameraPosition, _cameraDirection, glm::vec3(0, 1, 0));
   //  TODO:
@@ -77,11 +78,100 @@ void RenderSystem::init() {
   _cameraU = glGetUniformLocation(compute->programID, "cameraPos");
   _projU = glGetUniformLocation(compute->programID, "Projection");
   _viewU = glGetUniformLocation(compute->programID, "View");
+
+  std::cout << "HERRRREE\n";
+
+  std::vector<Triangle> triforce2 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
+  std::vector<Triangle> triforce1 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
+  std::vector<Triangle> triforce3 = createCube(glm::vec3{-2.0f, 0.0f, 0.0f});
+
+  std::vector<Triangle> triforce = triforce1;
+  triforce.insert(triforce.end(), triforce2.begin(), triforce2.end());
+  triforce.insert(triforce.end(), triforce3.begin(), triforce3.end());
+  std::cout << triforce.size() << std::endl;
+
+  TreeBuilder builder{};
+  builder.prepareSSBOData();
+  builder.checkData();
+
+  //
+  std::cout << "SIZE:  " << sizeof(SSBONodes) << std::endl;
+
+  glGenBuffers(1, &ssbo_tree);
+  glGenBuffers(1, &ssbo_indices);
+  glGenBuffers(1, &ssbo_vertex);
+  glGenBuffers(1, &ssbo_mats);
+  glGenBuffers(1, &ssbo_matsIDX);
+
+  glGenBuffers(1, &ssbo_triangle);
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);
+
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               builder.ssboData.size() * sizeof(SSBONodes),
+               builder.ssboData.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo_tree);
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_indices);
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               builder.triIdxData.size() * sizeof(uint32_t),
+               builder.triIdxData.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, ssbo_indices);
+
+  // Depracated lol
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_triangle);
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               builder.triangles.size() * sizeof(Triangle),
+               builder.triangles.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo_triangle);
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_vertex);
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               builder.vertex.size() * sizeof(Vec3Padded),
+               builder.vertex.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, ssbo_vertex);
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_mats);
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               builder.mats.size() * sizeof(Materials), builder.mats.data(),
+               GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, ssbo_mats);
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_matsIDX);
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               builder.matIndx.size() * sizeof(uint32_t),
+               builder.matIndx.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, ssbo_matsIDX);
+
+  // DEBUG INFORMATION
+  //
+
+  int work_grp_cnt[3];
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &work_grp_cnt[0]);
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &work_grp_cnt[1]);
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &work_grp_cnt[2]);
+  std::cout << "Max work groups per compute shader"
+            << " x:" << work_grp_cnt[0] << " y:" << work_grp_cnt[1]
+            << " z:" << work_grp_cnt[2] << "\n";
+
+  int work_grp_size[3];
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &work_grp_size[0]);
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &work_grp_size[1]);
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &work_grp_size[2]);
+  std::cout << "Max work group sizes"
+            << " x:" << work_grp_size[0] << " y:" << work_grp_size[1]
+            << " z:" << work_grp_size[2] << "\n";
+
+  int work_grp_inv;
+  glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &work_grp_inv);
+  std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
 #endif
 }
 
 void RenderSystem::update(const float dt) {
 #if SHOW_UI
+  static auto lastTime = std::chrono::high_resolution_clock::now();
+  static int frameCount = 0;
+  static double elapsedTime = 0.0;
   //  Specifies the background color1
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
@@ -94,6 +184,8 @@ void RenderSystem::update(const float dt) {
   if (_cs && _cs->get_main_camera()) {
     _cameraPosition =
         _cs->get_main_camera()->get_entity()->get_world_position();
+    _cs->get_main_camera()->get_entity()->set_local_position(
+        glm::vec3(0.0f, 8.0f, 15.0f));
   } else {
     Log::error("-- ERROR: No main camera found -> using 0., 0., +10.");
     _cameraPosition = glm::vec3{0., 0., +10.};
@@ -104,7 +196,9 @@ void RenderSystem::update(const float dt) {
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
 
   auto screen_size = _wm->getScreenSize();
-  glDispatchCompute(screen_size.x, screen_size.y, 1);
+  // int groupsX = (screen_size.x + 16 - 1) / 16;
+  // int groupsY = (screen_size.y + 16 - 1) / 16;
+  glDispatchCompute(ceil(screen_size.x / 32.0), ceil(screen_size.y / 32.0), 1);
   glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
   // Setup fragment and vertex shader
@@ -113,6 +207,25 @@ void RenderSystem::update(const float dt) {
   // _component->update();
   for (auto &&c : _components) {
     c.second->update(dt);
+  }
+  // Input
+  // processInput(_window);
+
+  // update(glfwGetTime());
+  //
+
+  frameCount++;
+  auto currentTime = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> frameTime = currentTime - lastTime;
+  lastTime = currentTime;
+  elapsedTime += frameTime.count();
+  // Print FPS every 1 second
+  if (elapsedTime >= 1.0) {
+    double fps = frameCount / elapsedTime;
+    std::cout << "FPS: " << fps << std::endl;
+
+    frameCount = 0;
+    elapsedTime = 0.0;
   }
 #endif
 }

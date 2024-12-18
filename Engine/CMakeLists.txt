@@ -50,13 +50,34 @@ FetchContent_Declare(
   GIT_TAG master
   GIT_PROGRESS    TRUE
 )
-
+FetchContent_Declare(
+  tinybvh
+  # GIT_REPOSITORY https://github.com/jbikker/tinybvh.git
+  GIT_REPOSITORY https://github.com/Azayel/tinybvh_raytrace_fork.git
+  GIT_TAG main
+  GIT_PROGRESS    TRUE
+)
 # find_package(OpenGL REQUIRED)
 
-FetchContent_MakeAvailable(glad glfw glm boost)
+
+option(USE_AVX "Enable AVX and AVX2" ON)
+
+if(USE_AVX)
+# Enable AVX and AVX2
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+	  add_compile_options(-mavx -mavx2)
+  elseif(MSVC)
+	  add_compile_options(/arch:AVX2)
+  endif()
+endif()
+
+
+
+FetchContent_MakeAvailable(glad glfw glm boost tinybvh)
 set(GLAD_INCLUDE_DIRS "${glad_SOURCE_DIR}/include")
 set(GLFW_INCLUDE_DIRS "${glfw_SOURCE_DIR}/include")
 set(GLM_INCLUDE_DIRS "${glm_SOURCE_DIR}")
+set(TINYBVH_INCLUDE_DIRS "${tinybvh_SOURCE_DIR}")
 
 message(STATUS "Show UI: ${SHOW_UI}")
 # Convert ENABLE_FEATURE to a numeric value
@@ -75,6 +96,7 @@ ${CMAKE_CURRENT_SOURCE_DIR}
 ${GLAD_INCLUDE_DIRS}  
 ${GLFW_INCLUDE_DIRS} 
 ${GLM_INCLUDE_DIRS}
+${tinybvh_SOURCE_DIR}
 )
 target_link_libraries(${PROJECT_NAME} PUBLIC  glad glfw glm::glm Boost::asio Boost::thread Boost::json Boost::uuid)
 if (WIN32)

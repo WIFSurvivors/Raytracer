@@ -6,6 +6,7 @@ set(UTILITY_HEADERS
     TablePrinter.hpp
     VariadicTable.hpp
     JsonConverter.hpp
+    bvhtree_tiny.hpp
     )
 
     list(TRANSFORM UTILITY_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")

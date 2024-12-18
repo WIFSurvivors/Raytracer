@@ -18,7 +18,7 @@ struct AssetManager {
   enum class Type { Shader, Material, Object };
 
   struct Asset {
-    uuid uuid;
+    uuid _uuid;
     Type type;
     std::filesystem::path path;
   };
