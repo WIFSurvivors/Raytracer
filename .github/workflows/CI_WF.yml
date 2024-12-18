@@ -91,6 +91,15 @@ jobs:
       - name: Add GCC to PATH
         run: echo "C:\tools\mingw64\bin" >> $env:GITHUB_PATH
 
+      - name: Add make to Path
+        run: echo "C:\ProgramData\chocolatey\lib" >> $env:GITHUB_PATH
+
+      - name: Verify make
+        run: make --version
+
+      - name: Test
+        run: where make
+        
       - name: Verify GCC Version
         run: gcc --version
         
