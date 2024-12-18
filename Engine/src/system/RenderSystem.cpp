@@ -184,6 +184,8 @@ void RenderSystem::update(const float dt) {
   if (_cs && _cs->get_main_camera()) {
     _cameraPosition =
         _cs->get_main_camera()->get_entity()->get_world_position();
+    _cs->get_main_camera()->get_entity()->set_local_position(
+        glm::vec3(0.0f, 8.0f, 15.0f));
   } else {
     Log::error("-- ERROR: No main camera found -> using 0., 0., +10.");
     _cameraPosition = glm::vec3{0., 0., +10.};
@@ -228,7 +230,6 @@ void RenderSystem::update(const float dt) {
 #endif
 }
 
-
 RenderComponent *
 RenderSystem::create_component(uuid id, Entity *e,
                                const std::vector<glm::vec3> &vertices,
@@ -248,8 +249,6 @@ RenderSystem::create_component(uuid id, Entity *e,
   e->add_component(ptr);
   return ptr;
 }
-
-
 
 void RenderSystem::destroy() {
 #if SHOW_UI

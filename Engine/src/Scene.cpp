@@ -141,6 +141,6 @@ void Scene::generate_sample_content() {
 
 // currently only tell the render system to update itself
 void Scene::update(float dt) {
-  _camera_system.sample_update_move_main_camera(dt);
+  //_camera_system.sample_update_move_main_camera(dt);
   _render_system.update(dt);
 }
