@@ -1,7 +1,7 @@
 #include <iostream>
 #include <memory>
 #define TINYBVH_IMPLEMENTATION
-#include "tiny_bvh.h"
+#include <tiny_bvh.h>
 #ifdef _MSC_VER
 #include "stdlib.h" // for rand
 #include "stdio.h"  // for printf
