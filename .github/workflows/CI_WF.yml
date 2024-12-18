@@ -73,8 +73,8 @@ jobs:
           choco install 7zip --no-progress
 
       - name: Install make
-      run: |
-        choco install make --no-progress
+        run: |
+          choco install make --no-progress
 
       - name: Extract GCC
         run: |
