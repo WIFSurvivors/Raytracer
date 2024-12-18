@@ -2,8 +2,7 @@
 
 TcpCommandFactory::TcpCommandFactory() {}
 
-std::unique_ptr<TcpCommand>
-TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
+std::unique_ptr<TcpCommand> TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
   std::cout << "Creating command from message: " << parsed_command.command
             << std::endl;
   uuid _uuid;
