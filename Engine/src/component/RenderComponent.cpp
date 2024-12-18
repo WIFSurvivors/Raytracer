@@ -12,7 +12,7 @@
 RenderComponent::RenderComponent(uuid id, Entity *e, GLuint programID,
                                  const std::vector<glm::vec3> &vertices,
                                  const std::vector<glm::vec2> &UV)
-    : IComponent{id, e} {
+    : IComponent{id, e, "RenderComponent"} {
   _vertices = vertices;
   _nvertices = vertices.size();
   _uv = UV;
