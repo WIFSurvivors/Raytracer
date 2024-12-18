@@ -151,7 +151,7 @@ struct TreeBuilder {
     std::vector<tinybvh::bvhvec4> bvhData = convertToBVHFormat(triforce);
 
     tree.Build(bvhData.data(), triforce.size());
-    tree.Compact(tinybvh::BVH::WALD_32BYTE);
+    tree.Compact();
     triIdxData.assign(tree.triIdx, tree.triIdx + tree.triCount);
 
     if (tree.verts) { // Ensure verts is not null
@@ -214,7 +214,8 @@ struct TreeBuilder {
   void prepareSSBOData() {
     tinybvh::BVH::BVHNode *nodes =
         tree.bvhNode; // Pointer to the flattened BVH nodes
-    uint32_t nodeCount = tree.usedBVHNodes; // Number of nodes in the BVH
+    //uint32_t nodeCount = tree.usedBVHNodes; // Number of nodes in the BVH
+	uint32_t nodeCount = tree.usedNodes;
 
     for (uint32_t i = 0; i < nodeCount; i++) {
       SSBONodes nodessbo;
@@ -269,7 +270,7 @@ struct TreeBuilder {
                 << vertex[i].data.y << " , " << vertex[i].data.z << " ) \n";
     }
 
-    for (uint32_t i = 0; i < tree.usedBVHNodes; i++) {
+    for (uint32_t i = 0; i < tree.usedNodes; i++) {
 
       const auto &node = ssboData[i];
       std::cout << "Node[" << i << "] : \n";

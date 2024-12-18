@@ -79,7 +79,6 @@ void RenderSystem::init() {
   _projU = glGetUniformLocation(compute->programID, "Projection");
   _viewU = glGetUniformLocation(compute->programID, "View");
 
-
   std::cout << "HERRRREE\n";
 
   std::vector<Triangle> triforce2 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
@@ -165,14 +164,6 @@ void RenderSystem::init() {
   int work_grp_inv;
   glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &work_grp_inv);
   std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
-}
-
-void RenderSystem::update(const float dt) {
-
-  static auto lastTime = std::chrono::high_resolution_clock::now();
-  static int frameCount = 0;
-  static double elapsedTime = 0.0; 
-
 #endif
 }
 
@@ -224,32 +215,19 @@ void RenderSystem::update(const float dt) {
   frameCount++;
   auto currentTime = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> frameTime = currentTime - lastTime;
-  lastTime = currentTime;                           
+  lastTime = currentTime;
   elapsedTime += frameTime.count();
   // Print FPS every 1 second
   if (elapsedTime >= 1.0) {
-    double fps = frameCount / elapsedTime; 
+    double fps = frameCount / elapsedTime;
     std::cout << "FPS: " << fps << std::endl;
 
-    
     frameCount = 0;
     elapsedTime = 0.0;
   }
-}
-
-Component *RenderSystem::create_component(uuid id, Entity *e) {
-  throw NotImplementedError();
-  /*
-  _components[id] =
-      std::make_unique<RenderComponent>(id, e, program->programID);
-  auto ptr = _components[id].get();
-  // ptr->init(program->programID);
-  e->add_component(ptr);
-  return ptr;
-  */
-
 #endif
 }
+
 
 RenderComponent *
 RenderSystem::create_component(uuid id, Entity *e,
@@ -270,6 +248,8 @@ RenderSystem::create_component(uuid id, Entity *e,
   e->add_component(ptr);
   return ptr;
 }
+
+
 
 void RenderSystem::destroy() {
 #if SHOW_UI

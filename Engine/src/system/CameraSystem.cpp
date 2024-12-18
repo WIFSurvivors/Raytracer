@@ -48,7 +48,7 @@ void CameraSystem::sample_update_move_main_camera(float t1) {
 
   auto dt_sin = std::sin(t1 * 2.5) * 10;
   pos.y = dt_sin;
-  ent->set_local_position(pos);
+  ent->set_local_position(glm::vec3(0.0f, 8.0f, 15.0f));
 }
 
 void CameraSystem::print() {
