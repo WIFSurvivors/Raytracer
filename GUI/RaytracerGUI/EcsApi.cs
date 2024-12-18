@@ -13,7 +13,7 @@ public class EcsApi
         }
         catch (System.Net.Sockets.SocketException ex)
         {
-            throw new InvalidOperationException("Could not establish a TCP connection. No TCP server found.", ex);
+            throw new InvalidOperationException("Could not establish a TCP connection.", ex);
         }
     }
     public string close_RS()
@@ -24,13 +24,17 @@ public class EcsApi
     {
         return _client.Send("GetRoot");
     }
-    public string get_entity(String UUID)
+    public string get_child_entities(string UUID)
     {
-        return "GetEntity";
+        return _client.Send(string.Format("GetChildEntities {0}", UUID));
     }
-    public string get_component(String UUID)
+    public string get_entity_options(string UUID)
     {
-        return "GetComponent";
+        return _client.Send(string.Format("GetEntityOptions {0}", UUID));
+    }
+    public string get_components(String UUID)
+    {
+        return _client.Send(string.Format("GetComponents {0}", UUID));
     }
     public string create_entity()
     {
@@ -63,6 +67,17 @@ public class EcsApi
     public string delete_component()
     {
         return "DeleteComponent";
+    }
+
+    public string get_component_options(string UUID)
+    {
+        return _client.Send(string.Format("GetComponentsOptions {0}", UUID));
+    }
+
+    public string post_ScenePath(String path)
+    {
+        String returnValue = _client.Send(String.Format("PostScenePathCommand"));
+        return "ScenePath " + returnValue;
     }
 
 }

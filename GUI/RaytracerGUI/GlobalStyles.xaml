@@ -119,7 +119,7 @@
 
 
     <!-- Style for Button -->
-    <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+    <Style TargetType="Button" x:Key="PrimaryButtonStyle">
         <Setter Property="FontFamily" Value="pack://application:,,,/RaytracerGUI;component/fonts/#Lucida Console"/>
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Foreground" Value="White"/>
@@ -143,6 +143,20 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <!-- Style for Sliders -->
+    <Style TargetType="Slider" x:Key="PrimarySliderStyle">
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource ComponentBackgroundColor}"/>
+        <Style.Triggers>
+            <!-- Hover color for Slider -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="{StaticResource ComponentPrimaryColor}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 
 
 </ResourceDictionary>
