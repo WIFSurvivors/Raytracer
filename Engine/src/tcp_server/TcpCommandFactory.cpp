@@ -2,12 +2,14 @@
 
 TcpCommandFactory::TcpCommandFactory() {}
 
-std::unique_ptr<TcpCommand> TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
+std::unique_ptr<TcpCommand>
+TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
   std::cout << "Creating command from message: " << parsed_command.command
             << std::endl;
   uuid _uuid;
   if (!parsed_command.uuid.empty()) {
-    _uuid = boost::uuids::string_generator{}(parsed_command.uuid);
+    boost::uuids::string_generator generator;
+    _uuid = generator(parsed_command.uuid);
   }
   if (parsed_command.command.compare(MOVE_COMMAND) == 0) {
     std::cout << "Create MoveCommand" << std::endl;
