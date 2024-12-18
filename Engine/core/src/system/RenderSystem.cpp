@@ -16,7 +16,6 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <memory>
 
-
 #include <iostream>
 #include <filesystem>
 /**
@@ -93,44 +92,79 @@ void RenderSystem::init() {
   std::cout << "SIZE:  " << sizeof(SSBONodes) << std::endl;
 
   glGenBuffers(1, &ssbo_tree);
-  glGenBuffers(1,&ssbo_indices);
-  glGenBuffers(1,&ssbo_vertex);
-  glGenBuffers(1,&ssbo_mats);
-  glGenBuffers(1,&ssbo_matsIDX);
-  
+  glGenBuffers(1, &ssbo_indices);
+  glGenBuffers(1, &ssbo_vertex);
+  glGenBuffers(1, &ssbo_mats);
+  glGenBuffers(1, &ssbo_matsIDX);
+
   glGenBuffers(1, &ssbo_triangle);
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);
 
-  glBufferData(GL_SHADER_STORAGE_BUFFER, builder.ssboData.size() * sizeof(SSBONodes), builder.ssboData.data(), GL_STATIC_DRAW);
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               builder.ssboData.size() * sizeof(SSBONodes),
+               builder.ssboData.data(), GL_STATIC_DRAW);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo_tree);
-  
 
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_indices);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, builder.triIdxData.size() * sizeof(uint32_t), builder.triIdxData.data(), GL_STATIC_DRAW);
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               builder.triIdxData.size() * sizeof(uint32_t),
+               builder.triIdxData.data(), GL_STATIC_DRAW);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, ssbo_indices);
 
-  //Depracated lol
+  // Depracated lol
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_triangle);
   glBufferData(GL_SHADER_STORAGE_BUFFER,
-               builder.triangles.size() * sizeof(Triangle), builder.triangles.data(),
-               GL_STATIC_DRAW);
+               builder.triangles.size() * sizeof(Triangle),
+               builder.triangles.data(), GL_STATIC_DRAW);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo_triangle);
 
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_vertex);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, builder.vertex.size() * sizeof(Vec3Padded), builder.vertex.data(), GL_STATIC_DRAW);
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               builder.vertex.size() * sizeof(Vec3Padded),
+               builder.vertex.data(), GL_STATIC_DRAW);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, ssbo_vertex);
 
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_mats);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, builder.mats.size() * sizeof(Materials), builder.mats.data(), GL_STATIC_DRAW);
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               builder.mats.size() * sizeof(Materials), builder.mats.data(),
+               GL_STATIC_DRAW);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, ssbo_mats);
 
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_matsIDX);
-  glBufferData(GL_SHADER_STORAGE_BUFFER, builder.matIndx.size() * sizeof(uint32_t), builder.matIndx.data(), GL_STATIC_DRAW);
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               builder.matIndx.size() * sizeof(uint32_t),
+               builder.matIndx.data(), GL_STATIC_DRAW);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, ssbo_matsIDX);
 
+  // DEBUG INFORMATION
+  //
+
+  int work_grp_cnt[3];
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &work_grp_cnt[0]);
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &work_grp_cnt[1]);
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &work_grp_cnt[2]);
+  std::cout << "Max work groups per compute shader"
+            << " x:" << work_grp_cnt[0] << " y:" << work_grp_cnt[1]
+            << " z:" << work_grp_cnt[2] << "\n";
+
+  int work_grp_size[3];
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &work_grp_size[0]);
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &work_grp_size[1]);
+  glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &work_grp_size[2]);
+  std::cout << "Max work group sizes"
+            << " x:" << work_grp_size[0] << " y:" << work_grp_size[1]
+            << " z:" << work_grp_size[2] << "\n";
+
+  int work_grp_inv;
+  glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &work_grp_inv);
+  std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
 }
 
 void RenderSystem::update(const float dt) {
+
+  static auto lastTime = std::chrono::high_resolution_clock::now();
+  static int frameCount = 0;
+  static double elapsedTime = 0.0; 
   //  Specifies the background color1
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
@@ -144,9 +178,9 @@ void RenderSystem::update(const float dt) {
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
 
   auto screen_size = _wm->getScreenSize();
-  int groupsX = (screen_size.x + 16 - 1) / 16;
-  int groupsY = (screen_size.y + 16 - 1) / 16;
-  glDispatchCompute(groupsX, groupsY, 1);
+  // int groupsX = (screen_size.x + 16 - 1) / 16;
+  // int groupsY = (screen_size.y + 16 - 1) / 16;
+  glDispatchCompute(ceil(screen_size.x / 32.0), ceil(screen_size.y / 32.0), 1);
   glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
   // Setup fragment and vertex shader
@@ -160,6 +194,22 @@ void RenderSystem::update(const float dt) {
   // processInput(_window);
 
   // update(glfwGetTime());
+  //
+
+  frameCount++;
+  auto currentTime = std::chrono::high_resolution_clock::now();
+  std::chrono::duration<double> frameTime = currentTime - lastTime;
+  lastTime = currentTime;                           
+  elapsedTime += frameTime.count();
+  // Print FPS every 1 second
+  if (elapsedTime >= 1.0) {
+    double fps = frameCount / elapsedTime; 
+    std::cout << "FPS: " << fps << std::endl;
+
+    
+    frameCount = 0;
+    elapsedTime = 0.0;
+  }
 }
 
 Component *RenderSystem::create_component(uuid id, Entity *e) {
