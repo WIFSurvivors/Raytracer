@@ -94,34 +94,16 @@ Closing="Window_Closing">
             <!--GuiBottom-->
             <Grid HorizontalAlignment="Stretch" Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="10" />
+                    <ColumnDefinition x:Name="ColumnLog" Width="0" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
 
-
-                <Grid Grid.Column="0" Margin="5">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="20"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <!--TCP Log-->
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="40"/>
-                        </Grid.ColumnDefinitions>
-
-                        <TextBox BorderThickness="0"/>
-                        <Button Name="btnLog" Content="Log" Style="{StaticResource PrimaryButtonStyle}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right" Width="40" Click="generalButtonClick"/>
-                    </Grid>
-                    <TextBox Name="tbxLog" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" AcceptsReturn="True" VerticalAlignment="Top" Grid.Row="1" TextWrapping="Wrap"/>
-                    <Button Name="btnConnect" Content="Connect" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="3" VerticalAlignment="Center"  Margin="10" Click="btnConnect_Click" />
-                    
-
-                </Grid>
-
-                <Grid Height="180" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="1">
+                <!--TCP Log-->
+                <Button Name="btnLog" Grid.Column="0" Style="{StaticResource PrimaryButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="10" Height="160" Click="generalButtonClick"/>
+                <TextBox Name="tbxLog" Grid.Column="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" AcceptsReturn="True" VerticalAlignment="Top" TextChanged="tbxLog_TextChanged" TextWrapping="Wrap" />
+               
+                <Grid Height="180" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="10"/>
@@ -138,26 +120,38 @@ Closing="Window_Closing">
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Button Name="btnLeft" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom"  Margin="10" Click="generalButtonClick">
-                            <Image Source="/images/arrow-left.png" Width="30" Height="30"/>
+                        <Button Name="btnLeft" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Bottom"  Margin="10" Click="generalButtonClick">
+                            <Image Source="/images/arrow-left.png" Width="40" Height="40"/>
                         </Button>
-                        <Button Name="btnRight" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick">
-                            <Image Source="/images/arrow-right.png" Width="30" Height="30"/>
+                        <Button Name="btnRight" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="3" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick">
+                            <Image Source="/images/arrow-right.png" Width="40" Height="40"/>
                         </Button>
-                        <Button Name="btnUp" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="2" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick">
-                            <Image Source="/images/arrow-up.png" Width="30" Height="30"/>
+                        <Button Name="btnUp" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="4" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick">
+                            <Image Source="/images/arrow-up.png" Width="40" Height="40"/>
                         </Button>
-                        <Button Name="btnDown" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
-                            <Image Source="/images/arrow-down.png" Width="30" Height="30"/>
+                        <Button Name="btnDown" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="4" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
+                            <Image Source="/images/arrow-down.png" Width="40" Height="40"/>
                         </Button>
-                        <Button Name="btnRx" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
-                            <Image Source="/images/arrow-rotate-x.png" Width="30" Height="30"/>
+                        <Button Name="btnRx" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
+                            <Image Source="/images/arrow-rotate-x.png" Width="40" Height="40"/>
                         </Button>
-                        <Button Name="btnRy" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
-                            <Image Source="/images/arrow-rotate-y.png" Width="30" Height="30"/>
+                        <Button Name="btnRy" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
+                            <Image Source="/images/arrow-rotate-y.png" Width="40" Height="40"/>
                         </Button>
+                        <Button Name="btnRz" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
+                            <Image Source="/images/arrow-rotate-z.png" Width="30" Height="30"/>
+                        </Button>
+                        <Button Name="btnBack" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick">
+                            <Image Source="/images/arrow-back.png" Width="30" Height="30"/>
+                        </Button>
+                        <Button Name="btnForward" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick">
+                            <Image Source="/images/arrow-forward.png" Width="30" Height="30"/>
+                        </Button>
+                        <Button Name="btnConnect" Content="Connect" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"  Margin="10" Click="btnConnect_Click" />
                     </Grid>
 
                     <!--Sliders-->
@@ -167,10 +161,19 @@ Closing="Window_Closing">
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                        <Slider Name="sldX" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
-                        <Slider Name="sldY" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
-                        <Slider Name="sldZ" Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
+                        <Slider Name="sldX" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
+                        <Slider Name="sldY" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
+                        <Slider Name="sldZ" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
+                        <Slider Name="sldRx" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
+                        <Slider Name="sldRy" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
+                        <Slider Name="sldRz" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
+                        <Slider Name="sldZoom" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
                     </Grid>
 
                     <Grid Grid.Column="1" HorizontalAlignment="Right">

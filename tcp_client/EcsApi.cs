@@ -1,4 +1,5 @@
 using System.Net.Sockets;
+using System.IO;
 
 namespace tcp_client;
 
@@ -25,6 +26,17 @@ public class EcsApi
     public string create_entity() {
         return "CreateEntity";
     }
+    public string json_import() {
+        string filePath = Path.Combine(Directory.GetCurrentDirectory(), "data.json");
+    using (FileStream fs = File.Create(filePath)) {
+        using (StreamWriter writer = new StreamWriter(fs)) {
+            writer.WriteLine("{ \"example\": \"data\" }");
+        }
+    }   
+        string returnValue = _client.Send(String.Format("ImportJson null {0}",filePath));
+        return returnValue;
+    }
+
     public string create_component()
     {
         String returnValue = _client.Send("CreateCommand Entity");

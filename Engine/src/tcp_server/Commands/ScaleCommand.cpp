@@ -1,11 +1,12 @@
-#include "includes/tcp_server/Commands/MoveCommand.hpp"
+#include "includes/tcp_server/Commands/ScaleCommand.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include "includes/Engine.hpp"
 #include "includes/Entity.hpp"
+#include <iostream>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/ext.hpp"
-std::string MoveCommand::execute(Engine * engine) {
+std::string ScaleCommand::execute(Engine * engine) {
     auto scene = engine->get_scene();
         if (!scene) {
             std::cerr << "Scene is null" << std::endl;
@@ -23,10 +24,9 @@ std::string MoveCommand::execute(Engine * engine) {
             std::cerr << "Entity is null for UUID: " << boost::uuids::to_string(_uuid) << std::endl;
             return "Entity is null";
         }
-        entity->set_local_position(_new_position);
-        
+        entity->set_local_scale(_new_position);
 
-    std::cout << "MoveCommand executed on" << boost::uuids::to_string(_uuid) << "with new x y z: " << entity->get_local_position() <<std::endl; 
-    return "MoveCommand executed";
+    std::cout << "ScaleCommand executed on" << boost::uuids::to_string(_uuid) << "with new x y z: " << entity->get_local_scale() <<std::endl; 
+    return "ScaleCommand executed";
 }
-int MoveCommand::undo() { return 0; }
+int ScaleCommand::undo() { return 0; }

@@ -6,6 +6,8 @@ set(TCP_COMMANDS_HEADERS
     GetRootCommand.hpp
     MoveCommand.hpp
     RotateCommand.hpp
+    ScaleCommand.hpp
+    ImportJsonCommand.hpp
 )
 
 list(TRANSFORM TCP_COMMANDS_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")

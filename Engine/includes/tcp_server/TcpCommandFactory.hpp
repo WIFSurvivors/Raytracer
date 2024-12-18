@@ -6,12 +6,14 @@
 #include <memory>
 #include "includes/tcp_server/Commands/MoveCommand.hpp"
 #include "includes/tcp_server/Commands/RotateCommand.hpp"
+#include "includes/tcp_server/Commands/ScaleCommand.hpp"
 #include "includes/tcp_server/ParsedTcpCommand.hpp"
 #include "includes/tcp_server/Commands/GetRootCommand.hpp"
 #include "includes/tcp_server/Commands/CloseRenderCommand.hpp"
 #include "includes/tcp_server/Commands/GetChildEntitiesCommand.hpp"
 #include "includes/tcp_server/Commands/GetComponentsCommand.hpp"
 #include "includes/tcp_server/Commands/GetEntityOptionsCommand.hpp"
+#include "includes/tcp_server/Commands/ImportJsonCommand.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/string_generator.hpp>

@@ -12,11 +12,14 @@
 
   <ItemGroup>
     <None Remove="fonts\lucon.ttf" />
+    <None Remove="images\arrow-back.png" />
     <None Remove="images\arrow-down.png" />
+    <None Remove="images\arrow-forward.png" />
     <None Remove="images\arrow-left.png" />
     <None Remove="images\arrow-right.png" />
     <None Remove="images\arrow-rotate-x.png" />
     <None Remove="images\arrow-rotate-y.png" />
+    <None Remove="images\arrow-rotate-z.png" />
     <None Remove="images\arrow-up.png" />
     <None Remove="images\preview.png" />
     <None Remove="images\right-arrow.png" />
@@ -28,11 +31,14 @@
 
   <ItemGroup>
     <Resource Include="fonts\lucon.ttf" />
+    <Resource Include="images\arrow-back.png" />
     <Resource Include="images\arrow-down.png" />
+    <Resource Include="images\arrow-forward.png" />
     <Resource Include="images\arrow-left.png" />
     <Resource Include="images\arrow-right.png" />
     <Resource Include="images\arrow-rotate-x.png" />
     <Resource Include="images\arrow-rotate-y.png" />
+    <Resource Include="images\arrow-rotate-z.png" />
     <Resource Include="images\arrow-up.png" />
     <Resource Include="images\preview.png" />
   </ItemGroup>

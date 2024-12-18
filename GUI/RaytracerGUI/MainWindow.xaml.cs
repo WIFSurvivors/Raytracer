@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿﻿using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -18,6 +18,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Reflection.PortableExecutable;
 using System.Text.Json;
+using System;
 
 namespace RaytracerGUI
 {
@@ -143,50 +144,67 @@ namespace RaytracerGUI
                 // get variable name
                 string button = clickedButton.Name;
 
+                tbxLog.AppendText(button + " was clicked! \n");
+                tbxLog.ScrollToEnd();
+
                 switch (button)
                 {
                     case "btnLeft":
-                        tbxLog.AppendText(button + " was clicked! \n");
-                        tbxLog.ScrollToEnd();
+                        //_ecsApi.post...
                         break;
 
                     case "btnRight":
-                        tbxLog.AppendText(button + " was clicked! \n");
-                        tbxLog.ScrollToEnd();
+                        //_ecsApi.post...
                         break;
 
                     case "btnUp":
-                        tbxLog.AppendText(button + " was clicked! \n");
-                        tbxLog.ScrollToEnd();
+                        //_ecsApi.post...
                         break;
 
                     case "btnDown":
-                        tbxLog.AppendText(button + " was clicked! \n");
-                        tbxLog.ScrollToEnd();
+                        //_ecsApi.post...
+                        break;
+
+                    case "btnBack":
+                        //_ecsApi.post...
+                        break;
+
+                    case "btnForward":
+                        //_ecsApi.post...
                         break;
 
                     case "btnRx":
-                        tbxLog.AppendText(button + "  was clicked! \n");
-                        tbxLog.ScrollToEnd();
+                        //_ecsApi.post...
                         break;
 
                     case "btnRy":
-                        tbxLog.AppendText(button + "  was clicked! \n");
-                        tbxLog.ScrollToEnd();
+                        //_ecsApi.post...
+                        break;
+
+                    case "btnRz":
+                        //_ecsApi.post...
                         break;
 
                     case "btnLog":
-                        tbxLog.AppendText($"{DateTime.Now}: Log entry added.\n");
-                        tbxLog.ScrollToEnd();
+
+                        if (tbxLog.Visibility == Visibility.Collapsed)
+                        {
+                            tbxLog.Visibility = Visibility.Visible;
+                            ColumnLog.Width = new GridLength(1, GridUnitType.Star);
+                        }
+                        else
+                        {
+                            tbxLog.Visibility = Visibility.Collapsed;
+                            ColumnLog.Width = new GridLength(0);
+                        }
 
                         // TreeBuilder testing
-                        entityBuilder = new TreeBuilder(trvEntities);
-                        entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
-                        break;
+                        entityBuilder = new TreeBuilder(trvEntities, this);
+                       entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
+                       break;
 
                     case "btnToggleB":
-                        tbxLog.AppendText(button + "  was clicked! \n");
-                        tbxLog.ScrollToEnd();
+
                         if (gridButtons.Visibility == Visibility.Visible)
                         {
                             gridButtons.Visibility = Visibility.Collapsed;
@@ -197,10 +215,9 @@ namespace RaytracerGUI
                             gridButtons.Visibility = Visibility.Visible;
                         }
                         break;
-
+                        
                     case "btnToggleS":
-                        tbxLog.AppendText(button + "  was clicked! \n");
-                        tbxLog.ScrollToEnd();
+
                         if (gridSliders.Visibility == Visibility.Visible)
                         {
                             gridSliders.Visibility = Visibility.Collapsed;
@@ -220,35 +237,70 @@ namespace RaytracerGUI
         {
             Slider? changedSlider = sender as Slider;
 
+            //TODO get information (which textbox must be updated)
+            //TODO get xyz from textbox and update _ecsapi
+            //var UUID;
+            //var x;
+            //var y;
+            //var z;
+
             if (changedSlider != null)
             {
                 string slider = changedSlider.Name;
-                double value = e.NewValue;
 
-                tbxLog.AppendText($"{slider} value changed to: {value}\n");
+                // Round the slider value to 2 decimal places
+                double roundedValue = Math.Round(e.NewValue, 2);
+
+                // Prevent unnecessary updates
+                if (changedSlider.Value != roundedValue)
+                {
+                    changedSlider.Value = roundedValue;
+                }
+
+                // Log the updated value
+                tbxLog.AppendText($"{slider} value changed to: {roundedValue}\n");
+                tbxLog.ScrollToEnd();
 
                 if (_ecsApi != null)
                 {
                     try
                     {
                         switch (slider)
-                        {   // Send updated values to the server
+                        {
+                            // Send rounded values to the server
                             case "sldX":
-                                //_ecsApi.post_entity_option("x", value); 
+                                //_ecsApi.move_entity(UUID, x, y, z);
                                 break;
 
                             case "sldY":
-                                //_ecsApi.post_entity_option("y", value);
+                                //_ecsApi.move_entity(UUID, x, y, z);
                                 break;
 
                             case "sldZ":
-                                //_ecsApi.post_entity_option("z", value);
+                                //_ecsApi.move_entity(UUID, x, y, z);
+                                break;
+
+                            case "sldRx":
+                                //_ecsApi.rotate_entity(UUID, x, y, z);
+                                break;
+
+                            case "sldRy":
+                                //_ecsApi.rotate_entity(UUID, x, y, z);
+                                break;
+
+                            case "sldRz":
+                                //_ecsApi.rotate_entity(UUID, x, y, z);
+                                break;
+
+                            case "sldZoom":
+                                //_ecsApi.scale_entity(UUID, x, y, z);
                                 break;
                         }
                     }
                     catch (InvalidOperationException ex)
                     {
                         tbxLog.AppendText($"Error updating server with {slider}: {ex.Message}\n");
+                        tbxLog.ScrollToEnd();
                     }
                 }
             }
@@ -256,7 +308,7 @@ namespace RaytracerGUI
 
 
 
-
+        //Window Handling and first connect 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             hWndParent = new WindowInteropHelper(this).Handle;
@@ -268,9 +320,6 @@ namespace RaytracerGUI
             }
 
         }
-
-
-
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (loader != null)
@@ -281,7 +330,6 @@ namespace RaytracerGUI
 
 
         }
-
         private void btnConnect_Click(object sender, RoutedEventArgs e)
         {
             Button? clickedButton = sender as Button;
@@ -307,7 +355,7 @@ namespace RaytracerGUI
                 catch (InvalidOperationException ex)
                 {
                     MessageBoxResult result = MessageBox.Show(ex.Message + "\n" +
-                        "Unable to start \"TopLevelProject.exe\"!",
+                        "Unable to start \"Engine.exe\"!",
                         "Connection Error",
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Error);
@@ -319,8 +367,6 @@ namespace RaytracerGUI
                 }
             }
         }
-
-
         private void rctRenderArea_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (loader != null)
@@ -330,8 +376,10 @@ namespace RaytracerGUI
 
             }
         }
-
-
+        private void tbxLog_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            tbxLog.ScrollToEnd();
+        }
         private void StartOtherExe(string exePath)
         {
             try
@@ -386,7 +434,7 @@ namespace RaytracerGUI
 
 
             // Deserialize the JSON
-            var updatedNode = JsonSerializer.Deserialize<EcsNode>(ecsJsonNode);
+            var updatedNode = JsonSerializer.Deserialize<EcsEntityNode>(ecsJsonNode);
             if (updatedNode == null)
             {
                 tbxLog.AppendText("EntitiyJSON = null.\n");
@@ -415,53 +463,62 @@ namespace RaytracerGUI
                 return;
             }
 
-            entityOptionsBuilder = new TreeBuilder(trvEntitiesOptions);
+            entityOptionsBuilder = new TreeBuilder(trvEntitiesOptions,this);
             entityOptionsBuilder.BuildTreeFromOptions(ecsJsonNode);
         }
-
-
-
-        private void trvEntitiesOptions_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        public void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var selectedItem = trvEntitiesOptions.SelectedItem;
-            tbxLog.AppendText($"selectedItem: {selectedItem}\n");
-
-
-            if (selectedItem != null)
+            if (sender is TextBox textBox)
             {
-                if (selectedItem is TextBox selectedTextBox)
-                {
+                // Log the TextBox change
+                tbxLog.AppendText($"TextBox '{textBox.Name}' text changed to: {textBox.Text}\n");
 
-                    tbxLog.AppendText("selectedItem is a TextBox");
-                    switch (selectedTextBox.Name)
-                    {
-                        case "x":
-                            if (double.TryParse(selectedTextBox.Text, out double valueX))
-                            {
-                                sldX.Value = valueX;
-                            }
-                            break;
-                        case "y":
-                            if (double.TryParse(selectedTextBox.Text, out double valueY))
-                            {
-                                sldY.Value = valueY;
-                            }
-                            break;
-                        case "z":
-                            if (double.TryParse(selectedTextBox.Text, out double valueZ))
-                            {
-                                sldZ.Value = valueZ;
-                            }
-                            break;
-                    }
-                }
-                else
+                // Attempt to parse the text and update the appropriate slider
+                switch (textBox.Name)
                 {
-                    tbxLog.AppendText($"selectedItem is not a TextBox: {selectedItem}\n");
+                    case "x":
+                        if (double.TryParse(textBox.Text, out double valueX))
+                        {
+                            sldX.Value = valueX;
+                        }
+                        else
+                        {
+                            tbxLog.AppendText("Invalid value for X.\n");
+                        }
+                        break;
+
+                    case "y":
+                        if (double.TryParse(textBox.Text, out double valueY))
+                        {
+                            sldY.Value = valueY;
+                        }
+                        else
+                        {
+                            tbxLog.AppendText("Invalid value for Y.\n");
+                        }
+                        break;
+
+                    case "z":
+                        if (double.TryParse(textBox.Text, out double valueZ))
+                        {
+                            sldZ.Value = valueZ;
+                        }
+                        else
+                        {
+                            tbxLog.AppendText("Invalid value for Z.\n");
+                        }
+                        break;
+
+                    default:
+                        tbxLog.AppendText($"TextBox '{textBox.Name}' does not match known sliders.\n");
+                        break;
                 }
             }
         }
-
+        private void trvEntitiesOptions_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            return;
+        }
 
 
         /// Components Update
@@ -469,7 +526,7 @@ namespace RaytracerGUI
         {
             if (e.NewValue is TreeViewItem selectedItem)
             {
-                string header = selectedItem.Header.ToString();
+                string? header = selectedItem.Header.ToString();
                 if (selectedItem.Tag is TreeItemData tagData)
                 {
                     string uuid = tagData.UUID;       // Access UUID
@@ -488,7 +545,12 @@ namespace RaytracerGUI
         private void UpdateComponents(string uuidEntity, RoutedPropertyChangedEventArgs<object> e)
         {
             string? componentsJsonNode = _ecsApi.get_components(uuidEntity);
-            componentBuilder = new TreeBuilder(trvComponents);
+            try
+            {
+                //PROBLEM: Exception when deserialized, no class for object existent:
+                //JSON: {"components":[{"uuid":"67949d3e-de96-487f-a03c-5b900da73e4b"}]}
+                var updatedNode = JsonSerializer.Deserialize<string>(componentsJsonNode);
+                componentBuilder = new TreeBuilder(trvComponents, this);
 
             if (componentsJsonNode == null)
             {
@@ -496,7 +558,13 @@ namespace RaytracerGUI
                 return;
             }
 
-            componentBuilder.BuildTreeFromJson(componentsJsonNode);
+            componentBuilder.BuildTreeFromJson(updatedNode);
+            }
+            catch (Exception ex)
+            {
+                tbxLog.AppendText("JSON is null for uuid " + uuidEntity+ "\n");
+            }
+
         }
 
         public void UpdateComponentsOptions(string uuid, RoutedPropertyChangedEventArgs<object>? e)
@@ -510,13 +578,13 @@ namespace RaytracerGUI
                 return;
             }
 
-            componentOptionsBuilder = new TreeBuilder(trvComponentsOptions);
+            componentOptionsBuilder = new TreeBuilder(trvComponentsOptions, this);
             componentOptionsBuilder.BuildTreeFromOptions(componentsJsonNode);
         }
 
         private void trvComponentsOptions_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-
+           
         }
 
 
