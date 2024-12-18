@@ -1,5 +1,4 @@
-#ifndef ENGINE_CORE_INCLUDES_UTILITY_BVHTREE_TINY_HPP_
-#define ENGINE_CORE_INCLUDES_UTILITY_BVHTREE_TINY_HPP_
+#pragma once
 #include <iostream>
 #include <memory>
 #define TINYBVH_IMPLEMENTATION
@@ -281,6 +280,3 @@ struct TreeBuilder {
     }
   }
 };
-
-#endif // ENGINE_CORE_INCLUDES_UTILITY_BVHTREE_TINY_HPP_
-

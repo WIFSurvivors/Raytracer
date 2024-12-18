@@ -76,10 +76,12 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           choco install msys2 --no-progress
-          echo "C:\msys64\usr\bin" >> $env:GITHUB_PATH
-          echo "C:\msys64\mingw64\bin" >> $env:GITHUB_PATH
           C:\msys64\usr\bin\bash -lc "pacman --noconfirm -Syu"
           C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S mingw-w64-x86_64-gcc mingw-w64-x86_64-make"
+      - name: Set path
+        run: |
+          echo "C:\msys64\usr\bin" >> $env:GITHUB_PATH
+          echo "C:\msys64\mingw64\bin" >> $env:GITHUB_PATH
       - name: Verify Tools
         run: |
           cmake --version
