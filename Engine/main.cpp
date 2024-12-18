@@ -1,11 +1,28 @@
-#include "includes/TcpServer.hpp"
+#include "includes/tcp_server/TcpServer.hpp"
 #include "includes/Engine.hpp"
-#include "includes/utility/SimpleLogger.hpp"
+#include "includes/utility/Log.hpp"
+#include <exception>
+#include <string>
+
+// #ifndef SHOW_UI
+// #define SHOW_UI
+// #endif
 
 int main() {
-  SimpleLogger::print("=== APP STARTED ===");
-  Engine engine{};
-  engine.startLoop();
-  SimpleLogger::print("=== APP ENDED ===");
+  Log::set_log_level(Log::Level::Tcp);
+  Log::display_color_demo();
+#if SHOW_UI
+  Log::message("=== APP STARTED === UI=ON");
+#else
+  Log::message("=== APP STARTED === UI=OFF");
+#endif
+  try {
+    Engine engine{};
+    engine.startLoop();
+  } catch (std::exception &e) {
+    Log::error("App crashed!!!!");
+    Log::error(std::string(e.what()));
+  }
+  Log::message("=== APP ENDED ===");
   return 0;
 }

@@ -1,4 +1,4 @@
-﻿using System.Text;
+﻿﻿using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -338,7 +338,7 @@ namespace RaytracerGUI
             {
                 try
                 {
-                    StartOtherExe("../../../../../Engine/build/TopLevelProject.exe");
+                    StartOtherExe("../../../../../Engine/build/Engine.exe");
                     _ecsApi = new EcsApi("127.0.0.1", 51234);
 
                     // initial root-request
@@ -355,7 +355,7 @@ namespace RaytracerGUI
                 catch (InvalidOperationException ex)
                 {
                     MessageBoxResult result = MessageBox.Show(ex.Message + "\n" +
-                        "Unable to start \"TopLevelProject.exe\"!",
+                        "Unable to start \"Engine.exe\"!",
                         "Connection Error",
                         MessageBoxButton.OKCancel,
                         MessageBoxImage.Error);
