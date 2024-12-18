@@ -88,7 +88,7 @@ jobs:
         run: echo "C:\tools\mingw64\bin" >> $env:GITHUB_PATH
 
       - name: Verify cmake
-        run: C:\Program Files\CMake\bin\cmake.exe --version
+        run: C:\'Program Files'\CMake\bin\cmake.exe --version
        
       - name: Verify GCC Version
         run: gcc --version
@@ -110,7 +110,8 @@ jobs:
             ${{ runner.os }}-cmake-
 
       - name: Build Engine
-        run: C:\Program Files\CMake\bin\cmake.exe -B Engine/build -S Engine -G "Unix Makefiles" -DCMAKE_C_COMPILER=C:/tools/mingw64/bin/gcc.exe -DCMAKE_CXX_COMPILER=C:/tools/mingw64/bin/g++.exe -DCMAKE_MAKE_PROGRAM=C:\ProgramData\chocolatey\bin\make.exe && C:\Program Files\CMake\bin\cmake.exe --build Engine/build
+        run: C:\'Program Files'\CMake\bin\cmake.exe -B Engine/build -S Engine -G "Unix Makefiles" -DCMAKE_C_COMPILER=C:/tools/mingw64/bin/gcc.exe -DCMAKE_CXX_COMPILER=C:/tools/mingw64/bin/g++.exe -DCMAKE_MAKE_PROGRAM=C:\ProgramData\chocolatey\bin\make.exe
+              C:\'Program Files'\CMake\bin\cmake.exe --build Engine/build
 
       - name: Build GUI
         run: dotnet build GUI/RayTracerGUI/
