@@ -85,10 +85,13 @@ jobs:
            7z x mingw-w64-x86_64-gcc-14.2.0-2-any.pkg.tar -oC:\tools
 
       - name: Add GCC to PATH
-        run: echo "C:\tools\mingw64\bin\" >> $env:GITHUB_PATH
+        run: echo "C:\tools\mingw64\bin" >> $env:GITHUB_PATH
 
       - name: Verify GCC Version
         run: gcc --version
+        
+      - name: Verify G++ Version
+        run: g++ --version 
       
       - name: Checkout Code
         uses: actions/checkout@v4
