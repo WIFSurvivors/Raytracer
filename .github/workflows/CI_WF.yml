@@ -115,7 +115,7 @@ jobs:
             ${{ runner.os }}-cmake-
 
       - name: Build Engine
-        run: C:\'Program Files'\CMake\bin\cmake.exe -B Engine/build -S Engine -G "Unix Makefiles" -DCMAKE_C_COMPILER=C:/tools/mingw64/bin/cc.exe -DCMAKE_CXX_COMPILER=C:/tools/mingw64/bin/c++.exe -DCMAKE_MAKE_PROGRAM="C:/ProgramData/chocolatey/bin/make.exe" && C:\'Program Files'\CMake\bin\cmake.exe --build Engine/build
+        run: C:\'Program Files'\CMake\bin\cmake.exe -B Engine/build -S Engine -G "Unix Makefiles" -DCMAKE_C_COMPILER=C:/tools/mingw64/bin/gcc.exe -DCMAKE_CXX_COMPILER=C:/tools/mingw64/bin/g++.exe -DCMAKE_MAKE_PROGRAM="C:/ProgramData/chocolatey/bin/make.exe" && C:\'Program Files'\CMake\bin\cmake.exe --build Engine/build
 
       - name: Build GUI
         run: dotnet build GUI/RayTracerGUI/
