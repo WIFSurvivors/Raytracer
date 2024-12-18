@@ -8,7 +8,8 @@ std::unique_ptr<TcpCommand> TcpCommandFactory::create_command(ParsedTcpCommand p
     std::cout << "UUID: " << parsed_command.uuid << std::endl;
     if (!parsed_command.uuid.empty() && parsed_command.uuid.compare("null") != 0)
     {
-      _uuid = boost::uuids::string_generator{}(parsed_command.uuid);
+      boost::uuids::string_generator generator;
+      _uuid = generator(parsed_command.uuid);
     }
   if (parsed_command.command.compare(MOVE_COMMAND) == 0) {
     std::cout << "Create MoveCommand" << std::endl;

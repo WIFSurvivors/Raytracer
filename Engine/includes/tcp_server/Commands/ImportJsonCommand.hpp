@@ -7,7 +7,7 @@
 class importJsonCommand : public TcpCommand
 {
 public:
-    importJsonCommand(std::string json_path) : _json_path(json_path) {};
+    explicit importJsonCommand(std::string json_path) : _json_path(json_path) {}
     std::string execute(Engine * engine) override;
     int undo() override;
 
