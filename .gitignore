@@ -30,3 +30,6 @@
 
 # TCP 
 **/build/*
+
+#Mac
+**/.DS_Store
