@@ -94,9 +94,11 @@ jobs:
 
       - name: Verify cmake
         run: C:\'Program Files'\CMake\bin\cmake.exe --version
-       
+      - name: Verify make
+        run: C:/ProgramData/chocolatey/bin/make.exe --version
+      
       - name: Verify GCC Version
-        run: gcc --version
+        run: C:/tools/mingw64/bin/gcc.exe --version
         
       - name: Verify G++ Version
         run: g++ --version 
