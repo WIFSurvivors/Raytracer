@@ -68,20 +68,22 @@ jobs:
         run: |
           curl -LO https://mirror.msys2.org/mingw/mingw64/mingw-w64-x86_64-gcc-14.2.0-2-any.pkg.tar.zst
 
+      - name: Install MinGW Make
+        run: |
+          curl -LO https://sourceforge.net/projects/ezwinports/files/make-4.3-without-guile-w32-bin.zip
+          7z x make-4.3-without-guile-w32-bin.zip -oC:\tools\make
+          echo "C:\tools\make\bin" >> $env:GITHUB_PATH
       - name: Install 7-Zip
         run: |
           choco install 7zip --no-progress
 
-      - name: Install make
+      - name: Install cmake
         run: |
-          choco install make --no-progress
+          choco install cmake --no-progress
 
       - name: Extract GCC
         run: |
           7z x mingw-w64-x86_64-gcc-14.2.0-2-any.pkg.tar.zst 
-
-      - name: Extract again
-        run: | 
           7z x mingw-w64-x86_64-gcc-14.2.0-2-any.pkg.tar -oC:\tools
 
       - name: Remove Strawberry Perl from PATH
@@ -91,11 +93,8 @@ jobs:
       - name: Add GCC to PATH
         run: echo "C:\tools\mingw64\bin" >> $env:GITHUB_PATH
 
-      - name: Add make to Path
-        run: echo "C:\ProgramData\chocolatey\lib" >> $env:GITHUB_PATH
-
       - name: Verify make
-        run: C:\ProgramData\chocolatey\bin\make.exe --version
+        run: C:\ProgramData\chocolatey\bin\cmake.exe --version
        
       - name: Verify GCC Version
         run: gcc --version
@@ -117,7 +116,7 @@ jobs:
             ${{ runner.os }}-cmake-
 
       - name: Build Engine
-        run: cmake -B Engine/build -S Engine -G "Unix Makefiles" -DCMAKE_C_COMPILER=C:/tools/mingw64/bin/gcc.exe -DCMAKE_CXX_COMPILER=C:/tools/mingw64/bin/g++.exe -DCMAKE_MAKE_PROGRAM=C:\ProgramData\chocolatey\bin\make.exe && cmake --build Engine/build
+        run: C:\ProgramData\chocolatey\bin\cmake.exe -B Engine/build -S Engine -G "Unix Makefiles" -DCMAKE_C_COMPILER=C:/tools/mingw64/bin/gcc.exe -DCMAKE_CXX_COMPILER=C:/tools/mingw64/bin/g++.exe -DCMAKE_MAKE_PROGRAM=C:\ProgramData\chocolatey\bin\make.exe && C:\ProgramData\chocolatey\bin\cmake.exe --build Engine/build
 
       - name: Build GUI
         run: dotnet build GUI/RayTracerGUI/
