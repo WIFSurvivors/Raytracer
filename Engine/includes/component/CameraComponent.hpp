@@ -17,7 +17,7 @@ struct CameraComponent : public IComponent {
   inline bool is_main_camera() { return _is_main_camera; }
 
 protected:
-  void to_json_details(boost::json::object &obj) override;
+  void to_json_details(boost::json::object obj) override;
 
 private:
   bool _is_main_camera{false};

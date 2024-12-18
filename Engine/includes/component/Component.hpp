@@ -2,6 +2,7 @@
 
 #include "includes/utility/JSONConvertable.hpp"
 #include <boost/uuid/uuid.hpp>
+#include <string>
 typedef boost::uuids::uuid uuid;
 
 struct Entity; // forward declaration due to child-parent structure
@@ -36,5 +37,5 @@ protected:
   Entity *_entity; // Doesn't have Ownership!
 
   boost::json::object to_json_base();
-  virtual void to_json_details(boost::json::object &obj) = 0;
+  virtual void to_json_details(boost::json::object obj) = 0;
 };

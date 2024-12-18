@@ -14,7 +14,7 @@ struct SimpleComponent : public IComponent {
   inline int get_value() { return _value; }
 
 protected:
-  void to_json_details(boost::json::object &obj) override;
+  void to_json_details(boost::json::object obj) override;
   
 private:
   int _value{};

@@ -10,6 +10,6 @@ SimpleComponent::SimpleComponent(uuid id, Entity *e, int value)
 
 void SimpleComponent::update(const float dt) {}
 
-void SimpleComponent::to_json_details(boost::json::object &obj) {
+void SimpleComponent::to_json_details(boost::json::object obj) {
   obj["value"] = get_value();
 }
