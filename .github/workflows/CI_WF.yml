@@ -82,7 +82,11 @@ jobs:
 
       - name: Extract again
         run: | 
-           7z x mingw-w64-x86_64-gcc-14.2.0-2-any.pkg.tar -oC:\tools
+          7z x mingw-w64-x86_64-gcc-14.2.0-2-any.pkg.tar -oC:\tools
+
+      - name: Remove Strawberry Perl from PATH
+        run: |
+          echo "::remove-path::C:\Strawberry\c\bin"
 
       - name: Add GCC to PATH
         run: echo "C:\tools\mingw64\bin" >> $env:GITHUB_PATH
