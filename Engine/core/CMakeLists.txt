@@ -20,7 +20,7 @@ set(BOOST_ENABLE_CMAKE ON)
 set(ABSOLUTE_SHADER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/shaders/")
 
 
-option(USE_AVX "Enable AVX and AVX2" OFF)
+option(USE_AVX "Enable AVX and AVX2" ON)
 
 if(USE_AVX)
 # Enable AVX and AVX2
