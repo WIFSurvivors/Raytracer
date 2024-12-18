@@ -66,7 +66,7 @@ jobs:
     steps:
       - name: Download MinGW GCC 14.2.0
         run: |
-          curl -LO https://mirror.msys2.org/mingw/mingw64/mingw-w64-x86_64-7zip-24.09-2-any.pkg.tar.zst
+          curl -LO https://mirror.msys2.org/mingw/mingw64/mingw-w64-x86_64-gcc-14.2.0-2-any.pkg.tar.zst
 
       - name: Install 7-Zip
         run: |
@@ -74,7 +74,11 @@ jobs:
 
       - name: Extract GCC
         run: |
-          7z x mingw-w64-x86_64-7zip-24.09-2-any.pkg.tar.zst -oC:\tools
+          7z x mingw-w64-x86_64-gcc-14.2.0-2-any.pkg.tar.zst 
+
+      - name: Extract again
+        run: | 
+           7z x mingw-w64-x86_64-gcc-14.2.0-2-any.pkg.tar -oC:\tools
 
       - name: Add GCC to PATH
         run: echo "C:\tools\mingw64\bin\" >> $env:GITHUB_PATH
