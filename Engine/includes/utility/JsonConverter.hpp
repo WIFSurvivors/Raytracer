@@ -7,6 +7,10 @@
 #include "includes/component/RenderComponent.hpp"
 #include <iomanip>
 #include <sstream>
+#include <vector>
+#include <memory>
+#include <string>
+#include <utility>
 
 inline std::string format_double(double value) {
     std::ostringstream out;

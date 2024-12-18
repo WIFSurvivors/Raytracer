@@ -6,7 +6,7 @@
 #define GET_ENTITIES_COMMAND "GetChildEntities"
 
 struct GetChildEntitiesCommand : public TcpCommand {
-    GetChildEntitiesCommand(uuid__ uuid ) : TcpCommand(uuid) {};
+    explicit GetChildEntitiesCommand(uuid__ uuid ) : TcpCommand(uuid) {}
     std::string execute(Engine *e) override;
     int undo() override;
     private:

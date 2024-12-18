@@ -14,4 +14,3 @@ struct GetRootCommand : public TcpCommand
 private:
 
 };
-
