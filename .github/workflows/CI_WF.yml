@@ -61,18 +61,12 @@ jobs:
   build-and-test:
     name: Build and Test
     runs-on: windows-latest
-    needs: run-lint  
 
     steps:
       - name: Download MinGW GCC 14.2.0
         run: |
           curl -LO https://mirror.msys2.org/mingw/mingw64/mingw-w64-x86_64-gcc-14.2.0-2-any.pkg.tar.zst
 
-      - name: Install MinGW Make
-        run: |
-          curl -LO https://sourceforge.net/projects/ezwinports/files/make-4.3-without-guile-w32-bin.zip
-          7z x make-4.3-without-guile-w32-bin.zip -oC:\tools\make
-          echo "C:\tools\make\bin" >> $env:GITHUB_PATH
       - name: Install 7-Zip
         run: |
           choco install 7zip --no-progress
@@ -93,7 +87,7 @@ jobs:
       - name: Add GCC to PATH
         run: echo "C:\tools\mingw64\bin" >> $env:GITHUB_PATH
 
-      - name: Verify make
+      - name: Verify cmake
         run: C:\ProgramData\chocolatey\bin\cmake.exe --version
        
       - name: Verify GCC Version
