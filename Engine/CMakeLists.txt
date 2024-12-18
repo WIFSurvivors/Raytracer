@@ -52,7 +52,8 @@ FetchContent_Declare(
 )
 FetchContent_Declare(
   tinybvh
-  GIT_REPOSITORY https://github.com/jbikker/tinybvh.git
+  # GIT_REPOSITORY https://github.com/jbikker/tinybvh.git
+  GIT_REPOSITORY https://github.com/Azayel/tinybvh_raytrace_fork.git
   GIT_TAG main
   GIT_PROGRESS    TRUE
 )
