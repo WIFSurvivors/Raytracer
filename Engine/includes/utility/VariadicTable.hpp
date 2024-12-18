@@ -267,9 +267,10 @@ protected:
     print_each(std::forward<TupleType>(t), stream, std::integral_constant<size_t, 0>());
   }
 
-  #pragma clang diagnostic push
-  #pragma clang diagnostic ignored "-Wold-style-cast"
-
+  #if defined(__clang__) || defined(__GNUC__)
+  #pragma GCC diagnostic push
+  #pragma GCC diagnostic ignored "-Wold-style-cast"
+  #endif
   /**
    * Try to find the size the column will take up
    *
@@ -280,7 +281,9 @@ protected:
   {
     return data.size();
   }
-  #pragma clang diagnostic pop
+#if defined(__clang__) || defined(__GNUC__)
+#pragma GCC diagnostic pop
+#endif
   /**
    * Try to find the size the column will take up
    *
