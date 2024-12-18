@@ -5,8 +5,8 @@
 #define TINYBVH_IMPLEMENTATION
 #include <tiny_bvh.h>
 #ifdef _MSC_VER
-#include "stdlib.h" // for rand
-#include "stdio.h"  // for printf
+#include <stdlib.h> // for rand
+#include <stdio.h>  // for printf
 #else
 #include <cstdlib>
 #include <cstdio>
