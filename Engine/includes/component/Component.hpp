@@ -28,6 +28,7 @@ struct IComponent : public JSONConvertable {
     return _component_name;
   }
   boost::json::object to_json() override;
+  boost::json::object to_json_short();
 
 protected:
   std::string _component_name;

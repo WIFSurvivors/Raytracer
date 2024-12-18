@@ -23,6 +23,13 @@ boost::json::object IComponent::to_json() {
   return obj;
 }
 
+boost::json::object IComponent::to_json_short() {
+  boost::json::object obj;
+  obj["name"] = get_component_name();
+  obj["uuid"] = boost::uuids::to_string(get_uuid());
+  return obj;
+}
+
 boost::json::object IComponent::to_json_base() {
   boost::json::object obj;
   obj["name"] = get_component_name();
