@@ -8,21 +8,23 @@
 #include "includes/utility/Log.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
-#if SHOW_UI
 RenderComponent::RenderComponent(uuid id, Entity *e, GLuint programID,
                                  const std::vector<glm::vec3> &vertices,
                                  const std::vector<glm::vec2> &UV)
     : IComponent{id, e, "RenderComponent"} {
+#if SHOW_UI
   _vertices = vertices;
   _nvertices = vertices.size();
   _uv = UV;
   _modelMatrix = glm::mat4(1);
   init(programID);
+#endif
 }
 
 RenderComponent::~RenderComponent() { destroy(); }
 
 void RenderComponent::init(GLuint programID) {
+#if SHOW_UI
   Log::message("RenderComponent::init()");
   //  TODO:
   //  - Understand the index of the generic vertex attribute
@@ -54,9 +56,11 @@ void RenderComponent::init(GLuint programID) {
 
   _textU = glGetUniformLocation(programID, "text");
   _modelU = glGetUniformLocation(programID, "MVP");
+#endif
 }
 
 void RenderComponent::update(const float dt) {
+#if SHOW_UI
   //  TODO:
   //  - Better MVP calculation (e.g. we don't need to call glm::mat4(1) every
   //  time) Calculation for the Model Matrix
@@ -77,16 +81,20 @@ void RenderComponent::update(const float dt) {
 
   glDrawArrays(GL_TRIANGLES, 0, _nvertices);
   // glBindVertexArray(0);
+#endif
 }
 
 void RenderComponent::destroy() {
+#if SHOW_UI
   glDisableVertexAttribArray(0);
   glDisableVertexAttribArray(1);
   glDeleteBuffers(1, &_vbo);
   glDeleteBuffers(1, &_uvVBO);
+#endif
 }
 
 void RenderComponent::setTextures() {
+#if SHOW_UI
   //  Generate n = 1 texture IDs
   glGenTextures(1, &_textureID);
 
@@ -112,36 +120,15 @@ void RenderComponent::setTextures() {
   glBindImageTexture(0, _textureID, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, _textureID);
+#endif
 }
 
 void RenderComponent::translate(glm::vec3 dir) {
+#if SHOW_UI
   _modelMatrix = glm::translate(_modelMatrix, dir);
-}
-
-void RenderComponent::to_json_details(boost::json::object &obj) {
-  throw NotImplementedError();
-}
-#else
-RenderComponent::RenderComponent(uuid id, Entity *e, GLuint programID,
-                                 const std::vector<glm::vec3> &vertices,
-                                 const std::vector<glm::vec2> &UV)
-    : IComponent{id, e, "RenderComponent"} {
-  init(programID);
-}
-
-RenderComponent::~RenderComponent() { destroy(); }
-
-void RenderComponent::init(GLuint programID) {}
-
-void RenderComponent::update(const float dt) {}
-
-void RenderComponent::destroy() {}
-
-void RenderComponent::setTextures() {}
-
-void RenderComponent::translate(glm::vec3 dir) {}
-
-void RenderComponent::to_json_details(boost::json::object &obj) {
-  throw NotImplementedError();
-}
 #endif
+}
+
+void RenderComponent::to_json_details(boost::json::object &obj) {
+  throw NotImplementedError();
+}
