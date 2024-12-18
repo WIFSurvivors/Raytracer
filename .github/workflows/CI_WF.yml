@@ -63,45 +63,19 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Download MinGW GCC 14.2.0
+      - name: Install MSYS2 and MinGW
         run: |
-          curl -LO https://mirror.msys2.org/mingw/mingw64/mingw-w64-x86_64-gcc-14.2.0-2-any.pkg.tar.zst
-
-      - name: Install 7-Zip
+          choco install msys2 --no-progress
+          echo "C:\msys64\usr\bin" >> $env:GITHUB_PATH
+          echo "C:\msys64\mingw64\bin" >> $env:GITHUB_PATH
+          C:\msys64\usr\bin\bash -lc "pacman --noconfirm -Syu"
+          C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S mingw-w64-x86_64-gcc mingw-w64-x86_64-make"
+      - name: Verify Tools
         run: |
-          choco install 7zip --no-progress
-
-      - name: Install cmake
-        run: |
-          choco install cmake --no-progress
-
-      - name: Install cmake
-        run: |
-          choco install make --no-progress
-
-
-      - name: Extract GCC
-        run: |
-          7z x mingw-w64-x86_64-gcc-14.2.0-2-any.pkg.tar.zst 
-          7z x mingw-w64-x86_64-gcc-14.2.0-2-any.pkg.tar -oC:\tools
-
-      - name: Remove Strawberry Perl from PATH
-        run: |
-          echo "::remove-path::C:\Strawberry\c\bin"
-
-      - name: Add GCC to PATH
-        run: echo "C:\tools\mingw64\bin" >> $env:GITHUB_PATH
-
-      - name: Verify cmake
-        run: C:\'Program Files'\CMake\bin\cmake.exe --version
-      - name: Verify make
-        run: C:/ProgramData/chocolatey/bin/make.exe --version
-      
-      - name: Verify GCC Version
-        run: C:/tools/mingw64/bin/gcc.exe --version
-        
-      - name: Verify G++ Version
-        run: g++ --version 
+          cmake --version
+          make --version
+          gcc --version
+          g++ --version
       
       - name: Checkout Code
         uses: actions/checkout@v4
