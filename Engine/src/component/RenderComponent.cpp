@@ -125,7 +125,7 @@ void RenderComponent::to_json_details(boost::json::object &obj) {
 RenderComponent::RenderComponent(uuid id, Entity *e, GLuint programID,
                                  const std::vector<glm::vec3> &vertices,
                                  const std::vector<glm::vec2> &UV)
-    : IComponent{id, e} {
+    : IComponent{id, e, "RenderComponent"} {
   init(programID);
 }
 
