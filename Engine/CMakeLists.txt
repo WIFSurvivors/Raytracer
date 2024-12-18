@@ -19,7 +19,6 @@ FetchContent_Declare(
   GIT_TAG boost-1.86.0
   )
 FetchContent_MakeAvailable(Boost)
-  message(STATUS "Boost Include: ${Boost_INCLUDE_DIRS}")
 FetchContent_Declare(
   googletest
   GIT_REPOSITORY https://github.com/google/googletest.git
@@ -64,8 +63,6 @@ message(STATUS "Show UI: ${SHOW_UI}")
 set(SHOW_UI_NUM $<IF:$<BOOL:${SHOW_UI}>,1,0>)
 add_compile_definitions(SHOW_UI=${SHOW_UI_NUM})
 add_compile_definitions(SHADER_ABSOLUTE_PATH="${ABSOLUTE_SHADER_PATH}") 
-message(Status "Boost Include: ${Boost_INCLUDE_DIRS}")
-
 # Add subdirectories
 add_subdirectory(includes)
 add_subdirectory(src)
