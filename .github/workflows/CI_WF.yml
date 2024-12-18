@@ -61,26 +61,31 @@ jobs:
   build-and-test:
     name: Build and Test
     runs-on: windows-latest
-    needs: run-lint  
-
     steps:
-      - name: Download MinGW GCC 14.2.0
+
+      - name: Cache MSYS2 Installation
+        id: cache
+        uses: actions/cache@v4
+        with:
+          path: C:/msys64
+          key: msys2-${{ runner.os }}-${{ hashFiles('**/CMakeLists.txt') }}
+          restore-keys: |
+            msys2-${{ runner.os }}-
+
+      - name: Install MSYS2 and MinGW
+        if: steps.cache.outputs.cache-hit != 'true'
         run: |
-          curl -LO https://github.com/niXman/mingw-builds-binaries/releases/download/14.2.0-rt_v12-rev0/i686-14.2.0-release-win32-dwarf-ucrt-rt_v12-rev0.7z
-
-      - name: Install 7-Zip
+          choco install msys2 --no-progress
+          echo "C:\msys64\usr\bin" >> $env:GITHUB_PATH
+          echo "C:\msys64\mingw64\bin" >> $env:GITHUB_PATH
+          C:\msys64\usr\bin\bash -lc "pacman --noconfirm -Syu"
+          C:\msys64\usr\bin\bash -lc "pacman --noconfirm -S mingw-w64-x86_64-gcc mingw-w64-x86_64-make"
+      - name: Verify Tools
         run: |
-          choco install 7zip --no-progress
-
-      - name: Extract GCC
-        run: |
-          7z x i686-14.2.0-release-win32-dwarf-ucrt-rt_v12-rev0.7z -oC:\tools
-
-      - name: Add GCC to PATH
-        run: echo "C:\tools\mingw32\bin\" >> $env:GITHUB_PATH
-
-      - name: Verify GCC Version
-        run: gcc --version
+          cmake --version
+          make --version
+          gcc --version
+          g++ --version
       
       - name: Checkout Code
         uses: actions/checkout@v4
