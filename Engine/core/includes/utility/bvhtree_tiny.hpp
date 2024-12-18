@@ -1,3 +1,5 @@
+#ifndef ENGINE_CORE_INCLUDES_UTILITY_BVHTREE_TINY_HPP_
+#define ENGINE_CORE_INCLUDES_UTILITY_BVHTREE_TINY_HPP_
 #include <iostream>
 #include <memory>
 #define TINYBVH_IMPLEMENTATION
@@ -11,6 +13,8 @@
 #endif
 #include <sstream>
 #include <glm/vec3.hpp>
+#include <vector>
+#include <string>
 
 struct alignas(16) Triangle {
   glm::vec3 v0;
@@ -276,3 +280,6 @@ struct TreeBuilder {
     }
   }
 };
+
+#endif // ENGINE_CORE_INCLUDES_UTILITY_BVHTREE_TINY_HPP_
+
