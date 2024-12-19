@@ -17,7 +17,7 @@ typedef boost::uuids::uuid uuid;
 struct CameraSystem : public System<CameraComponent> {
   CameraSystem();
 
-  CameraComponent *create_component(uuid id, Entity *e, float fov);
+  CameraComponent *create_component(uuid id, Entity *e, float fov = 60.f);
 
   void set_main_camera(CameraComponent *cc);
   inline CameraComponent *get_main_camera() const { return _main_camera; }

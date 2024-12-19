@@ -43,6 +43,7 @@ struct RenderSystem : public System<RenderComponent> {
   void update(const float dt); // represents render
   void destroy();
 
+  RenderComponent *create_component(uuid id, Entity *e);
   RenderComponent *create_component(uuid id, Entity *e,
                                     const std::vector<glm::vec3> &vertices,
                                     const std::vector<glm::vec2> &UV);
@@ -61,11 +62,8 @@ struct RenderSystem : public System<RenderComponent> {
 private:
   WindowManager *_wm;
   CameraSystem *_cs;
-
-  using System::create_component_base;
+  
   using typename System::uuid;
-
-  std::map<uuid, std::unique_ptr<RenderComponent>> _components{};
 
 #if SHOW_UI
   std::unique_ptr<Shader> program;

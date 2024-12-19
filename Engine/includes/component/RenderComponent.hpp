@@ -22,8 +22,8 @@
  *  - implement better way to store number of vertices
  */
 
-#if SHOW_UI
 struct RenderComponent : public IComponent {
+  RenderComponent(uuid id, Entity *e);
   RenderComponent(uuid id, Entity *e, GLuint programID,
                   const std::vector<glm::vec3> &vertices,
                   const std::vector<glm::vec2> &UV);
@@ -35,21 +35,40 @@ struct RenderComponent : public IComponent {
   // update modelMatrix based on the entity instead
   void translate(glm::vec3 dir);
 
-  inline const GLuint get_vbo() {return _vbo;}
-  inline const GLuint get_textureID() {return _textureID;}
-  inline const GLuint get_uvVBO() {return _textureID;}
+  inline void set_vertices(const std::vector<glm::vec3> &vertices) {
+#if SHOW_UI
+    _vertices = vertices;
+    _nvertices = vertices.size();
+#endif
+  }
+  inline void set_uv(const std::vector<glm::vec2> &UV) {
+#if SHOW_UI
+    _uv = UV;
+#endif
+  }
+  void init(GLuint programID);
+
+  inline const GLuint get_vbo() { return _vbo; }
+  inline const GLuint get_textureID() { return _textureID; }
+  inline const GLuint get_uvVBO() { return _textureID; }
 
 protected:
   void to_json_details(boost::json::object obj) override;
-  
+
 private:
-  void init(GLuint programID);
   void destroy();
 
+  // void setVertices(); // for now does nothing but later here we can load an
+  // object
+  void setTextures();
+
+  // is set to true when data is available!
+  bool _is_ready = false;
   GLuint _vbo;
   GLuint _textureID;
   GLuint _uvVBO;
 
+#if SHOW_UI
   glm::mat4 _translationMatrix;
   glm::mat4 _rotationMatrix;
   glm::mat4 _scaleMatrix;
@@ -66,42 +85,10 @@ private:
   int _nvertices = 6; // Number of vertices
 
   std::vector<glm::vec2> _uv = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 0.0f},
-                               glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 0.0f},
-                               glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 1.0f}};
+                                glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 0.0f},
+                                glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 1.0f}};
 
   GLuint _textU;
   GLuint _modelU;
-
-  // void setVertices(); // for now does nothing but later here we can load an
-  // object
-  void setTextures();
-};
-#else
-struct RenderComponent : public IComponent {
-  RenderComponent(uuid id, Entity *e, GLuint programID,
-                  const std::vector<glm::vec3> &vertices,
-                  const std::vector<glm::vec2> &UV);
-  virtual ~RenderComponent();
-
-  void update(float dt) override;
-
-  // in theory not required? entity controls the position of an object
-  // update modelMatrix based on the entity instead
-  void translate(glm::vec3 dir);
-
-  inline const GLuint get_vbo() {return 0;}
-  inline const GLuint get_textureID() {return 0;}
-  inline const GLuint get_uvVBO() {return 0;}
-
-protected:
-  void to_json_details(boost::json::object obj) override;
-  
-private:
-  void init(GLuint programID);
-  void destroy();
-
-  // void setVertices(); // for now does nothing but later here we can load an
-  // object
-  void setTextures();
-};
 #endif
+};
