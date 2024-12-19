@@ -3,7 +3,7 @@ namespace tcp_client;
 using System.Net.Sockets;
 public class Gui
 {
-    public static void Loop()
+    public static void Loop(string uuid)
     {
         try
         {
@@ -12,7 +12,8 @@ public class Gui
             int port = 51234;
             EcsApi api = new EcsApi(host, port);
             // Send first message
-            string thing = "c6150cfa-c78f-4e2d-9f36-863de3320a15";
+            string thing = uuid;
+            string message = api.get_component_options(thing);
             String uuid1 = api.move_entity(thing, 1.0f, 2.0f, 3.0f);
             // Send second message
             String uuid2 = api.rotate_entity(thing, 1.0f, 2.0f, 3.0f);

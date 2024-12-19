@@ -15,6 +15,7 @@ struct CameraComponent : public IComponent {
   inline float get_fov() const { return _fov; }
 
   inline bool is_main_camera() { return _is_main_camera; }
+  boost::json::object to_json_details() override;
 
 protected:
   void to_json_details(boost::json::object obj) override;

@@ -76,9 +76,9 @@ public class EcsApi
         return "DeleteComponent";
     }
 
-    public string get_component_options(string UUID)
+    public string get_component_options(String UUID)
     {
-        return _client.Send(string.Format("GetComponentsOptions {0}", UUID));
+        return _client.Send(String.Format("GetComponentOptions {0}", UUID));
     }
 
     public string post_ScenePath(String path)

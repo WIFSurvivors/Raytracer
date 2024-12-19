@@ -13,3 +13,9 @@ void SimpleComponent::update(const float dt) {}
 void SimpleComponent::to_json_details(boost::json::object obj) {
   obj["value"] = get_value();
 }
+
+boost::json::object SimpleComponent::to_json_details() {
+  boost::json::object obj;
+  obj["value"] = get_value();
+  return obj;
+}
