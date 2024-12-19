@@ -48,24 +48,13 @@ bool EntityStorage::remove(Entity *e) {
 void EntityStorage::print() {
   std::cout << "Entity Storage: " << std::endl;
   VariadicTable<std::string, std::string, size_t, size_t, std::string> vt(
-      {"Entity UUID", "Entity Name", "CE", "CC", "World Position"});
-  std::cout << "Entity UUID" << std::endl;
+      {"Entity UUID", "Entity Name", "CE", "CC", "World Position"});;
   for (const auto &[id, e] : _entities) {
-    std::cout << "Entity UUID3 " << boost::uuids::to_string(id) << std::endl;
-    std::cout << "Entity UUID3.1 " << e->get_name() << std::endl;
-    std::cout << "Entity UUID3.2 " << e->get_child_entities().size()
-              << std::endl;
-    std::cout << "Entity UUID3.3 " << e->get_components().size() << std::endl;
-    std::cout << "Entity UUID3.4 " << glm::to_string(e->get_world_position())
-              << std::endl;
-    std::cout << "Entity UUID3.5 " << std::endl;
     vt.addRow(boost::uuids::to_string(id), e->get_name(),
               e->get_child_entities().size(), e->get_components().size(),
               glm::to_string(e->get_world_position())
               /*, e->get_world_position()*/); // <- unfortunately looks weird :C
-    std::cout << "Entity UUID4" << std::endl;
   }
-  std::cout << "Entity UUID2" << std::endl;
   vt.print(std::cout);
   std::cout << "Legend: \n"
             << "\t-CE = Count Child Entities\n"

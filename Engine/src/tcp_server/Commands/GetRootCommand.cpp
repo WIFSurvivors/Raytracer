@@ -5,69 +5,57 @@
 #include <boost/json.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/uuid.hpp>
-#include "includes/utility/JsonConverter.hpp"
-
-
-GetRootCommand::GetRootCommand() 
-{
-    std::cout << "GetRootCommand::GetRootCommand()" << std::endl;
-   
-}
-
+#include <format>
+#include "includes/utility/Log.hpp"
+#include "includes/utility/NotImplementedError.hpp"
+#include <string>
 int GetRootCommand::undo() 
 {
-    std::cout << "GetRootCommand::undo()" << std::endl;
-    return 0;
+    throw NotImplementedError{};
 }
 
-
-
-
 std::string GetRootCommand::execute(Engine * engine) 
-{
-    std::cout << "GetRootCommand::execute()" << std::endl;
+{   
     try
     {
         if (!engine) {
-            std::cerr << "Engine pointer is null" << std::endl;
-            return "";
+            std::string msg = "Engine pointer is null";
+            Log::error(msg);
+            return msg;
         }
 
         auto scene = engine->get_scene();
         if (!scene) {
-            std::cerr << "Scene pointer is null" << std::endl;
-            return "";
+            std::string msg = "Scene pointer is null";
+            Log::error(msg);
+            return msg;
         }
 
         auto root_entity = scene->get_root().lock();
         if (root_entity) {
-            std::cout << "Root entity is not null" << std::endl;
-            std::cout << "Root entity UUID: " << root_entity->get_uuid() << std::endl;
-            std::cout << "Root entity Name: " << root_entity->get_name() << std::endl;
-
-            // Check the state of root_entity before calling to_json
             if (root_entity->get_uuid().is_nil()) {
-                std::cerr << "Root entity UUID is nil" << std::endl;
+                std::string msg = "Root entity UUID is nil";
+                Log::error(msg);
+                return msg;
             }
             if (root_entity->get_name().empty()) {
-                std::cerr << "Root entity name is empty" << std::endl;
+                std::string msg = "Root entity name is empty";
+                Log::error(msg);
+                return msg;
             }
-
-            // Add more logging before calling to_json
-            std::cout << "Calling root_entity->to_json()" << std::endl;
             boost::json::object root_json = root_entity->to_json();
-            std::cout << "Root entity to json" << std::endl;
-            std::cout << boost::json::serialize(root_json) << std::endl;
             return boost::json::serialize(root_json);
         } 
         else {
-            std::cout << "Root entity is null" << std::endl;
+            std::string msg = "Root entity is null";
+            Log::error(msg);
+            return msg;
         }   
     }
     catch(const std::exception& e)
     {
-        std::cerr << e.what() << '\n';
+        std::string msg = std::format("Exception: {}", e.what());
+        Log::error(msg);
+        return msg;
     }
-    
-    return "";
 }

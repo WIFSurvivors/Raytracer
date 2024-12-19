@@ -37,20 +37,20 @@ public class EcsApi
     }
     public string get_entity_options(string UUID)
     {
-        return _client.Send(string.Format("GetEntityOptions {0}", UUID));
+        return _client.Send(String.Format("GetEntityOptions {0}", UUID));
     }
     public string get_components(String UUID)
     {
-        return _client.Send(string.Format("GetComponents {0}", UUID));
+        return _client.Send(String.Format("GetComponents {0}", UUID));
     }
-    public string create_entity()
+    public string create_entity(String UUID,String name)
     {
-        return "CreateEntity";
+        return _client.Send(String.Format("CreateEntity {0} {1}", UUID, name));
+        
     }
-    public string create_component()
+    public string create_component(String UUID, String name)
     {
-        String returnValue = _client.Send("CreateCommand Entity");
-        return "CreateComponent " + returnValue;
+        return _client.Send(String.Format("CreateEntity {0} {1}", UUID, name));
     }
     public string move_entity(String UUID, float x, float y, float z)
     {

@@ -31,10 +31,7 @@ struct Scene {
 
   inline std::weak_ptr<Entity> get_root() const { return _root; }
   inline std::optional<Entity *> get_entity(uuid id) {
-    std::cout << "Scene::get_entity1" << std::endl;
-    this->_entity_storage.print();
-    std::cout << "Scene::get_entity2" << std::endl;
-    return _entity_storage.get_entity(id);
+        return _entity_storage.get_entity(id);
   }
 
   std::optional<Entity *> operator[](uuid id) {
