@@ -101,8 +101,15 @@ Closing="Window_Closing">
 
                 <!--TCP Log-->
                 <Button Name="btnLog" Grid.Column="0" Style="{StaticResource PrimaryButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="10" Height="160" Click="generalButtonClick"/>
-                <TextBox Name="tbxLog" Grid.Column="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" AcceptsReturn="True" VerticalAlignment="Top" TextChanged="tbxLog_TextChanged" TextWrapping="Wrap" />
-               
+                <Grid Name="gridLog" Grid.Column="1" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button Name="btnToggleLog" Grid.Row="0" Style="{StaticResource PrimaryButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="Auto" Height="10" Click="generalButtonClick"/>
+                    <TextBox Name="tbxLog" Grid.Row="1" Visibility="Visible" Style="{StaticResource PrimaryLogStyle}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" AcceptsReturn="True" VerticalAlignment="Top" TextChanged="tbxLog_TextChanged" TextWrapping="Wrap" />
+                    <TextBox Name="tbxLogEngine" Grid.Row="1" Visibility="Collapsed" Style="{StaticResource PrimaryLogStyle}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" AcceptsReturn="True" VerticalAlignment="Top" TextChanged="tbxLog_TextChanged" TextWrapping="Wrap" />
+                </Grid>
                 <Grid Height="180" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -136,19 +143,14 @@ Closing="Window_Closing">
                         <Button Name="btnDown" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="4" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
                             <Image Source="/images/arrow-down.png" Width="40" Height="40"/>
                         </Button>
-                        <Button Name="btnRx" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
-                            <Image Source="/images/arrow-rotate-x.png" Width="40" Height="40"/>
+                        <Button Name="btnRotate" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick">
+                            <Image Name="imgRotation" Source="/images/arrow-rotate-xpos.png" Width="40" Height="40"/>
                         </Button>
-                        <Button Name="btnRy" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
-                            <Image Source="/images/arrow-rotate-y.png" Width="40" Height="40"/>
-                        </Button>
-                        <Button Name="btnRz" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
-                            <Image Source="/images/arrow-rotate-z.png" Width="30" Height="30"/>
-                        </Button>
-                        <Button Name="btnBack" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick">
+                        <Button Name="btnSwitchR" Content="Switch" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick" />
+                        <Button Name="btnBack" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
                             <Image Source="/images/arrow-back.png" Width="30" Height="30"/>
                         </Button>
-                        <Button Name="btnForward" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick">
+                        <Button Name="btnForward" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
                             <Image Source="/images/arrow-forward.png" Width="30" Height="30"/>
                         </Button>
                         <Button Name="btnConnect" Content="Connect" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"  Margin="10" Click="btnConnect_Click" />
