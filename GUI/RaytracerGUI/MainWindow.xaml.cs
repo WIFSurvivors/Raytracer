@@ -38,6 +38,7 @@ namespace RaytracerGUI
         private TreeBuilder componentOptionsBuilder;
 
         bool connection = false;
+        string rotation = "xpos";
 
         public MainWindow()
         {
@@ -143,58 +144,114 @@ namespace RaytracerGUI
             {
                 // get variable name
                 string button = clickedButton.Name;
-
+           
                 tbxLog.AppendText(button + " was clicked! \n");
                 tbxLog.ScrollToEnd();
 
                 switch (button)
                 {
                     case "btnLeft":
-                        //_ecsApi.post...
+                        sldX.Value -= 10;
                         break;
 
                     case "btnRight":
-                        //_ecsApi.post...
+                        sldX.Value += 10;
                         break;
 
                     case "btnUp":
-                        //_ecsApi.post...
+                        sldY.Value += 10;
                         break;
 
                     case "btnDown":
-                        //_ecsApi.post...
+                        sldY.Value -= 10;
                         break;
 
                     case "btnBack":
-                        //_ecsApi.post...
+                        sldZ.Value -= 10;
                         break;
 
                     case "btnForward":
-                        //_ecsApi.post...
+                        sldZ.Value += 10;
                         break;
 
-                    case "btnRx":
-                        //_ecsApi.post...
+                    case "btnRotate":
+
+                        switch (rotation)
+                        {
+                            case "xpos":
+                                sldRx.Value += 10;
+                                break;
+
+                            case "xneg":
+                                sldRx.Value -= 10;
+                                break;
+
+                            case "ypos":
+                                sldRy.Value += 10;
+                                break;
+
+                            case "yneg":
+                                sldRy.Value -= 10;
+                                break;
+
+                            case "zpos":
+                                sldRz.Value += 10;
+                                break;
+
+                            case "zneg":
+                                sldRz.Value -= 10;
+                                break;
+                        }
+
                         break;
 
-                    case "btnRy":
-                        //_ecsApi.post...
+                    case "btnSwitchR":
+                        if (rotation == "xpos")
+                        {
+                            rotation = "xneg";
+                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-xneg.png", UriKind.Relative));
+                        }
+                        else if (rotation == "xneg")
+                        {
+                            rotation = "ypos";
+                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-ypos.png", UriKind.Relative));
+                        }
+                        else if (rotation == "ypos")
+                        {
+                            rotation = "yneg";
+                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-yneg.png", UriKind.Relative));
+                        }
+                        else if (rotation == "yneg")
+                        {
+                            rotation = "zpos";
+                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-zpos.png", UriKind.Relative));
+                        }
+                        else if (rotation == "zpos")
+                        {
+                            rotation = "zneg";
+                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-zneg.png", UriKind.Relative));
+                        }
+                        else if (rotation == "zneg")
+                        {
+                            rotation = "xpos";
+                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-xpos.png", UriKind.Relative));
+                        }
                         break;
 
                     case "btnRz":
-                        //_ecsApi.post...
+                        sldRz.Value += 10;
                         break;
 
                     case "btnLog":
 
-                        if (tbxLog.Visibility == Visibility.Collapsed)
+                        if (gridLog.Visibility == Visibility.Collapsed)
                         {
-                            tbxLog.Visibility = Visibility.Visible;
+                            gridLog.Visibility = Visibility.Visible;
                             ColumnLog.Width = new GridLength(1, GridUnitType.Star);
                         }
                         else
                         {
-                            tbxLog.Visibility = Visibility.Collapsed;
+                            gridLog.Visibility = Visibility.Collapsed;
                             ColumnLog.Width = new GridLength(0);
                         }
 
@@ -202,6 +259,36 @@ namespace RaytracerGUI
                         entityBuilder = new TreeBuilder(trvEntities, this);
                        entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
                        break;
+
+                    case "btnToggleLog":
+
+                        if (tbxLog.Visibility == Visibility.Visible)
+                        {
+                            tbxLog.Visibility = Visibility.Collapsed;
+                            tbxLogEngine.Visibility = Visibility.Visible;
+
+                            // Read Engine Log 
+                            string log;
+                            try
+                            {
+                                log = File.ReadAllText(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\sampleJSON.txt"); // to replace with log directory
+                            }
+                            catch (Exception ex)
+                            {
+                                log = "Engine Log unavailable!";
+                            }
+
+                            tbxLogEngine.AppendText(log);
+                            tbxLogEngine.ScrollToEnd();
+
+                        }
+                        else
+                        {
+                            tbxLogEngine.Visibility = Visibility.Collapsed;
+                            tbxLog.Visibility = Visibility.Visible;
+                            
+                        };
+                        break;
 
                     case "btnToggleB":
 

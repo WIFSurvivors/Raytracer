@@ -106,6 +106,23 @@
         <Setter Property="FontSize" Value="14"/>
         <Setter Property="Foreground" Value="White"/>
         <Setter Property="Background" Value="{StaticResource WindowBackgroundColor}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource WindowPrimaryColor}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Style.Triggers>
+            <!-- Hover color for TextBox -->
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="Black"/>
+                <Setter Property="Background" Value="{StaticResource WindowPrimaryColor}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Style for Log -->
+    <Style TargetType="TextBox" x:Key="PrimaryLogStyle">
+        <Setter Property="FontFamily" Value="pack://application:,,,/RaytracerGUI;component/fonts/#Lucida Console"/>
+        <Setter Property="FontSize" Value="14"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource WindowBackgroundColor}"/>
         <Setter Property="BorderBrush" Value="{StaticResource ComponentPrimaryColor}"/>
         <Setter Property="BorderThickness" Value="2"/>
         <Style.Triggers>
