@@ -8,15 +8,23 @@
 #include "includes/utility/Log.hpp"
 #include <glm/gtc/matrix_transform.hpp>
 
+RenderComponent::RenderComponent(uuid id, Entity *e)
+    : IComponent{id, e, "RenderComponent"} {
+#if SHOW_UI
+  _modelMatrix = glm::mat4(1);
+#endif
+  _is_ready = false;
+}
+
 RenderComponent::RenderComponent(uuid id, Entity *e, GLuint programID,
                                  const std::vector<glm::vec3> &vertices,
                                  const std::vector<glm::vec2> &UV)
     : IComponent{id, e, "RenderComponent"} {
 #if SHOW_UI
+  _modelMatrix = glm::mat4(1);
   _vertices = vertices;
   _nvertices = vertices.size();
   _uv = UV;
-  _modelMatrix = glm::mat4(1);
   init(programID);
 #endif
 }
@@ -57,9 +65,11 @@ void RenderComponent::init(GLuint programID) {
   _textU = glGetUniformLocation(programID, "text");
   _modelU = glGetUniformLocation(programID, "MVP");
 #endif
+  _is_ready = true;
 }
 
 void RenderComponent::update(const float dt) {
+	if(!_is_ready) return;
 #if SHOW_UI
   //  TODO:
   //  - Better MVP calculation (e.g. we don't need to call glm::mat4(1) every

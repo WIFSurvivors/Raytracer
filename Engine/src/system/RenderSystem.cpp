@@ -230,24 +230,29 @@ void RenderSystem::update(const float dt) {
 #endif
 }
 
+
+RenderComponent *RenderSystem::create_component(uuid id, Entity *e){
+  Log::message("-- create render component");
+  auto c = create_component_base(id, e);
+  return c;
+}
+
 RenderComponent *
 RenderSystem::create_component(uuid id, Entity *e,
                                const std::vector<glm::vec3> &vertices,
                                const std::vector<glm::vec2> &UV) {
   Log::message("-- create render component");
-  //   auto c = create_component_base(id, e); // ADD THIS
+  auto c = create_component_base(id, e);
+  c->set_vertices(vertices);
+  c->set_uv(UV);
 
   // CHANGE RC CONSTRUCTR :C
   int programmID = 0;
 #if SHOW_UI
   programmID = program->programID;
 #endif
-  _components[id] =
-      std::make_unique<RenderComponent>(id, e, programmID, vertices, UV);
-  auto ptr = _components[id].get();
-  // ptr->init(program->programID);
-  e->add_component(ptr);
-  return ptr;
+  c->init(programmID);
+  return c;
 }
 
 void RenderSystem::destroy() {
