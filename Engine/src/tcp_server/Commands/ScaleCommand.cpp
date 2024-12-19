@@ -5,6 +5,8 @@
 #include <iostream>
 #include "includes/utility/Log.hpp"
 #include <string>
+#include "includes/utility/NotImplementedError.hpp"
+
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/ext.hpp"
@@ -38,4 +40,4 @@ std::string ScaleCommand::execute(Engine *engine) {
   Log::message(msg);
   return msg;
 }
-int ScaleCommand::undo() { return 0; }
+int ScaleCommand::undo() { throw NotImplementedError{}; }

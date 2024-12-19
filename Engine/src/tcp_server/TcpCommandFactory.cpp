@@ -59,6 +59,10 @@ std::unique_ptr<TcpCommand> TcpCommandFactory::create_command(ParsedTcpCommand p
     Log::tcp("Create GetEntityOptionsCommand");
     return std::make_unique<GetEntityOptionsCommand>(_uuid);
   }
+  else if (parsed_command.command.compare(GET_COMPONENT_OPTIONS_COMMAND) == 0) {
+    Log::tcp("Create GetComponentOptionsCommand");
+    return std::make_unique<GetComponentOptions>(_uuid);
+  }
   else {
     Log::error("Command not found");
     return nullptr;

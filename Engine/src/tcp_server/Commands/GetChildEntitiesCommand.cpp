@@ -5,6 +5,7 @@
 #include "includes/utility/Log.hpp"
 #include <boost/json.hpp>
 #include <format>
+#include "includes/utility/NotImplementedError.hpp"
 
 
 std::string GetChildEntitiesCommand::execute(Engine *e) {
@@ -24,4 +25,4 @@ std::string GetChildEntitiesCommand::execute(Engine *e) {
     std::cout << boost::json::serialize(json_entity) << std::endl;
     return boost::json::serialize(json_entity);
 }
-int GetChildEntitiesCommand::undo() { return 0; }
+int GetChildEntitiesCommand::undo() { throw NotImplementedError{}; }

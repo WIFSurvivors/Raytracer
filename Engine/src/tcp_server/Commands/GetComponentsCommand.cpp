@@ -7,6 +7,8 @@
 #include <format>
 #include "includes/utility/Log.hpp"
 #include <string>
+#include "includes/utility/NotImplementedError.hpp"
+
 
 std::string GetComponentsCommand::execute(Engine *e) {
   try {
@@ -59,4 +61,4 @@ boost::json::array GetComponentsCommand::get_components_short(
   return arr;
 }
 
-int GetComponentsCommand::undo() { return 0; }
+int GetComponentsCommand::undo() { throw NotImplementedError{}; }

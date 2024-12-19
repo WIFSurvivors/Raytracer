@@ -7,6 +7,7 @@
 #include <format>  
 #include "includes/Engine.hpp"
 #include "includes/utility/Log.hpp"
+#include "includes/utility/NotImplementedError.hpp"
 
 std::string importJsonCommand::execute(Engine * engine)
 {
@@ -27,4 +28,4 @@ std::string importJsonCommand::execute(Engine * engine)
     fclose(file);
     return "Imported json file";
 }
-int importJsonCommand::undo() { return 0; }
+int importJsonCommand::undo() { throw NotImplementedError{}; }

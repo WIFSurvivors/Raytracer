@@ -7,6 +7,8 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <string>
+#include "includes/utility/NotImplementedError.hpp"
+
 
 
 std::string GetEntityOptionsCommand::execute(Engine *e) {
@@ -44,4 +46,4 @@ std::string GetEntityOptionsCommand::execute(Engine *e) {
         return "Unknown exception occurred";
     }
 }
-int GetEntityOptionsCommand::undo() { return 0; }
+int GetEntityOptionsCommand::undo() { throw NotImplementedError{}; }

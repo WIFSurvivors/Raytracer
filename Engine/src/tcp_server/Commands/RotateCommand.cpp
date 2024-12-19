@@ -5,6 +5,7 @@
 #include <iostream>
 #include "includes/utility/Log.hpp"
 #include <string>
+#include "includes/utility/NotImplementedError.hpp"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/ext.hpp"
@@ -38,4 +39,4 @@ std::string RotateCommand::execute(Engine *engine) {
   Log::message(msg);
   return msg;
 }
-int RotateCommand::undo() { return 0; }
+int RotateCommand::undo() { throw NotImplementedError{}; }

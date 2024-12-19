@@ -4,6 +4,8 @@
 #include "includes/Entity.hpp"
 #include "includes/utility/Log.hpp"
 #include <string>
+#include "includes/utility/NotImplementedError.hpp"
+
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/ext.hpp"
 std::string MoveCommand::execute(Engine *engine) {
@@ -35,4 +37,4 @@ std::string MoveCommand::execute(Engine *engine) {
   Log::message(msg);
   return msg;
 }
-int MoveCommand::undo() { return 0; }
+int MoveCommand::undo() { throw NotImplementedError{}; }

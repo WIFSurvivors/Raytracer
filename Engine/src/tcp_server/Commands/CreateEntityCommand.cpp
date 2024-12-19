@@ -7,29 +7,11 @@
 #include "includes/Entity.hpp"
 #include <memory>
 #include <format>
+#include "includes/utility/NotImplementedError.hpp"
+
 
 std::string CreateEntityCommand::execute(Engine *e) {
   try {
-    // auto uuid_manager = e->get_active_uuid_manager();
-    // if (!uuid_manager) {
-    //   std::cerr << "UUID Manager is null" << std::endl;
-    //   return "UUID Manager is null";
-    // }
-    // auto storage =
-    //     dynamic_cast<EntityStorage *>(uuid_manager->get_system(_uuid));
-    // if (storage != nullptr) {
-    //   auto parent = storage->get_entity(_uuid);
-    //   uuid__ uuid_temp = uuid_manager->create_uuid_ownerless();
-    //   auto entity = storage->create_entity(_entity_name, uuid_temp, std::make_shared<Entity>(*parent.value()));
-    //   if (entity == nullptr) {
-    //     Log::error("Entity could not be created.");
-    //     return "Entity could not be created.";
-    //   }
-    // } else {
-    //   Log::error("The UUID you provided does not belong to a Entity.");
-    //   return "The UUID you provided does not belong to a Entity.";
-    // }
-    // return "Entity created";
     auto scene = e->get_scene();
     if (!scene) {
       Log::error("Scene is null");
@@ -58,4 +40,4 @@ std::string CreateEntityCommand::execute(Engine *e) {
     return "Unknown exception occurred";
   }
 }
-int CreateEntityCommand::undo() { return 0; }
+int CreateEntityCommand::undo() { throw NotImplementedError{}; }
