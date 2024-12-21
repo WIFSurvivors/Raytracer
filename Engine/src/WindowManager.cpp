@@ -1,4 +1,5 @@
 #include "includes/WindowManager.hpp"
+#include "includes/utility/Log.hpp"
 #include <iostream>
 
 #if SHOW_UI
@@ -45,8 +46,9 @@ glm::ivec2 WindowManager::getScreenSize() const { return _screenSize; }
 double WindowManager::get_time() { return glfwGetTime(); }
 
 bool WindowManager::_initGLFW() {
+	Log::message("Init GLFW");
   if (!glfwInit()) {
-    std::cout << "Failed to init glfw\n";
+	Log::error("Failed to init glfw");
     return false;
   }
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);

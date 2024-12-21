@@ -33,8 +33,8 @@
 
 RenderSystem::RenderSystem(WindowManager *wm, CameraSystem *cs)
     : System(), _wm{wm}, _cs{cs} {
-  Log::message("-- created render system");
-  // init(); // ? just do here ?
+  Log::message("created render system");
+  init(); // ? just do here ?
 }
 
 void RenderSystem::init() {

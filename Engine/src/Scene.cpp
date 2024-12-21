@@ -8,7 +8,7 @@
 Scene::Scene(Engine *e)
     : _render_system{e->get_window_manager(), &_camera_system},
       _root{create_root("root")} {
-  _render_system.init();
+//   _render_system.init();
 
   generate_sample_content();
 }
@@ -18,7 +18,7 @@ Scene::Scene(Engine *e, uuid id)
       _root{create_root("root", id)} {
   // does not generate sample content
   // this should be called when loading from json
-  _render_system.init();
+//   _render_system.init();
 }
 
 Scene::~Scene() { _render_system.destroy(); }
