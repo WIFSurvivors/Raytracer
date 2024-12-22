@@ -2,9 +2,14 @@
 
 #include <filesystem>
 #include <iostream>
+#include <format>
 #include <string>
 #include <cstdint>
 #include <cassert>
+
+#ifndef LOG_ABSOLUTE_PATH
+#define LOG_ABSOLUTE_PATH "/debug_path/"
+#endif
 
 namespace fs = std::filesystem;
 struct Log {
@@ -47,6 +52,7 @@ private:
       std::cout << level_to_ansi_color(level) << "-- " << msq << reset_color()
                 << "\n";
     }
+	to_file();
   }
   static void error(const std::string &msq, const Level &level) {
     std::cerr << level_to_ansi_color(level) << "-- " << msq << reset_color()
@@ -59,6 +65,9 @@ private:
       // temp path? ->
       // https://en.cppreference.com/w/cpp/filesystem/temp_directory_path
       fs::current_path(fs::temp_directory_path());
+	  Log::error(std::format("TEMP: {}", fs::current_path().string()));
+    //   fs::current_path(LOG_ABSOLUTE_PATH);
+	  Log::error(std::format("THIS: {}", LOG_ABSOLUTE_PATH));
 
       fs::create_directory("log");
       assert(!fs::create_directory("log"));
