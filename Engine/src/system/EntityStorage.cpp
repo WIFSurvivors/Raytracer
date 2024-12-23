@@ -9,7 +9,7 @@
 // #include "glm/vec3.hpp"
 #include "glm/ext.hpp"
 
-EntityStorage::EntityStorage() { Log::message("-- created entity storage"); }
+EntityStorage::EntityStorage() { Log::message("created entity storage"); }
 
 std::shared_ptr<Entity>
 EntityStorage::create_root_entity(const std::string &name, uuid id) {

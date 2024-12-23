@@ -9,7 +9,7 @@
 #include <utility>
 #include <type_traits>
 
-SimpleSystem::SimpleSystem() { Log::message("-- created simple system"); }
+SimpleSystem::SimpleSystem() { Log::message("created simple system"); }
 
 SimpleComponent *SimpleSystem::create_component(uuid id, Entity *e, int value) {
   Log::message("-- create simple component");

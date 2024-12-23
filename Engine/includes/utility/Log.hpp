@@ -13,7 +13,13 @@
 
 namespace fs = std::filesystem;
 struct Log {
-  enum class Level : unsigned int { Error = 0, Warn = 1, Message = 2, Debug = 3, Tcp = 4 };
+  enum class Level : unsigned int {
+    Error = 0,
+    Warn = 1,
+    Message = 2,
+    Debug = 3,
+    Tcp = 4
+  };
 
 private:
   static std::string level_to_ansi_color(Level level) {
@@ -52,7 +58,7 @@ private:
       std::cout << level_to_ansi_color(level) << "-- " << msq << reset_color()
                 << "\n";
     }
-	to_file();
+    to_file();
   }
   static void error(const std::string &msq, const Level &level) {
     std::cerr << level_to_ansi_color(level) << "-- " << msq << reset_color()
@@ -65,9 +71,9 @@ private:
       // temp path? ->
       // https://en.cppreference.com/w/cpp/filesystem/temp_directory_path
       fs::current_path(fs::temp_directory_path());
-	  Log::error(std::format("TEMP: {}", fs::current_path().string()));
-    //   fs::current_path(LOG_ABSOLUTE_PATH);
-	  Log::error(std::format("THIS: {}", LOG_ABSOLUTE_PATH));
+      Log::error(std::format("TEMP: {}", fs::current_path().string()));
+      //   fs::current_path(LOG_ABSOLUTE_PATH);
+      Log::error(std::format("THIS: {}", LOG_ABSOLUTE_PATH));
 
       fs::create_directory("log");
       assert(!fs::create_directory("log"));
@@ -83,6 +89,7 @@ public:
   // disabled on release / active on verbose or sth... not done yet!!
   static void debug(const std::string &s) { print(s, Level::Debug); }
   static void tcp(const std::string &s) { print(s, Level::Tcp); }
+  static void new_line() { std::cout << '\n'; }
 
   static void set_log_level(Level level) { _log_level = level; }
 

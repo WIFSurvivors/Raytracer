@@ -97,7 +97,6 @@ protected:
    * function as a first step!
    */
   T *create_component_base(uuid id, Entity *e) {
-    Log::message("-- create component");
     _components[id] = std::make_unique<T>(id, e);
     auto ptr = _components[id].get();
     // e->add_component(ptr); // this is handled in IComponent Constructor!!

@@ -34,13 +34,13 @@
 RenderSystem::RenderSystem(WindowManager *wm, CameraSystem *cs)
     : System(), _wm{wm}, _cs{cs} {
   Log::message("created render system");
-  init(); // ? just do here ?
+  init();
 }
 
 void RenderSystem::init() {
 #if SHOW_UI
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-    std::cout << "Failed to initialize GLAD" << std::endl;
+    Log::error("Failed to initialize GLAD");
     return;
   }
 
@@ -52,7 +52,7 @@ void RenderSystem::init() {
   std::filesystem::path fragment_shader_file =
       shader_folder / "fragmentshader.glsl";
 
-  std::cout << "FILE PATH: " << fragment_shader_file.string() << std::endl;
+  Log::message(std::format("Shader File Path: {}", fragment_shader_file.string()));
   glGenVertexArrays(1, &_vao);
   glBindVertexArray(_vao);
 
@@ -79,8 +79,6 @@ void RenderSystem::init() {
   _projU = glGetUniformLocation(compute->programID, "Projection");
   _viewU = glGetUniformLocation(compute->programID, "View");
 
-  std::cout << "HERRRREE\n";
-
   std::vector<Triangle> triforce2 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
   std::vector<Triangle> triforce1 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
   std::vector<Triangle> triforce3 = createCube(glm::vec3{-2.0f, 0.0f, 0.0f});
@@ -88,14 +86,13 @@ void RenderSystem::init() {
   std::vector<Triangle> triforce = triforce1;
   triforce.insert(triforce.end(), triforce2.begin(), triforce2.end());
   triforce.insert(triforce.end(), triforce3.begin(), triforce3.end());
-  std::cout << triforce.size() << std::endl;
+  Log::message(std::format("Triforce size: {}", triforce.size()));
 
   TreeBuilder builder{};
   builder.prepareSSBOData();
   builder.checkData();
 
-  //
-  std::cout << "SIZE:  " << sizeof(SSBONodes) << std::endl;
+  Log::message(std::format("SSBONodes size: {}", sizeof(SSBONodes)));
 
   glGenBuffers(1, &ssbo_tree);
   glGenBuffers(1, &ssbo_indices);
@@ -149,21 +146,21 @@ void RenderSystem::init() {
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &work_grp_cnt[0]);
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &work_grp_cnt[1]);
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &work_grp_cnt[2]);
-  std::cout << "Max work groups per compute shader"
-            << " x:" << work_grp_cnt[0] << " y:" << work_grp_cnt[1]
-            << " z:" << work_grp_cnt[2] << "\n";
+  Log::message(std::format("Max work groups per compute shader x:{} y:{} z:{}",
+                           work_grp_cnt[0], work_grp_cnt[1], work_grp_cnt[2]));
 
   int work_grp_size[3];
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &work_grp_size[0]);
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &work_grp_size[1]);
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &work_grp_size[2]);
-  std::cout << "Max work group sizes"
-            << " x:" << work_grp_size[0] << " y:" << work_grp_size[1]
-            << " z:" << work_grp_size[2] << "\n";
+  Log::message(std::format("Max work group sizes x:{} y:{} z:{}",
+                           work_grp_size[0], work_grp_size[1],
+                           work_grp_size[2]));
 
   int work_grp_inv;
   glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &work_grp_inv);
-  std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
+  Log::message(
+      std::format("Max invocations count per work group: {}", work_grp_inv));
 #endif
 }
 
@@ -222,7 +219,7 @@ void RenderSystem::update(const float dt) {
   // Print FPS every 1 second
   if (elapsedTime >= 1.0) {
     double fps = frameCount / elapsedTime;
-    std::cout << "FPS: " << fps << std::endl;
+    Log::message(std::format("FPS: {}", fps));
 
     frameCount = 0;
     elapsedTime = 0.0;
@@ -230,10 +227,10 @@ void RenderSystem::update(const float dt) {
 #endif
 }
 
-
-RenderComponent *RenderSystem::create_component(uuid id, Entity *e){
-  Log::message("-- create render component");
+RenderComponent *RenderSystem::create_component(uuid id, Entity *e) {
+  Log::message("create render component (a)");
   auto c = create_component_base(id, e);
+  // TODO: add default parameters!
   return c;
 }
 
@@ -241,12 +238,11 @@ RenderComponent *
 RenderSystem::create_component(uuid id, Entity *e,
                                const std::vector<glm::vec3> &vertices,
                                const std::vector<glm::vec2> &UV) {
-  Log::message("-- create render component");
+  Log::message("create render component (b)");
   auto c = create_component_base(id, e);
   c->set_vertices(vertices);
   c->set_uv(UV);
 
-  // CHANGE RC CONSTRUCTR :C
   int programmID = 0;
 #if SHOW_UI
   programmID = program->programID;
@@ -276,5 +272,5 @@ void RenderSystem::print() {
   }
 
   vt.print(std::cout);
-  std::cout << std::endl;
+  Log::new_line();
 }

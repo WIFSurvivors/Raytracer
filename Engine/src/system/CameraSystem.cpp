@@ -10,11 +10,11 @@
 #include "glm/ext.hpp"
 
 CameraSystem::CameraSystem() : System{} {
-  Log::message("-- created camera system");
+  Log::message("created camera system");
 }
 
 CameraComponent *CameraSystem::create_component(uuid id, Entity *e, float fov) {
-  Log::message("-- create camera component");
+  Log::message("create camera component");
   auto c = create_component_base(id, e);
   c->set_fov(fov);
   if (!_main_camera) {
