@@ -26,6 +26,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
+set(ABSOLUTE_ROOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
 set(ABSOLUTE_SHADER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/shaders/")
 set(ABSOLUTE_ASSET_PATH "${CMAKE_CURRENT_SOURCE_DIR}/assets/")
 set(ABSOLUTE_LOG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/log/")
@@ -84,6 +85,7 @@ message(STATUS "Show UI: ${SHOW_UI}")
 # Convert ENABLE_FEATURE to a numeric value
 set(SHOW_UI_NUM $<IF:$<BOOL:${SHOW_UI}>,1,0>)
 add_compile_definitions(SHOW_UI=${SHOW_UI_NUM})
+add_compile_definitions(ROOT_ABSOLUTE_PATH="${ABSOLUTE_ROOT_PATH}") 
 add_compile_definitions(SHADER_ABSOLUTE_PATH="${ABSOLUTE_SHADER_PATH}") 
 add_compile_definitions(ASSET_ABSOLUTE_PATH="${ABSOLUTE_ASSET_PATH}") 
 add_compile_definitions(LOG_ABSOLUTE_PATH="${ABSOLUTE_LOG_PATH}") 

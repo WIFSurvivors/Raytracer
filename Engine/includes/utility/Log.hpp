@@ -7,8 +7,12 @@
 #include <cstdint>
 #include <cassert>
 
+#ifndef ROOT_ABSOLUTE_PATH
+#define ROOT_ABSOLUTE_PATH "/this_is_an_error/"
+#endif
+
 #ifndef LOG_ABSOLUTE_PATH
-#define LOG_ABSOLUTE_PATH "/debug_path/"
+#define LOG_ABSOLUTE_PATH "/this_is_an_error/"
 #endif
 
 namespace fs = std::filesystem;
@@ -67,18 +71,17 @@ private:
 
   static void to_file() {
     if (!_init_log_file) {
-      // https://en.cppreference.com/w/cpp/filesystem/create_directory
-      // temp path? ->
-      // https://en.cppreference.com/w/cpp/filesystem/temp_directory_path
-      fs::current_path(fs::temp_directory_path());
-      Log::error(std::format("TEMP: {}", fs::current_path().string()));
-      //   fs::current_path(LOG_ABSOLUTE_PATH);
-      Log::error(std::format("THIS: {}", LOG_ABSOLUTE_PATH));
-
-      fs::create_directory("log");
-      assert(!fs::create_directory("log"));
-
       _init_log_file = true;
+      std::filesystem::path folder(ROOT_ABSOLUTE_PATH);
+      fs::current_path(folder);
+      Log::error(std::format("CURRENT_PATH: {}", fs::current_path().string()));
+	  if(fs::is_directory(folder / "log")){
+		fs::create_directory("log");
+		assert(!fs::create_directory("log"));
+	  }
+	  folder = (folder / "log");
+      Log::error(std::format("CURRENT_PATH: {}", folder.string()));
+      //   fs::current_path(LOG_ABSOLUTE_PATH);
     }
   }
 
