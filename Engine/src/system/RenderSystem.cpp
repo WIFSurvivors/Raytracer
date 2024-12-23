@@ -90,7 +90,7 @@ void RenderSystem::init() {
 
   TreeBuilder builder{};
   builder.prepareSSBOData();
-  builder.checkData();
+//   builder.checkData(); // Debug statements
 
   Log::message(std::format("SSBONodes size: {}", sizeof(SSBONodes)));
 
