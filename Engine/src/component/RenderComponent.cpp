@@ -32,8 +32,8 @@ RenderComponent::RenderComponent(uuid id, Entity *e, GLuint programID,
 RenderComponent::~RenderComponent() { destroy(); }
 
 void RenderComponent::init(GLuint programID) {
+  LOG("RenderComponent::init()");
 #if SHOW_UI
-  Log::message("RenderComponent::init()");
   //  TODO:
   //  - Understand the index of the generic vertex attribute
   //  (glVertexAttribPointer())

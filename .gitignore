@@ -31,5 +31,8 @@
 # TCP 
 **/build/*
 
+# Log Files
+**/log/*
+
 #Mac
 **/.DS_Store

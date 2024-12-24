@@ -9,34 +9,34 @@
 #include <format>
 #include "includes/utility/NotImplementedError.hpp"
 
-
 std::string CreateEntityCommand::execute(Engine *e) {
   try {
     auto scene = e->get_scene();
     if (!scene) {
-      Log::error("Scene is null");
+      LOG_ERROR("Scene is null");
       return "Scene is null";
     }
     auto parent = scene->get_entity(_uuid);
     if (!parent.has_value()) {
-      Log::error(std::format("Entity not found for UUID: {}", boost::uuids::to_string(_uuid)));
+      LOG_ERROR(std::format("Entity not found for UUID: {}",
+                            boost::uuids::to_string(_uuid)));
       return "Entity not found";
     }
     auto entity = scene->create_entity(_entity_name, parent.value()->get_ptr());
     if (entity == nullptr) {
-      Log::error("Entity could not be created.");
+      LOG_ERROR("Entity could not be created.");
       return "Entity could not be created.";
     }
     return "Entity created";
 
   } catch (const std::bad_alloc &e) {
-    Log::error(std::format("Memory allocation failed: {}", e.what()));
+    LOG_ERROR(std::format("Memory allocation failed: {}", e.what()));
     return "Memory allocation failed";
   } catch (const std::exception &e) {
-    Log::error(std::format("Exception: {}", e.what()));
+    LOG_ERROR(std::format("Exception: {}", e.what()));
     return "Exception occurred";
   } catch (...) {
-    Log::error("Unknown exception occurred");
+    LOG_ERROR("Unknown exception occurred");
     return "Unknown exception occurred";
   }
 }

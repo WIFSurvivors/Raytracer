@@ -33,14 +33,14 @@
 
 RenderSystem::RenderSystem(WindowManager *wm, CameraSystem *cs)
     : System(), _wm{wm}, _cs{cs} {
-  Log::message("created render system");
+  LOG("created render system");
   init();
 }
 
 void RenderSystem::init() {
 #if SHOW_UI
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-    Log::error("Failed to initialize GLAD");
+    LOG_ERROR("Failed to initialize GLAD");
     return;
   }
 
@@ -52,7 +52,7 @@ void RenderSystem::init() {
   std::filesystem::path fragment_shader_file =
       shader_folder / "fragmentshader.glsl";
 
-  Log::message(std::format("Shader File Path: {}", fragment_shader_file.string()));
+  LOG(std::format("Shader File Path: {}", fragment_shader_file.string()));
   glGenVertexArrays(1, &_vao);
   glBindVertexArray(_vao);
 
@@ -86,13 +86,13 @@ void RenderSystem::init() {
   std::vector<Triangle> triforce = triforce1;
   triforce.insert(triforce.end(), triforce2.begin(), triforce2.end());
   triforce.insert(triforce.end(), triforce3.begin(), triforce3.end());
-  Log::message(std::format("Triforce size: {}", triforce.size()));
+  LOG(std::format("Triforce size: {}", triforce.size()));
 
   TreeBuilder builder{};
   builder.prepareSSBOData();
 //   builder.checkData(); // Debug statements
 
-  Log::message(std::format("SSBONodes size: {}", sizeof(SSBONodes)));
+  LOG(std::format("SSBONodes size: {}", sizeof(SSBONodes)));
 
   glGenBuffers(1, &ssbo_tree);
   glGenBuffers(1, &ssbo_indices);
@@ -146,20 +146,20 @@ void RenderSystem::init() {
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &work_grp_cnt[0]);
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &work_grp_cnt[1]);
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &work_grp_cnt[2]);
-  Log::message(std::format("Max work groups per compute shader x:{} y:{} z:{}",
+  LOG(std::format("Max work groups per compute shader x:{} y:{} z:{}",
                            work_grp_cnt[0], work_grp_cnt[1], work_grp_cnt[2]));
 
   int work_grp_size[3];
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &work_grp_size[0]);
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &work_grp_size[1]);
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &work_grp_size[2]);
-  Log::message(std::format("Max work group sizes x:{} y:{} z:{}",
+  LOG(std::format("Max work group sizes x:{} y:{} z:{}",
                            work_grp_size[0], work_grp_size[1],
                            work_grp_size[2]));
 
   int work_grp_inv;
   glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &work_grp_inv);
-  Log::message(
+  LOG(
       std::format("Max invocations count per work group: {}", work_grp_inv));
 #endif
 }
@@ -184,7 +184,7 @@ void RenderSystem::update(const float dt) {
     _cs->get_main_camera()->get_entity()->set_local_position(
         glm::vec3(0.0f, 8.0f, 15.0f));
   } else {
-    Log::error("-- ERROR: No main camera found -> using 0., 0., +10.");
+    LOG_ERROR("-- ERROR: No main camera found -> using 0., 0., +10.");
     _cameraPosition = glm::vec3{0., 0., +10.};
   }
   glUniform3fv(_cameraU, 1, &_cameraPosition[0]);
@@ -219,7 +219,7 @@ void RenderSystem::update(const float dt) {
   // Print FPS every 1 second
   if (elapsedTime >= 1.0) {
     double fps = frameCount / elapsedTime;
-    Log::message(std::format("FPS: {}", fps));
+    LOG(std::format("FPS: {}", fps));
 
     frameCount = 0;
     elapsedTime = 0.0;
@@ -228,7 +228,7 @@ void RenderSystem::update(const float dt) {
 }
 
 RenderComponent *RenderSystem::create_component(uuid id, Entity *e) {
-  Log::message("create render component (a)");
+  LOG("create render component (a)");
   auto c = create_component_base(id, e);
   // TODO: add default parameters!
   return c;
@@ -238,7 +238,7 @@ RenderComponent *
 RenderSystem::create_component(uuid id, Entity *e,
                                const std::vector<glm::vec3> &vertices,
                                const std::vector<glm::vec2> &UV) {
-  Log::message("create render component (b)");
+  LOG("create render component (b)");
   auto c = create_component_base(id, e);
   c->set_vertices(vertices);
   c->set_uv(UV);
@@ -272,5 +272,5 @@ void RenderSystem::print() {
   }
 
   vt.print(std::cout);
-  Log::new_line();
+  std::cout << std::endl;
 }

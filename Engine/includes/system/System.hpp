@@ -49,7 +49,7 @@ template <is_base_of_component T> struct System : public ISystem {
    */
   std::optional<T *> get_component(uuid id) {
     if (!_components.contains(id)) {
-      Log::warn(std::format("-- ! component {} not found",
+      LOG_WARN(std::format("-- ! component {} not found",
                             boost::uuids::to_string(id)));
       return {};
     }
@@ -70,7 +70,7 @@ template <is_base_of_component T> struct System : public ISystem {
     // Because each component is a unique_ptr, it will call deconstructor of
     // IComponent on destruction, which in turn will remove itself from it's
     // linked entity
-    Log::message(std::format("-- ! removing component with UUID {}",
+    LOG(std::format("-- ! removing component with UUID {}",
                              boost::uuids::to_string(id)));
     return _components.erase(id);
   }
@@ -80,7 +80,7 @@ template <is_base_of_component T> struct System : public ISystem {
    * deconstructor handles deletion properly!
    */
   void clear() {
-    Log::message("-- !! clearing all components from system");
+    LOG("-- !! clearing all components from system");
     _components.clear();
   }
 

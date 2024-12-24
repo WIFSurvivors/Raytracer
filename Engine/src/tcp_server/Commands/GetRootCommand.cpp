@@ -9,53 +9,45 @@
 #include "includes/utility/Log.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 #include <string>
-int GetRootCommand::undo() 
-{
-    throw NotImplementedError{};
-}
+int GetRootCommand::undo() { throw NotImplementedError{}; }
 
-std::string GetRootCommand::execute(Engine * engine) 
-{   
-    try
-    {
-        if (!engine) {
-            std::string msg = "Engine pointer is null";
-            Log::error(msg);
-            return msg;
-        }
-
-        auto scene = engine->get_scene();
-        if (!scene) {
-            std::string msg = "Scene pointer is null";
-            Log::error(msg);
-            return msg;
-        }
-
-        auto root_entity = scene->get_root().lock();
-        if (root_entity) {
-            if (root_entity->get_uuid().is_nil()) {
-                std::string msg = "Root entity UUID is nil";
-                Log::error(msg);
-                return msg;
-            }
-            if (root_entity->get_name().empty()) {
-                std::string msg = "Root entity name is empty";
-                Log::error(msg);
-                return msg;
-            }
-            boost::json::object root_json = root_entity->to_json();
-            return boost::json::serialize(root_json);
-        } 
-        else {
-            std::string msg = "Root entity is null";
-            Log::error(msg);
-            return msg;
-        }   
+std::string GetRootCommand::execute(Engine *engine) {
+  try {
+    if (!engine) {
+      std::string msg = "Engine pointer is null";
+      LOG_ERROR(msg);
+      return msg;
     }
-    catch(const std::exception& e)
-    {
-        std::string msg = std::format("Exception: {}", e.what());
-        Log::error(msg);
+
+    auto scene = engine->get_scene();
+    if (!scene) {
+      std::string msg = "Scene pointer is null";
+      LOG_ERROR(msg);
+      return msg;
+    }
+
+    auto root_entity = scene->get_root().lock();
+    if (root_entity) {
+      if (root_entity->get_uuid().is_nil()) {
+        std::string msg = "Root entity UUID is nil";
+        LOG_ERROR(msg);
         return msg;
+      }
+      if (root_entity->get_name().empty()) {
+        std::string msg = "Root entity name is empty";
+        LOG_ERROR(msg);
+        return msg;
+      }
+      boost::json::object root_json = root_entity->to_json();
+      return boost::json::serialize(root_json);
+    } else {
+      std::string msg = "Root entity is null";
+      LOG_ERROR(msg);
+      return msg;
     }
+  } catch (const std::exception &e) {
+    std::string msg = std::format("Exception: {}", e.what());
+    LOG_ERROR(msg);
+    return msg;
+  }
 }

@@ -122,4 +122,4 @@ boost::json::array Entity::children_to_json() {
   return arr;
 }
 
-void Entity::print() { Log::message(boost::json::serialize(to_json())); }
+void Entity::print() { LOG(boost::json::serialize(to_json())); }

@@ -12,13 +12,13 @@ std::string GetChildEntitiesCommand::execute(Engine *e) {
     auto scene = e->get_scene();
     if (!scene) {
         std::string msg = "Scene pointer is null";
-        Log::error(msg);
+        LOG_ERROR(msg);
         return msg;
     }
     auto entity = scene->get_entity(_uuid);
     if (!entity.has_value()) {
         std::string msg = "Entity not found";
-        Log::error(msg);
+        LOG_ERROR(msg);
         return msg;
     }
     auto json_entity = entity.value()->to_json();

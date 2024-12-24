@@ -46,9 +46,9 @@ glm::ivec2 WindowManager::getScreenSize() const { return _screenSize; }
 double WindowManager::get_time() { return glfwGetTime(); }
 
 bool WindowManager::_initGLFW() {
-	Log::message("Init GLFW");
+  LOG("Init GLFW");
   if (!glfwInit()) {
-	Log::error("Failed to init glfw");
+    LOG_ERROR("Failed to init glfw");
     return false;
   }
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -90,10 +90,10 @@ WindowManager::WindowManager() { _initGLFW(); }
 
 void WindowManager::updateInput() {}
 
-void WindowManager::swapBuffers() { }
+void WindowManager::swapBuffers() {}
 
 bool WindowManager::shouldClose() { return false; }
-void WindowManager::close() { }
+void WindowManager::close() {}
 
 glm::vec2 WindowManager::getMousePos() { return _mousePos; }
 

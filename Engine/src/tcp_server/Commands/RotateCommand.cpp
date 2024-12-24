@@ -13,14 +13,14 @@ std::string RotateCommand::execute(Engine *engine) {
   auto scene = engine->get_scene();
   if (!scene) {
     std::string msg = "Scene is null";
-    Log::error(msg);
+    LOG_ERROR(msg);
     return msg;
   }
   auto entity_ptr = (*scene)[_uuid];
   if (!entity_ptr) {
     std::string msg =
         "Entity not found for UUID: " + boost::uuids::to_string(_uuid);
-    Log::error(msg);
+    LOG_ERROR(msg);
     return msg;
   }
 
@@ -28,7 +28,7 @@ std::string RotateCommand::execute(Engine *engine) {
   if (!entity) {
     std::string msg =
         "Entity is null for UUID: " + boost::uuids::to_string(_uuid);
-    Log::error(msg);
+    LOG_ERROR(msg);
     return msg;
   }
   entity->set_local_rotation(_new_position);
@@ -36,7 +36,7 @@ std::string RotateCommand::execute(Engine *engine) {
   std::string msg =
       "RotateCommand executed on" + boost::uuids::to_string(_uuid) +
       "with new x y z: " + glm::to_string(entity->get_local_rotation());
-  Log::message(msg);
+  LOG(msg);
   return msg;
 }
 int RotateCommand::undo() { throw NotImplementedError{}; }

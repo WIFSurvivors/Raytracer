@@ -4,7 +4,7 @@
 TcpParser::TcpParser() {}
 
 std::unique_ptr<ParsedTcpCommand> TcpParser::parse(std::string msg) {
-  Log::tcp("Got message: " + msg);
+  LOG_TCP("Got message: " + msg);
   std::string command;
   std::string uuid;
   std::vector<std::string> parameters;

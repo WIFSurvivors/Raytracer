@@ -1,16 +1,17 @@
 #include "includes/UUIDManager.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 #include "includes/utility/VariadicTable.hpp"
+#include "includes/utility/Log.hpp"
 #include <iostream>
 #include <boost/uuid/uuid_io.hpp>
 #include <format>
 #include <algorithm>
 
-UUIDManager::UUIDManager() { Log::message("created UUID Manager"); }
+UUIDManager::UUIDManager() { LOG("created UUID Manager"); }
 
 uuid UUIDManager::create_uuid_ownerless() {
   auto new_uuid = gen();
-  Log::warn(std::format(
+  LOG_WARN(std::format(
       "created uuid: {} WITHOUT OWNER (most likely an entity) !!!!!",
       boost::uuids::to_string(new_uuid)));
   _uuid_system_mapping[new_uuid] = nullptr;
@@ -19,7 +20,7 @@ uuid UUIDManager::create_uuid_ownerless() {
 
 uuid UUIDManager::create_uuid(ISystem *s) {
   auto new_uuid = gen();
-  Log::message(std::format("created uuid: {} for system {}",
+  LOG(std::format("created uuid: {} for system {}",
                            boost::uuids::to_string(new_uuid),
                            s->get_system_name()));
   _uuid_system_mapping[new_uuid] = s;

@@ -29,7 +29,7 @@ std::shared_ptr<Entity> Scene::create_root(const std::string &name) {
 }
 
 std::shared_ptr<Entity> Scene::create_root(const std::string &name, uuid id) {
-  Log::message(std::format("scene: create_root(name, uuid): \"{}\", {}", name,
+  LOG(std::format("scene: create_root(name, uuid): \"{}\", {}", name,
                            boost::uuids::to_string(id)));
   return _entity_storage.create_root_entity(name, id);
 }
@@ -51,7 +51,7 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name,
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
                                              std::shared_ptr<Entity> parent) {
-  Log::message(std::format(
+  LOG(std::format(
       "scene: create_entity(name, uuid, parent): \"{}\", {}, \"{}\"", name,
       boost::uuids::to_string(id), parent->get_name()));
   return _entity_storage.create_entity(name, id, parent);
@@ -68,9 +68,9 @@ void Scene::generate_sample_content() {
   _camera_system.print();
   _root->print();
 
-  Log::new_line();
-  Log::message(std::string(100, '*'));
-  Log::new_line();
+  LOG_NEW_LINE();
+  LOG(std::string(100, '*'));
+  LOG_NEW_LINE();
 
   // ============== ENTITY + SIMPLE COMPONENT ==============
 
@@ -111,9 +111,9 @@ void Scene::generate_sample_content() {
   _render_system.create_component(_uuid_manager.create_uuid(&_render_system),
                                   root_ptr.get(), v3, u3);
 
-  Log::new_line();
-  Log::message(std::string(100, '*'));
-  Log::new_line();
+  LOG_NEW_LINE();
+  LOG(std::string(100, '*'));
+  LOG_NEW_LINE();
 
   auto sys = _uuid_manager.get_system(c1->get_uuid());
   auto csys = static_cast<CameraSystem *>(sys);
@@ -122,14 +122,14 @@ void Scene::generate_sample_content() {
   if (occ.has_value()) {
     auto cc = occ.value();
     cc->get_fov(); // ... do something with component ...
-    Log::message("YAY");
+    LOG("YAY");
   }
 
-  Log::message(boost::json::serialize(c1->to_json()));
+  LOG(boost::json::serialize(c1->to_json()));
 
-  Log::new_line();
-  Log::message(std::string(100, '*'));
-  Log::new_line();
+  LOG_NEW_LINE();
+  LOG(std::string(100, '*'));
+  LOG_NEW_LINE();
 
   _uuid_manager.print();
   _entity_storage.print();

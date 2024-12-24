@@ -9,25 +9,25 @@ Engine::Engine() : _tcp_server(std::make_shared<TcpServer>(51234, this)) {
 Engine::~Engine() { stop_server(); }
 
 void Engine::init_server() {
-  Log::message("Engine::init_server()");
+  LOG("Engine::init_server()");
   try {
     _tcp_server->start();
   } catch (const std::exception &e) {
-    Log::message("Error: " + std::string(e.what()));
+    LOG_ERROR("Error: " + std::string(e.what()));
   }
 }
 
 void Engine::stop_server() {
-  Log::message("Engine::stop_server()");
+  LOG("Engine::stop_server()");
   try {
     _tcp_server->stop();
   } catch (const std::exception &e) {
-    Log::error("Error: " + std::string(e.what()));
+    LOG_ERROR("Error: " + std::string(e.what()));
   }
 }
 
 void Engine::startLoop() {
-  Log::message("Engine::startLoop()");
+  LOG("Engine::startLoop()");
   std::cout << std::endl;
   float t0, t1, dt;
 #if SHOW_UI

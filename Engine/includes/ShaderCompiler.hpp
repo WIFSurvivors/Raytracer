@@ -1,7 +1,8 @@
 #pragma once
 
-#include <fstream>
+#include "includes/utility/Log.hpp"
 
+#include <fstream>
 #include <glad/glad.h>
 #include <sstream>
 #include <iostream>
@@ -9,6 +10,7 @@
 #include <vector>
 #include <utility>
 #include <string>
+#include <format>
 
 struct Shader {
   /**
@@ -25,8 +27,9 @@ struct Shader {
 
   template <typename... Args> Shader(Args... paths) {
     //  GLenum shaderType
-    // static_assert((std::is_same_v<Args, std::pair<int, const char *>> && ...),
-                //   "Failed: Arguments of ShaderCompiler not of type char*");
+    // static_assert((std::is_same_v<Args, std::pair<int, const char *>> &&
+    // ...),
+    //   "Failed: Arguments of ShaderCompiler not of type char*");
     glCreateShader(GL_VERTEX_SHADER);
     loadFiles(paths...);
     shaderLinker();
@@ -53,7 +56,7 @@ private:
       ShaderCode = shaderstream.str();
       ShaderFile.close();
     } catch (std::exception &e) {
-      std::cerr << e.what() << std::endl;
+		LOG_ERROR(e.what());
     }
 
     //  Content of File should now be loaded succesfully
@@ -97,8 +100,8 @@ private:
       std::vector<GLchar> errorLog(logSize);
       glad_glGetProgramInfoLog(programID, logSize, &logSize, &errorLog[0]);
 
-      std::cerr << "Error log: "
-                << std::string(errorLog.begin(), errorLog.end()) << std::endl;
+      LOG_ERROR(std::format("Shader -> Programm Status: {}",
+                            std::string(errorLog.begin(), errorLog.end())));
 
       glad_glDeleteProgram(programID);
       for (const auto &pair : shaderIDs) {
@@ -113,7 +116,7 @@ private:
     GLint success = 0;
     glad_glGetShaderiv(shaderID, GL_COMPILE_STATUS, &success);
     if (!success) {
-      std::cout << "Shader Compilation for shader: " << path << std::endl;
+      LOG(std::format("Shader Compilation for shader: {}", path));
 
       GLint logSize = 0;
       glGetShaderiv(shaderID, GL_INFO_LOG_LENGTH, &logSize);
@@ -121,8 +124,8 @@ private:
       glad_glGetShaderInfoLog(shaderID, logSize, &logSize, &errorLog[0]);
       glad_glDeleteShader(shaderID);
 
-      std::cerr << "Error log: "
-                << std::string(errorLog.begin(), errorLog.end()) << std::endl;
+      LOG_ERROR(std::format("Shader -> Compile Status: {}",
+                            std::string(errorLog.begin(), errorLog.end())));
     }
 
     return success;

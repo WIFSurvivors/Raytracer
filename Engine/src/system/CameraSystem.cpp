@@ -10,11 +10,11 @@
 #include "glm/ext.hpp"
 
 CameraSystem::CameraSystem() : System{} {
-  Log::message("created camera system");
+  LOG("created camera system");
 }
 
 CameraComponent *CameraSystem::create_component(uuid id, Entity *e, float fov) {
-  Log::message("create camera component");
+  LOG("create camera component");
   auto c = create_component_base(id, e);
   c->set_fov(fov);
   if (!_main_camera) {
@@ -29,7 +29,7 @@ void CameraSystem::set_main_camera(CameraComponent *cc) {
   }
   _main_camera = cc;
   _main_camera->set_is_main_camera(true);
-  Log::message(std::format(
+  LOG(std::format(
       "Set new main camera ({})\n\t-> camera is on entity \"{}\"({})",
       boost::uuids::to_string(_main_camera->get_uuid()),
       _main_camera->get_entity()->get_name(),
