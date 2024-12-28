@@ -19,3 +19,6 @@ boost::json::object SimpleComponent::to_json_details() {
   obj["value"] = get_value();
   return obj;
 }
+void SimpleComponent::set_from_json(boost::json::object obj) {
+  set_value(obj.at("value").as_int64());
+}

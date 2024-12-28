@@ -53,8 +53,10 @@ TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
   } else if (parsed_command.command.compare(GET_ENTITIY_OPTIONS_COMMAND) == 0) {
     LOG_TCP("Create GetEntityOptionsCommand");
     return std::make_unique<GetEntityOptionsCommand>(_uuid);
-  } else if (parsed_command.command.compare(GET_COMPONENT_OPTIONS_COMMAND) ==
-             0) {
+  } else if (parsed_command.command.compare(SET_COMPONENT_OPTIONS_COMMAND) == 0) {
+    LOG_TCP("Create SetComponentOptionsCommand");
+    return std::make_unique<SetComponentOptions>(_uuid, boost::json::parse(parsed_command.parameters[0]).as_object());
+  } else if (parsed_command.command.compare(GET_COMPONENT_OPTIONS_COMMAND) == 0) {
     LOG_TCP("Create GetComponentOptionsCommand");
     return std::make_unique<GetComponentOptions>(_uuid);
   } else {

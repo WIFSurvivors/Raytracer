@@ -16,6 +16,7 @@
 #include "includes/tcp_server/Commands/ImportJsonCommand.hpp"
 #include "includes/tcp_server/Commands/CreateEntityCommand.hpp"
 #include "includes/tcp_server/Commands/GetComponentOptionsCommand.hpp"
+#include "includes/tcp_server/Commands/SetComponentOptionsCommand.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/string_generator.hpp>

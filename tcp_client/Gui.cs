@@ -23,6 +23,7 @@ public class Gui
             string message2 = api.create_entity(thing, "test");
             string message3 = api.get_components(thing);
             string message4 = api.get_root();
+            string message5 = api.set_component_option(thing, "{\"is_main_camera\":false,\"fov\":6E33}");
         }
         catch (ArgumentNullException e)
         {

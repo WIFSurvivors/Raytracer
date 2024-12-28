@@ -87,4 +87,8 @@ public class EcsApi
         return "ScenePath " + returnValue;
     }
 
+    public string set_component_option(String UUID, String json)
+    {
+        return _client.Send(String.Format("SetComponentOptions {0} {1}", UUID, json));
+    }
 }

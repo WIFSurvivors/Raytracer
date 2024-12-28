@@ -31,6 +31,7 @@ struct IComponent : public JSONConvertable {
   boost::json::object to_json() override;
   boost::json::object to_json_short();
   virtual boost::json::object to_json_details() = 0;
+  virtual void set_from_json(boost::json::object obj) = 0;
 
 protected:
   std::string _component_name;
