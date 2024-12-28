@@ -146,3 +146,6 @@ void RenderComponent::to_json_details(boost::json::object obj) {
 boost::json::object RenderComponent::to_json_details() {
   throw NotImplementedError();
 }
+void RenderComponent::set_from_json(boost::json::object obj) {
+  throw NotImplementedError();
+}

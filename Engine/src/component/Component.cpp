@@ -38,3 +38,5 @@ boost::json::object IComponent::to_json_base() {
   obj["entity_name"] = get_entity()->get_name();
   return obj;
 }
+
+

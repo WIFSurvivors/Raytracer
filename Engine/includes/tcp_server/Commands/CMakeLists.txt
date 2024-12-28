@@ -10,6 +10,7 @@ set(TCP_COMMANDS_HEADERS
     ImportJsonCommand.hpp
     CreateEntityCommand.hpp
     GetComponentsOptionsCommand.hpp
+    SetComponentOptionsCommand.hpp
 )
 
 list(TRANSFORM TCP_COMMANDS_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
