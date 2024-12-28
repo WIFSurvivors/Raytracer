@@ -4,12 +4,13 @@
 // #include "includes/system/CameraSystem.hpp"
 
 struct CameraSystem;
+struct Timer;
 
 struct CameraComponent : public IComponent {
   CameraComponent(uuid id, Entity *e);
   CameraComponent(uuid id, Entity *e, float fov);
 
-  void update(const float dt) override;
+  void update(const Timer& timer) override;
 
   inline void set_fov(const float fov) { _fov = fov; }
   inline float get_fov() const { return _fov; }

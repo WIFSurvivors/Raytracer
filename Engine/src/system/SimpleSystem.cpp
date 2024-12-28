@@ -3,6 +3,7 @@
 #include "includes/component/SimpleComponent.hpp"
 #include "includes/utility/Log.hpp"
 #include "includes/utility/VariadicTable.hpp"
+#include "includes/utility/Timer.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <iostream>
 #include <memory>
@@ -18,9 +19,9 @@ SimpleComponent *SimpleSystem::create_component(uuid id, Entity *e, int value) {
   return c;
 }
 
-void SimpleSystem::update(const float dt) {
+void SimpleSystem::update(const Timer& timer) {
   for (auto &&c : _components) {
-    c.second->update(dt);
+    c.second->update(timer);
   }
 }
 

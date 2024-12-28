@@ -22,6 +22,8 @@
  *  - implement better way to store number of vertices
  */
 
+struct Timer;
+
 struct RenderComponent : public IComponent {
   RenderComponent(uuid id, Entity *e);
   RenderComponent(uuid id, Entity *e, GLuint programID,
@@ -29,7 +31,7 @@ struct RenderComponent : public IComponent {
                   const std::vector<glm::vec2> &UV);
   virtual ~RenderComponent();
 
-  void update(float dt) override;
+  void update(const Timer& timer) override;
 
   // in theory not required? entity controls the position of an object
   // update modelMatrix based on the entity instead

@@ -6,14 +6,15 @@
 #include "includes/utility/NotImplementedError.hpp"
 #include "includes/utility/Log.hpp"
 #include "includes/utility/bvhtree_tiny.hpp"
+#include "includes/utility/Timer.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <boost/uuid/uuid_io.hpp>
-#include <memory>
 
+#include <memory>
 #include <iostream>
 #include <filesystem>
 
@@ -90,7 +91,7 @@ void RenderSystem::init() {
 
   TreeBuilder builder{};
   builder.prepareSSBOData();
-//   builder.checkData(); // Debug statements
+  //   builder.checkData(); // Debug statements
 
   LOG(std::format("SSBONodes size: {}", sizeof(SSBONodes)));
 
@@ -147,24 +148,22 @@ void RenderSystem::init() {
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &work_grp_cnt[1]);
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &work_grp_cnt[2]);
   LOG(std::format("Max work groups per compute shader x:{} y:{} z:{}",
-                           work_grp_cnt[0], work_grp_cnt[1], work_grp_cnt[2]));
+                  work_grp_cnt[0], work_grp_cnt[1], work_grp_cnt[2]));
 
   int work_grp_size[3];
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &work_grp_size[0]);
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &work_grp_size[1]);
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &work_grp_size[2]);
-  LOG(std::format("Max work group sizes x:{} y:{} z:{}",
-                           work_grp_size[0], work_grp_size[1],
-                           work_grp_size[2]));
+  LOG(std::format("Max work group sizes x:{} y:{} z:{}", work_grp_size[0],
+                  work_grp_size[1], work_grp_size[2]));
 
   int work_grp_inv;
   glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &work_grp_inv);
-  LOG(
-      std::format("Max invocations count per work group: {}", work_grp_inv));
+  LOG(std::format("Max invocations count per work group: {}", work_grp_inv));
 #endif
 }
 
-void RenderSystem::update(const float dt) {
+void RenderSystem::update(const Timer &timer) {
 #if SHOW_UI
   static auto lastTime = std::chrono::high_resolution_clock::now();
   static int frameCount = 0;
@@ -176,7 +175,7 @@ void RenderSystem::update(const float dt) {
 
   //  Setup compute shader
   compute->activateShader();
-  glUniform1f(_timeU, dt);
+  glUniform1f(_timeU, timer.get_total_time());
 
   if (_cs && _cs->get_main_camera()) {
     _cameraPosition =
@@ -203,7 +202,7 @@ void RenderSystem::update(const float dt) {
   glBindVertexArray(_vao);
   // _component->update();
   for (auto &&c : _components) {
-    c.second->update(dt);
+    c.second->update(timer);
   }
   // Input
   // processInput(_window);

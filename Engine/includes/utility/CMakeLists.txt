@@ -7,6 +7,7 @@ set(UTILITY_HEADERS
     VariadicTable.hpp
     JsonConverter.hpp
     bvhtree_tiny.hpp
+	Timer.hpp
     )
 
     list(TRANSFORM UTILITY_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")

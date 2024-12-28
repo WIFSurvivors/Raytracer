@@ -1,5 +1,9 @@
 #pragma once
 
+/* Modern C++ Singleton:
+ * https://medium.com/@thomas_99791/how-to-write-a-singleton-class-in-c-51ed48bbef45
+ */
+
 #include <filesystem>
 #include <iostream>
 #include <format>
@@ -34,45 +38,43 @@ struct Log {
     return instance;
   }
 
-  enum class Level : unsigned int {
+  enum class Level : unsigned int { // change to bitset :)
     Error = 0,
     Warn = 1,
     Message = 2,
-    Debug = 3,
-    Tcp = 4
+    Debug = 4,
+    Tcp = 8
   };
 
 private:
-  Log();
+  Log() = default;
   Log(const Log &) = delete;
   Log &operator=(const Log &) = delete;
 
   inline static std::mutex mutex_;
-  bool _init_log_file = false;
+
   std::string _log_file_path;
   Level _log_level = Level::Tcp;
   std::deque<std::string> _file_buffer;
 
   void print(const std::string &msq, const Level &level);
+  void write_to_buffer(const std::string &msq, const Level &level);
 
   std::string level_to_string(Level level);
   std::string level_to_ansi_color(Level level);
   std::string reset_color();
 
-  void init_file();
-  void write_to_buffer(const std::string &msq, const Level &level);
-
 public:
-  void message(const std::string &s) { print(s, Level::Message); }
-  void warn(const std::string &s) { print(s, Level::Warn); }
-  void error(const std::string &s) { print(s, Level::Error); }
-  void debug(const std::string &s) { print(s, Level::Debug); }
-  void tcp(const std::string &s) { print(s, Level::Tcp); }
-  void new_line() { std::cout << '\n'; }
+  inline void message(const std::string &s) { print(s, Level::Message); }
+  inline void warn(const std::string &s) { print(s, Level::Warn); }
+  inline void error(const std::string &s) { print(s, Level::Error); }
+  inline void debug(const std::string &s) { print(s, Level::Debug); }
+  inline void tcp(const std::string &s) { print(s, Level::Tcp); }
+  inline void new_line() { std::cout << '\n'; }
 
+  void init_file();
   void set_log_level(Level level) { _log_level = level; }
-
+  void start_new_entry(int frame_count, float delta_time, float total_time);
   void clear_buffer();
-
   void display_color_demo();
 };

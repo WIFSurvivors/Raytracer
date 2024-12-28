@@ -35,12 +35,14 @@
  *	- Do we really need a separate class for shaders
  */
 
+struct Timer;
+
 struct RenderSystem : public System<RenderComponent> {
 
   RenderSystem(WindowManager *wm, CameraSystem *cs);
 
   void init();
-  void update(const float dt); // represents render
+  void update(const Timer& timer); // represents render
   void destroy();
 
   RenderComponent *create_component(uuid id, Entity *e);

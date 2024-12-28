@@ -1,11 +1,5 @@
 #include "includes/utility/Log.hpp"
 
-Log::Log() {
-  std::cout << "logger created!!!!!!!!\n";
-  std::cout << "max_size: " << _file_buffer.max_size() << "\n";
-  std::cout << "size: " << _file_buffer.size() << "\n";
-}
-
 void Log::print(const std::string &msq, const Level &level) {
   //   std::lock_guard<std::mutex> lock(mutex_);
   std::ostringstream logEntry;
@@ -24,9 +18,6 @@ void Log::print(const std::string &msq, const Level &level) {
 // ================== FILE ==========================================
 
 void Log::init_file() {
-  if (!_init_log_file) {
-    _init_log_file = true;
-
     std::filesystem::path folder(ROOT_ABSOLUTE_PATH);
     fs::current_path(folder);
     if (fs::is_directory(folder / "log")) {
@@ -42,10 +33,16 @@ void Log::init_file() {
     _logFile.open(_log_file_path, std::ios::app);
     _logFile << "wawa2";
     _logFile.close();
-  }
 }
+
 void Log::write_to_buffer(const std::string &msq, const Level &level) {
   _file_buffer.push_back(std::format("[{}] {}", level_to_string(level), msq));
+}
+
+void Log::start_new_entry(int frame_count, float delta_time, float frame_start_time){
+  _file_buffer.push_back(std::format("{} FRAME {} {}", std::string(10, '*'), frame_count, std::string(30, '*')));
+  _file_buffer.push_back(std::format("Total runtime: {}", frame_start_time));
+  _file_buffer.push_back(std::format("Frame delta time: {}", delta_time));
 }
 
 void Log::clear_buffer() {

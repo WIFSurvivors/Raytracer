@@ -6,6 +6,7 @@
 typedef boost::uuids::uuid uuid;
 
 struct Entity; // forward declaration due to child-parent structure
+struct Timer;
 
 struct IComponent : public JSONConvertable {
   /// @brief Create new component with an uuid and link it to an entity.
@@ -17,7 +18,7 @@ struct IComponent : public JSONConvertable {
 
   /// @brief Use to update component's logic each tick
   /// @param dt Time step
-  virtual void update(const float dt) = 0;
+  virtual void update(const Timer& timer) = 0;
 
   // required by std::map<uuid, component>
   bool operator<(const IComponent &right) const { return _uuid < right._uuid; }

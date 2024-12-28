@@ -8,13 +8,14 @@
 #include <string>
 
 // typedef boost::uuids::uuid uuid;
+struct Timer;
 
 struct SimpleSystem : public System<SimpleComponent> {
   SimpleSystem();
 
   SimpleComponent *create_component(uuid id, Entity *e, int value);
 
-  void update(const float dt);
+  void update(const Timer& timer);
 
   void print() override;
 

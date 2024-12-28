@@ -4,6 +4,7 @@
 
 #include "includes/component/RenderComponent.hpp"
 #include "includes/utility/NotImplementedError.hpp"
+#include "includes/utility/Timer.hpp"
 
 #include "includes/utility/Log.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -68,7 +69,7 @@ void RenderComponent::init(GLuint programID) {
   _is_ready = true;
 }
 
-void RenderComponent::update(const float dt) {
+void RenderComponent::update(const Timer& timer) {
 	if(!_is_ready) return;
 #if SHOW_UI
   //  TODO:
