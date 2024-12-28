@@ -57,6 +57,8 @@ struct Scene {
   inline UUIDManager *get_uuid_manager() { return &_uuid_manager; }
   inline EntityStorage *get_entity_storage() { return &_entity_storage; }
   inline RenderSystem *get_render_system() { return &_render_system; }
+  inline SimpleSystem *get_simple_system() { return &_simple_system; }
+  inline CameraSystem *get_camera_system() { return &_camera_system; }
 
 
 private:

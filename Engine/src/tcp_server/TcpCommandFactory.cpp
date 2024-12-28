@@ -59,7 +59,12 @@ TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
   } else if (parsed_command.command.compare(GET_COMPONENT_OPTIONS_COMMAND) == 0) {
     LOG_TCP("Create GetComponentOptionsCommand");
     return std::make_unique<GetComponentOptions>(_uuid);
-  } else {
+  }
+  else if (parsed_command.command.compare(CREATE_COMPONENT_COMMAND) == 0) {
+    LOG_TCP("Create CreateComponentCommand");
+    return std::make_unique<CreateComponentCommand>(_uuid, parsed_command.parameters[0]);
+  }
+  else {
     LOG_ERROR("Command not found");
     return nullptr;
   }

@@ -48,9 +48,9 @@ public class EcsApi
         return _client.Send(String.Format("CreateEntity {0} {1}", UUID, name));
         
     }
-    public string create_component(String UUID, String name)
+    public string create_component(String UUID, string type)
     {
-        return _client.Send(String.Format("CreateEntity {0} {1}", UUID, name));
+        return _client.Send(String.Format("CreateComponent {0} {1}", UUID, type));
     }
     public string move_entity(String UUID, float x, float y, float z)
     {
