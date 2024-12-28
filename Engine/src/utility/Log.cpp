@@ -1,18 +1,23 @@
 #include "includes/utility/Log.hpp"
 
-Log::Log() { }
-
-void Log::print(const std::string &msq, const Level &level) {
-  if (level <= _log_level) {
-    std::cout << level_to_ansi_color(level) << "-- " << msq << reset_color()
-              << "\n";
-  }
-  write_to_buffer(msq, level);
+Log::Log() {
+  std::cout << "logger created!!!!!!!!\n";
+  std::cout << "max_size: " << _file_buffer.max_size() << "\n";
+  std::cout << "size: " << _file_buffer.size() << "\n";
 }
 
-void Log::error(const std::string &msq, const Level &level) {
-  std::cerr << level_to_ansi_color(level) << "-- " << msq << reset_color()
-            << "\n";
+void Log::print(const std::string &msq, const Level &level) {
+  //   std::lock_guard<std::mutex> lock(mutex_);
+  std::ostringstream logEntry;
+  logEntry << level_to_ansi_color(level) << "-- " << msq << reset_color()
+           << "\n";
+  if (level <= _log_level) {
+    if (level == Level::Error) {
+      std::cerr << logEntry.view();
+    } else {
+      std::cout << logEntry.view();
+    }
+  }
   write_to_buffer(msq, level);
 }
 
@@ -20,7 +25,7 @@ void Log::error(const std::string &msq, const Level &level) {
 
 void Log::init_file() {
   if (!_init_log_file) {
-    _init_log_file = true;	
+    _init_log_file = true;
 
     std::filesystem::path folder(ROOT_ABSOLUTE_PATH);
     fs::current_path(folder);
@@ -40,19 +45,18 @@ void Log::init_file() {
   }
 }
 void Log::write_to_buffer(const std::string &msq, const Level &level) {
-  _file_buffer.emplace_back(
-      std::format("[{}] {}", level_to_string(level), msq));
+  _file_buffer.push_back(std::format("[{}] {}", level_to_string(level), msq));
 }
 
-void Log::clear_buffer() { 
-	init_file();
-	std::cout << "max_size: " << _file_buffer.max_size() << "\n";
-	std::cout << "size: " << _file_buffer.size() << "\n";
-	for(auto& str : _file_buffer){
-		std::cout << "TEST :D -> "<< str << "\n";		
-	}
-	std::cout << std::endl;
-	_file_buffer.clear();
+void Log::clear_buffer() {
+  init_file();
+  std::lock_guard<std::mutex> lock(mutex_);
+  std::cout << "size: " << _file_buffer.size() << "\n";
+  for (auto &str : _file_buffer) {
+    std::cout << str << "\n";
+  }
+  std::cout << std::endl;
+  _file_buffer.clear();
 }
 
 // ================== LOG LEVEL FUNCTION =====================================

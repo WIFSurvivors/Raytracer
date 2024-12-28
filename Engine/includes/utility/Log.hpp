@@ -10,6 +10,7 @@
 #include <sstream>
 #include <ctime>
 #include <deque>
+#include <mutex>
 
 #ifndef ROOT_ABSOLUTE_PATH
 #define ROOT_ABSOLUTE_PATH "/this_is_an_error/"
@@ -28,10 +29,8 @@
 
 namespace fs = std::filesystem;
 struct Log {
-  Log();
-
   inline static Log &get_instance() {
-    static Log instance;
+    static Log instance; // evil :C
     return instance;
   }
 
@@ -44,13 +43,17 @@ struct Log {
   };
 
 private:
+  Log();
+  Log(const Log &) = delete;
+  Log &operator=(const Log &) = delete;
+
+  inline static std::mutex mutex_;
   bool _init_log_file = false;
   std::string _log_file_path;
   Level _log_level = Level::Tcp;
   std::deque<std::string> _file_buffer;
-  
+
   void print(const std::string &msq, const Level &level);
-  void error(const std::string &msq, const Level &level);
 
   std::string level_to_string(Level level);
   std::string level_to_ansi_color(Level level);
@@ -62,7 +65,7 @@ private:
 public:
   void message(const std::string &s) { print(s, Level::Message); }
   void warn(const std::string &s) { print(s, Level::Warn); }
-  void error(const std::string &s) { error(s, Level::Error); }
+  void error(const std::string &s) { print(s, Level::Error); }
   void debug(const std::string &s) { print(s, Level::Debug); }
   void tcp(const std::string &s) { print(s, Level::Tcp); }
   void new_line() { std::cout << '\n'; }

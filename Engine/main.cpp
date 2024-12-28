@@ -9,9 +9,8 @@
 // #endif
 
 int main() {
-  auto l = Log::get_instance();
-  l.set_log_level(Log::Level::Tcp);
-  l.display_color_demo();
+  Log::get_instance().set_log_level(Log::Level::Tcp);
+  Log::get_instance().display_color_demo();
 #if SHOW_UI
   LOG("=== APP STARTED | UI=ON ===")
 #else
@@ -25,6 +24,6 @@ int main() {
     LOG_ERROR(std::string(e.what()));
   }
   LOG("=== APP ENDED ===");
-  l.clear_buffer();
+  Log::get_instance().clear_buffer();
   return 0;
 }

@@ -73,6 +73,9 @@ if(USE_AVX)
   endif()
 endif()
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+	add_compile_options(-g)
+endif()
 
 
 FetchContent_MakeAvailable(glad glfw glm boost tinybvh)
