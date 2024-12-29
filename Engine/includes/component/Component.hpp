@@ -16,9 +16,8 @@ struct IComponent : public JSONConvertable {
   /// Override this if your need to clean-up more resources.
   virtual ~IComponent();
 
-  /// @brief Use to update component's logic each tick
-  /// @param dt Time step
-  virtual void update(const Timer& timer) = 0;
+  /// @brief Use to update component's logic with total time of the programm
+  virtual void update(const float total_time) = 0;
 
   // required by std::map<uuid, component>
   bool operator<(const IComponent &right) const { return _uuid < right._uuid; }

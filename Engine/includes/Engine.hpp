@@ -3,15 +3,20 @@
 #include "includes/Scene.hpp"
 #include "includes/UUIDManager.hpp"
 
-
 #include <memory>
 #include <mutex>
+
+#ifndef FRAME_CAP
+#define FRAME_CAP (30.f)
+#endif
+constexpr float MS_PER_UPDATE = 1 / FRAME_CAP;
 
 /**
  * Engine is responsible for starting the app and the fundamental parts.
  * These are the UUID Manager, a simple Scene (which initializes the  ECS) and
  * the TCP Server (and potentially the Window Manager). After these are
  * initialized, the rendering and data communication can start.
+ * Additionally. it runs a timer which caps the app to a specified frame limit.
  */
 class TcpServer;
 class Engine {

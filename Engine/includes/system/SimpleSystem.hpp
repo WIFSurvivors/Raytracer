@@ -15,7 +15,7 @@ struct SimpleSystem : public System<SimpleComponent> {
 
   SimpleComponent *create_component(uuid id, Entity *e, int value);
 
-  void update(const Timer& timer);
+  void update(const float total_time);
 
   void print() override;
 

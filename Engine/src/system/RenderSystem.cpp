@@ -163,7 +163,7 @@ void RenderSystem::init() {
 #endif
 }
 
-void RenderSystem::update(const Timer &timer) {
+void RenderSystem::update(const float total_time) {
 #if SHOW_UI
   static auto lastTime = std::chrono::high_resolution_clock::now();
   static int frameCount = 0;
@@ -175,7 +175,7 @@ void RenderSystem::update(const Timer &timer) {
 
   //  Setup compute shader
   compute->activateShader();
-  glUniform1f(_timeU, timer.get_total_time());
+  glUniform1f(_timeU, total_time);
 
   if (_cs && _cs->get_main_camera()) {
     _cameraPosition =
@@ -191,7 +191,7 @@ void RenderSystem::update(const Timer &timer) {
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
 
-  auto screen_size = _wm->getScreenSize();
+  auto screen_size = _wm->get_screen_size();
   // int groupsX = (screen_size.x + 16 - 1) / 16;
   // int groupsY = (screen_size.y + 16 - 1) / 16;
   glDispatchCompute(ceil(screen_size.x / 32.0), ceil(screen_size.y / 32.0), 1);
@@ -202,14 +202,10 @@ void RenderSystem::update(const Timer &timer) {
   glBindVertexArray(_vao);
   // _component->update();
   for (auto &&c : _components) {
-    c.second->update(timer);
+    c.second->update(total_time);
   }
-  // Input
-  // processInput(_window);
 
-  // update(glfwGetTime());
-  //
-
+  /*
   frameCount++;
   auto currentTime = std::chrono::high_resolution_clock::now();
   std::chrono::duration<double> frameTime = currentTime - lastTime;
@@ -223,6 +219,7 @@ void RenderSystem::update(const Timer &timer) {
     frameCount = 0;
     elapsedTime = 0.0;
   }
+  */
 #endif
 }
 

@@ -52,7 +52,8 @@ struct Scene {
 
   void generate_sample_content();
   
-  void update(const Timer& timer);
+  void update(const float dt);
+  void render(const float total_time);
 
   inline UUIDManager *get_uuid_manager() { return &_uuid_manager; }
   inline EntityStorage *get_entity_storage() { return &_entity_storage; }

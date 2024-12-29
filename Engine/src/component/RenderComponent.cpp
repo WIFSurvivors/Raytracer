@@ -69,7 +69,7 @@ void RenderComponent::init(GLuint programID) {
   _is_ready = true;
 }
 
-void RenderComponent::update(const Timer& timer) {
+void RenderComponent::update(const float total_time) {
 	if(!_is_ready) return;
 #if SHOW_UI
   //  TODO:

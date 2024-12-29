@@ -42,7 +42,7 @@ struct RenderSystem : public System<RenderComponent> {
   RenderSystem(WindowManager *wm, CameraSystem *cs);
 
   void init();
-  void update(const Timer& timer); // represents render
+  void update(const float total_time); // represents render
   void destroy();
 
   RenderComponent *create_component(uuid id, Entity *e);

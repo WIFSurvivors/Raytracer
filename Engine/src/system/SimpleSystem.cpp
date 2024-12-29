@@ -19,9 +19,9 @@ SimpleComponent *SimpleSystem::create_component(uuid id, Entity *e, int value) {
   return c;
 }
 
-void SimpleSystem::update(const Timer& timer) {
+void SimpleSystem::update(const float total_time) {
   for (auto &&c : _components) {
-    c.second->update(timer);
+    c.second->update(total_time);
   }
 }
 

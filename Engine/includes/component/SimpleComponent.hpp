@@ -10,7 +10,7 @@ struct SimpleComponent : public IComponent {
   SimpleComponent(uuid id, Entity *e);
   SimpleComponent(uuid id, Entity *e, int value);
 
-  void update(const Timer& timer) override;
+  void update(const float total_time) override;
 
   inline void set_value(int value) { _value = value; }
   inline int get_value() { return _value; }

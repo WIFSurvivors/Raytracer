@@ -9,7 +9,7 @@ SimpleComponent::SimpleComponent(uuid id, Entity *e)
 SimpleComponent::SimpleComponent(uuid id, Entity *e, int value)
     : IComponent{id, e, "SimpleComponent"}, _value{value} {}
 
-void SimpleComponent::update(const Timer& timer) {}
+void SimpleComponent::update(const float total_time) {}
 
 void SimpleComponent::to_json_details(boost::json::object obj) {
   obj["value"] = get_value();
