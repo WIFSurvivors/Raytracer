@@ -1,6 +1,5 @@
 #include "includes/component/CameraComponent.hpp"
 #include "includes/component/Component.hpp"
-#include "includes/utility/Timer.hpp"
 
 CameraComponent::CameraComponent(uuid id, Entity *e)
     : IComponent(id, e, "CameraComponent"), _fov(60.f) {}

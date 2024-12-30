@@ -4,7 +4,6 @@
 
 #include "includes/component/RenderComponent.hpp"
 #include "includes/utility/NotImplementedError.hpp"
-#include "includes/utility/Timer.hpp"
 
 #include "includes/utility/Log.hpp"
 #include <glm/gtc/matrix_transform.hpp>

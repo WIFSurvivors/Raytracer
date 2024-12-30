@@ -3,7 +3,6 @@
 #include "includes/component/SimpleComponent.hpp"
 #include "includes/utility/Log.hpp"
 #include "includes/utility/VariadicTable.hpp"
-#include "includes/utility/Timer.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <iostream>
 #include <memory>

@@ -6,7 +6,6 @@
 typedef boost::uuids::uuid uuid;
 
 struct Entity; // forward declaration due to child-parent structure
-struct Timer;
 
 struct IComponent : public JSONConvertable {
   /// @brief Create new component with an uuid and link it to an entity.

@@ -31,6 +31,7 @@ set(ABSOLUTE_SHADER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/shaders/")
 set(ABSOLUTE_ASSET_PATH "${CMAKE_CURRENT_SOURCE_DIR}/assets/")
 set(ABSOLUTE_LOG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/log/")
 option(SHOW_UI "Show UI, which means WindowManager and RenderSystem are active" ON)
+option(FRAME_RATE_HZ 30)
 
 FetchContent_Declare(
   glad
@@ -85,13 +86,17 @@ set(GLM_INCLUDE_DIRS "${glm_SOURCE_DIR}")
 set(TINYBVH_INCLUDE_DIRS "${tinybvh_SOURCE_DIR}")
 
 message(STATUS "Show UI: ${SHOW_UI}")
+message(STATUS "Frame Rate (Hz): ${FRAME_RATE_HZ}")
+
 # Convert ENABLE_FEATURE to a numeric value
 set(SHOW_UI_NUM $<IF:$<BOOL:${SHOW_UI}>,1,0>)
 add_compile_definitions(SHOW_UI=${SHOW_UI_NUM})
+add_compile_definitions(FRAME_RATE_HZ=${FRAME_RATE_HZ})
 add_compile_definitions(ROOT_ABSOLUTE_PATH="${ABSOLUTE_ROOT_PATH}") 
 add_compile_definitions(SHADER_ABSOLUTE_PATH="${ABSOLUTE_SHADER_PATH}") 
 add_compile_definitions(ASSET_ABSOLUTE_PATH="${ABSOLUTE_ASSET_PATH}") 
 add_compile_definitions(LOG_ABSOLUTE_PATH="${ABSOLUTE_LOG_PATH}") 
+
 # Add subdirectories
 add_subdirectory(includes)
 add_subdirectory(src)

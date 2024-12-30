@@ -1,12 +1,13 @@
 #include "includes/Engine.hpp"
 #include "includes/utility/Log.hpp"
 #include "includes/tcp_server/TcpServer.hpp"
-#include "includes/utility/Timer.hpp"
+#include "includes/utility/Snapshot.hpp"
 #include <iostream>
 
 class TcpServer;
 Engine::Engine() : _tcp_server(std::make_shared<TcpServer>(51234, this)) {
   init_server();
+  _start_time = std::chrono::high_resolution_clock::now();
 }
 Engine::~Engine() { stop_server(); }
 
@@ -30,53 +31,51 @@ void Engine::stop_server() {
 
 void Engine::startLoop() {
   LOG("Engine::startLoop()");
-  Timer timer;
+  float total_time = 0.f, accumulated_time = 0.f;
+  float current_time = get_total_time();
 
-  float time = 0.f;
-  float current_time = timer.get_duration();
-  float accumulator = 0.f;
-  int frames = 0, sub_frames = 0;
+  // frame represent updates to the scene itself, which occur in the inner loop
+  int frames = 0;
+
+  // sub-frames represent each iteration of the outer loop
+  int sub_frames = 0;
 
   float frame_time, new_time;
 
-  // #define FRAME_CAP (30.f)
-  // constexpr float MS_PER_UPDATE = 1 / FRAME_CAP; // = 0.0333f
 #if SHOW_UI
   while (_wm.should_close()) {
 #else
   while (true) {
 #endif
 
-    new_time = timer.get_duration();
+    // update the difference of the previous and the new frame
+    new_time = get_total_time();
     frame_time = new_time - current_time;
+    accumulated_time += frame_time;
     current_time = new_time;
+    sub_frames++;
 
-    accumulator += frame_time;
-    frames++;
-    sub_frames = 0;
+    // Log::get_instance().start_new_entry(frames, frame_time, new_time);
 
-    // LOG(std::format("frames: {}", frames));
-    // Log::get_instance().start_new_entry(count, frame_time, new_time);
-
-    // process input (tcp counts as input :D)
+    // process input
     _tcp_server->execute_command();
     _wm.update_input();
 
-    // makes sure, that minimum update rate is 30HZ (or whatever value you
-    // entered via cmake) and not any faster!
-    while (accumulator >= MS_PER_UPDATE) {
-      //   LOG_ERROR(std::format("accumulator: {}", accumulator));
-      accumulator -= MS_PER_UPDATE;
-      _scene.update(MS_PER_UPDATE);
-      time += MS_PER_UPDATE;
-      sub_frames++;
+    // makes sure that minimum update rate is FRAME_RATE_HZ
+    while (accumulated_time >= MS_PER_UPDATE) {
+      frames++;
+      total_time += MS_PER_UPDATE;
+      accumulated_time -= MS_PER_UPDATE;
+	  
+	  // create snapshot here
+	  Snapshot s(total_time, MS_PER_UPDATE, accumulated_time, frames, sub_frames, true);
 
-      // update this ...
-      _scene.render(new_time); // update the world with most recent data!
+      _scene.update(MS_PER_UPDATE, total_time);
       _wm.swap_buffers();
+      sub_frames = 0;
     }
-    // LOG_WARN(std::format("sub_frames: {}", sub_frames));
 
     // Log::get_instance().clear_buffer();
+    // trigger this either on 1sec difference OR 10 log entries available
   }
 }

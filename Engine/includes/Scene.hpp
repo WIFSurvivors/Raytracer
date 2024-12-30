@@ -52,15 +52,13 @@ struct Scene {
 
   void generate_sample_content();
   
-  void update(const float dt);
-  void render(const float total_time);
+  void update(const float dt, const float total_time);
 
   inline UUIDManager *get_uuid_manager() { return &_uuid_manager; }
   inline EntityStorage *get_entity_storage() { return &_entity_storage; }
   inline RenderSystem *get_render_system() { return &_render_system; }
   inline SimpleSystem *get_simple_system() { return &_simple_system; }
   inline CameraSystem *get_camera_system() { return &_camera_system; }
-
 
 private:
   std::shared_ptr<Entity> create_root(const std::string &name);

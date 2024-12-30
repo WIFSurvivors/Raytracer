@@ -6,7 +6,6 @@
 #include "includes/utility/NotImplementedError.hpp"
 #include "includes/utility/Log.hpp"
 #include "includes/utility/bvhtree_tiny.hpp"
-#include "includes/utility/Timer.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glm/ext/matrix_transform.hpp>

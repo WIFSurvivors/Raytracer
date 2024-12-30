@@ -34,9 +34,6 @@
  *	- Jeb, i dont know what to do: implement create_component()
  *	- Do we really need a separate class for shaders
  */
-
-struct Timer;
-
 struct RenderSystem : public System<RenderComponent> {
 
   RenderSystem(WindowManager *wm, CameraSystem *cs);

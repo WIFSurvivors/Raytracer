@@ -21,9 +21,6 @@
  *RenderComponent)
  *  - implement better way to store number of vertices
  */
-
-struct Timer;
-
 struct RenderComponent : public IComponent {
   RenderComponent(uuid id, Entity *e);
   RenderComponent(uuid id, Entity *e, GLuint programID,

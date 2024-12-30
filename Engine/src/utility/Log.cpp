@@ -18,9 +18,9 @@ void Log::print(const std::string &msq, const Level &level) {
 // ================== FILE ==========================================
 
 void Log::init_file() {
-    std::filesystem::path folder(ROOT_ABSOLUTE_PATH);
+    fs::path folder(ROOT_ABSOLUTE_PATH);
     fs::current_path(folder);
-    if (fs::is_directory(folder / "log")) {
+    if (!fs::is_directory(folder / "log")) {
       fs::create_directory("log");
     }
     folder /= "log";
@@ -37,6 +37,8 @@ void Log::init_file() {
 
 void Log::write_to_buffer(const std::string &msq, const Level &level) {
   _file_buffer.push_back(std::format("[{}] {}", level_to_string(level), msq));
+
+  // clear buffer when to big (like 10 entries)?
 }
 
 void Log::start_new_entry(int frame_count, float delta_time, float frame_start_time){

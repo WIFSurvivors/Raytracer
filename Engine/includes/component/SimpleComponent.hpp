@@ -3,10 +3,7 @@
 #include "includes/component/Component.hpp"
 #include "includes/Entity.hpp"
 
-struct Timer;
-
 struct SimpleComponent : public IComponent {
-  //   explicit SimpleComponent(std::weak_ptr<Entity> e);
   SimpleComponent(uuid id, Entity *e);
   SimpleComponent(uuid id, Entity *e, int value);
 

@@ -1,6 +1,6 @@
 #include "includes/utility/Log.hpp"
 #include "includes/Engine.hpp"
-#include "includes/utility/Timer.hpp"
+#include "includes/utility/Snapshot.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/json.hpp>
 #include <cassert>
@@ -140,13 +140,8 @@ void Scene::generate_sample_content() {
 }
 
 // currently only tell the render system to update itself
-void Scene::update(const float dt) {
+void Scene::update(const float dt, const float total_time) {
 //   do things??
 //   _camera_system.sample_update_move_main_camera(timer.get_delta_time());
-}
-
-void Scene::render(const float total_time) {
   _render_system.update(total_time);
 }
-
-

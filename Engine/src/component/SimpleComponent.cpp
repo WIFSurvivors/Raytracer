@@ -1,5 +1,4 @@
 #include "includes/component/SimpleComponent.hpp"
-#include "includes/utility/Timer.hpp"
 #include <iostream>
 #include <string>
 

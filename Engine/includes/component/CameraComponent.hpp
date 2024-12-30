@@ -4,7 +4,6 @@
 // #include "includes/system/CameraSystem.hpp"
 
 struct CameraSystem;
-struct Timer;
 
 struct CameraComponent : public IComponent {
   CameraComponent(uuid id, Entity *e);
