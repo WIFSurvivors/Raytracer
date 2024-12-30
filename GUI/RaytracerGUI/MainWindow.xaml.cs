@@ -19,6 +19,7 @@ using System.IO;
 using System.Reflection.PortableExecutable;
 using System.Text.Json;
 using System;
+using System.Reflection;
 
 namespace RaytracerGUI
 {
@@ -39,6 +40,8 @@ namespace RaytracerGUI
 
         bool connection = false;
         string rotation = "xpos";
+
+        private EcsNode selectedEntityOptionItem;
 
         public MainWindow()
         {
@@ -393,6 +396,76 @@ namespace RaytracerGUI
             }
         }
 
+        private void SliderPreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            Slider? changedSlider = sender as Slider;
+
+            if (changedSlider != null)
+            { 
+                changedSlider.Minimum = changedSlider.Value - 10;
+                changedSlider.Maximum = changedSlider.Value + 10;
+
+                string slider = changedSlider.Name;
+
+                // Round the slider values for lables
+                double minValue = Math.Round(changedSlider.Minimum, 2);
+                double medValue = Math.Round(changedSlider.Value, 2);
+                double maxValue = Math.Round(changedSlider.Maximum, 2);
+
+
+                // Update min, med, max labels
+                switch (slider)
+                {
+                    case "sldX":
+                        lblXMin.Content = minValue;
+                        lblXMed.Content = medValue;
+                        lblXMax.Content = maxValue;
+                        break;
+
+                    case "sldY":
+                        lblYMin.Content = minValue;
+                        lblYMed.Content = medValue;
+                        lblYMax.Content = maxValue;
+                        break;
+
+                    case "sldZ":
+                        lblZMin.Content = minValue;
+                        lblZMed.Content = medValue;
+                        lblZMax.Content = maxValue;
+                        break;
+
+                    case "sldRx":
+                        lblRxMin.Content = minValue;
+                        lblRxMed.Content = medValue;
+                        lblRxMax.Content = maxValue;
+                        break;
+
+                    case "sldRy":
+                        lblRyMin.Content = minValue;
+                        lblRyMed.Content = medValue;
+                        lblRyMax.Content = maxValue;
+                        break;
+
+                    case "sldRz":
+                        lblRzMin.Content = minValue;
+                        lblRzMed.Content = medValue;
+                        lblRzMax.Content = maxValue;
+                        break;
+
+                    case "sldZoom":
+                        lblZoomMin.Content = minValue; 
+                        lblZoomMed.Content = medValue;
+                        lblZoomMax.Content = maxValue;
+                        break;
+                }
+
+
+
+
+
+            }
+        }
+
 
 
         //Window Handling and first connect 
@@ -604,7 +677,7 @@ namespace RaytracerGUI
         }
         private void trvEntitiesOptions_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            return;
+            selectedEntityOptionItem = e.NewValue as EcsNode;
         }
 
 

@@ -160,21 +160,66 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    
 
     <!-- Style for Sliders -->
     <Style TargetType="Slider" x:Key="PrimarySliderStyle">
-        <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Background" Value="{StaticResource ComponentBackgroundColor}"/>
-        <Style.Triggers>
-            <!-- Hover color for Slider -->
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="Black"/>
-                <Setter Property="Background" Value="{StaticResource ComponentPrimaryColor}"/>
-            </Trigger>
-        </Style.Triggers>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Slider">
+                    <Grid>
+                        <!-- Background track -->
+                        <Rectangle x:Name="TrackBackground" Width="256"
+                               Fill="{StaticResource WindowBackgroundColor}" 
+                               Stroke="Transparent" StrokeThickness="0" 
+                               RadiusX="8" RadiusY="8"/>
+
+                        <!-- Progress track -->
+                        <Rectangle x:Name="TrackFill" 
+                               Fill="{StaticResource ComponentBackgroundColor}" 
+                               Stroke="Transparent" StrokeThickness="0" 
+                               RadiusX="8" RadiusY="8" />
+
+                        <!-- Thumb (slider handle) -->
+                        <Thumb x:Name="Thumb" Width="8" Height="16">
+                            <Thumb.Template>
+                                <ControlTemplate TargetType="Thumb">
+                                    <Border x:Name="ThumbBorder" 
+                                        Background="White" 
+                                        BorderBrush="White" 
+                                        BorderThickness="2" 
+                                        CornerRadius="4">
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter TargetName="ThumbBorder" Property="Background" Value="{StaticResource ComponentBackgroundColor}" />
+                                            <Setter TargetName="ThumbBorder" Property="BorderBrush" Value="{StaticResource ComponentBackgroundColor}" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Thumb.Template>
+                        </Thumb>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <!-- Change colors on hover -->
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="TrackBackground" Property="Fill" Value="{StaticResource ComponentPrimaryColor}" />
+                            <Setter TargetName="TrackFill" Property="Fill" Value="{StaticResource ComponentPrimaryColor}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
-
+    <!-- Style for Label -->
+    <Style TargetType="Label">
+        <Setter Property="FontFamily" Value="pack://application:,,,/RaytracerGUI;component/fonts/#Lucida Console"/>
+        <Setter Property="FontSize" Value="8"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource WindowBackgroundColor}"/>
+    </Style>
 
 </ResourceDictionary>
 
