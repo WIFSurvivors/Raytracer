@@ -7,12 +7,14 @@
 #include <memory>
 #include <string>
 
+struct FrameSnapshot;
+
 struct SimpleSystem : public System<SimpleComponent> {
   SimpleSystem();
 
   SimpleComponent *create_component(uuid id, Entity *e, int value);
 
-  void update(const float total_time);
+  void update(const FrameSnapshot& snapshot);
 
   void print() override;
 

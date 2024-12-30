@@ -1,7 +1,7 @@
 #include "includes/Engine.hpp"
 #include "includes/utility/Log.hpp"
 #include "includes/tcp_server/TcpServer.hpp"
-#include "includes/utility/Snapshot.hpp"
+#include "includes/utility/FrameSnapshot.hpp"
 #include <iostream>
 
 class TcpServer;
@@ -68,9 +68,8 @@ void Engine::startLoop() {
       accumulated_time -= MS_PER_UPDATE;
 	  
 	  // create snapshot here
-	  Snapshot s(total_time, MS_PER_UPDATE, accumulated_time, frames, sub_frames, true);
-
-      _scene.update(MS_PER_UPDATE, total_time);
+	  FrameSnapshot s(total_time, MS_PER_UPDATE, accumulated_time, frames, sub_frames);
+      _scene.update(s);
       _wm.swap_buffers();
       sub_frames = 0;
     }

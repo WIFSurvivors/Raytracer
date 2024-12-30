@@ -6,6 +6,8 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+struct FrameSnapshot;
+
 /**
  *    RenderComponent class:
  *
@@ -28,7 +30,7 @@ struct RenderComponent : public IComponent {
                   const std::vector<glm::vec2> &UV);
   virtual ~RenderComponent();
 
-  void update(const float total_time) override;
+  void update(const FrameSnapshot& snapshot) override;
 
   // in theory not required? entity controls the position of an object
   // update modelMatrix based on the entity instead

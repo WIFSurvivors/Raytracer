@@ -15,6 +15,8 @@ struct Engine;
 struct SimpleSystem;
 struct EntityStorage;
 
+struct FrameSnapshot;
+
 struct Scene {
   using uuid = boost::uuids::uuid;
 
@@ -52,7 +54,7 @@ struct Scene {
 
   void generate_sample_content();
   
-  void update(const float dt, const float total_time);
+  void update(const FrameSnapshot& snapshot);
 
   inline UUIDManager *get_uuid_manager() { return &_uuid_manager; }
   inline EntityStorage *get_entity_storage() { return &_entity_storage; }

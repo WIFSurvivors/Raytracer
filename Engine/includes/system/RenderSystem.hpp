@@ -15,6 +15,8 @@
 #include <map>
 #include <string>
 
+struct FrameSnapshot;
+
 /**
  *	RenderSystem class, that is resposible for:
  *	- ~~Window Managing~~
@@ -39,7 +41,7 @@ struct RenderSystem : public System<RenderComponent> {
   RenderSystem(WindowManager *wm, CameraSystem *cs);
 
   void init();
-  void update(const float total_time); // represents render
+  void update(const FrameSnapshot& snapshot); // represents render
   void destroy();
 
   RenderComponent *create_component(uuid id, Entity *e);

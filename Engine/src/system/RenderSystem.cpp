@@ -5,6 +5,7 @@
 #include "includes/ShaderCompiler.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 #include "includes/utility/Log.hpp"
+#include "includes/utility/FrameSnapshot.hpp"
 #include "includes/utility/bvhtree_tiny.hpp"
 
 #include <GLFW/glfw3.h>
@@ -162,11 +163,8 @@ void RenderSystem::init() {
 #endif
 }
 
-void RenderSystem::update(const float total_time) {
+void RenderSystem::update(const FrameSnapshot& snapshot) {
 #if SHOW_UI
-  static auto lastTime = std::chrono::high_resolution_clock::now();
-  static int frameCount = 0;
-  static double elapsedTime = 0.0;
   //  Specifies the background color1
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
@@ -174,7 +172,7 @@ void RenderSystem::update(const float total_time) {
 
   //  Setup compute shader
   compute->activateShader();
-  glUniform1f(_timeU, total_time);
+  glUniform1f(_timeU, snapshot.get_total_time());
 
   if (_cs && _cs->get_main_camera()) {
     _cameraPosition =
@@ -199,26 +197,10 @@ void RenderSystem::update(const float total_time) {
   // Setup fragment and vertex shader
   program->activateShader();
   glBindVertexArray(_vao);
-  // _component->update();
+
   for (auto &&c : _components) {
-    c.second->update(total_time);
+    c.second->update(snapshot);
   }
-
-  /*
-  frameCount++;
-  auto currentTime = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> frameTime = currentTime - lastTime;
-  lastTime = currentTime;
-  elapsedTime += frameTime.count();
-  // Print FPS every 1 second
-  if (elapsedTime >= 1.0) {
-    double fps = frameCount / elapsedTime;
-    LOG(std::format("FPS: {}", fps));
-
-    frameCount = 0;
-    elapsedTime = 0.0;
-  }
-  */
 #endif
 }
 

@@ -3,11 +3,13 @@
 #include "includes/component/Component.hpp"
 #include "includes/Entity.hpp"
 
+struct FrameSnapshot;
+
 struct SimpleComponent : public IComponent {
   SimpleComponent(uuid id, Entity *e);
   SimpleComponent(uuid id, Entity *e, int value);
 
-  void update(const float total_time) override;
+  void update(const FrameSnapshot& snapshot) override;
 
   inline void set_value(int value) { _value = value; }
   inline int get_value() { return _value; }

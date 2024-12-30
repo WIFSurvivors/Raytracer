@@ -29,21 +29,23 @@
 #define LOG_ERROR(msg) Log::get_instance().error(msg);
 #define LOG_DEBUG(msg) Log::get_instance().debug(msg);
 #define LOG_TCP(msg) Log::get_instance().tcp(msg);
+#define LOG_FRAME_DATA(msg) Log::get_instance().frame_data(msg);
 #define LOG_NEW_LINE(msg) Log::get_instance().new_line();
 
 namespace fs = std::filesystem;
 struct Log {
   inline static Log &get_instance() {
-    static Log instance; // evil :C
+    static Log instance;
     return instance;
   }
 
-  enum class Level : unsigned int { // change to bitset :)
-    Error = 0,
-    Warn = 1,
-    Message = 2,
+  enum class Level {
+    Error = 1,
+    Warn = 2,
+    Message = 3,
     Debug = 4,
-    Tcp = 8
+    Tcp = 5,
+    FrameData = 6
   };
 
 private:
@@ -70,6 +72,7 @@ public:
   inline void error(const std::string &s) { print(s, Level::Error); }
   inline void debug(const std::string &s) { print(s, Level::Debug); }
   inline void tcp(const std::string &s) { print(s, Level::Tcp); }
+  inline void frame_data(const std::string &s) { print(s, Level::FrameData); }
   inline void new_line() { std::cout << '\n'; }
 
   void init_file();

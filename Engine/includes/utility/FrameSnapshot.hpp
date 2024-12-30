@@ -1,9 +1,9 @@
 #pragma once
 
-class Snapshot {
+class FrameSnapshot {
 public:
-  Snapshot(float total_time, float delta_time, float accumulated_time,
-           int frame_nr, int sub_frame_count,bool write_log = false);
+  FrameSnapshot(float total_time, float delta_time, float accumulated_time,
+           int frame_nr, int sub_frame_count);
 
   inline const float get_total_time() const { return _total_time; }
   inline const float get_delta_time() const { return _delta_time; }

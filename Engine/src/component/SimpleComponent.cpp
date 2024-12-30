@@ -1,4 +1,5 @@
 #include "includes/component/SimpleComponent.hpp"
+#include "includes/utility/FrameSnapshot.hpp"
 #include <iostream>
 #include <string>
 
@@ -8,7 +9,7 @@ SimpleComponent::SimpleComponent(uuid id, Entity *e)
 SimpleComponent::SimpleComponent(uuid id, Entity *e, int value)
     : IComponent{id, e, "SimpleComponent"}, _value{value} {}
 
-void SimpleComponent::update(const float total_time) {}
+void SimpleComponent::update(const FrameSnapshot& snapshot) {}
 
 void SimpleComponent::to_json_details(boost::json::object obj) {
   obj["value"] = get_value();
