@@ -31,7 +31,7 @@ set(ABSOLUTE_SHADER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/shaders/")
 set(ABSOLUTE_ASSET_PATH "${CMAKE_CURRENT_SOURCE_DIR}/assets/")
 set(ABSOLUTE_LOG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/log/")
 option(SHOW_UI "Show UI, which means WindowManager and RenderSystem are active" ON)
-option(FRAME_RATE_HZ 30)
+set(FRAME_RATE_HZ 30)
 
 FetchContent_Declare(
   glad

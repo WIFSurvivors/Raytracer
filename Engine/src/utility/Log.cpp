@@ -72,7 +72,6 @@ void Log::write_to_buffer(const std::string &msg, const Level &level) {
 }
 
 void Log::clear_buffer() {
-  std::cout << "YEAH IM CLREAING ALREADY AAAAAA\n";
   std::lock_guard<std::mutex> lock(_buffer_mutex);
 
   std::ofstream _logFile;
