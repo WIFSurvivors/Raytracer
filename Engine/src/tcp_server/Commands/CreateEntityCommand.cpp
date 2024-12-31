@@ -8,7 +8,6 @@
 #include "includes/utility/NotImplementedError.hpp"
 #include <memory>
 #include <format>
-#include <string>
 
 std::string CreateEntityCommand::execute(Engine *e) {
   try {
