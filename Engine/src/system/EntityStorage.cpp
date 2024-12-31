@@ -48,7 +48,7 @@ bool EntityStorage::remove(Entity *e) {
 void EntityStorage::print() {
   std::cout << "Entity Storage: " << std::endl;
   VariadicTable<std::string, std::string, size_t, size_t, std::string> vt(
-      {"Entity UUID", "Entity Name", "CE", "CC", "World Position"});;
+      {"Entity UUID", "Entity Name", "CE", "CC", "World Position"});
   for (const auto &[id, e] : _entities) {
     vt.addRow(boost::uuids::to_string(id), e->get_name(),
               e->get_child_entities().size(), e->get_components().size(),

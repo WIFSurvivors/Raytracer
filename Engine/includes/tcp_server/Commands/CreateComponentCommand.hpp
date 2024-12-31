@@ -1,7 +1,10 @@
 #pragma once
 #include "includes/tcp_server/TcpCommand.hpp"
 #include <boost/uuid/uuid.hpp>
+#include <string>
+
 #define CREATE_COMPONENT_COMMAND "CreateComponent"
+
 struct CreateComponentCommand : public TcpCommand
 {
 	explicit CreateComponentCommand(uuid__ uuid, std::string type) : TcpCommand(uuid), _type(type) {}

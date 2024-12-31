@@ -1,13 +1,14 @@
 #include "includes/tcp_server/Commands/CreateEntityCommand.hpp"
 #include "includes/Engine.hpp"
 #include "includes/Scene.hpp"
-#include "includes/UUIDManager.hpp"
-#include "includes/utility/Log.hpp"
-#include "includes/system/EntityStorage.hpp"
 #include "includes/Entity.hpp"
+#include "includes/UUIDManager.hpp"
+#include "includes/system/EntityStorage.hpp"
+#include "includes/utility/Log.hpp"
+#include "includes/utility/NotImplementedError.hpp"
 #include <memory>
 #include <format>
-#include "includes/utility/NotImplementedError.hpp"
+#include <string>
 
 std::string CreateEntityCommand::execute(Engine *e) {
   try {
