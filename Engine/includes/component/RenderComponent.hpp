@@ -52,11 +52,11 @@ struct RenderComponent : public IComponent {
   inline const GLuint get_vbo() { return _vbo; }
   inline const GLuint get_textureID() { return _textureID; }
   inline const GLuint get_uvVBO() { return _textureID; }
-  boost::json::object to_json_details() override;
+  
   void set_from_json(boost::json::object obj) override;
 
 protected:
-  void to_json_details(boost::json::object obj) override;
+  boost::json::object to_json_details() const override;
 
 private:
   void destroy();

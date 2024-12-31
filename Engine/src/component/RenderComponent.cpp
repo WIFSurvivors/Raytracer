@@ -140,11 +140,7 @@ void RenderComponent::translate(glm::vec3 dir) {
 #endif
 }
 
-void RenderComponent::to_json_details(boost::json::object obj) {
-  throw NotImplementedError();
-}
-
-boost::json::object RenderComponent::to_json_details() {
+boost::json::object RenderComponent::to_json_details() const {
   throw NotImplementedError();
 }
 

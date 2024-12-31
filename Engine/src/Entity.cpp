@@ -21,7 +21,7 @@ std::shared_ptr<Entity> Entity::create(const std::string &name, uuid id,
   return e;
 }
 
-std::optional<IComponent *> Entity::get_component(uuid id) {
+std::optional<IComponent *> Entity::get_component(uuid id) const {
   auto it = std::find_if(_components.begin(), _components.end(),
                          [id](IComponent *c) { return c->get_uuid() == id; });
 
@@ -60,10 +60,6 @@ void Entity::add_child_entity(std::shared_ptr<Entity> e) {
   _child_entities.push_back(e);
 }
 
-std::vector<std::shared_ptr<Entity>> &Entity::get_child_entities() {
-  return _child_entities;
-}
-
 bool Entity::remove_child_entity(std::shared_ptr<Entity> e) {
   throw NotImplementedError{};
 }
@@ -95,7 +91,7 @@ glm::vec3 Entity::get_world_scale() const {
   return get_local_scale();
 }
 
-boost::json::object Entity::to_json() {
+boost::json::object Entity::to_json() const {
   boost::json::object obj = self_to_json();
 
   boost::json::array children;
@@ -104,7 +100,7 @@ boost::json::object Entity::to_json() {
   return obj;
 }
 
-boost::json::object Entity::self_to_json() {
+boost::json::object Entity::self_to_json() const {
   boost::json::object obj;
   obj["uuid"] = boost::uuids::to_string(get_uuid());
   obj["name"] = get_name();
@@ -112,7 +108,7 @@ boost::json::object Entity::self_to_json() {
   return obj;
 }
 
-boost::json::array Entity::children_to_json() {
+boost::json::array Entity::children_to_json() const {
   boost::json::array arr;
   for (const auto &e : get_child_entities()) {
     boost::json::object obj = e->self_to_json();

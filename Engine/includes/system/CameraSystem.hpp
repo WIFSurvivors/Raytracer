@@ -6,10 +6,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <optional>
 #include <memory>
-#include <map>
 #include <string>
-
-typedef boost::uuids::uuid uuid;
 
 /**
  * Handles currently active main camera, which is used by RenderSystem.

@@ -3,12 +3,13 @@
 #include "includes/utility/JSONConvertable.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <string>
-typedef boost::uuids::uuid uuid;
 
 struct Entity; // forward declaration due to child-parent structure
 struct FrameSnapshot;
 
 struct IComponent : public JSONConvertable {
+  using uuid = boost::uuids::uuid;
+  
   /// @brief Create new component with an uuid and link it to an entity.
   IComponent(uuid id, Entity *e, std::string name);
 
@@ -22,15 +23,16 @@ struct IComponent : public JSONConvertable {
   // required by std::map<uuid, component>
   bool operator<(const IComponent &right) const { return _uuid < right._uuid; }
 
-  inline uuid get_uuid() { return _uuid; }
+  inline const uuid get_uuid() const { return _uuid; }
   inline Entity *get_entity() { return _entity; }
-
+  inline Entity *get_entity() const { return _entity; }
   inline const std::string &get_component_name() const {
     return _component_name;
   }
-  boost::json::object to_json() override;
-  boost::json::object to_json_short();
-  virtual boost::json::object to_json_details() = 0;
+
+  boost::json::object to_json() const override;
+  boost::json::object to_json_short() const;
+
   virtual void set_from_json(boost::json::object obj) = 0;
 
 protected:
@@ -38,6 +40,6 @@ protected:
   uuid _uuid;
   Entity *_entity; // Doesn't have Ownership!
 
-  boost::json::object to_json_base();
-  virtual void to_json_details(boost::json::object obj) = 0;
+  boost::json::object to_json_base() const;
+  virtual boost::json::object to_json_details() const = 0;
 };

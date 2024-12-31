@@ -2,6 +2,7 @@ set(SYSTEM_HEADERS
     CameraSystem.hpp
     EntityStorage.hpp
     IStorage.hpp
+	LightSystem.hpp
     RenderSystem.hpp
     SimpleSystem.hpp
     System.hpp

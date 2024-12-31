@@ -185,6 +185,8 @@ void RenderSystem::update(const FrameSnapshot& snapshot) {
   }
   glUniform3fv(_cameraU, 1, &_cameraPosition[0]);
 
+  // do light stuff here :3
+
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
 

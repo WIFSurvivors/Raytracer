@@ -17,17 +17,19 @@ struct Entity : public std::enable_shared_from_this<Entity>,
 
   inline std::shared_ptr<Entity> get_ptr() { return shared_from_this(); }
 
-  std::optional<IComponent *> get_component(uuid id);
+  std::optional<IComponent *> get_component(uuid id) const;
 
   void add_component(IComponent *c);
   bool remove_component(IComponent *c);
   bool remove_component(uuid id);
 
   void add_child_entity(std::shared_ptr<Entity> e);
-  std::vector<std::shared_ptr<Entity>> &get_child_entities();
   bool remove_child_entity(std::shared_ptr<Entity> e);
+  inline const std::vector<std::shared_ptr<Entity>> &get_child_entities() const {
+    return _child_entities;
+  }
 
-  inline std::weak_ptr<Entity> get_parent_entity() { return _parent; }
+  inline std::weak_ptr<Entity> get_parent_entity() const { return _parent; }
 
   inline glm::vec3 get_local_position() const { return _position; }
   inline void set_local_position(const glm::vec3 pos) { _position = pos; }
@@ -41,13 +43,13 @@ struct Entity : public std::enable_shared_from_this<Entity>,
   inline void set_local_scale(const glm::vec3 scale) { _scale = scale; }
   glm::vec3 get_world_scale() const;
 
-  inline uuid get_uuid() { return _uuid; }
+  inline uuid get_uuid() const { return _uuid; }
 
-  inline const std::string &get_name() { return _name; }
+  inline const std::string &get_name() const { return _name; }
   inline void set_name(const std::string &name) { _name = name; }
   inline auto get_components() { return _components; }
 
-  boost::json::object to_json() override;
+  boost::json::object to_json() const override;
   void print();
 
 private:
@@ -63,8 +65,8 @@ private:
   Entity(const std::string &name, uuid id);
   Entity(const std::string &name, uuid id, std::shared_ptr<Entity> parent);
 
-  boost::json::object self_to_json();
-  boost::json::array children_to_json();
+  boost::json::object self_to_json() const;
+  boost::json::array children_to_json() const;
 
   uuid _uuid{};
   std::string _name{"untitled"};

@@ -26,7 +26,7 @@ std::string GetComponentOptions::execute(Engine *e) {
         auto component = camera.value();
         LOG("CameraComponent found");
         std::string json_msg =
-            boost::json::serialize(component->to_json_details());
+            boost::json::serialize(component->to_json()["component_options"]); // SORRY SPYRO :C
         LOG(json_msg);
         return json_msg;
       }
@@ -36,7 +36,7 @@ std::string GetComponentOptions::execute(Engine *e) {
         auto component = render.value();
         LOG("RenderComponent found");
         std::string json_msg =
-            boost::json::serialize(component->to_json_details());
+            boost::json::serialize(component->to_json()["component_options"]); // SORRY SPYRO :C
         LOG(json_msg);
         return json_msg;
       }
@@ -46,7 +46,7 @@ std::string GetComponentOptions::execute(Engine *e) {
         auto component = simple.value();
         LOG("SimpleComponent found");
         std::string json_msg =
-            boost::json::serialize(component->to_json_details());
+            boost::json::serialize(component->to_json()["component_options"]); // SORRY SPYRO :C
         LOG(json_msg);
         return json_msg;
       }

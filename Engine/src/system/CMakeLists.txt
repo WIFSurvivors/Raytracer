@@ -2,6 +2,7 @@ set(SYSTEM_SOURCES
     CameraSystem.cpp
     EntityStorage.cpp
     IStorage.cpp
+	LightSystem.cpp
     RenderSystem.cpp
     SimpleSystem.cpp
     System.cpp
