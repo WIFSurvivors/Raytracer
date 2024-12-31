@@ -55,26 +55,25 @@ void Engine::startLoop() {
     current_time = new_time;
     sub_frames++;
 
-    // Log::get_instance().start_new_entry(frames, frame_time, new_time);
-
     // process input
     _tcp_server->execute_command();
     _wm.update_input();
 
-    // makes sure that minimum update rate is FRAME_RATE_HZ
+    // process ECS once per tick (FRAME_RATE_HZ)
     while (accumulated_time >= MS_PER_UPDATE) {
       frames++;
       total_time += MS_PER_UPDATE;
       accumulated_time -= MS_PER_UPDATE;
-	  
-	  // create snapshot here
-	  FrameSnapshot s(total_time, MS_PER_UPDATE, accumulated_time, frames, sub_frames);
+
+      // create snapshot here
+      FrameSnapshot s(total_time, MS_PER_UPDATE, accumulated_time, frames,
+                      sub_frames);
       _scene.update(s);
       _wm.swap_buffers();
       sub_frames = 0;
-    }
 
-    // Log::get_instance().clear_buffer();
-    // trigger this either on 1sec difference OR 10 log entries available
+      Log::get_instance().clear_buffer();
+      // trigger this either on 1sec difference OR 10 log entries available???
+    }
   }
 }

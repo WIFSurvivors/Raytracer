@@ -15,6 +15,7 @@
 #include <ctime>
 #include <deque>
 #include <mutex>
+#include <chrono>
 
 #ifndef ROOT_ABSOLUTE_PATH
 #define ROOT_ABSOLUTE_PATH "/this_is_an_error/"
@@ -24,15 +25,16 @@
 #define LOG_ABSOLUTE_PATH "/this_is_an_error/"
 #endif
 
-#define LOG(msg) Log::get_instance().message(msg);
-#define LOG_WARN(msg) Log::get_instance().warn(msg);
-#define LOG_ERROR(msg) Log::get_instance().error(msg);
-#define LOG_DEBUG(msg) Log::get_instance().debug(msg);
-#define LOG_TCP(msg) Log::get_instance().tcp(msg);
-#define LOG_FRAME_DATA(msg) Log::get_instance().frame_data(msg);
-#define LOG_NEW_LINE(msg) Log::get_instance().new_line();
+#define LOG_ERROR(msg)		Log::get_instance().print(msg, Log::Level::Error);
+#define LOG_WARN(msg)		Log::get_instance().print(msg, Log::Level::Warn);
+#define LOG(msg) 			Log::get_instance().print(msg, Log::Level::Message);
+#define LOG_DEBUG(msg) 		Log::get_instance().print(msg, Log::Level::Debug);
+#define LOG_TCP(msg) 		Log::get_instance().print(msg, Log::Level::Tcp);
+#define LOG_FRAME_DATA(msg)	Log::get_instance().print(msg, Log::Level::FrameData);
+#define LOG_NEW_LINE(msg) 	Log::get_instance().new_line();
 
 namespace fs = std::filesystem;
+
 struct Log {
   inline static Log &get_instance() {
     static Log instance;
@@ -53,13 +55,16 @@ private:
   Log(const Log &) = delete;
   Log &operator=(const Log &) = delete;
 
-  inline static std::mutex mutex_;
+  inline static std::mutex _buffer_mutex;
+
+  Level _log_level = Level::Tcp;
+  Level _file_level = Level::Tcp;
 
   std::string _log_file_path;
-  Level _log_level = Level::Tcp;
   std::deque<std::string> _file_buffer;
-
-  void print(const std::string &msq, const Level &level);
+  
+  std::string get_current_time_ms_full();
+  std::string get_current_time_ms();
   void write_to_buffer(const std::string &msq, const Level &level);
 
   std::string level_to_string(Level level);
@@ -67,17 +72,12 @@ private:
   std::string reset_color();
 
 public:
-  inline void message(const std::string &s) { print(s, Level::Message); }
-  inline void warn(const std::string &s) { print(s, Level::Warn); }
-  inline void error(const std::string &s) { print(s, Level::Error); }
-  inline void debug(const std::string &s) { print(s, Level::Debug); }
-  inline void tcp(const std::string &s) { print(s, Level::Tcp); }
-  inline void frame_data(const std::string &s) { print(s, Level::FrameData); }
+  void print(const std::string &msq, const Level &level);
   inline void new_line() { std::cout << '\n'; }
 
   void init_file();
-  void set_log_level(Level level) { _log_level = level; }
-  void start_new_entry(int frame_count, float delta_time, float total_time);
+  inline void set_cout_log_level(Level l) { _log_level = l; }
+  inline void set_file_log_level(Level l) { _file_level = l; }
   void clear_buffer();
   void display_color_demo();
 };
