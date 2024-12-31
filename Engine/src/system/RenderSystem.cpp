@@ -5,6 +5,7 @@
 #include "includes/ShaderCompiler.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 #include "includes/utility/Log.hpp"
+#include "includes/utility/FrameSnapshot.hpp"
 #include "includes/utility/bvhtree_tiny.hpp"
 
 #include <GLFW/glfw3.h>
@@ -12,8 +13,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <boost/uuid/uuid_io.hpp>
-#include <memory>
 
+#include <memory>
 #include <iostream>
 #include <filesystem>
 
@@ -33,14 +34,14 @@
 
 RenderSystem::RenderSystem(WindowManager *wm, CameraSystem *cs)
     : System(), _wm{wm}, _cs{cs} {
-  Log::message("-- created render system");
-  // init(); // ? just do here ?
+  LOG("created render system");
+  init();
 }
 
 void RenderSystem::init() {
 #if SHOW_UI
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-    std::cout << "Failed to initialize GLAD" << std::endl;
+    LOG_ERROR("Failed to initialize GLAD");
     return;
   }
 
@@ -52,7 +53,7 @@ void RenderSystem::init() {
   std::filesystem::path fragment_shader_file =
       shader_folder / "fragmentshader.glsl";
 
-  std::cout << "FILE PATH: " << fragment_shader_file.string() << std::endl;
+  LOG(std::format("Shader File Path: {}", fragment_shader_file.string()));
   glGenVertexArrays(1, &_vao);
   glBindVertexArray(_vao);
 
@@ -79,8 +80,6 @@ void RenderSystem::init() {
   _projU = glGetUniformLocation(compute->programID, "Projection");
   _viewU = glGetUniformLocation(compute->programID, "View");
 
-  std::cout << "HERRRREE\n";
-
   std::vector<Triangle> triforce2 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
   std::vector<Triangle> triforce1 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
   std::vector<Triangle> triforce3 = createCube(glm::vec3{-2.0f, 0.0f, 0.0f});
@@ -88,14 +87,13 @@ void RenderSystem::init() {
   std::vector<Triangle> triforce = triforce1;
   triforce.insert(triforce.end(), triforce2.begin(), triforce2.end());
   triforce.insert(triforce.end(), triforce3.begin(), triforce3.end());
-  std::cout << triforce.size() << std::endl;
+  LOG(std::format("Triforce size: {}", triforce.size()));
 
   TreeBuilder builder{};
   builder.prepareSSBOData();
-  builder.checkData();
+  //   builder.checkData(); // Debug statements
 
-  //
-  std::cout << "SIZE:  " << sizeof(SSBONodes) << std::endl;
+  LOG(std::format("SSBONodes size: {}", sizeof(SSBONodes)));
 
   glGenBuffers(1, &ssbo_tree);
   glGenBuffers(1, &ssbo_indices);
@@ -149,29 +147,24 @@ void RenderSystem::init() {
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &work_grp_cnt[0]);
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &work_grp_cnt[1]);
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &work_grp_cnt[2]);
-  std::cout << "Max work groups per compute shader"
-            << " x:" << work_grp_cnt[0] << " y:" << work_grp_cnt[1]
-            << " z:" << work_grp_cnt[2] << "\n";
+  LOG(std::format("Max work groups per compute shader x:{} y:{} z:{}",
+                  work_grp_cnt[0], work_grp_cnt[1], work_grp_cnt[2]));
 
   int work_grp_size[3];
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &work_grp_size[0]);
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &work_grp_size[1]);
   glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &work_grp_size[2]);
-  std::cout << "Max work group sizes"
-            << " x:" << work_grp_size[0] << " y:" << work_grp_size[1]
-            << " z:" << work_grp_size[2] << "\n";
+  LOG(std::format("Max work group sizes x:{} y:{} z:{}", work_grp_size[0],
+                  work_grp_size[1], work_grp_size[2]));
 
   int work_grp_inv;
   glGetIntegerv(GL_MAX_COMPUTE_WORK_GROUP_INVOCATIONS, &work_grp_inv);
-  std::cout << "Max invocations count per work group: " << work_grp_inv << "\n";
+  LOG(std::format("Max invocations count per work group: {}", work_grp_inv));
 #endif
 }
 
-void RenderSystem::update(const float dt) {
+void RenderSystem::update(const FrameSnapshot& snapshot) {
 #if SHOW_UI
-  static auto lastTime = std::chrono::high_resolution_clock::now();
-  static int frameCount = 0;
-  static double elapsedTime = 0.0;
   //  Specifies the background color1
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
@@ -179,7 +172,7 @@ void RenderSystem::update(const float dt) {
 
   //  Setup compute shader
   compute->activateShader();
-  glUniform1f(_timeU, dt);
+  glUniform1f(_timeU, snapshot.get_total_time());
 
   if (_cs && _cs->get_main_camera()) {
     _cameraPosition =
@@ -187,7 +180,7 @@ void RenderSystem::update(const float dt) {
     _cs->get_main_camera()->get_entity()->set_local_position(
         glm::vec3(0.0f, 8.0f, 15.0f));
   } else {
-    Log::error("-- ERROR: No main camera found -> using 0., 0., +10.");
+    LOG_ERROR("-- ERROR: No main camera found -> using 0., 0., +10.");
     _cameraPosition = glm::vec3{0., 0., +10.};
   }
   glUniform3fv(_cameraU, 1, &_cameraPosition[0]);
@@ -195,7 +188,7 @@ void RenderSystem::update(const float dt) {
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
 
-  auto screen_size = _wm->getScreenSize();
+  auto screen_size = _wm->get_screen_size();
   // int groupsX = (screen_size.x + 16 - 1) / 16;
   // int groupsY = (screen_size.y + 16 - 1) / 16;
   glDispatchCompute(ceil(screen_size.x / 32.0), ceil(screen_size.y / 32.0), 1);
@@ -204,36 +197,17 @@ void RenderSystem::update(const float dt) {
   // Setup fragment and vertex shader
   program->activateShader();
   glBindVertexArray(_vao);
-  // _component->update();
+
   for (auto &&c : _components) {
-    c.second->update(dt);
-  }
-  // Input
-  // processInput(_window);
-
-  // update(glfwGetTime());
-  //
-
-  frameCount++;
-  auto currentTime = std::chrono::high_resolution_clock::now();
-  std::chrono::duration<double> frameTime = currentTime - lastTime;
-  lastTime = currentTime;
-  elapsedTime += frameTime.count();
-  // Print FPS every 1 second
-  if (elapsedTime >= 1.0) {
-    double fps = frameCount / elapsedTime;
-    std::cout << "FPS: " << fps << std::endl;
-
-    frameCount = 0;
-    elapsedTime = 0.0;
+    c.second->update(snapshot);
   }
 #endif
 }
 
-
-RenderComponent *RenderSystem::create_component(uuid id, Entity *e){
-  Log::message("-- create render component");
+RenderComponent *RenderSystem::create_component(uuid id, Entity *e) {
+  LOG("create render component (a)");
   auto c = create_component_base(id, e);
+  // TODO: add default parameters!
   return c;
 }
 
@@ -241,12 +215,11 @@ RenderComponent *
 RenderSystem::create_component(uuid id, Entity *e,
                                const std::vector<glm::vec3> &vertices,
                                const std::vector<glm::vec2> &UV) {
-  Log::message("-- create render component");
+  LOG("create render component (b)");
   auto c = create_component_base(id, e);
   c->set_vertices(vertices);
   c->set_uv(UV);
 
-  // CHANGE RC CONSTRUCTR :C
   int programmID = 0;
 #if SHOW_UI
   programmID = program->programID;

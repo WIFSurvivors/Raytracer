@@ -37,20 +37,20 @@ public class EcsApi
     }
     public string get_entity_options(string UUID)
     {
-        return _client.Send(string.Format("GetEntityOptions {0}", UUID));
+        return _client.Send(String.Format("GetEntityOptions {0}", UUID));
     }
     public string get_components(String UUID)
     {
-        return _client.Send(string.Format("GetComponents {0}", UUID));
+        return _client.Send(String.Format("GetComponents {0}", UUID));
     }
-    public string create_entity()
+    public string create_entity(String UUID,String name)
     {
-        return "CreateEntity";
+        return _client.Send(String.Format("CreateEntity {0} {1}", UUID, name));
+        
     }
-    public string create_component()
+   public string create_component(String UUID, string type)
     {
-        String returnValue = _client.Send("CreateCommand Entity");
-        return "CreateComponent " + returnValue;
+        return _client.Send(String.Format("CreateComponent {0} {1}", UUID, type));
     }
     public string move_entity(String UUID, float x, float y, float z)
     {
@@ -76,9 +76,9 @@ public class EcsApi
         return "DeleteComponent";
     }
 
-    public string get_component_options(string UUID)
+    public string get_component_options(String UUID)
     {
-        return _client.Send(string.Format("GetComponentsOptions {0}", UUID));
+        return _client.Send(String.Format("GetComponentOptions {0}", UUID));
     }
 
     public string post_ScenePath(String path)
@@ -87,4 +87,8 @@ public class EcsApi
         return "ScenePath " + returnValue;
     }
 
+    public string set_component_option(String UUID, String json)
+    {
+        return _client.Send(String.Format("SetComponentOptions {0} {1}", UUID, json));
+    }
 }

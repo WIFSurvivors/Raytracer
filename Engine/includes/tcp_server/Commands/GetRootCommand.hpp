@@ -7,7 +7,7 @@
 #define GET_ROOT_COMMAND "GetRoot"
 struct GetRootCommand : public TcpCommand
 {
-	GetRootCommand(); 
+	GetRootCommand() = default; 
 	std::string execute(Engine * e) override;
 	int undo() override;
 

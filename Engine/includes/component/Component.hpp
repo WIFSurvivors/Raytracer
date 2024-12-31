@@ -6,6 +6,7 @@
 typedef boost::uuids::uuid uuid;
 
 struct Entity; // forward declaration due to child-parent structure
+struct FrameSnapshot;
 
 struct IComponent : public JSONConvertable {
   /// @brief Create new component with an uuid and link it to an entity.
@@ -15,9 +16,8 @@ struct IComponent : public JSONConvertable {
   /// Override this if your need to clean-up more resources.
   virtual ~IComponent();
 
-  /// @brief Use to update component's logic each tick
-  /// @param dt Time step
-  virtual void update(const float dt) = 0;
+  /// @brief Use to update component's logic with total time of the programm
+  virtual void update(const FrameSnapshot& snapshot) = 0;
 
   // required by std::map<uuid, component>
   bool operator<(const IComponent &right) const { return _uuid < right._uuid; }
@@ -30,6 +30,8 @@ struct IComponent : public JSONConvertable {
   }
   boost::json::object to_json() override;
   boost::json::object to_json_short();
+  virtual boost::json::object to_json_details() = 0;
+  virtual void set_from_json(boost::json::object obj) = 0;
 
 protected:
   std::string _component_name;

@@ -1,4 +1,5 @@
 #include "includes/WindowManager.hpp"
+#include "includes/utility/Log.hpp"
 #include <iostream>
 
 #if SHOW_UI
@@ -14,10 +15,12 @@ void WindowManager::framebuffer_size_callback(GLFWwindow *window, int width,
   // retina displays.
   glad_glViewport(0, 0, width, height);
 }
+#endif
 
 WindowManager::WindowManager() { _initGLFW(); }
 
-void WindowManager::updateInput() {
+void WindowManager::update_input() {
+#if SHOW_UI
   glfwPollEvents();
   processInput(_window);
 
@@ -28,25 +31,36 @@ void WindowManager::updateInput() {
   // probably move this one, but for now it can stay
   // alternatively rename method name
   glfwGetWindowSize(_window, &_screenSize.x, &_screenSize.y);
+#endif
 }
 
-void WindowManager::swapBuffers() { glfwSwapBuffers(_window); }
-
-bool WindowManager::shouldClose() { return !glfwWindowShouldClose(_window); }
 void WindowManager::close() {
+#if SHOW_UI
   glfwSetWindowShouldClose(_window, GLFW_FALSE);
-  // glfwDestroyWindow(_window);
+// glfwDestroyWindow(_window);
+#endif
+}
+void WindowManager::swap_buffers() {
+#if SHOW_UI
+  glfwSwapBuffers(_window);
+#endif
 }
 
-glm::vec2 WindowManager::getMousePos() { return _mousePos; }
+bool WindowManager::should_close() {
+#if SHOW_UI
+  return !glfwWindowShouldClose(_window);
+#endif
+}
 
-glm::ivec2 WindowManager::getScreenSize() const { return _screenSize; }
+glm::vec2 WindowManager::get_mouse_pos() const { return _mousePos; }
 
-double WindowManager::get_time() { return glfwGetTime(); }
+glm::ivec2 WindowManager::get_screen_size() const { return _screenSize; }
 
 bool WindowManager::_initGLFW() {
+#if SHOW_UI
+  LOG("Init GLFW");
   if (!glfwInit()) {
-    std::cout << "Failed to init glfw\n";
+    LOG_ERROR("Failed to init glfw");
     return false;
   }
   glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -75,31 +89,5 @@ bool WindowManager::_initGLFW() {
   glfwSetInputMode(_window, GLFW_STICKY_KEYS, GL_TRUE);
   glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
   return true;
-}
-
-void WindowManager::update() {
-  updateInput();
-  glfwSwapBuffers(_window);
-}
-
-#else
-
-WindowManager::WindowManager() { _initGLFW(); }
-
-void WindowManager::updateInput() {}
-
-void WindowManager::swapBuffers() { }
-
-bool WindowManager::shouldClose() { return false; }
-void WindowManager::close() { }
-
-glm::vec2 WindowManager::getMousePos() { return _mousePos; }
-
-glm::ivec2 WindowManager::getScreenSize() const { return _screenSize; }
-
-double WindowManager::get_time() { return 0.; }
-
-bool WindowManager::_initGLFW() { return false; }
-
-void WindowManager::update() {}
 #endif
+}

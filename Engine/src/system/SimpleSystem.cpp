@@ -3,24 +3,25 @@
 #include "includes/component/SimpleComponent.hpp"
 #include "includes/utility/Log.hpp"
 #include "includes/utility/VariadicTable.hpp"
+#include "includes/utility/FrameSnapshot.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <iostream>
 #include <memory>
 #include <utility>
 #include <type_traits>
 
-SimpleSystem::SimpleSystem() { Log::message("-- created simple system"); }
+SimpleSystem::SimpleSystem() { LOG("created simple system"); }
 
 SimpleComponent *SimpleSystem::create_component(uuid id, Entity *e, int value) {
-  Log::message("-- create simple component");
+  LOG("-- create simple component");
   auto c = create_component_base(id, e);
   c->set_value(value);
   return c;
 }
 
-void SimpleSystem::update(const float dt) {
+void SimpleSystem::update(const FrameSnapshot& snapshot) {
   for (auto &&c : _components) {
-    c.second->update(dt);
+    c.second->update(snapshot);
   }
 }
 

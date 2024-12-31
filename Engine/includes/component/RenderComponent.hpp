@@ -6,6 +6,8 @@
 #include <glm/glm.hpp>
 #include <vector>
 
+struct FrameSnapshot;
+
 /**
  *    RenderComponent class:
  *
@@ -21,7 +23,6 @@
  *RenderComponent)
  *  - implement better way to store number of vertices
  */
-
 struct RenderComponent : public IComponent {
   RenderComponent(uuid id, Entity *e);
   RenderComponent(uuid id, Entity *e, GLuint programID,
@@ -29,7 +30,7 @@ struct RenderComponent : public IComponent {
                   const std::vector<glm::vec2> &UV);
   virtual ~RenderComponent();
 
-  void update(float dt) override;
+  void update(const FrameSnapshot& snapshot) override;
 
   // in theory not required? entity controls the position of an object
   // update modelMatrix based on the entity instead
@@ -51,6 +52,8 @@ struct RenderComponent : public IComponent {
   inline const GLuint get_vbo() { return _vbo; }
   inline const GLuint get_textureID() { return _textureID; }
   inline const GLuint get_uvVBO() { return _textureID; }
+  boost::json::object to_json_details() override;
+  void set_from_json(boost::json::object obj) override;
 
 protected:
   void to_json_details(boost::json::object obj) override;

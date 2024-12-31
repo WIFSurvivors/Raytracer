@@ -11,13 +11,9 @@
 
 // typedef boost::uuids::uuid uuid;
 
-struct Entity : public std::enable_shared_from_this<Entity>, public JSONConvertable {
+struct Entity : public std::enable_shared_from_this<Entity>,
+                public JSONConvertable {
   using uuid = boost::uuids::uuid;
-  // make private -> will require some friend magic...
-  // Entity(Private);
-  Entity();
-  Entity(const std::string &name, uuid id);
-  Entity(const std::string &name, uuid id, std::shared_ptr<Entity> parent);
 
   inline std::shared_ptr<Entity> get_ptr() { return shared_from_this(); }
 
@@ -50,23 +46,22 @@ struct Entity : public std::enable_shared_from_this<Entity>, public JSONConverta
   inline const std::string &get_name() { return _name; }
   inline void set_name(const std::string &name) { _name = name; }
   inline auto get_components() { return _components; }
-  
-  boost::json::object to_json() override;
 
+  boost::json::object to_json() override;
   void print();
 
 private:
+  // EntityStorage is the only class that can call create(...) !!!!
   friend class EntityStorage;
-  //   friend std::shared_ptr<Entity>
-  //   EntityStorage::create_root_entity(const std::string &name, uuid id);
-
-  friend class std::shared_ptr<Entity>;
-  //   EntityStorage::create_entity(const std::string &name, uuid id,
-  //                                std::shared_ptr<Entity> parent);
-
   static std::shared_ptr<Entity> create(const std::string &name, uuid id,
                                         std::shared_ptr<Entity> parent);
   static std::shared_ptr<Entity> create(const std::string &name, uuid id);
+
+  // required for smart poiner to create/destroy entities, see:
+  // https://stackoverflow.com/questions/8147027/how-do-i-call-stdmake-shared-on-a-class-with-only-protected-or-private-const
+  struct make_shared_enabler;
+  Entity(const std::string &name, uuid id);
+  Entity(const std::string &name, uuid id, std::shared_ptr<Entity> parent);
 
   boost::json::object self_to_json();
   boost::json::array children_to_json();
@@ -81,6 +76,11 @@ private:
   std::weak_ptr<Entity> _parent{};
   std::vector<std::shared_ptr<Entity>> _child_entities{};
   std::vector<IComponent *> _components{};
+};
 
-  void print(int indent);
+struct Entity::make_shared_enabler : public Entity {
+  make_shared_enabler(const std::string &name, uuid id) : Entity(name, id) {}
+  make_shared_enabler(const std::string &name, uuid id,
+                      std::shared_ptr<Entity> parent)
+      : Entity(name, id, parent) {}
 };

@@ -1,9 +1,10 @@
 #include "includes/tcp_server/TcpParser.hpp"
+#include "includes/utility/Log.hpp"
 
 TcpParser::TcpParser() {}
 
 std::unique_ptr<ParsedTcpCommand> TcpParser::parse(std::string msg) {
-  std::cout << "Got message: " << msg << std::endl;
+  LOG_TCP("Got message: " + msg);
   std::string command;
   std::string uuid;
   std::vector<std::string> parameters;

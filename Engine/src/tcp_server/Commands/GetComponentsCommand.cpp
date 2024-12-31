@@ -4,45 +4,51 @@
 #include "includes/Entity.hpp"
 #include "includes/component/Component.hpp"
 #include <algorithm>
+#include <format>
+#include "includes/utility/Log.hpp"
+#include <string>
+#include "includes/utility/NotImplementedError.hpp"
 
 std::string GetComponentsCommand::execute(Engine *e) {
   try {
     auto scene = e->get_scene();
     if (!scene) {
-      std::cerr << "Scene is null" << std::endl;
-      return "Scene is null";
+      std::string msg = "Scene is null";
+      LOG_ERROR(msg);
+      return msg;
     }
-
     auto entity_ptr = (*scene)[_uuid];
     if (!entity_ptr.has_value()) {
-      std::cerr << "Entity not found for UUID: "
-                << boost::uuids::to_string(_uuid) << std::endl;
-      return "Entity not found";
+      std::string msg = std::format("Entity not found for UUID: {}",
+                                    boost::uuids::to_string(_uuid));
+      LOG_ERROR(msg);
+      return msg;
     }
-
     auto entity = entity_ptr.value();
     if (!entity) {
-      std::cerr << "Entity is null for UUID: " << boost::uuids::to_string(_uuid)
-                << std::endl;
-      return "Entity is null";
+      std::string msg = std::format("Entity is null for UUID: {}",
+                                    boost::uuids::to_string(_uuid));
+      LOG_ERROR(msg);
+      return msg;
     }
     auto components = entity->get_components();
     if (components.empty()) {
-      std::cout << "No components found" << std::endl;
-      return "No components found";
+      std::string msg = "No components found";
+      LOG_ERROR(msg);
+      return msg;
     }
 
     auto components_json = get_components_short(components);
     return boost::json::serialize(components_json);
 
   } catch (const std::bad_alloc &e) {
-    std::cerr << "Memory allocation failed: " << e.what() << std::endl;
+    LOG_ERROR(std::format("Memory allocation failed: {}", e.what()));
     return "Memory allocation failed";
   } catch (const std::exception &e) {
-    std::cerr << "Exception: " << e.what() << std::endl;
+    LOG_ERROR(std::format("Exception: {}", e.what()));
     return "Exception occurred";
   } catch (...) {
-    std::cerr << "Unknown exception occurred" << std::endl;
+    LOG_ERROR("Unknown exception occurred");
     return "Unknown exception occurred";
   }
   return "Entity not found";
@@ -56,4 +62,4 @@ boost::json::array GetComponentsCommand::get_components_short(
   return arr;
 }
 
-int GetComponentsCommand::undo() { return 0; }
+int GetComponentsCommand::undo() { throw NotImplementedError{}; }

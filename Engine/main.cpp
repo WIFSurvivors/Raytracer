@@ -9,20 +9,24 @@
 // #endif
 
 int main() {
-  Log::set_log_level(Log::Level::Tcp);
-  Log::display_color_demo();
+  Log::get_instance().set_cout_log_level(Log::Level::Tcp);
+  Log::get_instance().set_file_log_level(Log::Level::Tcp);
+  Log::get_instance().display_color_demo();
+  Log::get_instance().init_file();
+  Log::get_instance().clear_buffer();
 #if SHOW_UI
-  Log::message("=== APP STARTED === UI=ON");
+  LOG("=== APP STARTED | UI=ON ===")
 #else
-  Log::message("=== APP STARTED === UI=OFF");
+  LOG("=== APP STARTED | UI=OFF ===")
 #endif
   try {
     Engine engine{};
     engine.startLoop();
   } catch (std::exception &e) {
-    Log::error("App crashed!!!!");
-    Log::error(std::string(e.what()));
+	LOG_ERROR("App crashed!!!!");
+    LOG_ERROR(std::string(e.what()));
   }
-  Log::message("=== APP ENDED ===");
+  LOG("=== APP ENDED ===");
+  Log::get_instance().clear_buffer();
   return 0;
 }

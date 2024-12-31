@@ -15,6 +15,8 @@ struct Engine;
 struct SimpleSystem;
 struct EntityStorage;
 
+struct FrameSnapshot;
+
 struct Scene {
   using uuid = boost::uuids::uuid;
 
@@ -31,10 +33,7 @@ struct Scene {
 
   inline std::weak_ptr<Entity> get_root() const { return _root; }
   inline std::optional<Entity *> get_entity(uuid id) {
-    std::cout << "Scene::get_entity1" << std::endl;
-    this->_entity_storage.print();
-    std::cout << "Scene::get_entity2" << std::endl;
-    return _entity_storage.get_entity(id);
+        return _entity_storage.get_entity(id);
   }
 
   std::optional<Entity *> operator[](uuid id) {
@@ -55,12 +54,13 @@ struct Scene {
 
   void generate_sample_content();
   
-  void update(float dt);
+  void update(const FrameSnapshot& snapshot);
 
   inline UUIDManager *get_uuid_manager() { return &_uuid_manager; }
   inline EntityStorage *get_entity_storage() { return &_entity_storage; }
   inline RenderSystem *get_render_system() { return &_render_system; }
-
+  inline SimpleSystem *get_simple_system() { return &_simple_system; }
+  inline CameraSystem *get_camera_system() { return &_camera_system; }
 
 private:
   std::shared_ptr<Entity> create_root(const std::string &name);

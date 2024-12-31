@@ -4,6 +4,7 @@
 
 #include "includes/component/RenderComponent.hpp"
 #include "includes/utility/NotImplementedError.hpp"
+#include "includes/utility/FrameSnapshot.hpp"
 
 #include "includes/utility/Log.hpp"
 #include <glm/gtc/matrix_transform.hpp>
@@ -32,8 +33,8 @@ RenderComponent::RenderComponent(uuid id, Entity *e, GLuint programID,
 RenderComponent::~RenderComponent() { destroy(); }
 
 void RenderComponent::init(GLuint programID) {
+  LOG("RenderComponent::init()");
 #if SHOW_UI
-  Log::message("RenderComponent::init()");
   //  TODO:
   //  - Understand the index of the generic vertex attribute
   //  (glVertexAttribPointer())
@@ -68,7 +69,7 @@ void RenderComponent::init(GLuint programID) {
   _is_ready = true;
 }
 
-void RenderComponent::update(const float dt) {
+void RenderComponent::update(const FrameSnapshot& snapshot) {
 	if(!_is_ready) return;
 #if SHOW_UI
   //  TODO:
@@ -140,5 +141,13 @@ void RenderComponent::translate(glm::vec3 dir) {
 }
 
 void RenderComponent::to_json_details(boost::json::object obj) {
+  throw NotImplementedError();
+}
+
+boost::json::object RenderComponent::to_json_details() {
+  throw NotImplementedError();
+}
+
+void RenderComponent::set_from_json(boost::json::object obj) {
   throw NotImplementedError();
 }

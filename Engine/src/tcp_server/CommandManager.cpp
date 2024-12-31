@@ -15,9 +15,9 @@ void CommandManager::execute_command() {
     return;
   }
   auto msg = _executer.execute(command.get(), _engine);
-  Log::tcp(std::format("Command from queue received. Currently in Queue: {0}", _command_queue.size()));
+  LOG_TCP(std::format("Command from queue received. Currently in Queue: {0}", _command_queue.size()));
   if (msg.compare("0") != 0) {
-    Log::message("Command executed: " + msg);
+    LOG("Command executed: " + msg);
   }
   _tcp_server->send_message(msg);
 }

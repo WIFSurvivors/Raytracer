@@ -4,17 +4,20 @@
 // #include "includes/system/CameraSystem.hpp"
 
 struct CameraSystem;
+struct FrameSnapshot;
 
 struct CameraComponent : public IComponent {
   CameraComponent(uuid id, Entity *e);
   CameraComponent(uuid id, Entity *e, float fov);
 
-  void update(const float dt) override;
+  void update(const FrameSnapshot& snapshot) override;
 
   inline void set_fov(const float fov) { _fov = fov; }
   inline float get_fov() const { return _fov; }
 
   inline bool is_main_camera() { return _is_main_camera; }
+  boost::json::object to_json_details() override;
+  void set_from_json(boost::json::object obj) override;
 
 protected:
   void to_json_details(boost::json::object obj) override;

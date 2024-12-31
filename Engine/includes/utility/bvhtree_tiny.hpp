@@ -162,10 +162,10 @@ struct TreeBuilder {
     }
 
     // Debug print vertices
-    for (const auto &v : vertex) {
+    /*for (const auto &v : vertex) {
       std::cout << "Vertex: (" << v.data.x << ", " << v.data.y << ", "
                 << v.data.z << ")" << std::endl;
-    }
+    }*/
 
     mats.push_back(Materials{glm::vec3(0.8f, 0.2f, 0.8f),
                              0.2f}); // Light gray, slightly reflective

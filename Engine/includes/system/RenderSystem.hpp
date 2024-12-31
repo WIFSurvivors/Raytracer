@@ -15,6 +15,8 @@
 #include <map>
 #include <string>
 
+struct FrameSnapshot;
+
 /**
  *	RenderSystem class, that is resposible for:
  *	- ~~Window Managing~~
@@ -34,13 +36,12 @@
  *	- Jeb, i dont know what to do: implement create_component()
  *	- Do we really need a separate class for shaders
  */
-
 struct RenderSystem : public System<RenderComponent> {
 
   RenderSystem(WindowManager *wm, CameraSystem *cs);
 
   void init();
-  void update(const float dt); // represents render
+  void update(const FrameSnapshot& snapshot); // represents render
   void destroy();
 
   RenderComponent *create_component(uuid id, Entity *e);
