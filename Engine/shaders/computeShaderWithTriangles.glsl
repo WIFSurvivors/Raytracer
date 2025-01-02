@@ -10,12 +10,12 @@ uniform mat4 View;
 uniform mat4 Projection;
 uniform vec3 cameraPos;
 
-#define MAX_LIGHTS 128
+const int emitterCount_max = 10;
 uniform int ls_active_light_sources;
-uniform vec3[MAX_LIGHTS] ls_positions;
-uniform vec3[MAX_LIGHTS] ls_directions; // not really required because we only want spherical light sources :/ 
-uniform vec3[MAX_LIGHTS] ls_colors;
-uniform float[MAX_LIGHTS] ls_intensities;
+uniform vec3[emitterCount_max] ls_positions;
+uniform vec3[emitterCount_max] ls_directions; // not really required because we only want spherical light sources :/ 
+uniform vec3[emitterCount_max] ls_colors;
+uniform float[emitterCount_max] ls_intensities;
 
 /*********************************************************************************/
 //STRUCTS
@@ -98,7 +98,6 @@ struct Light {
 /*********************************************************************************/
 // VARIABLES
 const int hittableCount = 60;
-const int emitterCount_max = 10;
 const int MAX_RECURSION_DEPTH = 4;
 
 const int STACK_SIZE = 128;
