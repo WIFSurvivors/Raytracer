@@ -5,10 +5,10 @@
 #include "includes/system/System.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <glm/glm.hpp>
-#include <optional>
 #include <memory>
 #include <string>
 #include <vector>
+#include <algorithm>
 
 struct LightSystem : public System<LightComponent> {
   LightSystem();
