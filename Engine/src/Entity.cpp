@@ -77,7 +77,7 @@ glm::vec3 Entity::get_world_rotation() const {
   if (auto p = _parent.lock()) { // recursion ends if there is no parent (aka
                                  // it's the root)
     auto vec = p->get_world_rotation();
-    return vec + get_local_rotation();
+    return vec * get_local_rotation();
   }
   return get_local_rotation();
 }
@@ -86,7 +86,7 @@ glm::vec3 Entity::get_world_scale() const {
   if (auto p = _parent.lock()) { // recursion ends if there is no parent (aka
                                  // it's the root)
     auto vec = p->get_world_scale();
-    return vec + get_local_scale();
+    return vec * get_local_scale();
   }
   return get_local_scale();
 }

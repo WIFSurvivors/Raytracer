@@ -87,12 +87,12 @@ void Scene::generate_sample_content() {
   // =================== LIGHT =====================
   new_uuid = _uuid_manager.create_uuid(&_light_system);
   auto c2 = _light_system.create_component(new_uuid, e3.get());
-  c2->set_color(1.f, 0.1f, 0.1f);
+  c2->set_color(0.8576f, 0.1f, 0.1f);
   c2->set_intensity(25.f);
 
   new_uuid = _uuid_manager.create_uuid(&_light_system);
   auto c3 = _light_system.create_component(new_uuid, e4.get());
-  c3->set_color(0.1f, 1.f, 0.1f); 
+  c3->set_color(0.1f, 0.96752f, 0.1f); 
   c3->set_intensity(25.f);
   
   new_uuid = _uuid_manager.create_uuid(&_light_system);

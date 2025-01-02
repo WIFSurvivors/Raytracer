@@ -4,6 +4,7 @@
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <iostream>
+#include <iomanip> // for std::setprecision
 
 #define GLM_ENABLE_EXPERIMENTAL
 // #include "glm/vec3.hpp"
@@ -47,17 +48,27 @@ bool EntityStorage::remove(Entity *e) {
 
 void EntityStorage::print() {
   std::cout << "Entity Storage: " << std::endl;
-  VariadicTable<std::string, std::string, size_t, size_t, std::string> vt(
-      {"Entity UUID", "Entity Name", "CE", "CC", "World Position"});
+  VariadicTable<std::string, std::string, size_t, size_t, float, float, float,
+                float, float, float, float, float, float>
+      vt({"Entity UUID", "Entity Name", "CE", "CC", "Pos_x", "Pos_y", "Pos_z",
+          "Rot_x", "Rot_y", "Rot_z", "Sca_x", "Sca_y", "Sca_z"});
+
   for (const auto &[id, e] : _entities) {
     vt.addRow(boost::uuids::to_string(id), e->get_name(),
               e->get_child_entities().size(), e->get_components().size(),
-              glm::to_string(e->get_world_position())
-              /*, e->get_world_position()*/); // <- unfortunately looks weird :C
+              e->get_world_position().x, e->get_world_position().y,
+              e->get_world_position().z, e->get_world_rotation().x,
+              e->get_world_rotation().y, e->get_world_rotation().z,
+              e->get_world_scale().x, e->get_world_scale().y,
+              e->get_world_scale().z);
   }
+
+  std::streamsize defaultPrecision = std::cout.precision();
+  std::cout << std::setprecision(3);
   vt.print(std::cout);
   std::cout << "Legend: \n"
             << "\t-CE = Count Child Entities\n"
             << "\t-CC = Count Components\n";
+  std::cout << std::setprecision(defaultPrecision) << std::endl;
   std::cout << std::endl;
 }

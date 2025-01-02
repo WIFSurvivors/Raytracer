@@ -3,6 +3,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <format>
 #include <iostream>
+#include <iomanip> // for std::setprecision
 #include <cmath>
 
 #define GLM_ENABLE_EXPERIMENTAL
@@ -53,14 +54,17 @@ void CameraSystem::sample_update_move_main_camera(float t1) {
 
 void CameraSystem::print() {
   VariadicTable<std::string, bool, float, std::string> vt(
-      {"CameraComponent UUID", "Main?", "FoV", "Entity Name"});
+      {"CameraComponent UUID", "Main?", " FoV ", "Entity Name"});
 
   for (const auto &[key, value] : _components) {
     vt.addRow(boost::uuids::to_string(key), value->is_main_camera(),
               value->get_fov(), value->get_entity()->get_name());
   }
 
-  std::cout << std::boolalpha;
+
+  std::streamsize defaultPrecision = std::cout.precision();
+  std::cout << std::setprecision(3) << std::boolalpha;
   vt.print(std::cout);
-  std::cout << std::endl;
+  std::cout << std::setprecision(defaultPrecision) << std::endl;
+  std::cout.unsetf(std::ios::boolalpha);
 }

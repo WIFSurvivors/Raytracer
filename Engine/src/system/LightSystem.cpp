@@ -1,5 +1,7 @@
 #include "includes/system/LightSystem.hpp"
 
+#include <iomanip> // for std::setprecision
+
 LightSystem::LightSystem() : System{} {
   LOG("created light system");
 }
@@ -34,14 +36,16 @@ LightComponent *LightSystem::create_component(uuid id, Entity *e, float intensit
 
 void LightSystem::print() {
   VariadicTable<std::string, float, float, float, float> vt(
-      {"LightComponent UUID", "Intensity", "R", "G", "B"});
+      {"LightComponent UUID", "Intensity", " Red ", "Green", " Blue "});
 
   for (const auto &[key, value] : _components) {
     vt.addRow(boost::uuids::to_string(key), value->get_intensity(),
               value->get_color().r, value->get_color().g, value->get_color().b);
   }
 
+  std::streamsize defaultPrecision = std::cout.precision();
+  std::cout << std::setprecision(3);
   vt.print(std::cout);
-  std::cout << std::endl;
+  std::cout << std::setprecision(defaultPrecision) << std::endl;
 }
 
