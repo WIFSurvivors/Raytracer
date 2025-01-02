@@ -84,6 +84,10 @@ template <is_base_of_component T> struct System : public ISystem {
     _components.clear();
   }
 
+  inline const std::map<uuid, std::unique_ptr<T>>& get_components(){
+	return _components;
+  }
+
   /**
    * Prints all components of the system
    */

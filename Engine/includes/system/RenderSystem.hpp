@@ -2,6 +2,7 @@
 
 #include "includes/system/System.hpp"
 #include "includes/system/CameraSystem.hpp"
+#include "includes/system/LightSystem.hpp"
 #include "includes/component/RenderComponent.hpp"
 #include "includes/ShaderCompiler.hpp"
 #include "includes/WindowManager.hpp"
@@ -16,6 +17,8 @@
 #include <string>
 
 struct FrameSnapshot;
+
+// #define SHOW_UI true
 
 /**
  *	RenderSystem class, that is resposible for:
@@ -38,7 +41,7 @@ struct FrameSnapshot;
  */
 struct RenderSystem : public System<RenderComponent> {
 
-  RenderSystem(WindowManager *wm, CameraSystem *cs);
+  RenderSystem(WindowManager *wm, CameraSystem *cs, LightSystem *ls);
 
   void init();
   void update(const FrameSnapshot& snapshot); // represents render
@@ -63,6 +66,7 @@ struct RenderSystem : public System<RenderComponent> {
 private:
   WindowManager *_wm;
   CameraSystem *_cs;
+  LightSystem *_ls;
   
   using typename System::uuid;
 
@@ -75,20 +79,33 @@ private:
   GLuint ssbo_vertex;
   GLuint ssbo_indices;
   GLuint ssbo_mats;
-  GLuint ssbo_matsIDX;
+  GLuint ssbo_matsIDX;	
   GLuint _vao;
   std::vector<glm::vec3> v = {glm::vec3{-0.5f, -0.5f, 0.0f},
                               glm::vec3{0.5f, -0.5f, 0.0f},
                               glm::vec3{0.0f, 0.5f, 0.0f}};
+  
   glm::vec3 _cameraPosition;
   glm::vec3 _cameraDirection;
   float _fov;
+
+
   glm::mat4 _viewMatrix;
   glm::mat4 _projectionMatrix;
+  
+  
   GLuint _timeU;
   GLuint _cameraU;
   GLuint _projU;
   GLuint _viewU;
+  
+  GLuint _ls_countU;
+  int _ls_size = 0;
+  
+  GLuint _ls_positionsU;
+  GLuint _ls_directionsU;
+  GLuint _ls_colorsU;
+  GLuint _ls_intensitiesU;
 
   std::unique_ptr<Shader> compute;
 #endif

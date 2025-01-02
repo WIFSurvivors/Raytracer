@@ -10,6 +10,12 @@ uniform mat4 View;
 uniform mat4 Projection;
 uniform vec3 cameraPos;
 
+uniform int ls_count;
+uniform vec3[10] ls_positions;
+uniform vec3[10] ls_directions; // not really required because we only want spherical light sources :/ 
+uniform vec3[10] ls_colors;
+uniform float[10] ls_intensities;
+
 /*********************************************************************************/
 //STRUCTS
 
@@ -91,7 +97,7 @@ struct Light {
 /*********************************************************************************/
 // VARIABLES
 const int hittableCount = 60;
-const int emitterCount = 1;
+const int emitterCount_max = 10;
 const int MAX_RECURSION_DEPTH = 4;
 
 const int STACK_SIZE = 128;
@@ -344,7 +350,7 @@ vec3 getTriangleColor(int i) {
     return colors[i];
 }
 
-vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount]) {
+vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
     vec3 color = vec3(0.0);
     vec3 reflec_accumulation = vec3(1.0); // Reflection strength
     push(r);
@@ -406,7 +412,7 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount]) {
             vec3 localColor = vec3(0.0);
             bool anyLightHit = false;
 
-            for (int lIndex = 0; lIndex < emitterCount; lIndex++) {
+            for (int lIndex = 0; lIndex < ls_count; lIndex++) {
                 Light light = emitter[lIndex];
 
                 vec3 shadowRay = normalize(light.position - sectionPoint);
@@ -435,7 +441,7 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount]) {
     return vec4(color, 0.0);
 }
 
-vec4 proccessRayBVH(Ray r, Light emitter[emitterCount]) {
+vec4 proccessRayBVH(Ray r, Light emitter[emitterCount_max]) {
     vec3 color = vec3(0.0);
     vec3 reflec_accumulation = vec3(1.0); // Reflection strength
 
@@ -486,7 +492,7 @@ vec4 proccessRayBVH(Ray r, Light emitter[emitterCount]) {
             vec3 localColor = vec3(0.0);
             bool anyLightHit = false;
 
-            for (int lIndex = 0; lIndex < emitterCount; lIndex++) {
+            for (int lIndex = 0; lIndex < ls_count; lIndex++) {
                 Light light = emitter[lIndex];
 
                 vec3 shadowRay = normalize(light.position - sectionPoint);
@@ -516,7 +522,7 @@ vec4 proccessRayBVH(Ray r, Light emitter[emitterCount]) {
     return vec4(color, 1.0);
 }
 
-vec4 proccessRay1(Triangle cube[hittableCount], Ray r, Light emitter[emitterCount]) {
+vec4 proccessRay1(Triangle cube[hittableCount], Ray r, Light emitter[emitterCount_max]) {
     vec3 color = vec3(0.0);
     vec3 reflec_accumulation = vec3(1.0); // Reflection strength
 
@@ -550,7 +556,7 @@ vec4 proccessRay1(Triangle cube[hittableCount], Ray r, Light emitter[emitterCoun
             vec3 localColor = vec3(0.0);
             bool anyLightHit = false;
 
-            for (int lIndex = 0; lIndex < emitterCount; lIndex++) {
+            for (int lIndex = 0; lIndex < ls_count; lIndex++) {
                 Light light = emitter[lIndex];
 
                 // Shadow ray setup
@@ -582,7 +588,7 @@ vec4 proccessRay1(Triangle cube[hittableCount], Ray r, Light emitter[emitterCoun
     return vec4(color, 1.0);
 }
 
-vec4 proccessRaySSBO(Ray r, Light emitter[emitterCount]) {
+vec4 proccessRaySSBO(Ray r, Light emitter[emitterCount_max]) {
     vec3 color = vec3(0.0);
     vec3 reflec_accumulation = vec3(1.0); // Reflection strength
 
@@ -616,7 +622,7 @@ vec4 proccessRaySSBO(Ray r, Light emitter[emitterCount]) {
             vec3 localColor = vec3(0.0);
             bool anyLightHit = false;
 
-            for (int lIndex = 0; lIndex < emitterCount; lIndex++) {
+            for (int lIndex = 0; lIndex < ls_count; lIndex++) {
                 Light light = emitter[lIndex];
 
                 // Shadow ray setup
@@ -648,7 +654,7 @@ vec4 proccessRaySSBO(Ray r, Light emitter[emitterCount]) {
     return vec4(color, 1.0);
 }
 
-vec4 CalcColorWithLightSourcesTriangle(Triangle cube[hittableCount], Ray r, Light emitter[emitterCount]) {
+vec4 CalcColorWithLightSourcesTriangle(Triangle cube[hittableCount], Ray r, Light emitter[emitterCount_max]) {
     int MAXIMAL_BOUNCES = 3;
     vec3 color = vec3(0.0);
     vec3 reflec_accumulation = vec3(1.0); //Reflection in percent 100% red 100% green and blue
@@ -677,7 +683,7 @@ vec4 CalcColorWithLightSourcesTriangle(Triangle cube[hittableCount], Ray r, Ligh
             vec3 N = normalize(cross(edge1, edge2));
 
             // For each lightsource we want;
-            for (int lIndex = 0; lIndex < emitterCount; lIndex++) {
+            for (int lIndex = 0; lIndex < ls_count; lIndex++) {
                 Light light = emitter[lIndex];
                 // To calculate the shadow ray to the light source;
                 vec3 shadowRay = normalize(light.position - sectionPoint);
@@ -725,9 +731,15 @@ vec4 rayColor(Ray r) {
         merged[i + 24] = trianglesCube3[i];
     }
 
-    Light[1] lightSources;
-    vec3 position = vec3(0.0, 0.0 + 3 * tan(time), 5 + 3 * sin(time));
-    lightSources[0] = Light(position, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 10.0);
+    // Light[1] lightSources;
+    // vec3 position = vec3(0.0, 0.0 + 3 * tan(time), 5 + 3 * sin(time));
+    // lightSources[0] = Light(position, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 10.0);	
+
+    Light[emitterCount_max] lightSources;
+    for(int i = 0; i < ls_count; i++){
+      lightSources[i] = Light(ls_positions[i], ls_directions[i], ls_colors[i], ls_intensities[i]);
+	}
+
     //return proccessRaySSBO(r, lightSources);
     return proccessRayBVHAlt(r, lightSources);
     //return CalcColorWithLightSourcesTriangle(trianglesCube1, r, lightSources);

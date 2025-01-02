@@ -17,10 +17,13 @@
 #include <memory>
 #include <iostream>
 #include <filesystem>
+#include <map>
 
 #ifndef SHADER_ABSOLUTE_PATH
 #define SHADER_ABSOLUTE_PATH "wawawaww"
 #endif
+
+// #define SHOW_UI true
 
 /**
  *	TODO:
@@ -32,8 +35,8 @@
  *	  - Separate other functionality to the functions
  */
 
-RenderSystem::RenderSystem(WindowManager *wm, CameraSystem *cs)
-    : System(), _wm{wm}, _cs{cs} {
+RenderSystem::RenderSystem(WindowManager *wm, CameraSystem *cs, LightSystem *ls)
+    : System(), _wm{wm}, _cs{cs}, _ls{ls} {
   LOG("created render system");
   init();
 }
@@ -79,6 +82,12 @@ void RenderSystem::init() {
   _cameraU = glGetUniformLocation(compute->programID, "cameraPos");
   _projU = glGetUniformLocation(compute->programID, "Projection");
   _viewU = glGetUniformLocation(compute->programID, "View");
+
+  _ls_countU = glGetUniformLocation(compute->programID, "ls_count");
+  _ls_positionsU = glGetUniformLocation(compute->programID, "ls_positions");
+  _ls_directionsU = glGetUniformLocation(compute->programID, "ls_directions");
+  _ls_colorsU = glGetUniformLocation(compute->programID, "ls_colors");
+  _ls_intensitiesU = glGetUniformLocation(compute->programID, "ls_intensities");
 
   std::vector<Triangle> triforce2 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
   std::vector<Triangle> triforce1 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
@@ -163,7 +172,7 @@ void RenderSystem::init() {
 #endif
 }
 
-void RenderSystem::update(const FrameSnapshot& snapshot) {
+void RenderSystem::update(const FrameSnapshot &snapshot) {
 #if SHOW_UI
   //  Specifies the background color1
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -174,18 +183,37 @@ void RenderSystem::update(const FrameSnapshot& snapshot) {
   compute->activateShader();
   glUniform1f(_timeU, snapshot.get_total_time());
 
+  // === CAMERA ====
   if (_cs && _cs->get_main_camera()) {
     _cameraPosition =
         _cs->get_main_camera()->get_entity()->get_world_position();
-    _cs->get_main_camera()->get_entity()->set_local_position(
-        glm::vec3(0.0f, 8.0f, 15.0f));
+
+    // DELETE THIS LINE AT SOME POINT :C
+    // _cs->get_main_camera()->get_entity()->set_local_position(
+    //     glm::vec3(0.0f, 8.0f, 15.0f));
   } else {
-    LOG_ERROR("-- ERROR: No main camera found -> using 0., 0., +10.");
+    LOG_ERROR("No main camera found -> using 0., 0., +10.");
     _cameraPosition = glm::vec3{0., 0., +10.};
   }
   glUniform3fv(_cameraU, 1, &_cameraPosition[0]);
 
-  // do light stuff here :3
+  // === LIGHT ====
+  if (_ls) {
+	auto size = static_cast<GLint>(_ls->get_components().size());
+    glUniform1i(_ls_countU, size);
+
+    auto positions = _ls->get_positions();
+	glUniform3fv(_ls_positionsU, size, &positions[0][0]);
+	
+    auto directions = _ls->get_directions();
+	glUniform3fv(_ls_directionsU, size, &directions[0][0]);
+	
+    auto colors = _ls->get_colors();
+	glUniform3fv(_ls_colorsU, size, &colors[0][0]);
+	
+    auto intensities = _ls->get_intensities();
+	glUniform1fv(_ls_intensitiesU, size, intensities.data());
+  }
 
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);

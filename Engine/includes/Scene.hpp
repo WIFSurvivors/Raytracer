@@ -5,6 +5,7 @@
 #include "includes/system/EntityStorage.hpp"
 #include "includes/system/RenderSystem.hpp"
 #include "includes/system/CameraSystem.hpp"
+#include "includes/system/LightSystem.hpp"
 #include "includes/UUIDManager.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <memory>
@@ -71,6 +72,7 @@ private:
   EntityStorage _entity_storage{};
   SimpleSystem _simple_system{};
   CameraSystem _camera_system{};
+  LightSystem _light_system{};
   RenderSystem _render_system;
 
   std::shared_ptr<Entity> _root;
