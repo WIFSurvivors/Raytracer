@@ -99,9 +99,7 @@ private:
   GLuint _projU;
   GLuint _viewU;
   
-  GLuint _ls_countU;
-  int _ls_size = 0;
-  
+  GLuint _ls_active_light_sourcesU;  
   GLuint _ls_positionsU;
   GLuint _ls_directionsU;
   GLuint _ls_colorsU;

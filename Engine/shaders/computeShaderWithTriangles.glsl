@@ -10,11 +10,12 @@ uniform mat4 View;
 uniform mat4 Projection;
 uniform vec3 cameraPos;
 
-uniform int ls_count;
-uniform vec3[10] ls_positions;
-uniform vec3[10] ls_directions; // not really required because we only want spherical light sources :/ 
-uniform vec3[10] ls_colors;
-uniform float[10] ls_intensities;
+#define MAX_LIGHTS 128
+uniform int ls_active_light_sources;
+uniform vec3[MAX_LIGHTS] ls_positions;
+uniform vec3[MAX_LIGHTS] ls_directions; // not really required because we only want spherical light sources :/ 
+uniform vec3[MAX_LIGHTS] ls_colors;
+uniform float[MAX_LIGHTS] ls_intensities;
 
 /*********************************************************************************/
 //STRUCTS
@@ -412,7 +413,7 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
             vec3 localColor = vec3(0.0);
             bool anyLightHit = false;
 
-            for (int lIndex = 0; lIndex < ls_count; lIndex++) {
+            for (int lIndex = 0; lIndex < ls_active_light_sources; lIndex++) {
                 Light light = emitter[lIndex];
 
                 vec3 shadowRay = normalize(light.position - sectionPoint);
@@ -492,7 +493,7 @@ vec4 proccessRayBVH(Ray r, Light emitter[emitterCount_max]) {
             vec3 localColor = vec3(0.0);
             bool anyLightHit = false;
 
-            for (int lIndex = 0; lIndex < ls_count; lIndex++) {
+            for (int lIndex = 0; lIndex < ls_active_light_sources; lIndex++) {
                 Light light = emitter[lIndex];
 
                 vec3 shadowRay = normalize(light.position - sectionPoint);
@@ -556,7 +557,7 @@ vec4 proccessRay1(Triangle cube[hittableCount], Ray r, Light emitter[emitterCoun
             vec3 localColor = vec3(0.0);
             bool anyLightHit = false;
 
-            for (int lIndex = 0; lIndex < ls_count; lIndex++) {
+            for (int lIndex = 0; lIndex < ls_active_light_sources; lIndex++) {
                 Light light = emitter[lIndex];
 
                 // Shadow ray setup
@@ -622,7 +623,7 @@ vec4 proccessRaySSBO(Ray r, Light emitter[emitterCount_max]) {
             vec3 localColor = vec3(0.0);
             bool anyLightHit = false;
 
-            for (int lIndex = 0; lIndex < ls_count; lIndex++) {
+            for (int lIndex = 0; lIndex < ls_active_light_sources; lIndex++) {
                 Light light = emitter[lIndex];
 
                 // Shadow ray setup
@@ -683,7 +684,7 @@ vec4 CalcColorWithLightSourcesTriangle(Triangle cube[hittableCount], Ray r, Ligh
             vec3 N = normalize(cross(edge1, edge2));
 
             // For each lightsource we want;
-            for (int lIndex = 0; lIndex < ls_count; lIndex++) {
+            for (int lIndex = 0; lIndex < ls_active_light_sources; lIndex++) {
                 Light light = emitter[lIndex];
                 // To calculate the shadow ray to the light source;
                 vec3 shadowRay = normalize(light.position - sectionPoint);
@@ -736,7 +737,7 @@ vec4 rayColor(Ray r) {
     // lightSources[0] = Light(position, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 10.0);	
 
     Light[emitterCount_max] lightSources;
-    for(int i = 0; i < ls_count; i++){
+    for(int i = 0; i < ls_active_light_sources; i++){
       lightSources[i] = Light(ls_positions[i], ls_directions[i], ls_colors[i], ls_intensities[i]);
 	}
 

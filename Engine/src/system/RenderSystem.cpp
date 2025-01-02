@@ -83,7 +83,7 @@ void RenderSystem::init() {
   _projU = glGetUniformLocation(compute->programID, "Projection");
   _viewU = glGetUniformLocation(compute->programID, "View");
 
-  _ls_countU = glGetUniformLocation(compute->programID, "ls_count");
+  _ls_active_light_sourcesU = glGetUniformLocation(compute->programID, "ls_active_light_sources");
   _ls_positionsU = glGetUniformLocation(compute->programID, "ls_positions");
   _ls_directionsU = glGetUniformLocation(compute->programID, "ls_directions");
   _ls_colorsU = glGetUniformLocation(compute->programID, "ls_colors");
@@ -200,7 +200,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   // === LIGHT ====
   if (_ls) {
 	auto size = static_cast<GLint>(_ls->get_components().size());
-    glUniform1i(_ls_countU, size);
+    glUniform1i(_ls_active_light_sourcesU, size);
 
     auto positions = _ls->get_positions();
 	glUniform3fv(_ls_positionsU, size, &positions[0][0]);
