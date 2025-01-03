@@ -59,6 +59,7 @@ struct Scene {
   inline RenderSystem *get_render_system() { return &_render_system; }
   inline SimpleSystem *get_simple_system() { return &_simple_system; }
   inline CameraSystem *get_camera_system() { return &_camera_system; }
+  inline LightSystem *get_light_system() { return &_light_system; }
 
 private:
   std::shared_ptr<Entity> create_root(const std::string &name);
