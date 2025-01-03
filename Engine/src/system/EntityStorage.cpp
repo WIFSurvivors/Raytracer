@@ -1,6 +1,7 @@
 #include "includes/system/EntityStorage.hpp"
 #include "includes/Entity.hpp"
 #include "includes/utility/Log.hpp"
+#include "includes/utility/VariadicTable.hpp"
 #include <format>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>

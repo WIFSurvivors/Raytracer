@@ -1,5 +1,6 @@
 #include "includes/component/Component.hpp"
 #include "includes/Entity.hpp"
+#include <boost/uuid/uuid_io.hpp>
 #include <iostream>
 #include <cassert>
 

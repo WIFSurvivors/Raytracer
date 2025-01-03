@@ -58,7 +58,7 @@ std::string CreateComponentCommand::execute(Engine *e) {
             }
             _uuid_component = scene->get_uuid_manager()->create_uuid(system);
             auto component = system->create_component(_uuid_component, parent.value());
-            LOG(std::format("Get system name in camera: {}", system->get_system_name()));
+            LOG(std::format("Get system name in camera: {}", system->get_name()));
             if (component == nullptr) {
                 LOG_ERROR("Component could not be created.");
                 return "Component could not be created.";
