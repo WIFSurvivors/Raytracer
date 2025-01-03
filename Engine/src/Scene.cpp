@@ -82,21 +82,17 @@ void Scene::generate_sample_content() {
   e5->set_local_position(glm::vec3{0, 0, 5});
 
   // =================== CAMERA =====================
-  auto new_uuid = _uuid_manager.create_uuid(&_camera_system);
   auto c1 = _camera_system.create_component(e1.get(), 60.f);
 
   // =================== LIGHT =====================
-  new_uuid = _uuid_manager.create_uuid(&_light_system);
   auto c2 = _light_system.create_component(e3.get());
   c2->set_color(0.8576f, 0.1f, 0.1f);
   c2->set_intensity(25.f);
 
-  new_uuid = _uuid_manager.create_uuid(&_light_system);
   auto c3 = _light_system.create_component(e4.get());
   c3->set_color(0.1f, 0.96752f, 0.1f);
   c3->set_intensity(25.f);
 
-  new_uuid = _uuid_manager.create_uuid(&_light_system);
   auto c4 = _light_system.create_component(e5.get());
   c4->set_color(0.1f, 0.1f, 1.f);
   c4->set_intensity(15.f);
