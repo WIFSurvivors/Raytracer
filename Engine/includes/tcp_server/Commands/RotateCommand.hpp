@@ -7,7 +7,7 @@
 #define ROTATE_COMMAND "RotateCommand"
 class RotateCommand : public TcpCommand {
 public:
-    RotateCommand(uuid__ uuid,int new_x, int new_y, int new_z) : TcpCommand(uuid), _new_position(new_x, new_y, new_z) {}
+    RotateCommand(uuid uuid,int new_x, int new_y, int new_z) : TcpCommand(uuid), _new_position(new_x, new_y, new_z) {}
     std::string execute(Engine * engine) override;
     int undo() override;
 private:

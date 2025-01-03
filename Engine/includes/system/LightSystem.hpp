@@ -1,8 +1,9 @@
 #pragma once
 #include "includes/Entity.hpp"
+#include "includes/UUIDManager.hpp"
+#include "includes/system/System.hpp"
 #include "includes/component/Component.hpp"
 #include "includes/component/LightComponent.hpp"
-#include "includes/system/System.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <glm/glm.hpp>
 #include <memory>
@@ -19,7 +20,9 @@ struct LightSystem : public System<LightComponent> {
   LightComponent *create_component(uuid id, Entity *e, float intensity,
                                    glm::vec3 color);
 
-  inline std::string get_system_name() const override { return "Light System"; }
+  inline virtual const std::string get_name() const final {
+    return "Light System";
+  }
 
   const std::vector<glm::vec3> get_positions() const {
     std::vector<glm::vec3> positions;

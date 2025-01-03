@@ -6,6 +6,7 @@ set(SYSTEM_HEADERS
     RenderSystem.hpp
     SimpleSystem.hpp
     System.hpp
+	IStorage.hpp
 )
 list(TRANSFORM SYSTEM_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
 set(SYSTEM_HEADERS ${SYSTEM_HEADERS} PARENT_SCOPE)

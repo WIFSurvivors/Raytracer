@@ -22,8 +22,7 @@ Scene::Scene(Engine *e, uuid id)
 Scene::~Scene() { _render_system.destroy(); }
 
 std::shared_ptr<Entity> Scene::create_root(const std::string &name) {
-  auto uuid = _uuid_manager.create_uuid_ownerless();
-  return create_root(name, uuid);
+  return create_root(name, _uuid_manager.create_uuid(&_entity_storage));
 }
 
 std::shared_ptr<Entity> Scene::create_root(const std::string &name, uuid id) {
@@ -33,18 +32,17 @@ std::shared_ptr<Entity> Scene::create_root(const std::string &name, uuid id) {
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name) {
-  auto uuid = _uuid_manager.create_uuid_ownerless();
-  return create_entity(name, uuid, _root);
+  return create_entity(name, _uuid_manager.create_uuid(&_entity_storage), _root);
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name,
-                                             uuid uuid) {
-  return create_entity(name, uuid, _root);
+                                             uuid id) {
+  return create_entity(name, id, _root);
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name,
                                              std::shared_ptr<Entity> parent) {
-  return create_entity(name, _uuid_manager.create_uuid_ownerless(), parent);
+  return create_entity(name, _uuid_manager.create_uuid(&_entity_storage), parent);
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
@@ -131,7 +129,7 @@ void Scene::generate_sample_content() {
 
   // =================== SAMPLE MANIPULATION =====================
   
-  auto sys = _uuid_manager.get_system(c1->get_uuid());
+  auto sys = _uuid_manager.get_storage(c1->get_uuid());
   auto csys = static_cast<CameraSystem *>(sys);
   auto occ = csys->get_component(c1->get_uuid());
   if (occ.has_value()) {

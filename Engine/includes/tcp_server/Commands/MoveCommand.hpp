@@ -10,7 +10,7 @@ class TcpCommand;
 
 class MoveCommand : public TcpCommand {
 public:
-    MoveCommand(uuid__ uuid, float new_x, float new_y, float new_z) : TcpCommand(uuid), _new_position(new_x, new_y, new_z) {}
+    MoveCommand(uuid uuid, float new_x, float new_y, float new_z) : TcpCommand(uuid), _new_position(new_x, new_y, new_z) {}
     std::string execute(Engine * engine) override;
     int undo() override;
 private:

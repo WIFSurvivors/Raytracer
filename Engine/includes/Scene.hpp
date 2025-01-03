@@ -1,12 +1,11 @@
 #pragma once
 
-#include "includes/system/System.hpp"
+#include "includes/UUIDManager.hpp"
 #include "includes/system/SimpleSystem.hpp"
 #include "includes/system/EntityStorage.hpp"
 #include "includes/system/RenderSystem.hpp"
 #include "includes/system/CameraSystem.hpp"
 #include "includes/system/LightSystem.hpp"
-#include "includes/UUIDManager.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <memory>
 #include <string>

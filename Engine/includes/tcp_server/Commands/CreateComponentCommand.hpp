@@ -7,11 +7,11 @@
 
 struct CreateComponentCommand : public TcpCommand
 {
-	explicit CreateComponentCommand(uuid__ uuid, std::string type) : TcpCommand(uuid), _type(type) {}
+	explicit CreateComponentCommand(uuid uuid, std::string type) : TcpCommand(uuid), _type(type) {}
 	std::string execute(Engine *e) override;
 	int undo() override;
 
-	uuid__ _uuid_component;
+	uuid _uuid_component;
 	std::string _type; 
 private:
 };

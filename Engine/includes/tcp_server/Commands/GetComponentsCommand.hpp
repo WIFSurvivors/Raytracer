@@ -11,7 +11,7 @@
 struct IComponent;
 
 struct GetComponentsCommand : public TcpCommand {
-  explicit GetComponentsCommand(uuid__ uuid) : TcpCommand(uuid){}
+  explicit GetComponentsCommand(uuid uuid) : TcpCommand(uuid){}
   std::string execute(Engine *e) override;
   boost::json::array
   get_components_short(const std::vector<IComponent *> &components);

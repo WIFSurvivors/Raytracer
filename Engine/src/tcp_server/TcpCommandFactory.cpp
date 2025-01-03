@@ -1,5 +1,26 @@
 #include "includes/tcp_server/TcpCommandFactory.hpp"
 #include "includes/utility/Log.hpp"
+#include "includes/tcp_server/Commands/MoveCommand.hpp"
+#include "includes/tcp_server/Commands/RotateCommand.hpp"
+#include "includes/tcp_server/Commands/ScaleCommand.hpp"
+#include "includes/tcp_server/Commands/GetRootCommand.hpp"
+#include "includes/tcp_server/Commands/CloseRenderCommand.hpp"
+#include "includes/tcp_server/Commands/GetChildEntitiesCommand.hpp"
+#include "includes/tcp_server/Commands/GetComponentsCommand.hpp"
+#include "includes/tcp_server/Commands/GetEntityOptionsCommand.hpp"
+#include "includes/tcp_server/Commands/ImportJsonCommand.hpp"
+#include "includes/tcp_server/Commands/CreateEntityCommand.hpp"
+#include "includes/tcp_server/Commands/GetComponentOptionsCommand.hpp"
+#include "includes/tcp_server/Commands/SetComponentOptionsCommand.hpp"
+#include "includes/tcp_server/Commands/CreateComponentCommand.hpp"
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/uuid/string_generator.hpp>
+#include <map>
+#include <string>
+#include <iostream>
+
+
+
 
 TcpCommandFactory::TcpCommandFactory() {}
 

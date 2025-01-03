@@ -1,40 +1,35 @@
 #pragma once
 
-/**
- * IM STILL COOKING ON THIS
- * I DON'T THINK I WANT TO DEFINE A STORAGE -> Define access only
- */
+#include "includes/UUIDManager.hpp"
+#include <boost/uuid/uuid.hpp>
+#include <optional>
+#include <string>
 
 /**
  * Defines Getter via UUID by returning an optional object pointer.
  * Internal storage can be adjusted according to each system
  */
-
-// T -> type
-// template <class T> struct IStorage { // better name: IUUIDAccess ??
-//   using uuid = boost::uuids::uuid;
-
-//   IStorage() = default;
-//   virtual ~IStorage() = default;
-
-//   /**
-//    * Get Object stored in this system. Will return std::nullopt when UUID is
-//    * not found.
-//    */
-//   std::optional<T *> get(uuid id);
+template <class T> struct Storage : public IStorage {
+  using uuid = boost::uuids::uuid;
   
-//   /**
-//    * Removes Object from container by component pointer.
-//    * This will call remove(uuid)
-//    */
-//   bool remove(T *c);
+  Storage() = default;
+  virtual ~Storage() = default;
 
-//   /**
-//    * Removes Object from container by uuid.
-//    * This will also remove it's link to it's entity.
-//    */
-//   bool remove(uuid uuid);
+  /**
+   * Get Object stored in this system. Will return std::nullopt when UUID is
+   * not found.
+   */
+  virtual std::optional<T> get(uuid id) {
+    return _storage.contains(id) ? std::make_optional(_storage[id])
+                                 : std::nullopt;
+  }
 
-// private:
-//   std::map<uuid, T> _storage;
-// };
+  /**
+   * Removes Object from container by uuid.
+   * This will also remove it's link to it's entity.
+   */
+  bool remove(uuid id) = 0;
+
+private:
+  std::map<uuid, T> _storage;
+};

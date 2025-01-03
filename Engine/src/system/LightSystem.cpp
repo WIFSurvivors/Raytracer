@@ -1,10 +1,10 @@
 #include "includes/system/LightSystem.hpp"
-
+#include "includes/UUIDManager.hpp"
+#include "includes/utility/Log.hpp"
+#include <format>
 #include <iomanip> // for std::setprecision
 
-LightSystem::LightSystem() : System{} {
-  LOG("created light system");
-}
+LightSystem::LightSystem() { LOG(std::format("created {}", get_name())); }
 
 LightComponent *LightSystem::create_component(uuid id, Entity *e) {
   LOG("create camera component (a)");

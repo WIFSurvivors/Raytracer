@@ -1,4 +1,5 @@
 #include "includes/Entity.hpp"
+#include "includes/utility/Log.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <iostream>

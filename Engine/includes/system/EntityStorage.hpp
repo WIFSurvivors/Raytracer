@@ -1,6 +1,6 @@
 #pragma once
 
-#include "includes/system/System.hpp"
+#include "includes/UUIDManager.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <memory>
 #include <map>
@@ -13,10 +13,14 @@ struct Entity;
  * Scene that is creating that Entity. Most importantly, it maps UUIDs to
  * Entities Pointers.
  */
-struct EntityStorage {
+struct EntityStorage : public IStorage {
   using uuid = boost::uuids::uuid;
-
+  
   EntityStorage();
+
+  inline virtual const std::string get_name() const final {
+    return "Entity Storage";
+  }
 
   /**
    * A root entity doesn't have a parent and is used for generating new scenes.

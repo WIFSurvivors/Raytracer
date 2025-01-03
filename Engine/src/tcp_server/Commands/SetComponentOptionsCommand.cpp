@@ -18,7 +18,7 @@ std::string SetComponentOptions::execute(Engine *e) {
     LOG_ERROR(error);
     return error;
   }
-  auto system = uuid_manager->get_system(_uuid);
+  auto system = uuid_manager->get_storage(_uuid);
   if (system != nullptr) {
     if (auto camera_system = dynamic_cast<CameraSystem *>(system)) {
       auto camera = camera_system->get_component(_uuid);

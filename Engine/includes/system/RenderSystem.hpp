@@ -44,7 +44,7 @@ struct RenderSystem : public System<RenderComponent> {
   RenderSystem(WindowManager *wm, CameraSystem *cs, LightSystem *ls);
 
   void init();
-  void update(const FrameSnapshot& snapshot); // represents render
+  void update(const FrameSnapshot &snapshot); // represents render
   void destroy();
 
   RenderComponent *create_component(uuid id, Entity *e);
@@ -52,7 +52,7 @@ struct RenderSystem : public System<RenderComponent> {
                                     const std::vector<glm::vec3> &vertices,
                                     const std::vector<glm::vec2> &UV);
 
-  inline std::string get_system_name() const override {
+  inline virtual const std::string get_name() const final {
     return "Render System";
   }
 
@@ -67,7 +67,7 @@ private:
   WindowManager *_wm;
   CameraSystem *_cs;
   LightSystem *_ls;
-  
+
   using typename System::uuid;
 
 #if SHOW_UI
@@ -79,27 +79,25 @@ private:
   GLuint ssbo_vertex;
   GLuint ssbo_indices;
   GLuint ssbo_mats;
-  GLuint ssbo_matsIDX;	
+  GLuint ssbo_matsIDX;
   GLuint _vao;
   std::vector<glm::vec3> v = {glm::vec3{-0.5f, -0.5f, 0.0f},
                               glm::vec3{0.5f, -0.5f, 0.0f},
                               glm::vec3{0.0f, 0.5f, 0.0f}};
-  
+
   glm::vec3 _cameraPosition;
   glm::vec3 _cameraDirection;
   float _fov;
 
-
   glm::mat4 _viewMatrix;
   glm::mat4 _projectionMatrix;
-  
-  
+
   GLuint _timeU;
   GLuint _cameraU;
   GLuint _projU;
   GLuint _viewU;
-  
-  GLuint _ls_active_light_sourcesU;  
+
+  GLuint _ls_active_light_sourcesU;
   GLuint _ls_positionsU;
   GLuint _ls_directionsU;
   GLuint _ls_colorsU;

@@ -7,7 +7,7 @@
 
 struct CreateEntityCommand : public TcpCommand
 {
-	explicit CreateEntityCommand(uuid__ uuid, std::string entity_name) : TcpCommand(uuid), _entity_name(entity_name) {}
+	explicit CreateEntityCommand(uuid uuid, std::string entity_name) : TcpCommand(uuid), _entity_name(entity_name) {}
 	std::string execute(Engine *e) override;
 	int undo() override;
 

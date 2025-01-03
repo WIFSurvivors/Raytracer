@@ -1,6 +1,7 @@
 #include "includes/system/EntityStorage.hpp"
 #include "includes/Entity.hpp"
 #include "includes/utility/Log.hpp"
+#include <format>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <iostream>
@@ -10,7 +11,7 @@
 // #include "glm/vec3.hpp"
 #include "glm/ext.hpp"
 
-EntityStorage::EntityStorage() { LOG("created entity storage"); }
+EntityStorage::EntityStorage() { LOG(std::format("created {}", get_name())); }
 
 std::shared_ptr<Entity>
 EntityStorage::create_root_entity(const std::string &name, uuid id) {

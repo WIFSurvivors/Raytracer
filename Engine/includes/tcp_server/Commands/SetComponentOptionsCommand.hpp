@@ -7,7 +7,7 @@
 #define SET_COMPONENT_OPTIONS_COMMAND "SetComponentOptions"
 
 struct SetComponentOptions : public TcpCommand {
-    explicit SetComponentOptions(uuid__ uuid, boost::json::object obj) : TcpCommand(uuid), _obj(obj) {}
+    explicit SetComponentOptions(uuid uuid, boost::json::object obj) : TcpCommand(uuid), _obj(obj) {}
     std::string execute(Engine *e) override;
     int undo() override;
     private:

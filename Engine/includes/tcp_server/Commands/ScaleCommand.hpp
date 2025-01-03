@@ -7,7 +7,7 @@
 #define SCALE_COMMAND "ScaleCommand"
 class ScaleCommand : public TcpCommand {
 public:
-    ScaleCommand(uuid__ uuid,int new_x, int new_y, int new_z) : TcpCommand(uuid), _new_position(new_x, new_y, new_z) {}
+    ScaleCommand(uuid uuid,int new_x, int new_y, int new_z) : TcpCommand(uuid), _new_position(new_x, new_y, new_z) {}
     std::string execute(Engine * engine) override;
     int undo() override;
 private:

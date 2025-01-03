@@ -1,32 +1,41 @@
 #pragma once
 
-#include "includes/system/System.hpp"
-#include "includes/Entity.hpp"
+// #include "includes/system/System.hpp"
+// #include "includes/utility/Log.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <map>
 
-typedef boost::uuids::uuid uuid;
+struct UUIDManager;
+
+/**
+ * Base class for any uuid to storage type binding. This is template-less to
+ * allow for more flexible usage. Every Storage unit knows a uuid manager, where
+ * it will register newly created entries!
+ */
+struct IStorage {
+  using uuid = boost::uuids::uuid;
+  virtual ~IStorage() = default;
+  virtual const std::string get_name() const = 0;
+};
 
 struct UUIDManager {
+  using uuid = boost::uuids::uuid;
   UUIDManager();
 
-  // i don't think this should *ever* be called...
-  uuid create_uuid_ownerless();
-  uuid create_uuid(ISystem *s);
+  uuid create_uuid(IStorage *s);
 
-  ISystem *get_system(uuid id);
+  inline IStorage *get_storage(uuid id) { return _uuid_storage_mapping[id]; }
 
   /**
    * This only removes an entity from the storage. If the associated Componet
    * oder Entity hasn't been removed before, it will not be accessible anymore!
    */
-  bool remove_uuid(uuid id);
+  bool remove(uuid id); // TBD
 
   void print();
 
 private:
   boost::uuids::random_generator gen{};
-  // replace IComponent with IUUIDStorage at some point?
-  std::map<uuid, ISystem *> _uuid_system_mapping{};
+  std::map<uuid, IStorage*> _uuid_storage_mapping{};
 };

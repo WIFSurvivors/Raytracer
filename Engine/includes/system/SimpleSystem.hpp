@@ -2,11 +2,13 @@
 #include "includes/Entity.hpp"
 #include "includes/component/SimpleComponent.hpp"
 #include "includes/system/System.hpp"
+// #include "includes/UUIDManager.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <map>
 #include <memory>
 #include <string>
 
+struct UUIDManager;
 struct FrameSnapshot;
 
 struct SimpleSystem : public System<SimpleComponent> {
@@ -18,11 +20,10 @@ struct SimpleSystem : public System<SimpleComponent> {
 
   void print() override;
 
-  inline std::string get_system_name() const override {
+  inline virtual const std::string get_name() const final {
     return "Simple System";
   }
 
 private:
   using System::create_component_base;
-  using typename System::uuid;
 };
