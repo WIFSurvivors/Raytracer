@@ -14,7 +14,7 @@ struct FrameSnapshot;
 struct SimpleSystem : public System<SimpleComponent> {
   SimpleSystem(UUIDManager *um);
 
-  SimpleComponent *create_component(uuid id, Entity *e, int value);
+  SimpleComponent *create_component(Entity *e, int value);
 
   void update(const FrameSnapshot& snapshot);
 
@@ -24,6 +24,6 @@ struct SimpleSystem : public System<SimpleComponent> {
     return "Simple System";
   }
 
-private:
-  using System::create_component_base;
+// private:
+//   using System::create_component_base;
 };

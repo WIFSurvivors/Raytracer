@@ -234,19 +234,19 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
 #endif
 }
 
-RenderComponent *RenderSystem::create_component(uuid id, Entity *e) {
+RenderComponent *RenderSystem::create_component(Entity *e) {
   LOG("create render component (a)");
-  auto c = create_component_base(id, e);
+  auto c = create_component_base(e);
   // TODO: add default parameters!
   return c;
 }
 
 RenderComponent *
-RenderSystem::create_component(uuid id, Entity *e,
+RenderSystem::create_component(Entity *e,
                                const std::vector<glm::vec3> &vertices,
                                const std::vector<glm::vec2> &UV) {
   LOG("create render component (b)");
-  auto c = create_component_base(id, e);
+  auto c = create_component_base(e);
   c->set_vertices(vertices);
   c->set_uv(UV);
 

@@ -8,33 +8,33 @@ LightSystem::LightSystem(UUIDManager *um) : System{um} {
   LOG(std::format("created {}", get_name()));
 }
 
-LightComponent *LightSystem::create_component(uuid id, Entity *e) {
+LightComponent *LightSystem::create_component(Entity *e) {
   LOG("create camera component (a)");
-  auto c = create_component_base(id, e);
+  auto c = create_component_base(e);
   return c;
 }
 
-LightComponent *LightSystem::create_component(uuid id, Entity *e,
+LightComponent *LightSystem::create_component(Entity *e,
                                               float intensity) {
   LOG("create camera component (b)");
-  auto c = create_component_base(id, e);
+  auto c = create_component_base(e);
   c->set_intensity(intensity);
   return c;
 }
 
-LightComponent *LightSystem::create_component(uuid id, Entity *e,
+LightComponent *LightSystem::create_component(Entity *e,
                                               glm::vec3 color) {
   LOG("create camera component (c)");
-  auto c = create_component_base(id, e);
+  auto c = create_component_base(e);
   c->set_color(color);
   return c;
 }
 
-LightComponent *LightSystem::create_component(uuid id, Entity *e,
+LightComponent *LightSystem::create_component(Entity *e,
                                               float intensity,
                                               glm::vec3 color) {
   LOG("create camera component (d)");
-  auto c = create_component_base(id, e);
+  auto c = create_component_base(e);
   c->set_intensity(intensity);
   c->set_color(color);
   return c;

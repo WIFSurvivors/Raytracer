@@ -12,7 +12,9 @@
 // #include "glm/vec3.hpp"
 #include "glm/ext.hpp"
 
-EntityStorage::EntityStorage(UUIDManager *um) : IStorage(um) { LOG(std::format("created {}", get_name())); }
+EntityStorage::EntityStorage(UUIDManager *um) : IStorage(um) {
+  LOG(std::format("created {}", get_name()));
+}
 
 std::shared_ptr<Entity>
 EntityStorage::create_root_entity(const std::string &name, uuid id) {
@@ -52,8 +54,8 @@ void EntityStorage::print() {
   std::cout << "Entity Storage: " << std::endl;
   VariadicTable<std::string, std::string, size_t, size_t, float, float, float,
                 float, float, float, float, float, float>
-      vt({"Entity UUID", "Entity Name", "CE", "CC", "Pos_x", "Pos_y", "Pos_z",
-          "Rot_x", "Rot_y", "Rot_z", "Sca_x", "Sca_y", "Sca_z"});
+      vt({"Entity UUID", "Entity Name", "CE", "CC", "P_x", "P_y", "P_z", "R_x",
+          "R_y", "R_z", "S_x", "S_y", "S_z"});
 
   for (const auto &[id, e] : _entities) {
     vt.addRow(boost::uuids::to_string(id), e->get_name(),

@@ -46,8 +46,8 @@ struct RenderSystem : public System<RenderComponent> {
   void update(const FrameSnapshot &snapshot); // represents render
   void destroy();
 
-  RenderComponent *create_component(uuid id, Entity *e);
-  RenderComponent *create_component(uuid id, Entity *e,
+  RenderComponent *create_component(Entity *e);
+  RenderComponent *create_component(Entity *e,
                                     const std::vector<glm::vec3> &vertices,
                                     const std::vector<glm::vec2> &UV);
 

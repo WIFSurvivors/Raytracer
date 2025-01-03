@@ -17,9 +17,9 @@ SimpleSystem::SimpleSystem(UUIDManager *um) : System{um} {
   LOG(std::format("created {}", get_name()));
 }
 
-SimpleComponent *SimpleSystem::create_component(uuid id, Entity *e, int value) {
+SimpleComponent *SimpleSystem::create_component(Entity *e, int value) {
   LOG("-- create simple component");
-  auto c = create_component_base(id, e);
+  auto c = create_component_base(e);
   c->set_value(value);
   return c;
 }

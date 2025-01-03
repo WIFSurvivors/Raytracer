@@ -14,7 +14,7 @@
 struct CameraSystem : public System<CameraComponent> {
   CameraSystem(UUIDManager *um);
 
-  CameraComponent *create_component(uuid id, Entity *e, float fov = 60.f);
+  CameraComponent *create_component(Entity *e, float fov = 60.f);
 
   void set_main_camera(CameraComponent *cc);
   inline CameraComponent *get_main_camera() const { return _main_camera; }

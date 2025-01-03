@@ -14,10 +14,10 @@
 struct LightSystem : public System<LightComponent> {
   LightSystem(UUIDManager *um);
 
-  LightComponent *create_component(uuid id, Entity *e);
-  LightComponent *create_component(uuid id, Entity *e, float intensity);
-  LightComponent *create_component(uuid id, Entity *e, glm::vec3 color);
-  LightComponent *create_component(uuid id, Entity *e, float intensity,
+  LightComponent *create_component(Entity *e);
+  LightComponent *create_component(Entity *e, float intensity);
+  LightComponent *create_component(Entity *e, glm::vec3 color);
+  LightComponent *create_component(Entity *e, float intensity,
                                    glm::vec3 color);
 
   inline virtual const std::string get_name() const final {

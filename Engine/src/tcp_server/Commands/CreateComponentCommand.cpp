@@ -28,8 +28,7 @@ std::string CreateComponentCommand::execute(Engine *e) {
             LOG_ERROR("SimpleSystem is null");
             return "SimpleSystem is null";
         }
-        _uuid_component = scene->get_uuid_manager()->create_uuid(system);
-        auto component = system->create_component(_uuid_component, parent.value(), 123);
+        auto component = system->create_component(parent.value(), 123);
         if (component == nullptr) {
             LOG_ERROR("Component could not be created.");
             return "Component could not be created.";
@@ -42,8 +41,7 @@ std::string CreateComponentCommand::execute(Engine *e) {
                 LOG_ERROR("RenderSystem is null");
                 return "RenderSystem is null";
             }
-            _uuid_component = scene->get_uuid_manager()->create_uuid(system);
-            auto component = system->create_component(_uuid_component, parent.value());
+            auto component = system->create_component(parent.value());
             if (component == nullptr) {
                 LOG_ERROR("Component could not be created.");
                 return "Component could not be created.";
@@ -56,8 +54,7 @@ std::string CreateComponentCommand::execute(Engine *e) {
                 LOG_ERROR("CameraSystem is null");
                 return "CameraSystem is null";
             }
-            _uuid_component = scene->get_uuid_manager()->create_uuid(system);
-            auto component = system->create_component(_uuid_component, parent.value());
+            auto component = system->create_component( parent.value());
             LOG(std::format("Get system name in camera: {}", system->get_name()));
             if (component == nullptr) {
                 LOG_ERROR("Component could not be created.");

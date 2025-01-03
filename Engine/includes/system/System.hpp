@@ -89,7 +89,8 @@ protected:
    * own method to allow for extra parameters. It is advised to then call this
    * function as a first step!
    */
-  T *create_component_base(uuid id, Entity *e) {
+  T *create_component_base(Entity *e) {
+	auto id = _um->create_uuid(this);
     _components[id] = std::make_unique<T>(id, e);
     auto ptr = _components[id].get();
     return ptr;
