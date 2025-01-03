@@ -63,6 +63,19 @@ std::string CreateComponentCommand::execute(Engine *e) {
             }
             return "Component created";
     }
+    else if(_type.compare("light") == 0) {
+        auto system = scene->get_light_system();
+            if (!system) {
+                LOG_ERROR("LightSystem is null");
+                return "LightSystem is null";
+            }
+            auto component = system->create_component(parent.value());
+            if (component == nullptr) {
+                LOG_ERROR("Component could not be created.");
+                return "Component could not be created.";
+            }
+            return "Component created";
+    }
     else {
     LOG_ERROR(std::format("Component type not found: {}", _type));
     return "Component type not found";
