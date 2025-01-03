@@ -15,6 +15,7 @@ std::string MoveCommand::execute(Engine *engine) {
     LOG_ERROR(msg);
     return msg;
   }
+  uuid _uuid = this->get_uuid();
   auto entity_ptr = (*scene)[_uuid];
   if (!entity_ptr) {
     std::string msg =
@@ -30,11 +31,11 @@ std::string MoveCommand::execute(Engine *engine) {
     LOG_ERROR(msg);
     return msg;
   }
-  entity->set_local_position(_new_position);
+  entity->set_local_position(this->get_new_position());
   std::string msg =
       "MoveCommand executed on " + boost::uuids::to_string(_uuid) +
       " with new x y z: " + glm::to_string(entity->get_local_position());
   LOG(msg);
   return msg;
 }
-int MoveCommand::undo() { throw NotImplementedError{}; }
+std::string MoveCommand::undo() { throw NotImplementedError{}; }

@@ -1,12 +1,10 @@
 #include "includes/tcp_server/CommandManager.hpp"
-#include "includes/Engine.hpp"
 #include "includes/tcp_server/TcpServer.hpp"
+#include "includes/utility/NotImplementedError.hpp"
 #include <format>
 
 void CommandManager::execute_commands() {
-  while (!_command_queue.empty()) {
-    //execute_command(std::move(pop()));
-  }
+  throw NotImplementedError();
 }
 
 void CommandManager::execute_command() {

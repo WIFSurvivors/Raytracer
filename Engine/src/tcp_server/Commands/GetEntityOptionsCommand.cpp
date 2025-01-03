@@ -18,7 +18,7 @@ std::string GetEntityOptionsCommand::execute(Engine *e) {
       return msg;
     }
 
-    auto entity_ptr = (*scene)[_uuid];
+    auto entity_ptr = (*scene)[get_uuid()];
     if (!entity_ptr) {
       std::string msg = "Entity not found";
       LOG_ERROR(msg);
@@ -45,4 +45,4 @@ std::string GetEntityOptionsCommand::execute(Engine *e) {
     return "Unknown exception occurred";
   }
 }
-int GetEntityOptionsCommand::undo() { throw NotImplementedError{}; }
+std::string GetEntityOptionsCommand::undo() { throw NotImplementedError{}; }

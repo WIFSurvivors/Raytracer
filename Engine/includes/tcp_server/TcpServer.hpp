@@ -1,16 +1,12 @@
 #pragma once
-#include <iostream>
 #include <boost/asio.hpp>
-#include <cstring>
 #include <thread>
 #include <array>
-#include <chrono>
 #include <memory>
 #include <string>
-#include <vector>
+#include "includes/Engine.hpp"
 #include "includes/tcp_server/CommandManager.hpp"
 using boost::asio::ip::tcp;
-class Engine;
 struct TcpServer : public std::enable_shared_from_this<TcpServer> {
   explicit TcpServer(int port, Engine* e);
   ~TcpServer();

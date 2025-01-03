@@ -16,6 +16,7 @@ std::string RotateCommand::execute(Engine *engine) {
     LOG_ERROR(msg);
     return msg;
   }
+  uuid _uuid = this->get_uuid();
   auto entity_ptr = (*scene)[_uuid];
   if (!entity_ptr) {
     std::string msg =
@@ -31,7 +32,7 @@ std::string RotateCommand::execute(Engine *engine) {
     LOG_ERROR(msg);
     return msg;
   }
-  entity->set_local_rotation(_new_position);
+  entity->set_local_rotation(this->get_new_rotation());
 
   std::string msg =
       "RotateCommand executed on" + boost::uuids::to_string(_uuid) +
@@ -39,4 +40,4 @@ std::string RotateCommand::execute(Engine *engine) {
   LOG(msg);
   return msg;
 }
-int RotateCommand::undo() { throw NotImplementedError{}; }
+std::string RotateCommand::undo() { throw NotImplementedError{}; }
