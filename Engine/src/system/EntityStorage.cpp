@@ -12,7 +12,7 @@
 // #include "glm/vec3.hpp"
 #include "glm/ext.hpp"
 
-EntityStorage::EntityStorage() { LOG(std::format("created {}", get_name())); }
+EntityStorage::EntityStorage(UUIDManager *um) : IStorage(um) { LOG(std::format("created {}", get_name())); }
 
 std::shared_ptr<Entity>
 EntityStorage::create_root_entity(const std::string &name, uuid id) {

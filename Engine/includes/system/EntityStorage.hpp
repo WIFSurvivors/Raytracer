@@ -13,10 +13,10 @@ struct Entity;
  * Scene that is creating that Entity. Most importantly, it maps UUIDs to
  * Entities Pointers.
  */
-struct EntityStorage : public IStorage {
+struct EntityStorage : public IStorage { // TBD -> Storage<Entity*>
   using uuid = boost::uuids::uuid;
   
-  EntityStorage();
+  EntityStorage(UUIDManager *um);
 
   inline virtual const std::string get_name() const final {
     return "Entity Storage";

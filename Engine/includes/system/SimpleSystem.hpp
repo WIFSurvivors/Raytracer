@@ -12,7 +12,7 @@ struct UUIDManager;
 struct FrameSnapshot;
 
 struct SimpleSystem : public System<SimpleComponent> {
-  SimpleSystem();
+  SimpleSystem(UUIDManager *um);
 
   SimpleComponent *create_component(uuid id, Entity *e, int value);
 

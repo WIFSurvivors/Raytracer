@@ -12,7 +12,7 @@
 #include <algorithm>
 
 struct LightSystem : public System<LightComponent> {
-  LightSystem();
+  LightSystem(UUIDManager *um);
 
   LightComponent *create_component(uuid id, Entity *e);
   LightComponent *create_component(uuid id, Entity *e, float intensity);

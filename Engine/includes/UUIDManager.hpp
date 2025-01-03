@@ -1,7 +1,5 @@
 #pragma once
 
-// #include "includes/system/System.hpp"
-// #include "includes/utility/Log.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
 #include <map>
@@ -12,13 +10,27 @@ struct UUIDManager;
  * Base class for any uuid to storage type binding. This is template-less to
  * allow for more flexible usage. Every Storage unit knows a uuid manager, where
  * it will register newly created entries!
+ * IStorage has been defined in UUIDManager.hpp as these System are tightly
+ * coupled and would produce a lot of #include Overhead without any real gain.
  */
 struct IStorage {
   using uuid = boost::uuids::uuid;
+
+  IStorage(UUIDManager *um) : _um{um}{}
   virtual ~IStorage() = default;
   virtual const std::string get_name() const = 0;
+
+//   inline void set_uuid_manager(UUIDManager *um) { _um = um; }
+
+protected:
+  UUIDManager *_um;
 };
 
+/**
+ * UUIDManager generates every UUID and links it to a Storage object. When
+ * knowing a UUID, this class can be used to get the responsible storage unit
+ * for further steps.
+ */
 struct UUIDManager {
   using uuid = boost::uuids::uuid;
   UUIDManager();
@@ -37,5 +49,5 @@ struct UUIDManager {
 
 private:
   boost::uuids::random_generator gen{};
-  std::map<uuid, IStorage*> _uuid_storage_mapping{};
+  std::map<uuid, IStorage *> _uuid_storage_mapping{};
 };

@@ -13,7 +13,9 @@
 #include <type_traits>
 #include <format>
 
-SimpleSystem::SimpleSystem() { LOG(std::format("created {}", get_name())); }
+SimpleSystem::SimpleSystem(UUIDManager *um) : System{um} {
+  LOG(std::format("created {}", get_name()));
+}
 
 SimpleComponent *SimpleSystem::create_component(uuid id, Entity *e, int value) {
   LOG("-- create simple component");

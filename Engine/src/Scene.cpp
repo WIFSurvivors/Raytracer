@@ -7,13 +7,15 @@
 #include <format>
 
 Scene::Scene(Engine *e)
-    : _render_system{e->get_window_manager(), &_camera_system, &_light_system},
+    : _render_system{&_uuid_manager, e->get_window_manager(), &_camera_system,
+                     &_light_system},
       _root{create_root("root")} {
   generate_sample_content();
 }
 
 Scene::Scene(Engine *e, uuid id)
-    : _render_system{e->get_window_manager(), &_camera_system, &_light_system},
+    : _render_system{&_uuid_manager, e->get_window_manager(), &_camera_system,
+                     &_light_system},
       _root{create_root("root", id)} {
   // does not generate sample content
   // this should be called when loading from json
@@ -32,17 +34,18 @@ std::shared_ptr<Entity> Scene::create_root(const std::string &name, uuid id) {
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name) {
-  return create_entity(name, _uuid_manager.create_uuid(&_entity_storage), _root);
+  return create_entity(name, _uuid_manager.create_uuid(&_entity_storage),
+                       _root);
 }
 
-std::shared_ptr<Entity> Scene::create_entity(const std::string &name,
-                                             uuid id) {
+std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id) {
   return create_entity(name, id, _root);
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name,
                                              std::shared_ptr<Entity> parent) {
-  return create_entity(name, _uuid_manager.create_uuid(&_entity_storage), parent);
+  return create_entity(name, _uuid_manager.create_uuid(&_entity_storage),
+                       parent);
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
@@ -90,9 +93,9 @@ void Scene::generate_sample_content() {
 
   new_uuid = _uuid_manager.create_uuid(&_light_system);
   auto c3 = _light_system.create_component(new_uuid, e4.get());
-  c3->set_color(0.1f, 0.96752f, 0.1f); 
+  c3->set_color(0.1f, 0.96752f, 0.1f);
   c3->set_intensity(25.f);
-  
+
   new_uuid = _uuid_manager.create_uuid(&_light_system);
   auto c4 = _light_system.create_component(new_uuid, e5.get());
   c4->set_color(0.1f, 0.1f, 1.f);
@@ -128,7 +131,7 @@ void Scene::generate_sample_content() {
   LOG_NEW_LINE();
 
   // =================== SAMPLE MANIPULATION =====================
-  
+
   auto sys = _uuid_manager.get_storage(c1->get_uuid());
   auto csys = static_cast<CameraSystem *>(sys);
   auto occ = csys->get_component(c1->get_uuid());

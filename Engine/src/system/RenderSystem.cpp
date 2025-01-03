@@ -35,8 +35,8 @@
  *	  - Separate other functionality to the functions
  */
 
-RenderSystem::RenderSystem(WindowManager *wm, CameraSystem *cs, LightSystem *ls)
-    : System(), _wm{wm}, _cs{cs}, _ls{ls} {
+RenderSystem::RenderSystem(UUIDManager *um, WindowManager *wm, CameraSystem *cs, LightSystem *ls)
+    : System{um}, _wm{wm}, _cs{cs}, _ls{ls} {
   LOG("created render system");
   init();
 }

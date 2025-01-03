@@ -12,7 +12,7 @@
  * Handles currently active main camera, which is used by RenderSystem.
  */
 struct CameraSystem : public System<CameraComponent> {
-  CameraSystem();
+  CameraSystem(UUIDManager *um);
 
   CameraComponent *create_component(uuid id, Entity *e, float fov = 60.f);
 

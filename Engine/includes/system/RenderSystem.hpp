@@ -40,8 +40,7 @@ struct FrameSnapshot;
  *	- Do we really need a separate class for shaders
  */
 struct RenderSystem : public System<RenderComponent> {
-
-  RenderSystem(WindowManager *wm, CameraSystem *cs, LightSystem *ls);
+  RenderSystem(UUIDManager *um, WindowManager *wm, CameraSystem *cs, LightSystem *ls);
 
   void init();
   void update(const FrameSnapshot &snapshot); // represents render

@@ -68,11 +68,11 @@ private:
 
   UUIDManager _uuid_manager{};
 
-  EntityStorage _entity_storage{};
-  SimpleSystem _simple_system{};
-  CameraSystem _camera_system{};
-  LightSystem _light_system{};
-  RenderSystem _render_system;
+  EntityStorage _entity_storage{&_uuid_manager};
+  SimpleSystem _simple_system{&_uuid_manager};
+  CameraSystem _camera_system{&_uuid_manager};
+  LightSystem _light_system{&_uuid_manager};
+  RenderSystem _render_system; // has a extensive constructor which depend on Engine
 
   std::shared_ptr<Entity> _root;
 };

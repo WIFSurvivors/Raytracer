@@ -4,7 +4,9 @@
 #include <format>
 #include <iomanip> // for std::setprecision
 
-LightSystem::LightSystem() { LOG(std::format("created {}", get_name())); }
+LightSystem::LightSystem(UUIDManager *um) : System{um} {
+  LOG(std::format("created {}", get_name()));
+}
 
 LightComponent *LightSystem::create_component(uuid id, Entity *e) {
   LOG("create camera component (a)");
@@ -12,21 +14,25 @@ LightComponent *LightSystem::create_component(uuid id, Entity *e) {
   return c;
 }
 
-LightComponent *LightSystem::create_component(uuid id, Entity *e, float intensity) {
+LightComponent *LightSystem::create_component(uuid id, Entity *e,
+                                              float intensity) {
   LOG("create camera component (b)");
   auto c = create_component_base(id, e);
   c->set_intensity(intensity);
   return c;
 }
 
-LightComponent *LightSystem::create_component(uuid id, Entity *e, glm::vec3 color) {
+LightComponent *LightSystem::create_component(uuid id, Entity *e,
+                                              glm::vec3 color) {
   LOG("create camera component (c)");
   auto c = create_component_base(id, e);
   c->set_color(color);
   return c;
 }
 
-LightComponent *LightSystem::create_component(uuid id, Entity *e, float intensity, glm::vec3 color) {
+LightComponent *LightSystem::create_component(uuid id, Entity *e,
+                                              float intensity,
+                                              glm::vec3 color) {
   LOG("create camera component (d)");
   auto c = create_component_base(id, e);
   c->set_intensity(intensity);
@@ -48,4 +54,3 @@ void LightSystem::print() {
   vt.print(std::cout);
   std::cout << std::setprecision(defaultPrecision) << std::endl;
 }
-

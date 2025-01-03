@@ -12,14 +12,14 @@
 template <class T> struct Storage : public IStorage {
   using uuid = boost::uuids::uuid;
   
-  Storage() = default;
+  Storage(UUIDManager *um);
   virtual ~Storage() = default;
 
   /**
    * Get Object stored in this system. Will return std::nullopt when UUID is
    * not found.
    */
-  virtual std::optional<T> get(uuid id) {
+  inline virtual std::optional<T> get(uuid id) {
     return _storage.contains(id) ? std::make_optional(_storage[id])
                                  : std::nullopt;
   }

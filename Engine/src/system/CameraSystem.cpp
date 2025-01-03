@@ -10,7 +10,7 @@
 // #include "glm/vec3.hpp"
 #include "glm/ext.hpp"
 
-CameraSystem::CameraSystem() : System{} {
+CameraSystem::CameraSystem(UUIDManager *um) : System{um} {
   LOG("created camera system");
 }
 
@@ -60,7 +60,6 @@ void CameraSystem::print() {
     vt.addRow(boost::uuids::to_string(key), value->is_main_camera(),
               value->get_fov(), value->get_entity()->get_name());
   }
-
 
   std::streamsize defaultPrecision = std::cout.precision();
   std::cout << std::setprecision(3) << std::boolalpha;

@@ -17,7 +17,6 @@
 #include <map>
 #include <string>
 
-// typedef boost::uuids::uuid uuid;
 struct Entity;
 
 template <typename T>
@@ -30,6 +29,7 @@ concept is_base_of_component = std::is_base_of<IComponent, T>::value;
 template <is_base_of_component T> struct System : public IStorage {
   using uuid = boost::uuids::uuid;
 
+  System(UUIDManager *um) : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/ }
   ~System() override = default;
 
   /**
@@ -92,9 +92,7 @@ protected:
   T *create_component_base(uuid id, Entity *e) {
     _components[id] = std::make_unique<T>(id, e);
     auto ptr = _components[id].get();
-    // e->add_component(ptr); // this is handled in IComponent Constructor!!
-    return ptr; // pointer can be used by child classes for further
-                // configuration
+    return ptr;
   }
 
   std::map<uuid, std::unique_ptr<T>> _components;
