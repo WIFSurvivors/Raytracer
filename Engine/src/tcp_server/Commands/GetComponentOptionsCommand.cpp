@@ -6,9 +6,11 @@
 #include "includes/system/CameraSystem.hpp"
 #include "includes/system/RenderSystem.hpp"
 #include "includes/system/SimpleSystem.hpp"
+#include "includes/system/LightSystem.hpp"
 #include "includes/component/CameraComponent.hpp"
 #include "includes/component/RenderComponent.hpp"
 #include "includes/component/SimpleComponent.hpp"
+#include "includes/component/LightComponent.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 
 std::string GetComponentOptions::execute(Engine *e) {
@@ -51,7 +53,19 @@ std::string GetComponentOptions::execute(Engine *e) {
         LOG(json_msg);
         return json_msg;
       }
-    } else {
+    } 
+    else if (auto light_system = dynamic_cast<LightSystem *>(system)) {
+      auto light = light_system->get_component(_uuid);
+      if (light.has_value()) {
+        auto component = light.value();
+        LOG("LightComponent found");
+        std::string json_msg =
+            boost::json::serialize(component->to_json()["component_options"]); // SORRY SPYRO :C
+        LOG(json_msg);
+        return json_msg;
+      }
+    } 
+    else {
       LOG_ERROR("System found but no component found");
       return "System found but no component found";
     }

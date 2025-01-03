@@ -6,8 +6,10 @@
 #include "includes/system/CameraSystem.hpp"
 #include "includes/system/RenderSystem.hpp"
 #include "includes/system/SimpleSystem.hpp"
+#include "includes/system/LightSystem.hpp"
 #include "includes/component/CameraComponent.hpp"
 #include "includes/component/RenderComponent.hpp"
+#include "includes/component/LightComponent.hpp"
 #include "includes/component/SimpleComponent.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 
@@ -72,6 +74,24 @@ std::string SetComponentOptions::execute(Engine *e) {
             return e.what();
         }
         }
+    }
+        else if (auto light_system = dynamic_cast<LightSystem *>(system)) {
+      auto light = light_system->get_component(_uuid);
+      if (light.has_value()) {
+        auto component = light.value();
+        LOG("LightComponent found");
+        try
+        {
+            component->set_from_json(this->get_obj());
+            LOG("LightComponent updated");
+            return "LightComponent updated";
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+            return e.what();
+        }
+      }
     } else {
       LOG_ERROR("System found but no component found");
       return "System found but no component found";
