@@ -18,6 +18,7 @@ std::string GetComponentOptions::execute(Engine *e) {
     LOG_ERROR(error);
     return error;
   }
+  uuid _uuid = this->get_uuid();
   auto system = uuid_manager->get_storage(_uuid);
   if (system != nullptr) {
     if (auto camera_system = dynamic_cast<CameraSystem *>(system)) {
@@ -61,4 +62,4 @@ std::string GetComponentOptions::execute(Engine *e) {
   return "Error";
 }
 
-int GetComponentOptions::undo() { throw NotImplementedError{}; }
+std::string GetComponentOptions::undo() { throw NotImplementedError{}; }

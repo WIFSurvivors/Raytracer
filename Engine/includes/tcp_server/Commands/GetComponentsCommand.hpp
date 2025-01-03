@@ -2,7 +2,6 @@
 #include "includes/component/Component.hpp"
 #include "includes/tcp_server/TcpCommand.hpp"
 #include <string>
-#include <boost/uuid/uuid.hpp>
 #include <boost/json.hpp>
 #include <vector>
 
@@ -15,7 +14,7 @@ struct GetComponentsCommand : public TcpCommand {
   std::string execute(Engine *e) override;
   boost::json::array
   get_components_short(const std::vector<IComponent *> &components);
-  int undo() override;
+  std::string undo() override;
 
 private:
 };

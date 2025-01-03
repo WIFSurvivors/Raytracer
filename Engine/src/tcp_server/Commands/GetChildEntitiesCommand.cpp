@@ -15,7 +15,7 @@ std::string GetChildEntitiesCommand::execute(Engine *e) {
         LOG_ERROR(msg);
         return msg;
     }
-    auto entity = scene->get_entity(_uuid);
+    auto entity = scene->get_entity(get_uuid());
     if (!entity.has_value()) {
         std::string msg = "Entity not found";
         LOG_ERROR(msg);
@@ -25,4 +25,4 @@ std::string GetChildEntitiesCommand::execute(Engine *e) {
     std::cout << boost::json::serialize(json_entity) << std::endl;
     return boost::json::serialize(json_entity);
 }
-int GetChildEntitiesCommand::undo() { throw NotImplementedError{}; }
+std::string GetChildEntitiesCommand::undo() { throw NotImplementedError{}; }

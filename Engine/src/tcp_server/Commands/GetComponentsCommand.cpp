@@ -17,6 +17,7 @@ std::string GetComponentsCommand::execute(Engine *e) {
       LOG_ERROR(msg);
       return msg;
     }
+    uuid _uuid = this->get_uuid();
     auto entity_ptr = (*scene)[_uuid];
     if (!entity_ptr.has_value()) {
       std::string msg = std::format("Entity not found for UUID: {}",
@@ -62,4 +63,4 @@ boost::json::array GetComponentsCommand::get_components_short(
   return arr;
 }
 
-int GetComponentsCommand::undo() { throw NotImplementedError{}; }
+std::string GetComponentsCommand::undo() { throw NotImplementedError{}; }

@@ -25,4 +25,4 @@ std::string importJsonCommand::execute(Engine *engine) {
   fclose(file);
   return "Imported json file";
 }
-int importJsonCommand::undo() { throw NotImplementedError{}; }
+std::string importJsonCommand::undo() { throw NotImplementedError{}; }

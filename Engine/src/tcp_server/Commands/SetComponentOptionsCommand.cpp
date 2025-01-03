@@ -18,6 +18,7 @@ std::string SetComponentOptions::execute(Engine *e) {
     LOG_ERROR(error);
     return error;
   }
+  uuid _uuid = this->get_uuid();
   auto system = uuid_manager->get_storage(_uuid);
   if (system != nullptr) {
     if (auto camera_system = dynamic_cast<CameraSystem *>(system)) {
@@ -27,7 +28,7 @@ std::string SetComponentOptions::execute(Engine *e) {
         LOG("CameraComponent found");
         try
         {
-            component->set_from_json(_obj);
+            component->set_from_json(this->get_obj());
             LOG("CameraComponent updated");
             return "CameraComponent updated";
         }
@@ -44,7 +45,7 @@ std::string SetComponentOptions::execute(Engine *e) {
         LOG("RenderComponent found");
         try
         {
-            component->set_from_json(_obj);
+            component->set_from_json(this->get_obj());
             LOG("RenderComponent updated");
             return "RenderComponent updated";
         }
@@ -61,7 +62,7 @@ std::string SetComponentOptions::execute(Engine *e) {
         LOG("SimpleComponent found");
         try
         {
-            component->set_from_json(_obj);
+            component->set_from_json(this->get_obj());
             LOG("SimpleComponent updated");
             return "SimpleComponent updated";
         }
@@ -82,5 +83,5 @@ std::string SetComponentOptions::execute(Engine *e) {
   return "Error";
 }
 
-int SetComponentOptions::undo() { throw NotImplementedError{}; }
+std::string SetComponentOptions::undo() { throw NotImplementedError{}; }
 

@@ -1,5 +1,6 @@
 #include "includes/tcp_server/Commands/CloseRenderCommand.hpp"
 #include "includes/Engine.hpp"
+#include "includes/utility/NotImplementedError.hpp"
 
 
 std::string CloseRenderCommand::execute(Engine *e) {
@@ -7,4 +8,4 @@ std::string CloseRenderCommand::execute(Engine *e) {
   //   e->get_render_system()->destroy(); // decrepted
   return "Render System destroyed";
 }
-int CloseRenderCommand::undo() { return 0; }
+std::string CloseRenderCommand::undo() { throw NotImplementedError(); }

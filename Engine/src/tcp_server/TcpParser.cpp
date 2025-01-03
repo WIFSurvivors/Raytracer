@@ -1,5 +1,6 @@
 #include "includes/tcp_server/TcpParser.hpp"
 #include "includes/utility/Log.hpp"
+#include <sstream>
 
 TcpParser::TcpParser() {}
 

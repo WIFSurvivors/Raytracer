@@ -1,5 +1,6 @@
 #include "includes/tcp_server/TcpExecuter.hpp"
 #include "includes/utility/Log.hpp"
+#include "includes/utility/NotImplementedError.hpp"
 #include <string>
 
 TcpExecuter::TcpExecuter() {}
@@ -10,4 +11,4 @@ std::string TcpExecuter::execute(TcpCommand *command, Engine *engine) {
   return return_value;
 }
 
-int TcpExecuter::undo(TcpCommand *command) { return 0; }
+std::string TcpExecuter::undo(TcpCommand *command) { throw NotImplementedError(); }
