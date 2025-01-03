@@ -1,6 +1,7 @@
 #pragma once
 
 #include "includes/UUIDManager.hpp"
+#include "includes/utility/Log.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <optional>
 #include <string>
@@ -12,7 +13,7 @@
 template <class T> struct Storage : public IStorage {
   using uuid = boost::uuids::uuid;
   
-  Storage(UUIDManager *um);
+  Storage(UUIDManager *um) : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/ }
   virtual ~Storage() = default;
 
   /**
@@ -28,7 +29,7 @@ template <class T> struct Storage : public IStorage {
    * Removes Object from container by uuid.
    * This will also remove it's link to it's entity.
    */
-  bool remove(uuid id) = 0;
+  virtual bool remove(uuid id) = 0;
 
 private:
   std::map<uuid, T> _storage;

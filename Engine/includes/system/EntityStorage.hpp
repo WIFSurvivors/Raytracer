@@ -1,6 +1,7 @@
 #pragma once
 
 #include "includes/UUIDManager.hpp"
+#include "includes/system/Storage.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <memory>
 #include <map>
@@ -13,7 +14,8 @@ struct Entity;
  * Scene that is creating that Entity. Most importantly, it maps UUIDs to
  * Entities Pointers.
  */
-struct EntityStorage : public IStorage { // TBD -> Storage<Entity*>
+// struct EntityStorage : public IStorage { // TBD -> Storage<Entity*>
+struct EntityStorage : public  Storage<Entity*> {
   using uuid = boost::uuids::uuid;
   
   EntityStorage(UUIDManager *um);
@@ -47,7 +49,7 @@ struct EntityStorage : public IStorage { // TBD -> Storage<Entity*>
    * THIS DOES NOT REMOVE IT FROM THE ACTIVE SCENE!!!
    * THIS DOES NOT CORRENTLY REMOVE ALL LINKED COMPONENTS!!!
    */
-  bool remove(uuid id);
+  bool remove(uuid id) override;
 
   /**
    * Removes an entity from the underlying data structure by uuid.
