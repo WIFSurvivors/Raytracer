@@ -47,7 +47,11 @@ struct RenderSystem : public System<RenderComponent> {
   void destroy();
 
   RenderComponent *create_component(Entity *e);
+  RenderComponent *create_component(Entity *e, uuid id);
   RenderComponent *create_component(Entity *e,
+                                    const std::vector<glm::vec3> &vertices,
+                                    const std::vector<glm::vec2> &UV);
+  RenderComponent *create_component(Entity *e, uuid id,
                                     const std::vector<glm::vec3> &vertices,
                                     const std::vector<glm::vec2> &UV);
 

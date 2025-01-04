@@ -14,6 +14,16 @@ CameraSystem::CameraSystem(UUIDManager *um) : System{um} {
   LOG("created camera system");
 }
 
+CameraComponent *CameraSystem::create_component(Entity *e, uuid id, float fov) {
+  LOG("create camera component");
+  auto c = create_component_base(e, id);
+  c->set_fov(fov);
+  if (!_main_camera) {
+    set_main_camera(c);
+  }
+  return c;
+}
+
 CameraComponent *CameraSystem::create_component(Entity *e, float fov) {
   LOG("create camera component");
   auto c = create_component_base(e);

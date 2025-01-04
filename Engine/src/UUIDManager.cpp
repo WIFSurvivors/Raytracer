@@ -9,7 +9,19 @@
 
 UUIDManager::UUIDManager() { LOG("created UUID Manager"); }
 
-boost::uuids::uuid UUIDManager::create_uuid(IStorage *s) {
+bool UUIDManager::add(uuid id, IStorage *s) {
+  if (_uuid_storage_mapping.contains(id)) {
+    auto existing_name = _uuid_storage_mapping[id]->get_name();
+    LOG_ERROR(std::format("Adding existing UUID {} to {}, but is part of {}",
+                          boost::uuids::to_string(id), s->get_name(),
+                          existing_name));
+    return false;
+  }
+  _uuid_storage_mapping[id] = s;
+  return true;
+}
+
+UUIDManager::uuid UUIDManager::create(IStorage *s) {
   auto new_uuid = gen();
   LOG(std::format("created uuid: {} for system {}",
                   boost::uuids::to_string(new_uuid), s->get_name()));

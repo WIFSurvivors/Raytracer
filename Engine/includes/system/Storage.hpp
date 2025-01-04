@@ -31,6 +31,6 @@ template <class T> struct Storage : public IStorage {
    */
   virtual bool remove(uuid id) = 0;
 
-private:
+protected:
   std::map<uuid, T> _storage;
 };

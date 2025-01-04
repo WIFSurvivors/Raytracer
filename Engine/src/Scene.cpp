@@ -24,35 +24,28 @@ Scene::Scene(Engine *e, uuid id)
 Scene::~Scene() { _render_system.destroy(); }
 
 std::shared_ptr<Entity> Scene::create_root(const std::string &name) {
-  return create_root(name, _uuid_manager.create_uuid(&_entity_storage));
+  return _entity_storage.create_root_entity(name);
 }
 
 std::shared_ptr<Entity> Scene::create_root(const std::string &name, uuid id) {
-  LOG(std::format("scene: create_root(name, uuid): \"{}\", {}", name,
-                  boost::uuids::to_string(id)));
   return _entity_storage.create_root_entity(name, id);
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name) {
-  return create_entity(name, _uuid_manager.create_uuid(&_entity_storage),
-                       _root);
+  return _entity_storage.create_entity(name, _root);
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id) {
-  return create_entity(name, id, _root);
+  return _entity_storage.create_entity(name, id, _root);
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name,
                                              std::shared_ptr<Entity> parent) {
-  return create_entity(name, _uuid_manager.create_uuid(&_entity_storage),
-                       parent);
+  return _entity_storage.create_entity(name, parent);
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
                                              std::shared_ptr<Entity> parent) {
-  LOG(std::format(
-      "scene: create_entity(name, uuid, parent): \"{}\", {}, \"{}\"", name,
-      boost::uuids::to_string(id), parent->get_name()));
   return _entity_storage.create_entity(name, id, parent);
 }
 

@@ -15,6 +15,7 @@ struct SimpleSystem : public System<SimpleComponent> {
   SimpleSystem(UUIDManager *um);
 
   SimpleComponent *create_component(Entity *e, int value);
+  SimpleComponent *create_component(Entity *e, uuid id, int value);
 
   void update(const FrameSnapshot& snapshot);
 

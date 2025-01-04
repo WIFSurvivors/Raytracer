@@ -12,13 +12,42 @@
 // #include "glm/vec3.hpp"
 #include "glm/ext.hpp"
 
-EntityStorage::EntityStorage(UUIDManager *um) : Storage<Entity*>(um) {
+EntityStorage::EntityStorage(UUIDManager *um) : Storage<Entity *>(um) {
   LOG(std::format("created {}", get_name()));
 }
 
 std::shared_ptr<Entity>
+EntityStorage::create_root_entity(const std::string &name) {
+  auto id = _um->create(this);
+  auto e = Entity::create(name, id);  
+  LOG(std::format(
+      "scene: create_root_entity(name): \"{}\", [uuid:{}]\"", e->get_name(),
+      boost::uuids::to_string(e->get_uuid())));
+  _entities[id] = e.get();
+  return e;
+}
+
+std::shared_ptr<Entity>
 EntityStorage::create_root_entity(const std::string &name, uuid id) {
+  if (!_um->add(id, this)) {
+    return nullptr;
+  }
   auto e = Entity::create(name, id);
+  LOG(std::format(
+      "scene: create_root_entity(name, uuid): \"{}\", {}\"", e->get_name(),
+      boost::uuids::to_string(e->get_uuid())));
+  _entities[id] = e.get();
+  return e;
+}
+
+std::shared_ptr<Entity>
+EntityStorage::create_entity(const std::string &name,
+                             std::shared_ptr<Entity> parent) {
+  auto id = _um->create(this);
+  auto e = Entity::create(name, id, parent);  
+  LOG(std::format(
+      "scene: create_entity(name, parent): \"{}\", [uuid:{},] \"{}\"", e->get_name(),
+      boost::uuids::to_string(e->get_uuid()), parent->get_name()));
   _entities[id] = e.get();
   return e;
 }
@@ -26,10 +55,17 @@ EntityStorage::create_root_entity(const std::string &name, uuid id) {
 std::shared_ptr<Entity>
 EntityStorage::create_entity(const std::string &name, uuid id,
                              std::shared_ptr<Entity> parent) {
+  if (!_um->add(id, this)) {
+    return nullptr;
+  }
   auto e = Entity::create(name, id, parent);
+  LOG(std::format(
+      "scene: create_entity(name, uuid, parent): \"{}\", {}, \"{}\"", e->get_name(),
+      boost::uuids::to_string(e->get_uuid()), parent->get_name()));
   _entities[id] = e.get();
   return e;
 }
+
 bool EntityStorage::remove(uuid id) {
   auto it = std::find_if(_entities.begin(), _entities.end(),
                          [id](const auto &e) { return e.first == id; });
