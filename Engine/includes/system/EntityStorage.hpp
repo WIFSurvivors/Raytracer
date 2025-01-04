@@ -50,7 +50,7 @@ struct EntityStorage : public Storage<Entity*> {
    * not found.
    */
   inline std::optional<Entity *> get_entity(uuid id) {
-    return _entities.contains(id) ? std::make_optional(_entities[id])
+    return _storage.contains(id) ? std::make_optional(_storage[id])
                                   : std::nullopt;
   }
 
@@ -76,5 +76,4 @@ struct EntityStorage : public Storage<Entity*> {
   void print();
 
 private:
-  std::map<uuid, Entity *> _entities{};
 };

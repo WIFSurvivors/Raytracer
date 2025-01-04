@@ -23,7 +23,7 @@ EntityStorage::create_root_entity(const std::string &name) {
   LOG(std::format(
       "scene: create_root_entity(name): \"{}\", [uuid:{}]\"", e->get_name(),
       boost::uuids::to_string(e->get_uuid())));
-  _entities[id] = e.get();
+  _storage[id] = e.get();
   return e;
 }
 
@@ -36,7 +36,7 @@ EntityStorage::create_root_entity(const std::string &name, uuid id) {
   LOG(std::format(
       "scene: create_root_entity(name, uuid): \"{}\", {}\"", e->get_name(),
       boost::uuids::to_string(e->get_uuid())));
-  _entities[id] = e.get();
+  _storage[id] = e.get();
   return e;
 }
 
@@ -48,7 +48,7 @@ EntityStorage::create_entity(const std::string &name,
   LOG(std::format(
       "scene: create_entity(name, parent): \"{}\", [uuid:{},] \"{}\"", e->get_name(),
       boost::uuids::to_string(e->get_uuid()), parent->get_name()));
-  _entities[id] = e.get();
+  _storage[id] = e.get();
   return e;
 }
 
@@ -62,25 +62,25 @@ EntityStorage::create_entity(const std::string &name, uuid id,
   LOG(std::format(
       "scene: create_entity(name, uuid, parent): \"{}\", {}, \"{}\"", e->get_name(),
       boost::uuids::to_string(e->get_uuid()), parent->get_name()));
-  _entities[id] = e.get();
+  _storage[id] = e.get();
   return e;
 }
 
 bool EntityStorage::remove(uuid id) {
-  auto it = std::find_if(_entities.begin(), _entities.end(),
+  auto it = std::find_if(_storage.begin(), _storage.end(),
                          [id](const auto &e) { return e.first == id; });
-  if (it != _entities.end()) {
-    _entities.erase(it);
+  if (it != _storage.end()) {
+    _storage.erase(it);
     return true;
   }
   return false;
 }
 
 bool EntityStorage::remove(Entity *e) {
-  auto it = std::find_if(_entities.begin(), _entities.end(),
+  auto it = std::find_if(_storage.begin(), _storage.end(),
                          [e](const auto &val) { return val.second == e; });
-  if (it != _entities.end()) {
-    _entities.erase(it);
+  if (it != _storage.end()) {
+    _storage.erase(it);
     return true;
   }
   return false;
@@ -93,7 +93,7 @@ void EntityStorage::print() {
       vt({"Entity UUID", "Entity Name", "CE", "CC", "P_x", "P_y", "P_z", "R_x",
           "R_y", "R_z", "S_x", "S_y", "S_z"});
 
-  for (const auto &[id, e] : _entities) {
+  for (const auto &[id, e] : _storage) {
     vt.addRow(boost::uuids::to_string(id), e->get_name(),
               e->get_child_entities().size(), e->get_components().size(),
               e->get_world_position().x, e->get_world_position().y,
