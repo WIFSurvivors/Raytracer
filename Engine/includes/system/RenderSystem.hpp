@@ -15,6 +15,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <optional>
 
 struct FrameSnapshot;
 
@@ -40,20 +41,20 @@ struct FrameSnapshot;
  *	- Do we really need a separate class for shaders
  */
 struct RenderSystem : public System<RenderComponent> {
-  RenderSystem(UUIDManager *um, WindowManager *wm, CameraSystem *cs, LightSystem *ls);
+  RenderSystem(UUIDManager *um, WindowManager *wm, CameraSystem *cs, LightSystem *ls, AssetManager::DefaultAssets *da);
 
   void init();
   void update(const FrameSnapshot &snapshot); // represents render
   void destroy();
 
-  RenderComponent *create_component(Entity *e);
-  RenderComponent *create_component(Entity *e, uuid id);
+  RenderComponent *create_component(Entity *e, std::optional<AssetManager::Asset> obj_asset = {}, std::optional<AssetManager::Asset> mtl_asset = {}, std::optional<AssetManager::Asset> shader_asset = {});
+  RenderComponent *create_component(Entity *e, uuid id, std::optional<AssetManager::Asset> obj_asset = {}, std::optional<AssetManager::Asset> mtl_asset = {}, std::optional<AssetManager::Asset> shader_asset = {});
   RenderComponent *create_component(Entity *e,
                                     const std::vector<glm::vec3> &vertices,
-                                    const std::vector<glm::vec2> &UV);
+                                    const std::vector<glm::vec2> &UV, std::optional<AssetManager::Asset> obj_asset = {}, std::optional<AssetManager::Asset> mtl_asset = {}, std::optional<AssetManager::Asset> shader_asset = {});
   RenderComponent *create_component(Entity *e, uuid id,
                                     const std::vector<glm::vec3> &vertices,
-                                    const std::vector<glm::vec2> &UV);
+                                    const std::vector<glm::vec2> &UV, std::optional<AssetManager::Asset> obj_asset = {}, std::optional<AssetManager::Asset> mtl_asset = {}, std::optional<AssetManager::Asset> shader_asset = {});
 
   inline virtual const std::string get_name() const final {
     return "Render System";
@@ -70,6 +71,7 @@ private:
   WindowManager *_wm;
   CameraSystem *_cs;
   LightSystem *_ls;
+  AssetManager::DefaultAssets *_da;
 
   using typename System::uuid;
 

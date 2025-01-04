@@ -71,6 +71,8 @@ struct AssetManager : public Storage<std::filesystem::path> {
       _path = path;
     }
 
+    std::filesystem::path get_path() const { return _path; }
+
     // set_uuid()
     // -> _am->get_instance().get_uuid() -> true: good
     //                                   -> false: error
@@ -82,6 +84,15 @@ struct AssetManager : public Storage<std::filesystem::path> {
 
   private:
     AssetManager *_am;
+  };
+
+  struct DefaultAssets {
+    DefaultAssets(AssetManager *am) : shader(am, std::filesystem::path(SHADER_ABSOLUTE_PATH) / "default_shader"),
+                                      mtl(am, std::filesystem::path(ASSET_ABSOLUTE_PATH) / "default_mtl"),
+                                      obj(am, std::filesystem::path(ASSET_ABSOLUTE_PATH) / "default_obj") {}
+     Asset shader;
+     Asset mtl;
+     Asset obj;
   };
 
   inline void set(uuid id, std::filesystem::path path) {

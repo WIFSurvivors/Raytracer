@@ -78,6 +78,7 @@ private:
 
   UUIDManager _uuid_manager{};
   AssetManager _asset_manager{&_uuid_manager};
+  AssetManager::DefaultAssets _default_assets{&_asset_manager};
   EntityStorage _entity_storage{&_uuid_manager};
   SimpleSystem _simple_system{&_uuid_manager};
   CameraSystem _camera_system{&_uuid_manager};

@@ -2,9 +2,11 @@
 
 #include "includes/Entity.hpp"
 #include "includes/component/Component.hpp"
+#include "includes/AssetManager.hpp"
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <vector>
+#include <memory>
 
 struct FrameSnapshot;
 
@@ -52,9 +54,23 @@ struct RenderComponent : public IComponent {
   inline const GLuint get_vbo() { return _vbo; }
   inline const GLuint get_textureID() { return _textureID; }
   inline const GLuint get_uvVBO() { return _textureID; }
-  
-  void set_from_json(boost::json::object obj) override;
 
+  inline const AssetManager::Asset  get_obj_asset() const { return *_obj_asset; }
+  inline void set_obj_asset(AssetManager::Asset obj_asset) { _obj_asset = std::make_shared<AssetManager::Asset>(obj_asset); }
+  inline void set_obj_asset(uuid obj_uuid) { _obj_asset->set_uuid(obj_uuid); }
+  inline void set_obj_asset(std::filesystem::path obj_path) {_obj_asset->set_path(obj_path);  }
+
+  inline const AssetManager::Asset get_mtl_asset() const { return *_mtl_asset; }
+  inline void set_mtl_asset(AssetManager::Asset mtl_asset) { _mtl_asset = std::make_shared<AssetManager::Asset>(mtl_asset); }
+  inline void set_mtl_asset(std::filesystem::path mtl_path) {_mtl_asset->set_path(mtl_path);  }
+  inline void set_mtl_asset(uuid mtl_uuid) { _mtl_asset->set_uuid(mtl_uuid); }
+
+  inline const AssetManager::Asset get_shader_asset() const { return *_shader_asset; }
+  inline void set_shader_asset(AssetManager::Asset shader_asset) { _shader_asset = std::make_shared<AssetManager::Asset>(shader_asset); }
+  inline void set_shader_asset(std::filesystem::path shader_path) {_shader_asset->set_path(shader_path);  }
+  inline void set_shader_asset(uuid shader_uuid) { _shader_asset->set_uuid(shader_uuid); }
+
+  void set_from_json(boost::json::object obj) override;
 protected:
   boost::json::object to_json_details() const override;
 
@@ -70,7 +86,9 @@ private:
   GLuint _vbo;
   GLuint _textureID;
   GLuint _uvVBO;
-
+  std::shared_ptr<AssetManager::Asset> _obj_asset;
+  std::shared_ptr<AssetManager::Asset> _mtl_asset;
+  std::shared_ptr<AssetManager::Asset> _shader_asset;
 #if SHOW_UI
   glm::mat4 _translationMatrix;
   glm::mat4 _rotationMatrix;

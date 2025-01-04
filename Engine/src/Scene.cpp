@@ -8,14 +8,14 @@
 
 Scene::Scene(Engine *e)
     : _render_system{&_uuid_manager, e->get_window_manager(), &_camera_system,
-                     &_light_system},
+                     &_light_system, &_default_assets},
       _root{create_root("root")} {
   generate_sample_content();
 }
 
 Scene::Scene(Engine *e, uuid id)
     : _render_system{&_uuid_manager, e->get_window_manager(), &_camera_system,
-                     &_light_system},
+                     &_light_system, &_default_assets},
       _root{create_root("root", id)} {
   // does not generate sample content
   // this should be called when loading from json
