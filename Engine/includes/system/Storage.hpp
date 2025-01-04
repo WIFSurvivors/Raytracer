@@ -3,6 +3,7 @@
 #include "includes/UUIDManager.hpp"
 #include "includes/utility/Log.hpp"
 #include <boost/uuid/uuid.hpp>
+#include <functional>
 #include <optional>
 #include <string>
 
@@ -15,6 +16,12 @@ template <class T> struct Storage : public IStorage {
   
   Storage(UUIDManager *um) : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/ }
   virtual ~Storage() = default;
+
+  inline virtual std::optional<uuid> get(T obj){
+	auto it = std::find_if(_storage.begin(), _storage.end(), [obj](const auto &val) {return val.second == obj;});
+	if(it == _storage.end()) return {};
+	return std::make_optional<uuid>(it->first);
+  }
 
   /**
    * Get Object stored in this system. Will return std::nullopt when UUID is
