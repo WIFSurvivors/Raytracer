@@ -88,8 +88,8 @@ struct AssetManager : public Storage<std::filesystem::path> {
 
   struct DefaultAssets {
     DefaultAssets(AssetManager *am) : shader(am, std::filesystem::path(SHADER_ABSOLUTE_PATH) / "default_shader"),
-                                      mtl(am, std::filesystem::path(ASSET_ABSOLUTE_PATH) / "default_mtl"),
-                                      obj(am, std::filesystem::path(ASSET_ABSOLUTE_PATH) / "default_obj") {}
+                                      mtl(am, std::filesystem::path(ASSET_ABSOLUTE_PATH) / "default.mtl"),
+                                      obj(am, std::filesystem::path(ASSET_ABSOLUTE_PATH) / "default.obj") {}
      Asset shader;
      Asset mtl;
      Asset obj;

@@ -8,6 +8,7 @@ set(UTILITY_HEADERS
     JsonConverter.hpp
     bvhtree_tiny.hpp
 	FrameSnapshot.hpp
+    obj_loader.hpp
 )
 
 list(TRANSFORM UTILITY_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
