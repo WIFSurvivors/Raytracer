@@ -10,7 +10,7 @@ struct UUIDManager;
  * Base class for any uuid to storage type binding. This is template-less to
  * allow for more flexible usage. Every Storage unit knows a uuid manager, where
  * it will register newly created entries!
- * IStorage has been defined in UUIDManager.hpp as these System are tightly
+ * IStorage has been defined in UUIDManager.hpp as these parts are tightly
  * coupled and would produce a lot of #include Overhead without any real gain.
  */
 struct IStorage {
@@ -19,8 +19,6 @@ struct IStorage {
   IStorage(UUIDManager *um) : _um{um}{}
   virtual ~IStorage() = default;
   virtual const std::string get_name() const = 0;
-
-//   inline void set_uuid_manager(UUIDManager *um) { _um = um; }
 
 protected:
   UUIDManager *_um;
