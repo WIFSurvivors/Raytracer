@@ -32,6 +32,7 @@
 #define LOG_TCP(msg) 		Log::get_instance().print(msg, Log::Level::Tcp);
 #define LOG_FRAME_DATA(msg)	Log::get_instance().print(msg, Log::Level::FrameData);
 #define LOG_NEW_LINE(msg) 	Log::get_instance().new_line();
+#define LOG_FILE_PATH       Log::get_instance().get_file_path()
 
 namespace fs = std::filesystem;
 
@@ -78,6 +79,7 @@ public:
   void init_file();
   inline void set_cout_log_level(Level l) { _log_level = l; }
   inline void set_file_log_level(Level l) { _file_level = l; }
+  inline const std::string& get_file_path() const { return _log_file_path; }
   void clear_buffer();
   void display_color_demo();
 };

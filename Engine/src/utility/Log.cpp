@@ -21,6 +21,7 @@ void Log::print(const std::string &msg, const Level &level) {
 
 void Log::init_file() {
   fs::path folder(ROOT_ABSOLUTE_PATH);
+  std::cout << "PATH?? " << folder.string() << "\n";
   fs::current_path(folder);
   if (!fs::is_directory(folder / "log")) {
     fs::create_directory("log");
@@ -28,7 +29,7 @@ void Log::init_file() {
   folder /= "log";
   auto file_name = get_current_time_ms_full() + "_LOG.txt";
   _log_file_path = (folder / file_name).string();
-  std::cout << std::format("!! LOG PATH: {}", _log_file_path) << "\n";
+  std::cout << std::format("LOG PATH: {}", LOG_FILE_PATH) << "\n";
 
   std::ofstream _logFile;
   _logFile.open(_log_file_path, std::ios::app);
@@ -73,6 +74,7 @@ void Log::write_to_buffer(const std::string &msg, const Level &level) {
 
 void Log::clear_buffer() {
   std::lock_guard<std::mutex> lock(_buffer_mutex);
+  if(_file_buffer.size() < 1) return;
 
   std::ofstream _logFile;
   _logFile.open(_log_file_path, std::ios::app);
