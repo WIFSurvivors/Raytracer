@@ -13,6 +13,7 @@
 #include "includes/tcp_server/Commands/GetComponentOptionsCommand.hpp"
 #include "includes/tcp_server/Commands/SetComponentOptionsCommand.hpp"
 #include "includes/tcp_server/Commands/CreateComponentCommand.hpp"
+#include "includes/tcp_server/Commands/GetLogPath.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/string_generator.hpp>
 #include <map>
@@ -85,6 +86,10 @@ TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
   else if (command_string.compare(CREATE_COMPONENT_COMMAND) == 0) {
     LOG_TCP("Create CreateComponentCommand");
     return std::make_unique<CreateComponentCommand>(_uuid, parameters[0]);
+  }
+  else if (command_string.compare(GET_LOG_PATH_COMMAND) == 0) {
+    LOG_TCP("Create GetLogPathCommand");
+    return std::make_unique<GetLogPath>();
   }
   else {
     LOG_ERROR("Command not found");

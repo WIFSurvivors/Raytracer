@@ -12,6 +12,7 @@ set(TCP_COMMANDS_HEADERS
     GetComponentsOptionsCommand.hpp
     SetComponentOptionsCommand.hpp
     CreateComponentCommand.hpp
+    GetLogPath.hpp
 )
 
 list(TRANSFORM TCP_COMMANDS_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")

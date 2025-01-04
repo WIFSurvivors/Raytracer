@@ -12,6 +12,7 @@ set(TCP_COMMANDS_SOURCES
     GetComponentOptionsCommand.cpp
     SetComponentOptionsCommand.cpp
     CreateComponentCommand.cpp
+    GetLogPath.cpp
 )
 list(TRANSFORM TCP_COMMANDS_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
 set(TCP_COMMANDS_SOURCES ${TCP_COMMANDS_SOURCES} PARENT_SCOPE)

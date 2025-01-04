@@ -91,4 +91,9 @@ public class EcsApi
     {
         return _client.Send(String.Format("SetComponentOptions {0} {1}", UUID, json));
     }
+
+    public string get_log_path()
+    {
+        return _client.Send("GetLogPath null");
+    }
 }
