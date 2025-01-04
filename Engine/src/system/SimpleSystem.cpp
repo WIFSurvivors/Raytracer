@@ -18,8 +18,15 @@ SimpleSystem::SimpleSystem(UUIDManager *um) : System{um} {
 }
 
 SimpleComponent *SimpleSystem::create_component(Entity *e, int value) {
-  LOG("-- create simple component");
+  LOG("-- create simple component (1)");
   auto c = create_component_base(e);
+  c->set_value(value);
+  return c;
+}
+
+SimpleComponent *SimpleSystem::create_component(Entity *e, uuid id, int value) {
+  LOG("-- create simple component (2)");
+  auto c = create_component_base(e, id);
   c->set_value(value);
   return c;
 }

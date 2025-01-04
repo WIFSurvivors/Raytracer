@@ -35,7 +35,8 @@
  *	  - Separate other functionality to the functions
  */
 
-RenderSystem::RenderSystem(UUIDManager *um, WindowManager *wm, CameraSystem *cs, LightSystem *ls)
+RenderSystem::RenderSystem(UUIDManager *um, WindowManager *wm, CameraSystem *cs,
+                           LightSystem *ls)
     : System{um}, _wm{wm}, _cs{cs}, _ls{ls} {
   LOG("created render system");
   init();
@@ -83,7 +84,8 @@ void RenderSystem::init() {
   _projU = glGetUniformLocation(compute->programID, "Projection");
   _viewU = glGetUniformLocation(compute->programID, "View");
 
-  _ls_active_light_sourcesU = glGetUniformLocation(compute->programID, "ls_active_light_sources");
+  _ls_active_light_sourcesU =
+      glGetUniformLocation(compute->programID, "ls_active_light_sources");
   _ls_positionsU = glGetUniformLocation(compute->programID, "ls_positions");
   _ls_directionsU = glGetUniformLocation(compute->programID, "ls_directions");
   _ls_colorsU = glGetUniformLocation(compute->programID, "ls_colors");
@@ -199,20 +201,20 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
 
   // === LIGHT ====
   if (_ls) {
-	auto size = static_cast<GLint>(_ls->get_components().size());
+    auto size = static_cast<GLint>(_ls->get_components().size());
     glUniform1i(_ls_active_light_sourcesU, size);
 
     auto positions = _ls->get_positions();
-	glUniform3fv(_ls_positionsU, size, &positions[0][0]);
-	
+    glUniform3fv(_ls_positionsU, size, &positions[0][0]);
+
     auto directions = _ls->get_directions();
-	glUniform3fv(_ls_directionsU, size, &directions[0][0]);
-	
+    glUniform3fv(_ls_directionsU, size, &directions[0][0]);
+
     auto colors = _ls->get_colors();
-	glUniform3fv(_ls_colorsU, size, &colors[0][0]);
-	
+    glUniform3fv(_ls_colorsU, size, &colors[0][0]);
+
     auto intensities = _ls->get_intensities();
-	glUniform1fv(_ls_intensitiesU, size, intensities.data());
+    glUniform1fv(_ls_intensitiesU, size, intensities.data());
   }
 
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
@@ -235,8 +237,15 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
 }
 
 RenderComponent *RenderSystem::create_component(Entity *e) {
-  LOG("create render component (a)");
+  LOG("create render component (a1)");
   auto c = create_component_base(e);
+  // TODO: add default parameters!
+  return c;
+}
+
+RenderComponent *RenderSystem::create_component(Entity *e, uuid id) {
+  LOG("create render component (a2)");
+  auto c = create_component_base(e, id);
   // TODO: add default parameters!
   return c;
 }
@@ -245,8 +254,25 @@ RenderComponent *
 RenderSystem::create_component(Entity *e,
                                const std::vector<glm::vec3> &vertices,
                                const std::vector<glm::vec2> &UV) {
-  LOG("create render component (b)");
+  LOG("create render component (b1)");
   auto c = create_component_base(e);
+  c->set_vertices(vertices);
+  c->set_uv(UV);
+
+  int programmID = 0;
+#if SHOW_UI
+  programmID = program->programID;
+#endif
+  c->init(programmID);
+  return c;
+}
+
+RenderComponent *
+RenderSystem::create_component(Entity *e, uuid id,
+                               const std::vector<glm::vec3> &vertices,
+                               const std::vector<glm::vec2> &UV) {
+  LOG("create render component (b2)");
+  auto c = create_component_base(e, id);
   c->set_vertices(vertices);
   c->set_uv(UV);
 

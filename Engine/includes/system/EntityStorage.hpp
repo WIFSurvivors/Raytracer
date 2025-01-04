@@ -14,8 +14,7 @@ struct Entity;
  * Scene that is creating that Entity. Most importantly, it maps UUIDs to
  * Entities Pointers.
  */
-// struct EntityStorage : public IStorage { // TBD -> Storage<Entity*>
-struct EntityStorage : public  Storage<Entity*> {
+struct EntityStorage : public Storage<Entity*> {
   using uuid = boost::uuids::uuid;
   
   EntityStorage(UUIDManager *um);
@@ -23,11 +22,22 @@ struct EntityStorage : public  Storage<Entity*> {
   inline virtual const std::string get_name() const final {
     return "Entity Storage";
   }
-
+  
   /**
    * A root entity doesn't have a parent and is used for generating new scenes.
    */
+  std::shared_ptr<Entity> create_root_entity(const std::string &name);
+
+  /**
+   * A root entity doesn't have a parent and is used when reading scene file (json).
+   */
   std::shared_ptr<Entity> create_root_entity(const std::string &name, uuid id);
+  
+  /**
+   * Create a entites with a given name and parent entity. UUID is generated automatically.
+   */
+  std::shared_ptr<Entity> create_entity(const std::string &name,
+                                        std::shared_ptr<Entity> parent);
 
   /**
    * Create a entites with a given uuid, name and parent entity.

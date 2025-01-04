@@ -35,8 +35,8 @@ struct UUIDManager {
   using uuid = boost::uuids::uuid;
   UUIDManager();
 
-  uuid create_uuid(IStorage *s);
-
+  bool add(uuid id, IStorage *s);
+  uuid create(IStorage *s);
   inline IStorage *get_storage(uuid id) { return _uuid_storage_mapping[id]; }
 
   /**

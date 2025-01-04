@@ -9,32 +9,61 @@ LightSystem::LightSystem(UUIDManager *um) : System{um} {
 }
 
 LightComponent *LightSystem::create_component(Entity *e) {
-  LOG("create camera component (a)");
+  LOG("create camera component (a1)");
   auto c = create_component_base(e);
   return c;
 }
 
-LightComponent *LightSystem::create_component(Entity *e,
-                                              float intensity) {
-  LOG("create camera component (b)");
+LightComponent *LightSystem::create_component(Entity *e, uuid id) {
+  LOG("create camera component (a2)");
+  auto c = create_component_base(e, id);
+  return c;
+}
+
+LightComponent *LightSystem::create_component(Entity *e, float intensity) {
+  LOG("create camera component (b1)");
   auto c = create_component_base(e);
   c->set_intensity(intensity);
   return c;
 }
 
-LightComponent *LightSystem::create_component(Entity *e,
-                                              glm::vec3 color) {
-  LOG("create camera component (c)");
+LightComponent *LightSystem::create_component(Entity *e, uuid id,
+                                              float intensity) {
+  LOG("create camera component (b2)");
+  auto c = create_component_base(e, id);
+  c->set_intensity(intensity);
+  return c;
+}
+
+LightComponent *LightSystem::create_component(Entity *e, glm::vec3 color) {
+  LOG("create camera component (c1)");
   auto c = create_component_base(e);
   c->set_color(color);
   return c;
 }
 
-LightComponent *LightSystem::create_component(Entity *e,
+LightComponent *LightSystem::create_component(Entity *e, uuid id,
+                                              glm::vec3 color) {
+  LOG("create camera component (c2)");
+  auto c = create_component_base(e, id);
+  c->set_color(color);
+  return c;
+}
+
+LightComponent *LightSystem::create_component(Entity *e, float intensity,
+                                              glm::vec3 color) {
+  LOG("create camera component (d1)");
+  auto c = create_component_base(e);
+  c->set_intensity(intensity);
+  c->set_color(color);
+  return c;
+}
+
+LightComponent *LightSystem::create_component(Entity *e, uuid id,
                                               float intensity,
                                               glm::vec3 color) {
-  LOG("create camera component (d)");
-  auto c = create_component_base(e);
+  LOG("create camera component (d2)");
+  auto c = create_component_base(e, id);
   c->set_intensity(intensity);
   c->set_color(color);
   return c;
