@@ -26,12 +26,16 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-set(ABSOLUTE_ROOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}")
-set(ABSOLUTE_SHADER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/shaders/")
-set(ABSOLUTE_ASSET_PATH "${CMAKE_CURRENT_SOURCE_DIR}/assets/")
-set(ABSOLUTE_LOG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/log/")
+set(ABSOLUTE_ROOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}" CACHE STRING "")
+set(RELATIVE_SHADER_PATH "./shaders/")
+set(ABSOLUTE_SHADER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/shaders/" CACHE STRING "")
+# set(ABSOLUTE_ASSET_PATH "./assets/")
+set(ABSOLUTE_ASSET_PATH "${CMAKE_CURRENT_SOURCE_DIR}/assets/" CACHE STRING "")
+# set(ABSOLUTE_LOG_PATH "./logs/")
+set(ABSOLUTE_LOG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/log/" CACHE STRING "")
+
 option(SHOW_UI "Show UI, which means WindowManager and RenderSystem are active" ON)
-set(FRAME_RATE_HZ 30)
+set(FRAME_RATE_HZ 30 CACHE STRING "Determines the upper-limit for the Frame Rate")
 
 FetchContent_Declare(
   glad
@@ -85,8 +89,6 @@ set(GLFW_INCLUDE_DIRS "${glfw_SOURCE_DIR}/include")
 set(GLM_INCLUDE_DIRS "${glm_SOURCE_DIR}")
 set(TINYBVH_INCLUDE_DIRS "${tinybvh_SOURCE_DIR}")
 
-message(STATUS "Show UI: ${SHOW_UI}")
-message(STATUS "Frame Rate (Hz): ${FRAME_RATE_HZ}")
 
 # Convert ENABLE_FEATURE to a numeric value
 set(SHOW_UI_NUM $<IF:$<BOOL:${SHOW_UI}>,1,0>)
@@ -96,6 +98,9 @@ add_compile_definitions(ROOT_ABSOLUTE_PATH="${ABSOLUTE_ROOT_PATH}")
 add_compile_definitions(SHADER_ABSOLUTE_PATH="${ABSOLUTE_SHADER_PATH}") 
 add_compile_definitions(ASSET_ABSOLUTE_PATH="${ABSOLUTE_ASSET_PATH}") 
 add_compile_definitions(LOG_ABSOLUTE_PATH="${ABSOLUTE_LOG_PATH}") 
+
+message(STATUS "Show UI: ${SHOW_UI}")
+message(STATUS "Frame Rate (Hz): ${FRAME_RATE_HZ}")
 
 # Add subdirectories
 add_subdirectory(includes)
