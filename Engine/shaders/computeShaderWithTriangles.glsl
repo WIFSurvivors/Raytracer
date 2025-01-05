@@ -13,10 +13,9 @@ uniform vec3 cameraPos;
 const int emitterCount_max = 10;
 uniform int ls_active_light_sources;
 uniform vec3[emitterCount_max] ls_positions;
-uniform vec3[emitterCount_max] ls_directions; // not really required because we only want spherical light sources :/ 
+uniform vec3[emitterCount_max] ls_directions; // not really required because we only want spherical light sources :/
 uniform vec3[emitterCount_max] ls_colors;
 uniform float[emitterCount_max] ls_intensities;
-
 
 /*********************************************************************************/
 //IMPORTANT
@@ -24,7 +23,6 @@ uniform int bounce;
 uniform int hittable;
 
 /*********************************************************************************/
-
 
 //STRUCTS
 
@@ -63,12 +61,10 @@ struct Triangle {
     vec3 v2;
 };
 
-
-struct Material{
-  vec3 color; 
-  float reflection;
+struct Material {
+    vec3 color;
+    float reflection;
 };
-
 
 layout(std430, binding = 5) buffer MaterialBuffer {
     Material materials[];
@@ -113,8 +109,7 @@ int bvh_stack[BVH_STACK_SIZE];
 int bvhStackTop = 0;
 
 /*********************************************************************************/
-// STACK OPERATIONS 
-
+// STACK OPERATIONS
 
 // Push a ray onto the stack
 void push(Ray ray) {
@@ -210,20 +205,6 @@ float intersectsTriangleAlt(int index, Ray r) {
     return -1.0;
 }
 
-bool isInShadowTriangleAlt(Ray r, int originObject, float distance) {
-    for (int i = 0; i < hittableCount; i++) {
-        if (i == originObject) {
-            continue;
-        }
-
-        float tShadow = intersectsTriangleAlt(triIdx[i], r);
-        if (tShadow > 0.0 && tShadow < distance) {
-            return true;
-        }
-    }
-
-    return false;
-}
 //https://gamedev.stackexchange.com/questions/18436/most-efficient-aabb-vs-ray-collision-algorithms
 float intersectsBoxWithDistance(vec3 bboxMin, vec3 bboxMax, Ray ray) {
     vec3 invDir = 1.0 / ray.direction;
@@ -257,6 +238,98 @@ bool intersectsBox(vec3 bboxMin, vec3 bboxMax, Ray ray) {
 
     return tNear <= tFar && tFar > 0.0;
 }
+struct bvh_return {
+    float t;
+    int index;
+};
+
+bvh_return processBVH(Ray currentRay) {
+    float t = 5e+10;
+    int index = -1;
+
+    pushb(0);
+    while (!bvh_isEmpty()) {
+        int currentNodeIndex = popb();
+        BVHNode currentNode = nodes[currentNodeIndex];
+        if (!intersectsBox(currentNode.bboxMin, currentNode.bboxMax, currentRay)) {
+            continue;
+        }
+
+        if (currentNode.isLeaf == 1) {
+            for (int i = 0; i < currentNode.count; ++i) {
+                int firstVertexIndex = triIdx[currentNode.start + i];
+                vec3 v00 = trivertex[firstVertexIndex * 3];
+                vec3 v11 = trivertex[firstVertexIndex * 3 + 1];
+                vec3 v22 = trivertex[firstVertexIndex * 3 + 2];
+                Triangle tri = Triangle(v00, v11, v22);
+
+                float temp = intersectsTriangle(tri, currentRay);
+                if (temp < t && temp > 0.0) {
+                    t = temp;
+                    index = currentNode.start + i;
+                }
+            }
+        } else {
+            //Calculate nearest BB
+            pushb(currentNode.leftChild);
+            pushb(currentNode.rightChild);
+        }
+    }
+    return bvh_return(t,index);
+}
+
+bool processBVH_Shadow( Ray currentRay, int originObject, float distance) {
+    float t = 5e+10;
+    int index = -1;
+
+    pushb(0);
+    while (!bvh_isEmpty()) {
+        int currentNodeIndex = popb();
+        BVHNode currentNode = nodes[currentNodeIndex];
+        if (!intersectsBox(currentNode.bboxMin, currentNode.bboxMax, currentRay)) {
+            continue;
+        }
+
+        if (currentNode.isLeaf == 1) {
+            for (int i = 0; i < currentNode.count; ++i) {
+				if(currentNode.start + i == originObject) continue;
+                int firstVertexIndex = triIdx[currentNode.start + i];
+                vec3 v00 = trivertex[firstVertexIndex * 3];
+                vec3 v11 = trivertex[firstVertexIndex * 3 + 1];
+                vec3 v22 = trivertex[firstVertexIndex * 3 + 2];
+                Triangle tri = Triangle(v00, v11, v22);
+
+                float temp = intersectsTriangle(tri, currentRay);
+                if (temp < t && temp > 0.0) {
+                    t = temp;
+                    index = currentNode.start + i;
+                }
+            }
+        } else {
+            //Calculate nearest BB
+            pushb(currentNode.leftChild);
+            pushb(currentNode.rightChild);
+        }
+    }
+
+  if(t > 0.0 && t < distance) return true;
+  return false;
+}
+
+bool isInShadowTriangleAlt(Ray r, int originObject, float distance) {
+    for (int i = 0; i < hittableCount; i++) {
+        if (i == originObject) {
+            continue;
+        }
+
+        float tShadow = intersectsTriangleAlt(triIdx[i], r);
+        if (tShadow > 0.0 && tShadow < distance) {
+            return true;
+        }
+    }
+
+    return false;
+}
 
 // Actual Raytrace Function
 vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
@@ -266,47 +339,10 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
     while (!isEmpty()) {
         Ray currentRay = pop();
         if (currentRay.depth >= MAX_RECURSION_DEPTH) continue;
-        float t = 5e+10;
-        int index = -1;
-
-        pushb(0);
-        while (!bvh_isEmpty()) {
-            int currentNodeIndex = popb();
-            BVHNode currentNode = nodes[currentNodeIndex];
-            if (!intersectsBox(currentNode.bboxMin, currentNode.bboxMax, currentRay)) {
-                continue;
-            }
-
-            if (currentNode.isLeaf == 1) {
-                for (int i = 0; i < currentNode.count; ++i) {
-                    int firstVertexIndex = triIdx[currentNode.start + i];
-                    vec3 v00 = trivertex[firstVertexIndex*3];
-                    vec3 v11 = trivertex[firstVertexIndex*3 + 1];
-                    vec3 v22 = trivertex[firstVertexIndex*3 + 2];
-                    Triangle tri = Triangle(v00, v11, v22);
-
-                    float temp = intersectsTriangle(tri, currentRay);
-                    if (temp < t && temp > 0.0) {
-                        t = temp;
-                        index = currentNode.start + i;
-                    }
-                }
-            } else {
-                //Calculate nearest BB
-                BVHNode leftChild = nodes[currentNode.leftChild];
-                BVHNode rightChild = nodes[currentNode.rightChild];
-                float distLeft = intersectsBoxWithDistance(leftChild.bboxMin, leftChild.bboxMax, currentRay);
-                float distRight = intersectsBoxWithDistance(rightChild.bboxMin, rightChild.bboxMax, currentRay);
-
-                if (distLeft < distRight) {
-                    if (currentNode.rightChild >= 0 && distRight < 1e10) pushb(currentNode.rightChild);
-                    if (currentNode.leftChild >= 0 && distLeft < 1e10) pushb(currentNode.leftChild);
-                } else {
-                    if (currentNode.leftChild >= 0 && distLeft < 1e10) pushb(currentNode.leftChild);
-                    if (currentNode.rightChild >= 0 && distRight < 1e10) pushb(currentNode.rightChild);
-                }
-            }
-        }
+		//bvh_return ret = bvh_return(5e+10,-1);
+		bvh_return ret = processBVH(currentRay);
+		float t = ret.t;
+		int index = ret.index;
 
         if (t >= 0.0 && index != -1) {
 
@@ -328,7 +364,8 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
                 float distanceToLight = length(light.position - sectionPoint);
                 float attenuation = 1.0 / (distanceToLight * distanceToLight);
 
-                bool isShadow = isInShadowTriangleAlt(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
+                //bool isShadow = isInShadowTriangleAlt(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
+                bool isShadow = processBVH_Shadow(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
 
                 if (!isShadow) {
                     float diffuse = max(dot(N, shadowRay), 0.0);
@@ -354,12 +391,12 @@ vec4 rayColor(Ray r) {
 
     // Light[1] lightSources;
     // vec3 position = vec3(0.0, 0.0 + 3 * tan(time), 5 + 3 * sin(time));
-    // lightSources[0] = Light(position, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 10.0);	
+    // lightSources[0] = Light(position, vec3(0.0, 0.0, 0.0), vec3(1.0, 1.0, 1.0), 10.0);
 
     Light[emitterCount_max] lightSources;
-    for(int i = 0; i < ls_active_light_sources; i++){
-      lightSources[i] = Light(ls_positions[i], ls_directions[i], ls_colors[i], ls_intensities[i]);
-	}
+    for (int i = 0; i < ls_active_light_sources; i++) {
+        lightSources[i] = Light(ls_positions[i], ls_directions[i], ls_colors[i], ls_intensities[i]);
+    }
 
     //return proccessRaySSBO(r, lightSources);
     return proccessRayBVHAlt(r, lightSources);
