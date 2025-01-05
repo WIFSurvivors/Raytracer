@@ -17,7 +17,15 @@ uniform vec3[emitterCount_max] ls_directions; // not really required because we 
 uniform vec3[emitterCount_max] ls_colors;
 uniform float[emitterCount_max] ls_intensities;
 
+
 /*********************************************************************************/
+//IMPORTANT
+uniform int bounce;
+uniform int hittable;
+
+/*********************************************************************************/
+
+
 //STRUCTS
 
 // struct BVHNode {
@@ -66,10 +74,6 @@ layout(std430, binding = 5) buffer MaterialBuffer {
     Material materials[];
 };
 
-layout(std430, binding = 3) buffer TriangleSSBO {
-    Triangle trianglesBuffer[];
-};
-
 layout(std430, binding = 4) buffer VertexBuffer {
     vec3 trivertex[];
 };
@@ -109,33 +113,8 @@ int bvh_stack[BVH_STACK_SIZE];
 int bvhStackTop = 0;
 
 /*********************************************************************************/
-Triangle[12] createCube(vec3 origin) {
-    return Triangle[12](
-        // Front face
-        Triangle(vec3(-1.0, -1.0, 1.0) + origin, vec3(1.0, -1.0, 1.0) + origin, vec3(1.0, 1.0, 1.0) + origin),
-        Triangle(vec3(-1.0, -1.0, 1.0) + origin, vec3(1.0, 1.0, 1.0) + origin, vec3(-1.0, 1.0, 1.0) + origin),
+// STACK OPERATIONS 
 
-        // Back face
-        Triangle(vec3(-1.0, -1.0, -1.0) + origin, vec3(-1.0, 1.0, -1.0) + origin, vec3(1.0, 1.0, -1.0) + origin),
-        Triangle(vec3(-1.0, -1.0, -1.0) + origin, vec3(1.0, 1.0, -1.0) + origin, vec3(1.0, -1.0, -1.0) + origin),
-
-        // Left face
-        Triangle(vec3(-1.0, -1.0, -1.0) + origin, vec3(-1.0, -1.0, 1.0) + origin, vec3(-1.0, 1.0, 1.0) + origin),
-        Triangle(vec3(-1.0, -1.0, -1.0) + origin, vec3(-1.0, 1.0, 1.0) + origin, vec3(-1.0, 1.0, -1.0) + origin),
-
-        // Right face
-        Triangle(vec3(1.0, -1.0, -1.0) + origin, vec3(1.0, 1.0, 1.0) + origin, vec3(1.0, -1.0, 1.0) + origin),
-        Triangle(vec3(1.0, -1.0, -1.0) + origin, vec3(1.0, 1.0, -1.0) + origin, vec3(1.0, 1.0, 1.0) + origin),
-
-        // Top face
-        Triangle(vec3(-1.0, 1.0, -1.0) + origin, vec3(-1.0, 1.0, 1.0) + origin, vec3(1.0, 1.0, 1.0) + origin),
-        Triangle(vec3(-1.0, 1.0, -1.0) + origin, vec3(1.0, 1.0, 1.0) + origin, vec3(1.0, 1.0, -1.0) + origin),
-
-        // Bottom face
-        Triangle(vec3(-1.0, -1.0, -1.0) + origin, vec3(1.0, -1.0, 1.0) + origin, vec3(-1.0, -1.0, 1.0) + origin),
-        Triangle(vec3(-1.0, -1.0, -1.0) + origin, vec3(1.0, -1.0, -1.0) + origin, vec3(1.0, -1.0, 1.0) + origin)
-    );
-}
 
 // Push a ray onto the stack
 void push(Ray ray) {
@@ -180,6 +159,7 @@ bool bvh_isEmpty() {
     return bvhStackTop == 0;
 }
 
+/*********************************************************************************/
 vec3 getTriangleCenter(Triangle tri) {
     return (tri.v0 + tri.v1 + tri.v2) / 3.0;
 }
@@ -230,34 +210,6 @@ float intersectsTriangleAlt(int index, Ray r) {
     return -1.0;
 }
 
-bool isInShadowTriangle(Triangle cube[hittableCount], Ray r, int originObject, float distance) {
-    for (int i = 0; i < hittableCount; i++) {
-        if (i == originObject) {
-            continue;
-        }
-        float tShadow = intersectsTriangle(cube[i], r);
-        if (tShadow > 0.0 && tShadow < distance) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
-bool isInShadowTriangle2(Ray r, int originObject, float distance) {
-    for (int i = 0; i < hittableCount; i++) {
-        if (i == originObject) {
-            continue;
-        }
-        float tShadow = intersectsTriangle(trianglesBuffer[i], r);
-        if (tShadow > 0.0 && tShadow < distance) {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 bool isInShadowTriangleAlt(Ray r, int originObject, float distance) {
     for (int i = 0; i < hittableCount; i++) {
         if (i == originObject) {
@@ -272,7 +224,7 @@ bool isInShadowTriangleAlt(Ray r, int originObject, float distance) {
 
     return false;
 }
-
+//https://gamedev.stackexchange.com/questions/18436/most-efficient-aabb-vs-ray-collision-algorithms
 float intersectsBoxWithDistance(vec3 bboxMin, vec3 bboxMax, Ray ray) {
     vec3 invDir = 1.0 / ray.direction;
     vec3 tMin = (bboxMin - ray.origin) * invDir;
@@ -306,50 +258,7 @@ bool intersectsBox(vec3 bboxMin, vec3 bboxMax, Ray ray) {
     return tNear <= tFar && tFar > 0.0;
 }
 
-float intersectBoxDistance(vec3 bboxMin, vec3 bboxMax, Ray ray) {
-    vec3 invDir = 1.0 / ray.direction; // Compute the inverse of the ray direction
-    vec3 tMin = (bboxMin - ray.origin) * invDir;
-    vec3 tMax = (bboxMax - ray.origin) * invDir;
-
-    vec3 t1 = min(tMin, tMax); // Entry points for the ray
-    vec3 t2 = max(tMin, tMax); // Exit points for the ray
-
-    float tNear = max(max(t1.x, t1.y), t1.z); // Closest intersection
-    float tFar = min(min(t2.x, t2.y), t2.z); // Furthest intersection
-
-    // Check if ray intersects the box
-    if (tNear > tFar || tFar < 0.0) {
-        return 1e10; // Return a large value if no intersection
-    }
-
-    return tNear > 0.0 ? tNear : tFar; // Return the valid intersection distance
-}
-
-
-vec3 getTriangleColor(int i) {
-    // Define a color palette for the 12 triangles
-    vec3 colors[12];
-    colors[0] = vec3(1.0, 0.0, 0.0); // Red
-    colors[1] = vec3(0.0, 1.0, 0.0); // Green
-    colors[2] = vec3(0.0, 0.0, 1.0); // Blue
-    colors[3] = vec3(1.0, 1.0, 0.0); // Yellow
-    colors[4] = vec3(1.0, 0.0, 1.0); // Magenta
-    colors[5] = vec3(0.0, 1.0, 1.0); // Cyan
-    colors[6] = vec3(0.5, 0.5, 0.5); // Gray
-    colors[7] = vec3(1.0, 0.5, 0.0); // Orange
-    colors[8] = vec3(0.5, 0.0, 1.0); // Purple
-    colors[9] = vec3(0.0, 0.5, 0.5); // Teal
-    colors[10] = vec3(0.5, 1.0, 0.0); // Lime
-    colors[11] = vec3(0.0, 0.0, 0.0); // Black
-
-    // Ensure the index is within bounds
-    if (i < 0 || i >= 12) {
-        return vec3(1.0, 1.0, 1.0); // Default color (white) for out-of-bounds index
-    }
-
-    return colors[i];
-}
-
+// Actual Raytrace Function
 vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
     vec3 color = vec3(0.0);
     vec3 reflec_accumulation = vec3(1.0); // Reflection strength
@@ -441,295 +350,7 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
     return vec4(color, 0.0);
 }
 
-vec4 proccessRayBVH(Ray r, Light emitter[emitterCount_max]) {
-    vec3 color = vec3(0.0);
-    vec3 reflec_accumulation = vec3(1.0); // Reflection strength
-
-    push(r);
-    while (!isEmpty()) {
-        Ray currentRay = pop();
-        if (currentRay.depth == -1) break;
-        // Terminate if the recursion depth is too high
-        if (currentRay.depth >= 5) continue;
-        float t = 5e+10;
-        uint index = 100000;
-
-        pushb(0); // Push Root node;
-        while (!bvh_isEmpty()) {
-            int currentNodeIndex = popb();
-            if (currentNodeIndex == -1) continue;
-            BVHNode currentNode = nodes[currentNodeIndex];
-            if (!intersectsBox(currentNode.bboxMin, currentNode.bboxMax, currentRay)) {
-                continue;
-            }
-
-            if (currentNode.isLeaf == 1) {
-                for (int i = 0; i < currentNode.count; i++) {
-                    uint primitivIndex = triIdx[currentNode.start + i];
-                    float temp = intersectsTriangleAlt(triIdx[currentNode.count + i], currentRay);
-                    if (temp < t && temp > 0.0) {
-                        t = temp;
-                        index = primitivIndex;
-                    }
-                }
-            } else {
-                if (currentNode.rightChild >= 0) pushb(currentNode.rightChild);
-                if (currentNode.leftChild >= 0) pushb(currentNode.leftChild);
-            }
-        }
-
-        if (t > 0.0 && index == 100000) {
-            // Intersection point & normal
-            vec3 sectionPoint = currentRay.origin + t * currentRay.direction;
-
-            uint v = triIdx[index] * 3;
-            vec3 edge1 = trivertex[v + 1] - trivertex[v];
-            vec3 edge2 = trivertex[v + 2] - trivertex[v];
-
-            // vec3 edge1 = trianglesBuffer[index].v1 - trianglesBuffer[index].v0;
-            // vec3 edge2 = trianglesBuffer[index].v2 - trianglesBuffer[index].v0;
-            vec3 N = normalize(cross(edge1, edge2));
-            vec3 localColor = vec3(0.0);
-            bool anyLightHit = false;
-
-            for (int lIndex = 0; lIndex < ls_active_light_sources; lIndex++) {
-                Light light = emitter[lIndex];
-
-                vec3 shadowRay = normalize(light.position - sectionPoint);
-                float distanceToLight = length(light.position - sectionPoint);
-                float attenuation = 1.0 / (distanceToLight * distanceToLight);
-
-                // bool isShadow = isInShadowTriangleAlt(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
-                bool isShadow = false;
-
-                if (!isShadow) {
-                    float diffuse = max(dot(N, shadowRay), 0.0);
-                    vec3 lighting = reflec_accumulation * light.color * vec3(0.4, 0.0, 0.2) * light.intensity * diffuse * attenuation;
-                    localColor += lighting;
-                    anyLightHit = true;
-                }
-            }
-
-            color += localColor;
-            if (anyLightHit && length(reflec_accumulation) > 0.01) {
-                vec3 reflecDirection = reflect(currentRay.direction, N);
-                reflec_accumulation *= 0.8;
-                Ray nextRay = Ray(sectionPoint + 0.01 * N, reflecDirection, currentRay.depth + 1);
-                push(nextRay);
-            }
-        }
-    }
-    return vec4(color, 1.0);
-}
-
-vec4 proccessRay1(Triangle cube[hittableCount], Ray r, Light emitter[emitterCount_max]) {
-    vec3 color = vec3(0.0);
-    vec3 reflec_accumulation = vec3(1.0); // Reflection strength
-
-    push(r);
-    while (!isEmpty()) {
-        Ray currentRay = pop();
-        if (currentRay.depth == -1) break;
-        // Terminate if the recursion depth is too high
-        if (currentRay.depth >= 5) continue;
-
-        float t = 5e+10;
-        int index = -1;
-
-        // Find the closest intersection
-        for (int i = 0; i < hittableCount; i++) {
-            float temp = intersectsTriangle(cube[i], currentRay);
-            if (temp < t && temp > 0.0) {
-                t = temp;
-                index = i;
-            }
-        }
-
-        if (t > 0.0 && index >= 0) {
-            // Intersection point & normal
-            vec3 sectionPoint = currentRay.origin + t * currentRay.direction;
-            vec3 edge1 = cube[index].v1 - cube[index].v0;
-            vec3 edge2 = cube[index].v2 - cube[index].v0;
-            vec3 N = normalize(cross(edge1, edge2));
-
-            // Accumulate light contribution from all light sources first
-            vec3 localColor = vec3(0.0);
-            bool anyLightHit = false;
-
-            for (int lIndex = 0; lIndex < ls_active_light_sources; lIndex++) {
-                Light light = emitter[lIndex];
-
-                // Shadow ray setup
-                vec3 shadowRay = normalize(light.position - sectionPoint);
-                float distanceToLight = length(light.position - sectionPoint);
-                float attenuation = 1.0 / (distanceToLight * distanceToLight);
-
-                bool isShadow = isInShadowTriangle(cube, Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
-
-                if (!isShadow) {
-                    float diffuse = max(dot(N, shadowRay), 0.0);
-                    vec3 lighting = reflec_accumulation * light.color * vec3(0.4, 0.0, 0.2) * light.intensity * diffuse * attenuation;
-                    localColor += lighting;
-                    anyLightHit = true;
-                }
-            }
-
-            color += localColor;
-
-            if (anyLightHit && length(reflec_accumulation) > 0.01) {
-                vec3 reflecDirection = reflect(currentRay.direction, N);
-                reflec_accumulation *= 0.8; // Reduce reflection strength
-                Ray nextRay = Ray(sectionPoint + 0.01 * N, reflecDirection, currentRay.depth + 1);
-                push(nextRay);
-            }
-        }
-    }
-
-    return vec4(color, 1.0);
-}
-
-vec4 proccessRaySSBO(Ray r, Light emitter[emitterCount_max]) {
-    vec3 color = vec3(0.0);
-    vec3 reflec_accumulation = vec3(1.0); // Reflection strength
-
-    push(r);
-    while (!isEmpty()) {
-        Ray currentRay = pop();
-        if (currentRay.depth == -1) break;
-        // Terminate if the recursion depth is too high
-        if (currentRay.depth >= 5) continue;
-
-        float t = 5e+10;
-        int index = -1;
-
-        // Find the closest intersection
-        for (int i = 0; i < hittableCount; i++) {
-            float temp = intersectsTriangle(trianglesBuffer[i], currentRay);
-            if (temp < t && temp > 0.0) {
-                t = temp;
-                index = i;
-            }
-        }
-
-        if (t > 0.0 && index >= 0) {
-            // Intersection point & normal
-            vec3 sectionPoint = currentRay.origin + t * currentRay.direction;
-            vec3 edge1 = trianglesBuffer[index].v1 - trianglesBuffer[index].v0;
-            vec3 edge2 = trianglesBuffer[index].v2 - trianglesBuffer[index].v0;
-            vec3 N = normalize(cross(edge1, edge2));
-
-            // Accumulate light contribution from all light sources first
-            vec3 localColor = vec3(0.0);
-            bool anyLightHit = false;
-
-            for (int lIndex = 0; lIndex < ls_active_light_sources; lIndex++) {
-                Light light = emitter[lIndex];
-
-                // Shadow ray setup
-                vec3 shadowRay = normalize(light.position - sectionPoint);
-                float distanceToLight = length(light.position - sectionPoint);
-                float attenuation = 1.0 / (distanceToLight * distanceToLight);
-
-                bool isShadow = isInShadowTriangle2(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
-
-                if (!isShadow) {
-                    float diffuse = max(dot(N, shadowRay), 0.0);
-                    vec3 lighting = reflec_accumulation * light.color * vec3(0.4, 0.0, 0.2) * light.intensity * diffuse * attenuation;
-                    localColor += lighting;
-                    anyLightHit = true;
-                }
-            }
-
-            color += localColor;
-
-            if (anyLightHit && length(reflec_accumulation) > 0.01) {
-                vec3 reflecDirection = reflect(currentRay.direction, N);
-                reflec_accumulation *= 0.8; // Reduce reflection strength
-                Ray nextRay = Ray(sectionPoint + 0.01 * N, reflecDirection, currentRay.depth + 1);
-                push(nextRay);
-            }
-        }
-    }
-
-    return vec4(color, 1.0);
-}
-
-vec4 CalcColorWithLightSourcesTriangle(Triangle cube[hittableCount], Ray r, Light emitter[emitterCount_max]) {
-    int MAXIMAL_BOUNCES = 3;
-    vec3 color = vec3(0.0);
-    vec3 reflec_accumulation = vec3(1.0); //Reflection in percent 100% red 100% green and blue
-
-    //For each bounce we want:
-    for (int bounce = 0; bounce <= MAXIMAL_BOUNCES; bounce++) {
-        float t = 1.0 / 0.0; // =)
-        int index = -1;
-        //To determine the first object we hit from camera to pixel;
-        for (int i = 0; i < hittableCount; i++) {
-            float temp = intersectsTriangle(cube[i], r);
-            if (temp < t && temp > 0.0) {
-                t = temp;
-                index = i;
-            }
-        }
-
-        //t = position of intersection if it exists.
-        if (t > 0.0 && index >= 0) {
-            // We calculate the intersection point;
-            vec3 sectionPoint = r.origin + t * r.direction; // intersection point on the object
-            // We calculate the normal of the intersection point;
-            //vec3 N = normalize(sectionPoint - getTriangleCenter(cube.triangles[index]));
-            vec3 edge1 = cube[index].v1 - cube[index].v0;
-            vec3 edge2 = cube[index].v2 - cube[index].v0;
-            vec3 N = normalize(cross(edge1, edge2));
-
-            // For each lightsource we want;
-            for (int lIndex = 0; lIndex < ls_active_light_sources; lIndex++) {
-                Light light = emitter[lIndex];
-                // To calculate the shadow ray to the light source;
-                vec3 shadowRay = normalize(light.position - sectionPoint);
-                //the distance to the light to the section point;
-                float distanceToLight = length(light.position - sectionPoint);
-                //The attentuation based on Intensity = 1 / d^2
-                float attenuation = 1.0 / (distanceToLight * distanceToLight); // Inverse square law
-                // Check if the shadow ray intersects other objects in its path
-                bool isShadow = isInShadowTriangle(cube, Ray(sectionPoint + 0.01, shadowRay, 0), index, distanceToLight);
-                // If no intersections, apply direct lighting (diffuse lighting)
-                if (!isShadow) {
-                    float diffuse = max(dot(N, shadowRay), 0.0); // Lambertian diffuse shading
-                    vec3 lighting = reflec_accumulation * light.color * vec3(0.4, 0.0, 0.2) * light.intensity * diffuse * attenuation;
-                    color += lighting;
-
-                    vec3 reflecDirection = reflect(r.direction, N);
-                    //sectionPoint = sectionPoint * reflecDirection;
-                    r = Ray(sectionPoint + 0.01, reflecDirection, 0);
-                    reflec_accumulation *= 0.8;
-                    if (length(reflec_accumulation) < 0.01) break; // If accumulation reach a certain point there should be no further reflections and the bounces should stop
-                }
-            }
-        }
-    }
-    return vec4(color, 1.0);
-}
-
 vec4 rayColor(Ray r) {
-    Triangle[12] trianglesCube1 = createCube(vec3(2.0, 0.0, 0.0));
-    Triangle[12] trianglesCube2 = createCube(vec3(-2.0, 0.0, 0.0));
-    Triangle[12] trianglesCube3 = createCube(vec3(0.0, -2.0, 0.0));
-    Triangle[36] merged;
-
-    // Copy triangles from the first cube
-    for (int i = 0; i < 12; i++) {
-        merged[i] = trianglesCube1[i];
-    }
-
-    // Copy triangles from the second cube
-    for (int i = 0; i < 12; i++) {
-        merged[i + 12] = trianglesCube2[i];
-    }
-
-    for (int i = 0; i < 12; i++) {
-        merged[i + 24] = trianglesCube3[i];
-    }
 
     // Light[1] lightSources;
     // vec3 position = vec3(0.0, 0.0 + 3 * tan(time), 5 + 3 * sin(time));
