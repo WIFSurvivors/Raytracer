@@ -262,7 +262,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
     auto intensities = _ls->get_intensities();
     glUniform1fv(_ls_intensitiesU, size, intensities.data());
   }
-  glUniform1i(_maximalBouncesU, 4);
+  glUniform1i(_maximalBouncesU, _bounces);
   glUniform1i(_maxHittableTrianglesU, 60);
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);

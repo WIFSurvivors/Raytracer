@@ -129,8 +129,8 @@ struct RenderComponent : public IComponent {
     _shader_asset->set_uuid(shader_uuid);
   }
 #if SHOW_UI
-  inline void get_vertices(std::vector<glm::vec3> &vertices) {
-    vertices = _vertices;
+  inline std::vector<glm::vec3> get_vertices() {
+    return _vertices;
   }
 #endif
   void set_from_json(boost::json::object obj) override;

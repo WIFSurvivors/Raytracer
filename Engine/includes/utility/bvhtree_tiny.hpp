@@ -139,7 +139,7 @@ struct TreeBuilder {
 
   std::vector<uint32_t> matIndx;
   int RenderEntities;
-  TreeBuilder(){};
+  TreeBuilder(){}
 
   void loadData(std::vector<ObjectData> objects) {
     if (objects.empty()) {
