@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <memory>
+#include <string>
 
 struct FrameSnapshot;
 
