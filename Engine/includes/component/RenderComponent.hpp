@@ -64,7 +64,7 @@ struct RenderComponent : public IComponent {
     for (const auto& vertex : loader.LoadedVertices) {
         vertices.push_back(glm::vec3(vertex.Position.x, vertex.Position.y, vertex.Position.z));
     }
-    set_vertices(vertices);
+    //set_vertices(vertices);
     for(const auto &ver: vertices) {
       std::cout << ver.x << " " << ver.y << " " << ver.z << std::endl;
     }
