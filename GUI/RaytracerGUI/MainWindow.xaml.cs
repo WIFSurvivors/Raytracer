@@ -105,7 +105,7 @@ namespace RaytracerGUI
                             try
                             {
                                 // send JSON path
-                                string pathSentStatus = _ecsApi.post_ScenePath(filePath);
+                                string pathSentStatus = _ecsApi.json_import('"' + filePath + '"');
                                 tbxLog.AppendText("pathSentStatus : " + pathSentStatus);
 
 
