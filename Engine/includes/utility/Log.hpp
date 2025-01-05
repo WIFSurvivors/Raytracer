@@ -74,7 +74,7 @@ private:
   Level _log_level = Level::Tcp;
   Level _file_level = Level::Tcp;
 
-  std::string _log_file_path;
+  fs::path _log_file_path;
   std::deque<std::string> _file_buffer;
   
   std::string get_current_time_ms_full();
@@ -92,7 +92,7 @@ public:
   void init_file();
   inline void set_cout_log_level(Level l) { _log_level = l; }
   inline void set_file_log_level(Level l) { _file_level = l; }
-  inline const std::string& get_file_path() const { return _log_file_path; }
+  inline const std::string get_file_path() const { return fs::absolute(_log_file_path).string(); }
   void clear_buffer();
   void display_color_demo();
 };
