@@ -155,26 +155,32 @@ namespace RaytracerGUI
                 {
                     case "btnLeft":
                         sldX.Value -= 10;
+                        SliderPreviewMouseUp(sldX, null);
                         break;
 
                     case "btnRight":
                         sldX.Value += 10;
+                        SliderPreviewMouseUp(sldX, null);
                         break;
 
                     case "btnUp":
                         sldY.Value += 10;
+                        SliderPreviewMouseUp(sldY, null);
                         break;
 
                     case "btnDown":
                         sldY.Value -= 10;
+                        SliderPreviewMouseUp(sldY, null);
                         break;
 
                     case "btnBack":
                         sldZ.Value -= 10;
+                        SliderPreviewMouseUp(sldZ, null);
                         break;
 
                     case "btnForward":
                         sldZ.Value += 10;
+                        SliderPreviewMouseUp(sldZ, null);
                         break;
 
                     case "btnRotate":
@@ -183,26 +189,32 @@ namespace RaytracerGUI
                         {
                             case "xpos":
                                 sldRx.Value += 10;
+                                SliderPreviewMouseUp(sldRx, null);
                                 break;
 
                             case "xneg":
                                 sldRx.Value -= 10;
+                                SliderPreviewMouseUp(sldRx, null);
                                 break;
 
                             case "ypos":
                                 sldRy.Value += 10;
+                                SliderPreviewMouseUp(sldRy, null);
                                 break;
 
                             case "yneg":
                                 sldRy.Value -= 10;
+                                SliderPreviewMouseUp(sldRy, null);
                                 break;
 
                             case "zpos":
                                 sldRz.Value += 10;
+                                SliderPreviewMouseUp(sldRz, null);
                                 break;
 
                             case "zneg":
                                 sldRz.Value -= 10;
+                                SliderPreviewMouseUp(sldRz, null);
                                 break;
                         }
 
@@ -402,8 +414,8 @@ namespace RaytracerGUI
 
             if (changedSlider != null)
             { 
-                changedSlider.Minimum = changedSlider.Value - 10;
-                changedSlider.Maximum = changedSlider.Value + 10;
+                //changedSlider.Minimum = changedSlider.Value - 10;
+                //changedSlider.Maximum = changedSlider.Value + 10;
 
                 string slider = changedSlider.Name;
 
@@ -490,7 +502,7 @@ namespace RaytracerGUI
 
 
         }
-        private void btnConnect_Click(object sender, RoutedEventArgs e)
+        private async void btnConnect_Click(object sender, RoutedEventArgs e)
         {
             Button? clickedButton = sender as Button;
 
@@ -499,6 +511,7 @@ namespace RaytracerGUI
                 try
                 {
                     StartOtherExe("../../../../../Engine/build/Engine.exe");
+                    await Task.Delay(500);
                     _ecsApi = new EcsApi("127.0.0.1", 51234);
 
                     // initial root-request
