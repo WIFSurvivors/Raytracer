@@ -10,18 +10,32 @@
 #include <vector>
 #include <format>
 
-#ifndef SHADER_ABSOLUTE_PATH
-#define SHADER_ABSOLUTE_PATH "shaders/"
+#ifndef SHADER_RELATIVE_PATH
+#define SHADER_RELATIVE_PATH "shaders"
 #endif
 
-#ifndef ASSET_ABSOLUTE_PATH
-#define ASSET_ABSOLUTE_PATH "assets/"
+#ifndef ASSET_RELATIVE_PATH
+#define ASSET_RELATIVE_PATH "assets"
 #endif
 
-// abs -> UI
-// rel -> big json
+inline const fs::path get_relative_shader_folder_path(){
+  return fs::path(fs::path(".") / SHADER_RELATIVE_PATH);
+}
 
-struct AssetManager : public Storage<std::filesystem::path> {
+inline const fs::path get_absolute_shader_folder_path(){
+  return fs::absolute(fs::path(get_relative_shader_folder_path()));
+}
+
+inline const fs::path get_relative_asset_folder_path(){
+  return fs::path(fs::path(".") / ASSET_RELATIVE_PATH);
+}
+
+inline const fs::path get_absolute_asset_folder_path(){
+  return fs::absolute(fs::path(get_relative_asset_folder_path()));
+}
+
+namespace fs = std::filesystem;
+struct AssetManager : public Storage<fs::path> {
   const std::string get_name() const override { return "Asset Manager"; }
 
   AssetManager(UUIDManager *um) : Storage(um) {
@@ -31,19 +45,15 @@ struct AssetManager : public Storage<std::filesystem::path> {
   //   enum class Type { Shader, Material, Object, Unknown }; // maybe do this
 
   struct Asset {
-    Asset(AssetManager *am, std::filesystem::path path) : _am{am} {
-      set_path(path);
-    }
+    Asset(AssetManager *am, fs::path path) : _am{am} { set_path(path); }
 
-    Asset(AssetManager *am, uuid id, std::filesystem::path path) : _am{am} {
-      set(id, path);
-    }
+    Asset(AssetManager *am, uuid id, fs::path path) : _am{am} { set(id, path); }
 
     // Type type;
     uuid _uuid = boost::uuids::nil_uuid();
-    std::filesystem::path _path;
+    fs::path _path;
 
-    void set(uuid id, std::filesystem::path path) { _am->set(id, path); }
+    void set(uuid id, fs::path path) { _am->set(id, path); }
 
     bool set_uuid(uuid id) {
       // check if uuid is known on manager
@@ -57,10 +67,10 @@ struct AssetManager : public Storage<std::filesystem::path> {
       return true;
     }
 
-	/**
-	 * 
-	 */
-    void set_path(std::filesystem::path path) {
+    /**
+     *
+     */
+    void set_path(fs::path path) {
       auto oid = _am->get(path);
       if (oid.has_value()) { // path already exists
         _uuid = oid.value();
@@ -71,7 +81,7 @@ struct AssetManager : public Storage<std::filesystem::path> {
       _path = path;
     }
 
-    std::filesystem::path get_path() const { return _path; }
+    fs::path get_path() const { return _path; }
 
     // set_uuid()
     // -> _am->get_instance().get_uuid() -> true: good
@@ -87,24 +97,27 @@ struct AssetManager : public Storage<std::filesystem::path> {
   };
 
   struct DefaultAssets {
-    DefaultAssets(AssetManager *am) : shader(am, std::filesystem::path(SHADER_ABSOLUTE_PATH) / "default_shader"),
-                                      mtl(am, std::filesystem::path(ASSET_ABSOLUTE_PATH) / "default.mtl"),
-                                      obj(am, std::filesystem::path(ASSET_ABSOLUTE_PATH) / "default.obj") {}
-     Asset shader;
-     Asset mtl;
-     Asset obj;
+    DefaultAssets(AssetManager *am)
+        : shader(am, get_relative_shader_folder_path() /
+                         "default_shader"),
+          mtl(am, get_relative_asset_folder_path() / "default.mtl"),
+          obj(am, get_relative_asset_folder_path() / "default.obj") {}
+    Asset shader;
+    Asset mtl;
+    Asset obj;
   };
 
-  inline void set(uuid id, std::filesystem::path path) {
+  inline void set(uuid id, fs::path path) {
     auto opath = get(id);
     if (opath.has_value()) {
-      LOG_WARN(std::format("ID \"{}\" already exists!! This can result in inconsistent behaviour!!",
+      LOG_WARN(std::format("ID \"{}\" already exists!! This can result in "
+                           "inconsistent behaviour!!",
                            boost::uuids::to_string(id)));
     }
     _storage[id] = path;
   }
 
-  inline uuid create(std::filesystem::path path) {
+  inline uuid create(fs::path path) {
     auto id = _um->create(this);
     LOG(std::format("added new path \"{}\" with UUID \"{}\"", path.string(),
                     boost::uuids::to_string(id)));

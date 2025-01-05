@@ -26,14 +26,9 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(googletest)
 
-# set(ABSOLUTE_ROOT_PATH "${CMAKE_CURRENT_SOURCE_DIR}" CACHE STRING "")
-set(ABSOLUTE_ROOT_PATH "." CACHE STRING "")
-set(RELATIVE_SHADER_PATH "./shaders/" CACHE STRING "")
-set(ABSOLUTE_SHADER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/shaders/" CACHE STRING "")
-set(RELATIVE_ASSET_PATH "./assets/" CACHE STRING "")
-set(ABSOLUTE_ASSET_PATH "${CMAKE_CURRENT_SOURCE_DIR}/assets/" CACHE STRING "")
-set(RELATIVE_LOG_PATH "./logs/" CACHE STRING "")
-set(ABSOLUTE_LOG_PATH "${CMAKE_CURRENT_SOURCE_DIR}/logs/" CACHE STRING "")
+set(RELATIVE_SHADER_PATH "./shaders/" CACHE STRING "Relative path to shader scripts")
+set(RELATIVE_ASSET_PATH "./assets/" CACHE STRING "Relative path to assets (obj and mat files)")
+set(RELATIVE_LOG_PATH "./logs/" CACHE STRING "Relative path to logs. This folder is created at app start")
 
 option(SHOW_UI "Show UI, which means WindowManager and RenderSystem are active" ON)
 set(FRAME_RATE_HZ 30 CACHE STRING "Determines the upper-limit for the Frame Rate")
@@ -97,22 +92,15 @@ add_compile_definitions(SHOW_UI=${SHOW_UI_NUM})
 add_compile_definitions(FRAME_RATE_HZ=${FRAME_RATE_HZ})
 add_compile_definitions(ROOT_ABSOLUTE_PATH="${ABSOLUTE_ROOT_PATH}") 
 
-add_compile_definitions(SHADER_ABSOLUTE_PATH="${ABSOLUTE_SHADER_PATH}") 
 add_compile_definitions(SHADER_RELATIVE_PATH="${RELATIVE_SHADER_PATH}") 
-add_compile_definitions(ASSET_ABSOLUTE_PATH="${ABSOLUTE_ASSET_PATH}") 
 add_compile_definitions(ASSET_RELATIVE_PATH="${RELATIVE_ASSET_PATH}") 
-add_compile_definitions(LOG_ABSOLUTE_PATH="${ABSOLUTE_LOG_PATH}") 
 add_compile_definitions(LOG_RELATIVE_PATH="${RELATIVE_LOG_PATH}") 
 
 message(STATUS "Show UI: ${SHOW_UI}")
 message(STATUS "Frame Rate (Hz): ${FRAME_RATE_HZ}")
 
-message(STATUS "Root Path abs: ${ABSOLUTE_ROOT_PATH}")
-message(STATUS "Log Path abs: ${ABSOLUTE_LOG_PATH}")
 message(STATUS "Log Path (relative): ${RELATIVE_LOG_PATH}")
-message(STATUS "Asset Path abs: ${ABSOLUTE_ASSET_PATH}")
 message(STATUS "Asset Path (relative): ${RELATIVE_ASSET_PATH}")
-message(STATUS "Shader Path abs: ${ABSOLUTE_SHADER_PATH}")
 message(STATUS "Shader Path (relative): ${RELATIVE_SHADER_PATH}")
 
 # Add subdirectories
@@ -133,3 +121,29 @@ target_link_libraries(${PROJECT_NAME} PUBLIC  glad glfw glm::glm Boost::asio Boo
 if (WIN32)
   target_link_libraries(${PROJECT_NAME} PUBLIC ws2_32 mswsock)
 endif()
+
+# Specify the source and destination directories
+set(DEV_ASSETS_DIR "${CMAKE_SOURCE_DIR}/assets")
+set(DEV_SHADER_DIR "${CMAKE_SOURCE_DIR}/shaders")
+
+# get_target_property(EXECUTABLE_PATH ${PROJECT_NAME} RUNTIME_OUTPUT_DIRECTORY)
+message(STATUS "Executable will be placed at: ${CMAKE_BINARY_DIR}")
+
+# Define the custom command to copy folders
+add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${DEV_ASSETS_DIR}"
+        "${CMAKE_BINARY_DIR}/assets"
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+		"${DEV_SHADER_DIR}"
+		"${CMAKE_BINARY_DIR}/shaders"
+    COMMAND ${CMAKE_COMMAND} -E echo "Copy operation completed!"
+    COMMENT "Copying asset folder to the build directory"
+)
+
+# Ensure the command runs for both build systems (make/ninja/MSVC)
+add_custom_target(copy_resources ALL
+    DEPENDS ${PROJECT_NAME}
+)
