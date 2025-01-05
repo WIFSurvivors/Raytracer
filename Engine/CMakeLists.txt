@@ -81,7 +81,6 @@ endif()
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 	add_compile_options(-g)
-	add_compile_options(-fimplicit-constexpr)
 endif()
 
 

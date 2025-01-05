@@ -4,10 +4,6 @@
 #include <exception>
 #include <string>
 
-// #ifndef SHOW_UI
-// #define SHOW_UI
-// #endif
-
 int main() {
   Log::get_instance().set_cout_log_level(Log::Level::Tcp);
   Log::get_instance().set_file_log_level(Log::Level::Tcp);

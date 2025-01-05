@@ -29,7 +29,7 @@ void Log::init_file() {
   }
   folder /= "log";
   auto file_name = get_current_time_ms_full() + "_LOG.txt";
-  _log_file_path = (folder / file_name).string();
+  _log_file_path = folder / file_name;
   std::cout << std::format("LOG PATH: {}", LOG_FILE_PATH) << "\n";
 
   std::ofstream _logFile;
@@ -135,11 +135,8 @@ std::string Log::reset_color() {
 
 void Log::display_color_demo() {
   LOG(ROOT_ABSOLUTE_PATH);
-  LOG(SHADER_ABSOLUTE_PATH);
   LOG(SHADER_RELATIVE_PATH);
-  LOG(ASSET_ABSOLUTE_PATH);
   LOG(ASSET_RELATIVE_PATH);
-  LOG(LOG_ABSOLUTE_PATH);
   LOG(LOG_RELATIVE_PATH);
 
   LOG("Hello :3");
