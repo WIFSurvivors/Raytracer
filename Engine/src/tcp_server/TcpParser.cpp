@@ -1,7 +1,7 @@
 #include "includes/tcp_server/TcpParser.hpp"
 #include "includes/utility/Log.hpp"
 #include <sstream>
-
+#define SEPARATOR ";"
 TcpParser::TcpParser() {}
 
 std::unique_ptr<ParsedTcpCommand> TcpParser::parse(std::string msg) {
@@ -10,10 +10,11 @@ std::unique_ptr<ParsedTcpCommand> TcpParser::parse(std::string msg) {
   std::string uuid;
   std::vector<std::string> parameters;
   std::istringstream iss(msg);
-  iss >> command >> uuid;
-  std::string parameter;
-  while (iss >> parameter) {
-    parameters.push_back(parameter);
+  std::string token;
+  std::getline(iss, command, ';');
+  std::getline(iss, uuid, ';');
+  while (std::getline(iss, token, ';')) {
+    parameters.push_back(token);
   }
   return std::make_unique<ParsedTcpCommand>(command, uuid, parameters);
 }
