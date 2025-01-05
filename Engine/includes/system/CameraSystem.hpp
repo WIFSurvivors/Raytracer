@@ -22,7 +22,7 @@ struct CameraSystem : public System<CameraComponent> {
 
   void sample_update_move_main_camera(float dt);
 
-  inline virtual const std::string get_name() const final {
+  inline const std::string get_name() const final {
     return "Camera System";
   }
 

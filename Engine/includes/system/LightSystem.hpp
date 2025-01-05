@@ -24,7 +24,7 @@ struct LightSystem : public System<LightComponent> {
   LightComponent *create_component(Entity *e, uuid id, float intensity,
                                    glm::vec3 color);
 
-  inline virtual const std::string get_name() const final {
+  inline const std::string get_name() const final {
     return "Light System";
   }
 

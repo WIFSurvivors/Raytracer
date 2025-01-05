@@ -74,7 +74,7 @@ struct RenderSystem : public System<RenderComponent> {
   inline void set_bounces(int bounce) { _bounces = bounce; }
   inline int get_bounces() const { return _bounces; }
 
-  inline virtual const std::string get_name() const final {
+  inline const std::string get_name() const final {
     return "Render System";
   }
 
