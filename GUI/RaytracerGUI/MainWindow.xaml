@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RaytracerGUI"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="MainWindow" 
         Height="720" Width="1280"
@@ -59,10 +60,18 @@ Closing="Window_Closing">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" MinHeight="256" MaxHeight="512"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="40"/>
                     </Grid.RowDefinitions>
 
                     <TreeView Name="trvEntities" Grid.Row="0" SelectedItemChanged="trvEntities_SelectedItemChanged"/>
                     <TreeView Name="trvComponents" Grid.Row="1" SelectedItemChanged="trvComponents_SelectedItemChanged"/>
+                    <ComboBox Grid.Row="2" Name="cmbAddComponent" Margin="5" VerticalAlignment="Center" SelectionChanged="cmbAddComponent_SelectionChanged">
+                        <ComboBoxItem Content="Add Component here" IsEnabled="False" IsSelected="True" />
+                        <ComboBoxItem Content="Add Render" Tag="RenderMethod" />
+                        <ComboBoxItem Content="Add Light" Tag="LightMethod" />
+                        <ComboBoxItem Content="Add Camera" Tag="CameraMethod" />
+                    </ComboBox>
+
 
                 </Grid>
 
@@ -70,11 +79,21 @@ Closing="Window_Closing">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" MinHeight="256" MaxHeight="512"/>
                         <RowDefinition Height="*"/>
+                        <RowDefinition Height="40"/>
                     </Grid.RowDefinitions>
 
                     <TreeView Name="trvEntitiesOptions" Grid.Row="0" SelectedItemChanged="trvEntitiesOptions_SelectedItemChanged"/>
                     <TreeView Name="trvComponentsOptions" Grid.Row="1" SelectedItemChanged="trvComponentsOptions_SelectedItemChanged"/>
 
+                    <StackPanel Orientation="Horizontal" Grid.Row="2" VerticalAlignment="Center" Margin="5">
+                        <TextBlock Text="Bounces:" VerticalAlignment="Center" FontWeight="Bold" Foreground="White" Margin="0,0,5,0"/>
+                        <xctk:IntegerUpDown Name="nudBounces" 
+                            Minimum="0" 
+                            Maximum="20" 
+                            Value="4" 
+                            Width="40"
+                            HorizontalAlignment="Right"/>
+                    </StackPanel>
                 </Grid>
             </Grid>
         </Grid>

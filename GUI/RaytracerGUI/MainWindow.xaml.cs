@@ -516,6 +516,7 @@ namespace RaytracerGUI
 
                     // initial root-request
                     ReceivedEcsJsonString = _ecsApi.get_root();
+                    //TODO set Bounces from ECS
                     tbxLog.AppendText(ReceivedEcsJsonString);
                     connection = true; // connection was successful 
 
@@ -758,6 +759,88 @@ namespace RaytracerGUI
         private void trvComponentsOptions_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
            
+        }
+
+
+        private void cmbAddComponent_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cmbAddComponent.SelectedItem is ComboBoxItem selectedItem && selectedItem.Tag != null)
+            {
+                string methodTag = selectedItem.Tag.ToString();
+                switch (methodTag)
+                {
+                    case "RenderMethod":
+                        AddRenderComponent();
+                        break;
+                    case "LightMethod":
+                        AddLightComponent();
+                        break;
+                    case "CameraMethod":
+                        AddCameraComponent();
+                        break;
+                    case "NoMethod":
+                        break;
+                }
+                // Reset the ComboBox
+                cmbAddComponent.SelectedIndex = -1; // Clear selection
+                cmbAddComponent.Text = "Select Component";
+
+            }
+        }
+
+        
+        private void AddRenderComponent()
+        {
+            if (_ecsApi != null)
+            {
+
+                try
+                {
+                    // TODO: get the parent Entity to send with command 
+                    //string pathSentStatus = _ecsApi.create_component( type siehe createComponent command im if statement);
+                    tbxLog.AppendText("Render Component Added!\n");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    //TODO
+                }
+            }
+        }
+
+        private void AddLightComponent()
+        {
+            if (_ecsApi != null)
+            {
+
+                try
+                {
+                    // TODO: get the parent Entity to send with command 
+                    //string pathSentStatus = _ecsApi.create_component( type siehe createComponent command im if statement);
+                    tbxLog.AppendText("Render Component Added!\n");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    //TODO
+                }
+            }
+        }
+
+        private void AddCameraComponent()
+        {
+            if (_ecsApi != null)
+            {
+
+                try
+                {
+                    // TODO: get the parent Entity to send with command 
+                    //string pathSentStatus = _ecsApi.create_component( type siehe createComponent command im if statement);
+                    tbxLog.AppendText("Render Component Added!\n");
+                }
+                catch (InvalidOperationException ex)
+                {
+                    //TODO
+                }
+            }
         }
 
 
