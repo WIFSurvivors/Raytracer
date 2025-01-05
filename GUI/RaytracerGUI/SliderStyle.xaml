@@ -2,37 +2,42 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <!-- Slider Style -->
-    <Style TargetType="Slider" x:Key="SecondarySliderStyle">
-        <Setter Property="Template">
+    <Style TargetType="Slider" x:Key="PrimarySliderStyle">
+        <Setter Property="Width" Value="256"/>
+
+            <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Slider">
                     <Grid>
-                        <!-- Background track -->
-                        <Rectangle x:Name="TrackBackground" 
-                               Fill="{StaticResource WindowBackgroundColor}" 
-                               Stroke="Transparent" 
-                               StrokeThickness="0" 
-                               RadiusX="8" RadiusY="8"
-                               Height="10"
-                               VerticalAlignment="Center" />
+                        <!-- Styled Background Track -->
+                        <Border x:Name="TrackBackground" 
+                                Background="{StaticResource WindowBackgroundColor}" 
+                                BorderBrush="Transparent" 
+                                CornerRadius="8" 
+                                Height="16" 
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center" />
 
-                        <!-- Track (binds slider behavior) -->
-                        <Track x:Name="PART_Track" Grid.Row="0" Focusable="False" Height="10" VerticalAlignment="Center">
-                            <!-- Progress track -->
+                        
+                        <!-- Slider Track -->
+                        <Track x:Name="PART_Track" Focusable="False">
+                            <!-- Decrease Repeat Button -->
                             <Track.DecreaseRepeatButton>
-                                <RepeatButton Command="Slider.DecreaseLarge" Style="{x:Null}" />
+                                <RepeatButton Command="Slider.DecreaseLarge" 
+                                              Style="{x:Null}" 
+                                              Background="{StaticResource ComponentBackgroundColor}" />
                             </Track.DecreaseRepeatButton>
 
+                            <!-- Thumb -->
                             <Track.Thumb>
-                                <!-- Thumb (slider handle) -->
-                                <Thumb x:Name="Thumb" Width="8" Height="16" VerticalAlignment="Center">
+                                <Thumb x:Name="Thumb" Width="20" Height="16">
                                     <Thumb.Template>
                                         <ControlTemplate TargetType="Thumb">
                                             <Border x:Name="ThumbBorder" 
-                                                Background="White" 
-                                                BorderBrush="White" 
-                                                BorderThickness="2" 
-                                                CornerRadius="4">
+                                                    Background="White" 
+                                                    BorderBrush="White" 
+                                                    BorderThickness="2" 
+                                                    CornerRadius="4">
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
@@ -45,29 +50,50 @@
                                 </Thumb>
                             </Track.Thumb>
 
-                            <Track.IncreaseRepeatButton>
-                                <RepeatButton Command="Slider.IncreaseLarge" Style="{x:Null}" />
-                            </Track.IncreaseRepeatButton>
-                        </Track>
 
-                        <!-- Progress track overlay -->
-                        <Rectangle x:Name="TrackFill" 
-                               Fill="{StaticResource ComponentBackgroundColor}" 
-                               Stroke="Transparent" 
-                               StrokeThickness="0" 
-                               RadiusX="8" RadiusY="8"
-                               Height="10"
-                               HorizontalAlignment="Left"
-                               VerticalAlignment="Center"
-                               Width="{Binding Path=Value, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource SliderValueToWidthConverter}}" />
+
+                            <Track.IncreaseRepeatButton>
+                                <RepeatButton Command="Slider.IncreaseLarge" 
+                                     Background="{StaticResource ComponentBackgroundColor}">
+                                    <RepeatButton.Style>
+                                        <Style TargetType="RepeatButton">
+                                            <Style.Setters>
+                                                <!-- Set default background color here -->
+                                                <Setter Property="Background" Value="{StaticResource ComponentBackgroundColor}" />
+                                            </Style.Setters>
+                                            <Style.Triggers>
+                                                <!-- Change background on hover -->
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="{StaticResource ComponentPrimaryColor}" />
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </RepeatButton.Style>
+                                </RepeatButton>
+                            </Track.IncreaseRepeatButton>
+
+
+
+
+                            <Track.Style>
+                                <Style TargetType="Track">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                           
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Track.Style>
+                            </Track>
                     </Grid>
 
+                    <!-- Template Triggers -->
                     <ControlTemplate.Triggers>
-                        <!-- Change colors on hover -->
+                        <!-- Change colors on hover --><!--
                         <Trigger Property="IsMouseOver" Value="True">
-                            <Setter TargetName="TrackBackground" Property="Fill" Value="{StaticResource ComponentPrimaryColor}" />
-                            <Setter TargetName="TrackFill" Property="Fill" Value="{StaticResource ComponentPrimaryColor}" />
+                            <Setter TargetName="TrackBackground" Property="Background" Value="{StaticResource ComponentPrimaryColor}" />
                         </Trigger>
+                        -->
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
             </Setter.Value>
