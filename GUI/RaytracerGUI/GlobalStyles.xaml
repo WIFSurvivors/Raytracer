@@ -160,7 +160,7 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
+
 
     <!-- Style for Sliders -->
     <Style TargetType="Slider" x:Key="PrimarySliderStyle">
@@ -212,6 +212,8 @@
             </Setter.Value>
         </Setter>
     </Style>
+
+
 
     <!-- Style for Label -->
     <Style TargetType="Label">
