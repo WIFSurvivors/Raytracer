@@ -1,21 +1,24 @@
 #pragma once
 #include <map>
 #include <string>
-#include <iostream>
-#include <vector>
-#include <memory>
-#include <cstdint>
 #include <boost/uuid/uuid.hpp>
-class Engine;
-typedef boost::uuids::uuid uuid__;
+#include <memory>
+#include <vector>
+
+struct Engine;
+
 struct TcpCommand {
+  using uuid = boost::uuids::uuid;
+  
   std::vector<std::string> parameters;
   TcpCommand() = default;
-  explicit TcpCommand(uuid__ uuid) : _uuid(uuid) {}
+  explicit TcpCommand(uuid id) : _uuid(id) {}
   virtual ~TcpCommand() = default;
-  virtual std::string execute(Engine * engine) = 0;
-  virtual int undo() = 0;
-    uuid__ _uuid;
-  private:
-    std::map<std::string, std::string> _previous_state;
+  virtual std::string execute(Engine *engine) = 0;
+  virtual std::string undo() = 0;
+  inline uuid get_uuid() const { return _uuid; }
+  inline void set_uuid(uuid id) { _uuid = id; }
+private:
+  uuid _uuid;
+  std::map<std::string, std::string> _previous_state;
 };

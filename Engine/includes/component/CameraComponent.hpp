@@ -1,7 +1,6 @@
 #pragma once
 
 #include "includes/component/Component.hpp"
-// #include "includes/system/CameraSystem.hpp"
 
 struct CameraSystem;
 struct FrameSnapshot;
@@ -14,13 +13,10 @@ struct CameraComponent : public IComponent {
 
   inline void set_fov(const float fov) { _fov = fov; }
   inline float get_fov() const { return _fov; }
+  
+  inline bool is_main_camera() const { return _is_main_camera; }
 
-  inline bool is_main_camera() { return _is_main_camera; }
-  boost::json::object to_json_details() override;
   void set_from_json(boost::json::object obj) override;
-
-protected:
-  void to_json_details(boost::json::object obj) override;
 
 private:
   bool _is_main_camera{false};
@@ -28,4 +24,6 @@ private:
 
   friend CameraSystem;
   inline void set_is_main_camera(bool value) { _is_main_camera = value; }
+  
+  boost::json::object to_json_details() const override;
 };

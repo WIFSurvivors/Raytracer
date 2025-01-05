@@ -1,6 +1,7 @@
 set(COMPONENT_SOURCES 
     CameraComponent.cpp
     Component.cpp
+    LightComponent.cpp
     RenderComponent.cpp
     SimpleComponent.cpp)
 

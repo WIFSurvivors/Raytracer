@@ -17,6 +17,7 @@ std::string ScaleCommand::execute(Engine *engine) {
     LOG_ERROR(msg);
     return msg;
   }
+  uuid _uuid = this->get_uuid();
   auto entity_ptr = (*scene)[_uuid];
   if (!entity_ptr) {
     std::string msg =
@@ -32,7 +33,7 @@ std::string ScaleCommand::execute(Engine *engine) {
     LOG_ERROR(msg);
     return msg;
   }
-  entity->set_local_scale(_new_position);
+  entity->set_local_scale(this->get_new_scaling());
 
   std::string msg =
       "ScaleCommand executed on" + boost::uuids::to_string(_uuid) +
@@ -40,4 +41,4 @@ std::string ScaleCommand::execute(Engine *engine) {
   LOG_ERROR(msg);
   return msg;
 }
-int ScaleCommand::undo() { throw NotImplementedError{}; }
+std::string ScaleCommand::undo() { throw NotImplementedError{}; }

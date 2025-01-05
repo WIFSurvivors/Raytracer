@@ -16,6 +16,11 @@ set(CORE_INCLUDE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 set(BOOST_INCLUDE_LIBRARIES uuid json)
 set(BOOST_ENABLE_CMAKE ON)
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+	add_compile_options(-g)
+	add_compile_options(-fimplicit-constexpr)
+endif()
+
 message(STATUS "Shader absolute path: ${ABSOLUTE_SHADER_PATH}")
 
 add_subdirectory(tcp_server)

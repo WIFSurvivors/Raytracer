@@ -9,32 +9,31 @@
 
 UUIDManager::UUIDManager() { LOG("created UUID Manager"); }
 
-uuid UUIDManager::create_uuid_ownerless() {
-  auto new_uuid = gen();
-  LOG_WARN(std::format(
-      "created uuid: {} WITHOUT OWNER (most likely an entity) !!!!!",
-      boost::uuids::to_string(new_uuid)));
-  _uuid_system_mapping[new_uuid] = nullptr;
-  return new_uuid;
+bool UUIDManager::add(uuid id, IStorage *s) {
+  if (_uuid_storage_mapping.contains(id)) {
+    auto existing_name = _uuid_storage_mapping[id]->get_name();
+    LOG_ERROR(std::format("Adding existing UUID {} to {}, but is part of {}",
+                          boost::uuids::to_string(id), s->get_name(),
+                          existing_name));
+    return false;
+  }
+  _uuid_storage_mapping[id] = s;
+  return true;
 }
 
-uuid UUIDManager::create_uuid(ISystem *s) {
+UUIDManager::uuid UUIDManager::create(IStorage *s) {
   auto new_uuid = gen();
   LOG(std::format("created uuid: {} for system {}",
-                           boost::uuids::to_string(new_uuid),
-                           s->get_system_name()));
-  _uuid_system_mapping[new_uuid] = s;
+                  boost::uuids::to_string(new_uuid), s->get_name()));
+  _uuid_storage_mapping[new_uuid] = s;
   return new_uuid;
 }
-
-ISystem *UUIDManager::get_system(uuid id) { return _uuid_system_mapping[id]; }
 
 void UUIDManager::print() {
   VariadicTable<std::string, std::string> vt({"All UUIDs", "System Name"});
 
-  for (const auto &[id, sys] : _uuid_system_mapping) {
-    vt.addRow(boost::uuids::to_string(id),
-              (sys ? sys->get_system_name() : "?Entity Storage?"));
+  for (const auto &[id, sto] : _uuid_storage_mapping) {
+    vt.addRow(boost::uuids::to_string(id), sto->get_name());
   }
 
   // TODO: Use Log class as an option? -> Print tables to file
@@ -42,7 +41,7 @@ void UUIDManager::print() {
   std::cout << std::endl;
 }
 
-bool UUIDManager::remove_uuid(uuid id) {
+bool UUIDManager::remove(uuid id) {
   throw NotImplementedError();
   return false;
 }

@@ -6,7 +6,7 @@
 struct CloseRenderCommand : public TcpCommand {
   CloseRenderCommand() = default;
   std::string execute(Engine *e) override;
-  int undo() override;
+  std::string undo() override;
 
 private:
 };

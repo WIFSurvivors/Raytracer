@@ -16,6 +16,7 @@ std::string CreateEntityCommand::execute(Engine *e) {
       LOG_ERROR("Scene is null");
       return "Scene is null";
     }
+    uuid _uuid = this->get_uuid();
     auto parent = scene->get_entity(_uuid);
     if (!parent.has_value()) {
       LOG_ERROR(std::format("Entity not found for UUID: {}",
@@ -40,4 +41,4 @@ std::string CreateEntityCommand::execute(Engine *e) {
     return "Unknown exception occurred";
   }
 }
-int CreateEntityCommand::undo() { throw NotImplementedError{}; }
+std::string CreateEntityCommand::undo() { throw NotImplementedError{}; }

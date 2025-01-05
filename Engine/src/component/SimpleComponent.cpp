@@ -11,11 +11,7 @@ SimpleComponent::SimpleComponent(uuid id, Entity *e, int value)
 
 void SimpleComponent::update(const FrameSnapshot& snapshot) {}
 
-void SimpleComponent::to_json_details(boost::json::object obj) {
-  obj["value"] = get_value();
-}
-
-boost::json::object SimpleComponent::to_json_details() {
+boost::json::object SimpleComponent::to_json_details() const {
   boost::json::object obj;
   obj["value"] = get_value();
   return obj;

@@ -20,15 +20,17 @@ void Log::print(const std::string &msg, const Level &level) {
 // ================== FILE ==========================================
 
 void Log::init_file() {
-  fs::path folder(ROOT_ABSOLUTE_PATH);
+//   fs::path folder(ROOT_ABSOLUTE_PATH);
+  fs::path folder(".");
+  std::cout << "PATH?? " << folder.string() << "\n";
   fs::current_path(folder);
   if (!fs::is_directory(folder / "log")) {
     fs::create_directory("log");
   }
   folder /= "log";
   auto file_name = get_current_time_ms_full() + "_LOG.txt";
-  _log_file_path = (folder / file_name).string();
-  std::cout << std::format("!! LOG PATH: {}", _log_file_path) << "\n";
+  _log_file_path = folder / file_name;
+  std::cout << std::format("LOG PATH: {}", LOG_FILE_PATH) << "\n";
 
   std::ofstream _logFile;
   _logFile.open(_log_file_path, std::ios::app);
@@ -73,6 +75,7 @@ void Log::write_to_buffer(const std::string &msg, const Level &level) {
 
 void Log::clear_buffer() {
   std::lock_guard<std::mutex> lock(_buffer_mutex);
+  if(_file_buffer.size() < 1) return;
 
   std::ofstream _logFile;
   _logFile.open(_log_file_path, std::ios::app);
@@ -131,6 +134,11 @@ std::string Log::reset_color() {
 }
 
 void Log::display_color_demo() {
+  LOG(ROOT_ABSOLUTE_PATH);
+  LOG(SHADER_RELATIVE_PATH);
+  LOG(ASSET_RELATIVE_PATH);
+  LOG(LOG_RELATIVE_PATH);
+
   LOG("Hello :3");
   LOG_WARN("Hello :3");
   LOG_ERROR("Hello :3");

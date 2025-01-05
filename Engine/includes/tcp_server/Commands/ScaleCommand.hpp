@@ -1,19 +1,19 @@
 #pragma once 
 #include "includes/tcp_server/TcpCommand.hpp"
-#include <iostream>
 #include <string>
-#include <boost/uuid/uuid.hpp>
 #include <glm/vec3.hpp>
 #define SCALE_COMMAND "ScaleCommand"
 class ScaleCommand : public TcpCommand {
 public:
-    ScaleCommand(uuid__ uuid,int new_x, int new_y, int new_z) : TcpCommand(uuid), _new_position(new_x, new_y, new_z) {}
+    ScaleCommand(uuid uuid,int new_x, int new_y, int new_z) : TcpCommand(uuid), _new_scaling(new_x, new_y, new_z) {}
     std::string execute(Engine * engine) override;
-    int undo() override;
+    std::string undo() override;
+    inline glm::vec3 get_new_scaling() const { return _new_scaling; }
+    inline void set_new_scaling(glm::vec3 new_scaling) { _new_scaling = new_scaling; }
+    inline glm::vec3 get_old_scaling() const { return _old_scaling; }
+    inline void set_old_scaling(glm::vec3 old_scaling) { _old_scaling = old_scaling; }
 private:
-    int _old_x;
-    int _old_y;
-    int _old_z;
-    glm::vec3 _new_position;
+    glm::vec3 _old_scaling;
+    glm::vec3 _new_scaling;
 
 };

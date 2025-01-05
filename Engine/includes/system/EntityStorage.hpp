@@ -1,6 +1,8 @@
 #pragma once
 
-#include "includes/system/System.hpp"
+#include "includes/UUIDManager.hpp"
+#include "includes/system/Storage.hpp"
+
 #include <boost/uuid/uuid.hpp>
 #include <memory>
 #include <map>
@@ -13,15 +15,30 @@ struct Entity;
  * Scene that is creating that Entity. Most importantly, it maps UUIDs to
  * Entities Pointers.
  */
-struct EntityStorage {
+struct EntityStorage : public Storage<Entity*> {
   using uuid = boost::uuids::uuid;
+  
+  explicit EntityStorage(UUIDManager *um);
 
-  EntityStorage();
-
+  inline const std::string get_name() const final {
+    return "Entity Storage";
+  }
+  
   /**
    * A root entity doesn't have a parent and is used for generating new scenes.
    */
+  std::shared_ptr<Entity> create_root_entity(const std::string &name);
+
+  /**
+   * A root entity doesn't have a parent and is used when reading scene file (json).
+   */
   std::shared_ptr<Entity> create_root_entity(const std::string &name, uuid id);
+  
+  /**
+   * Create a entites with a given name and parent entity. UUID is generated automatically.
+   */
+  std::shared_ptr<Entity> create_entity(const std::string &name,
+                                        std::shared_ptr<Entity> parent);
 
   /**
    * Create a entites with a given uuid, name and parent entity.
@@ -34,7 +51,7 @@ struct EntityStorage {
    * not found.
    */
   inline std::optional<Entity *> get_entity(uuid id) {
-    return _entities.contains(id) ? std::make_optional(_entities[id])
+    return _storage.contains(id) ? std::make_optional(_storage[id])
                                   : std::nullopt;
   }
 
@@ -43,7 +60,7 @@ struct EntityStorage {
    * THIS DOES NOT REMOVE IT FROM THE ACTIVE SCENE!!!
    * THIS DOES NOT CORRENTLY REMOVE ALL LINKED COMPONENTS!!!
    */
-  bool remove(uuid id);
+  bool remove(uuid id) override;
 
   /**
    * Removes an entity from the underlying data structure by uuid.
@@ -60,5 +77,4 @@ struct EntityStorage {
   void print();
 
 private:
-  std::map<uuid, Entity *> _entities{};
 };

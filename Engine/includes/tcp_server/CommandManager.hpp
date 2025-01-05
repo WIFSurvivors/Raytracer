@@ -24,6 +24,8 @@ struct CommandManager
 	inline auto decode_command(std::string command) { return _parser.parse(command); }
 	auto inline create_command(ParsedTcpCommand parsed_command) { return _factory.create_command(parsed_command); }
 	void execute_command();
+	~CommandManager() = default;
+	
 
 private:
 	std::queue<std::unique_ptr<TcpCommand>> _command_queue{};

@@ -7,87 +7,108 @@
 #include <format>
 
 Scene::Scene(Engine *e)
-    : _render_system{e->get_window_manager(), &_camera_system},
+    : _render_system{&_uuid_manager, e->get_window_manager(), &_camera_system,
+                     &_light_system, &_default_assets},
       _root{create_root("root")} {
-  //   _render_system.init();
-
   generate_sample_content();
 }
 
 Scene::Scene(Engine *e, uuid id)
-    : _render_system{e->get_window_manager(), &_camera_system},
+    : _render_system{&_uuid_manager, e->get_window_manager(), &_camera_system,
+                     &_light_system, &_default_assets},
       _root{create_root("root", id)} {
   // does not generate sample content
   // this should be called when loading from json
-  //   _render_system.init();
 }
 
 Scene::~Scene() { _render_system.destroy(); }
 
 std::shared_ptr<Entity> Scene::create_root(const std::string &name) {
-  auto uuid = _uuid_manager.create_uuid_ownerless();
-  return create_root(name, uuid);
+  return _entity_storage.create_root_entity(name);
 }
 
 std::shared_ptr<Entity> Scene::create_root(const std::string &name, uuid id) {
-  LOG(std::format("scene: create_root(name, uuid): \"{}\", {}", name,
-                           boost::uuids::to_string(id)));
   return _entity_storage.create_root_entity(name, id);
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name) {
-  auto uuid = _uuid_manager.create_uuid_ownerless();
-  return create_entity(name, uuid, _root);
+  return _entity_storage.create_entity(name, _root);
 }
 
-std::shared_ptr<Entity> Scene::create_entity(const std::string &name,
-                                             uuid uuid) {
-  return create_entity(name, uuid, _root);
+std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id) {
+  return _entity_storage.create_entity(name, id, _root);
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name,
                                              std::shared_ptr<Entity> parent) {
-  return create_entity(name, _uuid_manager.create_uuid_ownerless(), parent);
+  return _entity_storage.create_entity(name, parent);
 }
 
 std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
                                              std::shared_ptr<Entity> parent) {
-  LOG(std::format(
-      "scene: create_entity(name, uuid, parent): \"{}\", {}, \"{}\"", name,
-      boost::uuids::to_string(id), parent->get_name()));
   return _entity_storage.create_entity(name, id, parent);
 }
 
-void Scene::print() {
-  _root->print();
-}
+void Scene::print() { _root->print(); }
 
 void Scene::generate_sample_content() {
   _uuid_manager.print();
+  _asset_manager.print();
   _entity_storage.print();
   _render_system.print();
   _camera_system.print();
+  _light_system.print();
   _root->print();
+  
+  LOG_NEW_LINE();
+  LOG(std::string(100, '*'));
+  LOG_NEW_LINE();
+
+  auto a = create_asset("test");
+  
+  LOG(std::format("1) Asset {} {}", a._path.string(),  boost::uuids::to_string(a._uuid)));
+  auto b = create_asset("test");
+  LOG(std::format("2) Asset {} {}", b._path.string(),  boost::uuids::to_string(b._uuid)));
+  AssetManager::Asset c{&_asset_manager, "test"};
+  LOG(std::format("3) Asset {} {}", c._path.string(),  boost::uuids::to_string(c._uuid)));
+  AssetManager::Asset d{&_asset_manager, "test2"};
+  LOG(std::format("4) Asset {} {}", d._path.string(),  boost::uuids::to_string(d._uuid)));
 
   LOG_NEW_LINE();
   LOG(std::string(100, '*'));
   LOG_NEW_LINE();
 
-  // ============== ENTITY + SIMPLE COMPONENT ==============
-
+  // =================== ENTITIES =====================
   auto e1 = create_entity("camera");
-  e1->set_local_position(glm::vec3{+0, +10, +10});
-  e1->set_local_rotation(glm::vec3{+0, +15, -5});
-  auto e2 = create_entity("circle1");
-  e2->set_local_rotation(glm::vec3{45, 0, 0});
-  auto e3 = create_entity("circle2", e1);
-  e3->set_local_position(glm::vec3{-2, 6, 7});
+  e1->set_local_position(glm::vec3{0.f, +8.f, 15.f});
+  auto e2 = create_entity("light sources");
+  auto e3 = create_entity("light red", e2);
+  e3->set_local_position(glm::vec3{0, 5, 5});
+  auto e4 = create_entity("light green", e2);
+  e4->set_local_position(glm::vec3{0, -5, 5});
+  auto e5 = create_entity("light blue", e2);
+  e5->set_local_position(glm::vec3{0, 0, 5});
 
-  auto new_uuid = _uuid_manager.create_uuid(&_camera_system);
-  auto c1 = _camera_system.create_component(new_uuid, e1.get(), 60.f);
+  // =================== CAMERA =====================
+  auto c1 = _camera_system.create_component(e1.get(), 60.f);
 
-  // =================== RENDER SYSTEM =====================
+  // =================== LIGHT =====================
+  auto c2 = _light_system.create_component(e3.get());
+  /*c2->set_color(0.8576f, 0.1f, 0.1f);*/
+  c2->set_color(1.0f, 1.0f, 1.0f);
+  c2->set_intensity(25.f);
 
+  auto c3 = _light_system.create_component(e4.get());
+  /*c3->set_color(0.1f, 0.96752f, 0.1f);*/
+  c3->set_color(1.0f, 1.0f, 1.0f);
+  c3->set_intensity(25.f);
+
+  auto c4 = _light_system.create_component(e5.get());
+  /*c4->set_color(0.1f, 0.1f, 1.f);*/
+  c4->set_color(1.0f, 1.0f, 1.0f);
+  c4->set_intensity(15.f);
+
+  // =================== RENDER =====================
   std::vector<glm::vec3> v1 = {
       glm::vec3{-1.0f, -1.0f, 0.0f}, glm::vec3{1.0f, -1.0f, 0.0f},
       glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, -1.0f, 0.0f},
@@ -107,19 +128,18 @@ void Scene::generate_sample_content() {
                                glm::vec2{0.0f, 1.0f}};
 
   auto root_ptr = get_root().lock();
-  _render_system.create_component(_uuid_manager.create_uuid(&_render_system),
-                                  root_ptr.get(), v2, u2);
-  _render_system.create_component(_uuid_manager.create_uuid(&_render_system),
-                                  root_ptr.get(), v3, u3);
+  _render_system.create_component(root_ptr.get());
+  //_render_system.create_component(root_ptr.get(), v3, u3);
 
   LOG_NEW_LINE();
   LOG(std::string(100, '*'));
   LOG_NEW_LINE();
 
-  auto sys = _uuid_manager.get_system(c1->get_uuid());
+  // =================== SAMPLE MANIPULATION =====================
+
+  auto sys = _uuid_manager.get_storage(c1->get_uuid());
   auto csys = static_cast<CameraSystem *>(sys);
-  auto occ = csys->get_component(
-      c1->get_uuid()); // you ideally already know the uuid :3
+  auto occ = csys->get_component(c1->get_uuid());
   if (occ.has_value()) {
     auto cc = occ.value();
     cc->get_fov(); // ... do something with component ...
@@ -133,15 +153,17 @@ void Scene::generate_sample_content() {
   LOG_NEW_LINE();
 
   _uuid_manager.print();
+  _asset_manager.print();
   _entity_storage.print();
   _render_system.print();
   _camera_system.print();
+  _light_system.print();
   _root->print();
 }
 
 // currently only tell the render system to update itself
-void Scene::update(const FrameSnapshot& snapshot) {
-//   do things??
-//   _camera_system.sample_update_move_main_camera(timer.get_delta_time());
+void Scene::update(const FrameSnapshot &snapshot) {
+  //   do things??
+  //   _camera_system.sample_update_move_main_camera(timer.get_delta_time());
   _render_system.update(snapshot);
 }

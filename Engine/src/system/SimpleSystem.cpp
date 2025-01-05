@@ -1,6 +1,8 @@
 #include "includes/system/SimpleSystem.hpp"
-#include "includes/Entity.hpp"
+
 #include "includes/component/SimpleComponent.hpp"
+#include "includes/Entity.hpp"
+#include "includes/UUIDManager.hpp"
 #include "includes/utility/Log.hpp"
 #include "includes/utility/VariadicTable.hpp"
 #include "includes/utility/FrameSnapshot.hpp"
@@ -9,17 +11,27 @@
 #include <memory>
 #include <utility>
 #include <type_traits>
+#include <format>
 
-SimpleSystem::SimpleSystem() { LOG("created simple system"); }
+SimpleSystem::SimpleSystem(UUIDManager *um) : System{um} {
+  LOG(std::format("created {}", get_name()));
+}
 
-SimpleComponent *SimpleSystem::create_component(uuid id, Entity *e, int value) {
-  LOG("-- create simple component");
-  auto c = create_component_base(id, e);
+SimpleComponent *SimpleSystem::create_component(Entity *e, int value) {
+  LOG("-- create simple component (1)");
+  auto c = create_component_base(e);
   c->set_value(value);
   return c;
 }
 
-void SimpleSystem::update(const FrameSnapshot& snapshot) {
+SimpleComponent *SimpleSystem::create_component(Entity *e, uuid id, int value) {
+  LOG("-- create simple component (2)");
+  auto c = create_component_base(e, id);
+  c->set_value(value);
+  return c;
+}
+
+void SimpleSystem::update(const FrameSnapshot &snapshot) {
   for (auto &&c : _components) {
     c.second->update(snapshot);
   }

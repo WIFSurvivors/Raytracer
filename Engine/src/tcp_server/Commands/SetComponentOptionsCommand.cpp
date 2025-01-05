@@ -6,8 +6,10 @@
 #include "includes/system/CameraSystem.hpp"
 #include "includes/system/RenderSystem.hpp"
 #include "includes/system/SimpleSystem.hpp"
+#include "includes/system/LightSystem.hpp"
 #include "includes/component/CameraComponent.hpp"
 #include "includes/component/RenderComponent.hpp"
+#include "includes/component/LightComponent.hpp"
 #include "includes/component/SimpleComponent.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 
@@ -18,7 +20,8 @@ std::string SetComponentOptions::execute(Engine *e) {
     LOG_ERROR(error);
     return error;
   }
-  auto system = uuid_manager->get_system(_uuid);
+  uuid _uuid = this->get_uuid();
+  auto system = uuid_manager->get_storage(_uuid);
   if (system != nullptr) {
     if (auto camera_system = dynamic_cast<CameraSystem *>(system)) {
       auto camera = camera_system->get_component(_uuid);
@@ -27,7 +30,7 @@ std::string SetComponentOptions::execute(Engine *e) {
         LOG("CameraComponent found");
         try
         {
-            component->set_from_json(_obj);
+            component->set_from_json(this->get_obj());
             LOG("CameraComponent updated");
             return "CameraComponent updated";
         }
@@ -44,7 +47,7 @@ std::string SetComponentOptions::execute(Engine *e) {
         LOG("RenderComponent found");
         try
         {
-            component->set_from_json(_obj);
+            component->set_from_json(this->get_obj());
             LOG("RenderComponent updated");
             return "RenderComponent updated";
         }
@@ -61,7 +64,7 @@ std::string SetComponentOptions::execute(Engine *e) {
         LOG("SimpleComponent found");
         try
         {
-            component->set_from_json(_obj);
+            component->set_from_json(this->get_obj());
             LOG("SimpleComponent updated");
             return "SimpleComponent updated";
         }
@@ -71,6 +74,24 @@ std::string SetComponentOptions::execute(Engine *e) {
             return e.what();
         }
         }
+    }
+        else if (auto light_system = dynamic_cast<LightSystem *>(system)) {
+      auto light = light_system->get_component(_uuid);
+      if (light.has_value()) {
+        auto component = light.value();
+        LOG("LightComponent found");
+        try
+        {
+            component->set_from_json(this->get_obj());
+            LOG("LightComponent updated");
+            return "LightComponent updated";
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+            return e.what();
+        }
+      }
     } else {
       LOG_ERROR("System found but no component found");
       return "System found but no component found";
@@ -82,5 +103,5 @@ std::string SetComponentOptions::execute(Engine *e) {
   return "Error";
 }
 
-int SetComponentOptions::undo() { throw NotImplementedError{}; }
+std::string SetComponentOptions::undo() { throw NotImplementedError{}; }
 

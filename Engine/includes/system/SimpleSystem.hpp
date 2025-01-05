@@ -2,27 +2,29 @@
 #include "includes/Entity.hpp"
 #include "includes/component/SimpleComponent.hpp"
 #include "includes/system/System.hpp"
+// #include "includes/UUIDManager.hpp"
 #include <boost/uuid/uuid.hpp>
 #include <map>
 #include <memory>
 #include <string>
 
+struct UUIDManager;
 struct FrameSnapshot;
 
 struct SimpleSystem : public System<SimpleComponent> {
-  SimpleSystem();
+  explicit SimpleSystem(UUIDManager *um);
 
-  SimpleComponent *create_component(uuid id, Entity *e, int value);
+  SimpleComponent *create_component(Entity *e, int value);
+  SimpleComponent *create_component(Entity *e, uuid id, int value);
 
   void update(const FrameSnapshot& snapshot);
 
   void print() override;
 
-  inline std::string get_system_name() const override {
+  inline const std::string get_name() const final {
     return "Simple System";
   }
 
-private:
-  using System::create_component_base;
-  using typename System::uuid;
+// private:
+//   using System::create_component_base;
 };

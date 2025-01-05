@@ -1,6 +1,7 @@
 set(COMPONENT_HEADERS
     CameraComponent.hpp
     Component.hpp
+    LightComponent.hpp
     RenderComponent.hpp
     SimpleComponent.hpp
     )
