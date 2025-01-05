@@ -20,6 +20,7 @@ public class EcsApi
     public string json_import(string path) {
         //Aktuell gibt die Engine den Inhalt der Datei an. Wird noch geändert.
         string returnValue = _client.Send(String.Format("ImportJson null {0}", path));
+
         return returnValue;
     }
 
@@ -81,11 +82,11 @@ public class EcsApi
         return _client.Send(String.Format("GetComponentOptions {0}", UUID));
     }
 
-    public string post_ScenePath(String path)
+    /*public string post_ScenePath(String path)
     {
-        String returnValue = _client.Send(String.Format("PostScenePathCommand"));
+        String returnValue = _client.Send(String.Format("PostScenePathCommand {0}", path));
         return "ScenePath " + returnValue;
-    }
+    }*/
 
     public string set_component_option(String UUID, String json)
     {
