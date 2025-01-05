@@ -93,15 +93,18 @@ void Scene::generate_sample_content() {
 
   // =================== LIGHT =====================
   auto c2 = _light_system.create_component(e3.get());
-  c2->set_color(0.8576f, 0.1f, 0.1f);
+  /*c2->set_color(0.8576f, 0.1f, 0.1f);*/
+  c2->set_color(1.0f, 1.0f, 1.0f);
   c2->set_intensity(25.f);
 
   auto c3 = _light_system.create_component(e4.get());
-  c3->set_color(0.1f, 0.96752f, 0.1f);
+  /*c3->set_color(0.1f, 0.96752f, 0.1f);*/
+  c3->set_color(1.0f, 1.0f, 1.0f);
   c3->set_intensity(25.f);
 
   auto c4 = _light_system.create_component(e5.get());
-  c4->set_color(0.1f, 0.1f, 1.f);
+  /*c4->set_color(0.1f, 0.1f, 1.f);*/
+  c4->set_color(1.0f, 1.0f, 1.0f);
   c4->set_intensity(15.f);
 
   // =================== RENDER =====================

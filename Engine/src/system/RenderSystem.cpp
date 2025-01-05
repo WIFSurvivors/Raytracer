@@ -84,6 +84,11 @@ void RenderSystem::init() {
   _projU = glGetUniformLocation(compute->programID, "Projection");
   _viewU = glGetUniformLocation(compute->programID, "View");
 
+  // This Uniforoms can be user defined and are required to be defined to work
+  // properly
+  _maximalBouncesU = glGetUniformLocation(compute->programID, "bounce");
+  _maxHittableTrianglesU = glGetUniformLocation(compute->programID, "hittable");
+
   _ls_active_light_sourcesU =
       glGetUniformLocation(compute->programID, "ls_active_light_sources");
   _ls_positionsU = glGetUniformLocation(compute->programID, "ls_positions");
@@ -91,16 +96,41 @@ void RenderSystem::init() {
   _ls_colorsU = glGetUniformLocation(compute->programID, "ls_colors");
   _ls_intensitiesU = glGetUniformLocation(compute->programID, "ls_intensities");
 
-  std::vector<Triangle> triforce2 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
-  std::vector<Triangle> triforce1 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
+  /*********************************************************************************/
+  std::vector<Triangle> triforce1 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
+  std::vector<Triangle> triforce2 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
   std::vector<Triangle> triforce3 = createCube(glm::vec3{-2.0f, 0.0f, 0.0f});
+  std::vector<Triangle> triforce4 = createCube(glm::vec3{0.0f, 0.0f, -2.0f});
+  std::vector<Triangle> triforce5 = createCube(glm::vec3{0.0f, 2.0f, 0.0f});
+  std::vector<Materials> mats;
 
-  std::vector<Triangle> triforce = triforce1;
-  triforce.insert(triforce.end(), triforce2.begin(), triforce2.end());
-  triforce.insert(triforce.end(), triforce3.begin(), triforce3.end());
-  LOG(std::format("Triforce size: {}", triforce.size()));
+  Materials Material1 = Materials{
+      glm::vec3(0.8f, 0.2f, 0.8f),
+      0.0f,
+  }; // Light gray, slightly reflective
+  Materials Material2 = Materials{glm::vec3(1.0f, 1.0f, 1.0f), 0.0f}; // White
+  Materials Material3 = Materials{
+      glm::vec3(0.8f, 0.2f, 0.2f),
+      0.0f,
+  }; // Bright red, more reflective
+  Materials Material4 = Materials{
+      glm::vec3(0.1f, 0.6f, 0.5f),
+      0.0f,
+  }; // Bright red, more reflective
+  Materials Material5 = Materials{
+      glm::vec3(0.0f, 0.6f, 0.9f),
+      0.0f,
+  }; // Bright red, more reflective
+  /*********************************************************************************/
 
+  std::vector<ObjectData> data;
+  data.push_back(ObjectData(triforce1, Material1));
+  data.push_back(ObjectData(triforce2, Material2));
+  data.push_back(ObjectData(triforce3, Material3));
+  data.push_back(ObjectData(triforce4, Material4));
+  data.push_back(ObjectData(triforce5, Material5));
   TreeBuilder builder{};
+  builder.loadData(data);
   builder.prepareSSBOData();
   //   builder.checkData(); // Debug statements
 
@@ -181,7 +211,11 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   if (_cs && _cs->get_main_camera()) {
     _cameraPosition =
         _cs->get_main_camera()->get_entity()->get_world_position();
+    _viewMatrix =
+        glm::lookAt(_cameraPosition, _cameraDirection, glm::vec3(0, 1, 0));
 
+    _projectionMatrix = glm::perspective(
+        glm::radians(_cs->get_main_camera()->get_fov()), 1.0f, 0.1f, 100.0f);
     // DELETE THIS LINE AT SOME POINT :C
     // _cs->get_main_camera()->get_entity()->set_local_position(
     //     glm::vec3(0.0f, 8.0f, 15.0f));
@@ -208,7 +242,8 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
     auto intensities = _ls->get_intensities();
     glUniform1fv(_ls_intensitiesU, size, intensities.data());
   }
-
+  glUniform1i(_maximalBouncesU, 4);
+  glUniform1i(_maxHittableTrianglesU, 60);
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
 
@@ -228,35 +263,46 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
 #endif
 }
 
-RenderComponent *RenderSystem::create_component(Entity *e, std::optional<AssetManager::Asset> obj_asset, std::optional<AssetManager::Asset> mtl_asset, std::optional<AssetManager::Asset> shader_asset) {
+RenderComponent *RenderSystem::create_component(
+    Entity *e, std::optional<AssetManager::Asset> obj_asset,
+    std::optional<AssetManager::Asset> mtl_asset,
+    std::optional<AssetManager::Asset> shader_asset) {
   LOG("create render component (a1)");
   auto c = create_component_base(e);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
   c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value() : _da->shader);
+  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
+                                               : _da->shader);
   return c;
 }
 
-RenderComponent *RenderSystem::create_component(Entity *e, uuid id, std::optional<AssetManager::Asset> obj_asset, std::optional<AssetManager::Asset> mtl_asset, std::optional<AssetManager::Asset> shader_asset) {
+RenderComponent *RenderSystem::create_component(
+    Entity *e, uuid id, std::optional<AssetManager::Asset> obj_asset,
+    std::optional<AssetManager::Asset> mtl_asset,
+    std::optional<AssetManager::Asset> shader_asset) {
   LOG("create render component (a2)");
   auto c = create_component_base(e, id);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
   c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value() : _da->shader);
+  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
+                                               : _da->shader);
   return c;
 }
 
-RenderComponent *
-RenderSystem::create_component(Entity *e,
-                               const std::vector<glm::vec3> &vertices,
-                               const std::vector<glm::vec2> &UV, std::optional<AssetManager::Asset> obj_asset, std::optional<AssetManager::Asset> mtl_asset, std::optional<AssetManager::Asset> shader_asset) {
+RenderComponent *RenderSystem::create_component(
+    Entity *e, const std::vector<glm::vec3> &vertices,
+    const std::vector<glm::vec2> &UV,
+    std::optional<AssetManager::Asset> obj_asset,
+    std::optional<AssetManager::Asset> mtl_asset,
+    std::optional<AssetManager::Asset> shader_asset) {
   LOG("create render component (b1)");
   auto c = create_component_base(e);
   c->set_vertices(vertices);
   c->set_uv(UV);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
   c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value() : _da->shader);
+  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
+                                               : _da->shader);
 
   int programmID = 0;
 #if SHOW_UI
@@ -266,17 +312,20 @@ RenderSystem::create_component(Entity *e,
   return c;
 }
 
-RenderComponent *
-RenderSystem::create_component(Entity *e, uuid id,
-                               const std::vector<glm::vec3> &vertices,
-                               const std::vector<glm::vec2> &UV, std::optional<AssetManager::Asset> obj_asset, std::optional<AssetManager::Asset> mtl_asset, std::optional<AssetManager::Asset> shader_asset) {
+RenderComponent *RenderSystem::create_component(
+    Entity *e, uuid id, const std::vector<glm::vec3> &vertices,
+    const std::vector<glm::vec2> &UV,
+    std::optional<AssetManager::Asset> obj_asset,
+    std::optional<AssetManager::Asset> mtl_asset,
+    std::optional<AssetManager::Asset> shader_asset) {
   LOG("create render component (b2)");
   auto c = create_component_base(e, id);
   c->set_vertices(vertices);
   c->set_uv(UV);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
   c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value() : _da->shader);
+  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
+                                               : _da->shader);
   int programmID = 0;
 #if SHOW_UI
   programmID = program->programID;

@@ -108,6 +108,9 @@ private:
   GLuint _ls_colorsU;
   GLuint _ls_intensitiesU;
 
+  GLuint _maximalBouncesU;
+  GLuint _maxHittableTrianglesU;
+
   std::unique_ptr<Shader> compute;
 #endif
 };
