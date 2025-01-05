@@ -70,6 +70,26 @@ void RenderSystem::init() {
       std::make_pair(GL_COMPUTE_SHADER, compute_shader_file.string())};
   compute = std::make_unique<Shader>(computeShader);
 
+  /*********************************************************************************/
+
+  glGenBuffers(1, &_vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+
+  glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(glm::vec3),
+               _vertices.data(), GL_STATIC_DRAW);
+
+  glGenBuffers(1, &_uvVBO);
+
+  glBindBuffer(GL_ARRAY_BUFFER, _uvVBO);
+
+  glBufferData(GL_ARRAY_BUFFER, _uv.size() * sizeof(glm::vec2), _uv.data(),
+               GL_STATIC_DRAW);
+
+  setTextures();
+
+  _textU = glGetUniformLocation(program->programID, "text");
+  _modelU = glGetUniformLocation(program->programID, "MVP");
+  /*********************************************************************************/
   _cameraPosition = glm::vec3(0.0f, 8.0f, 15.0f);
   _cameraDirection = glm::vec3(0.0f, 3.0f, 0.0f);
   _viewMatrix =
@@ -84,6 +104,11 @@ void RenderSystem::init() {
   _projU = glGetUniformLocation(compute->programID, "Projection");
   _viewU = glGetUniformLocation(compute->programID, "View");
 
+  // This Uniforoms can be user defined and are required to be defined to work
+  // properly
+  _maximalBouncesU = glGetUniformLocation(compute->programID, "bounce");
+  _maxHittableTrianglesU = glGetUniformLocation(compute->programID, "hittable");
+
   _ls_active_light_sourcesU =
       glGetUniformLocation(compute->programID, "ls_active_light_sources");
   _ls_positionsU = glGetUniformLocation(compute->programID, "ls_positions");
@@ -91,16 +116,41 @@ void RenderSystem::init() {
   _ls_colorsU = glGetUniformLocation(compute->programID, "ls_colors");
   _ls_intensitiesU = glGetUniformLocation(compute->programID, "ls_intensities");
 
-  std::vector<Triangle> triforce2 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
-  std::vector<Triangle> triforce1 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
+  /*********************************************************************************/
+  std::vector<Triangle> triforce1 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
+  std::vector<Triangle> triforce2 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
   std::vector<Triangle> triforce3 = createCube(glm::vec3{-2.0f, 0.0f, 0.0f});
+  std::vector<Triangle> triforce4 = createCube(glm::vec3{0.0f, 0.0f, -2.0f});
+  std::vector<Triangle> triforce5 = createCube(glm::vec3{0.0f, 2.0f, 0.0f});
+  std::vector<Materials> mats;
 
-  std::vector<Triangle> triforce = triforce1;
-  triforce.insert(triforce.end(), triforce2.begin(), triforce2.end());
-  triforce.insert(triforce.end(), triforce3.begin(), triforce3.end());
-  LOG(std::format("Triforce size: {}", triforce.size()));
+  Materials Material1 = Materials{
+      glm::vec3(0.8f, 0.2f, 0.8f),
+      0.0f,
+  }; // Light gray, slightly reflective
+  Materials Material2 = Materials{glm::vec3(1.0f, 1.0f, 1.0f), 0.0f}; // White
+  Materials Material3 = Materials{
+      glm::vec3(0.8f, 0.2f, 0.2f),
+      0.0f,
+  }; // Bright red, more reflective
+  Materials Material4 = Materials{
+      glm::vec3(0.1f, 0.6f, 0.5f),
+      0.0f,
+  }; // Bright red, more reflective
+  Materials Material5 = Materials{
+      glm::vec3(0.0f, 0.6f, 0.9f),
+      0.0f,
+  }; // Bright red, more reflective
+  /*********************************************************************************/
 
+  std::vector<ObjectData> data;
+  data.push_back(ObjectData(triforce1, Material1));
+  data.push_back(ObjectData(triforce2, Material2));
+  data.push_back(ObjectData(triforce3, Material3));
+  data.push_back(ObjectData(triforce4, Material4));
+  data.push_back(ObjectData(triforce5, Material5));
   TreeBuilder builder{};
+  builder.loadData(data);
   builder.prepareSSBOData();
   //   builder.checkData(); // Debug statements
 
@@ -112,7 +162,6 @@ void RenderSystem::init() {
   glGenBuffers(1, &ssbo_mats);
   glGenBuffers(1, &ssbo_matsIDX);
 
-  glGenBuffers(1, &ssbo_triangle);
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);
 
   glBufferData(GL_SHADER_STORAGE_BUFFER,
@@ -125,13 +174,6 @@ void RenderSystem::init() {
                builder.triIdxData.size() * sizeof(uint32_t),
                builder.triIdxData.data(), GL_STATIC_DRAW);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, ssbo_indices);
-
-  // Depracated lol
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_triangle);
-  glBufferData(GL_SHADER_STORAGE_BUFFER,
-               builder.triangles.size() * sizeof(Triangle),
-               builder.triangles.data(), GL_STATIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 3, ssbo_triangle);
 
   glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_vertex);
   glBufferData(GL_SHADER_STORAGE_BUFFER,
@@ -189,7 +231,11 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   if (_cs && _cs->get_main_camera()) {
     _cameraPosition =
         _cs->get_main_camera()->get_entity()->get_world_position();
+    _viewMatrix =
+        glm::lookAt(_cameraPosition, _cameraDirection, glm::vec3(0, 1, 0));
 
+    _projectionMatrix = glm::perspective(
+        glm::radians(_cs->get_main_camera()->get_fov()), 1.0f, 0.1f, 100.0f);
     // DELETE THIS LINE AT SOME POINT :C
     // _cs->get_main_camera()->get_entity()->set_local_position(
     //     glm::vec3(0.0f, 8.0f, 15.0f));
@@ -216,7 +262,8 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
     auto intensities = _ls->get_intensities();
     glUniform1fv(_ls_intensitiesU, size, intensities.data());
   }
-
+  glUniform1i(_maximalBouncesU, 4);
+  glUniform1i(_maxHittableTrianglesU, 60);
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
 
@@ -230,41 +277,69 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   program->activateShader();
   glBindVertexArray(_vao);
 
+/*********************************************************************************/
+
+  glUniform1i(_textU, 0);
+  glUniformMatrix4fv(_modelU, 1, GL_FALSE, &_modelMatrix_Canvas[0][0]);
+
+  glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
+                        reinterpret_cast<void *>(0));
+
+  glBindBuffer(GL_ARRAY_BUFFER, _uvVBO);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float),
+                        reinterpret_cast<void *>(0));
+
+  glDrawArrays(GL_TRIANGLES, 0, _nverticesCanvas);
+/*********************************************************************************/
   for (auto &&c : _components) {
     c.second->update(snapshot);
   }
 #endif
 }
 
-RenderComponent *RenderSystem::create_component(Entity *e, std::optional<AssetManager::Asset> obj_asset, std::optional<AssetManager::Asset> mtl_asset, std::optional<AssetManager::Asset> shader_asset) {
+RenderComponent *RenderSystem::create_component(
+    Entity *e, std::optional<AssetManager::Asset> obj_asset,
+    std::optional<AssetManager::Asset> mtl_asset,
+    std::optional<AssetManager::Asset> shader_asset) {
   LOG("create render component (a1)");
   auto c = create_component_base(e);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
   c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value() : _da->shader);
+  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
+                                               : _da->shader);
   return c;
 }
 
-RenderComponent *RenderSystem::create_component(Entity *e, uuid id, std::optional<AssetManager::Asset> obj_asset, std::optional<AssetManager::Asset> mtl_asset, std::optional<AssetManager::Asset> shader_asset) {
+RenderComponent *RenderSystem::create_component(
+    Entity *e, uuid id, std::optional<AssetManager::Asset> obj_asset,
+    std::optional<AssetManager::Asset> mtl_asset,
+    std::optional<AssetManager::Asset> shader_asset) {
   LOG("create render component (a2)");
   auto c = create_component_base(e, id);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
   c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value() : _da->shader);
+  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
+                                               : _da->shader);
   return c;
 }
 
-RenderComponent *
-RenderSystem::create_component(Entity *e,
-                               const std::vector<glm::vec3> &vertices,
-                               const std::vector<glm::vec2> &UV, std::optional<AssetManager::Asset> obj_asset, std::optional<AssetManager::Asset> mtl_asset, std::optional<AssetManager::Asset> shader_asset) {
+RenderComponent *RenderSystem::create_component(
+    Entity *e, const std::vector<glm::vec3> &vertices,
+    const std::vector<glm::vec2> &UV,
+    std::optional<AssetManager::Asset> obj_asset,
+    std::optional<AssetManager::Asset> mtl_asset,
+    std::optional<AssetManager::Asset> shader_asset) {
   LOG("create render component (b1)");
   auto c = create_component_base(e);
   c->set_vertices(vertices);
   c->set_uv(UV);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
   c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value() : _da->shader);
+  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
+                                               : _da->shader);
 
   int programmID = 0;
 #if SHOW_UI
@@ -274,17 +349,20 @@ RenderSystem::create_component(Entity *e,
   return c;
 }
 
-RenderComponent *
-RenderSystem::create_component(Entity *e, uuid id,
-                               const std::vector<glm::vec3> &vertices,
-                               const std::vector<glm::vec2> &UV, std::optional<AssetManager::Asset> obj_asset, std::optional<AssetManager::Asset> mtl_asset, std::optional<AssetManager::Asset> shader_asset) {
+RenderComponent *RenderSystem::create_component(
+    Entity *e, uuid id, const std::vector<glm::vec3> &vertices,
+    const std::vector<glm::vec2> &UV,
+    std::optional<AssetManager::Asset> obj_asset,
+    std::optional<AssetManager::Asset> mtl_asset,
+    std::optional<AssetManager::Asset> shader_asset) {
   LOG("create render component (b2)");
   auto c = create_component_base(e, id);
   c->set_vertices(vertices);
   c->set_uv(UV);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
   c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value() : _da->shader);
+  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
+                                               : _da->shader);
   int programmID = 0;
 #if SHOW_UI
   programmID = program->programID;
@@ -316,3 +394,35 @@ void RenderSystem::print() {
   vt.print(std::cout);
   std::cout << std::endl;
 }
+
+
+void RenderSystem::setTextures() {
+#if SHOW_UI
+  //  Generate n = 1 texture IDs
+  glGenTextures(1, &_textureID);
+
+  //  Activate Texture unit GL_TEXTURE0
+  glActiveTexture(GL_TEXTURE0);
+
+  //  Binds new OpenGL texture to the TextureID
+  //  It means all future texture functions will modify specified texture
+  glBindTexture(GL_TEXTURE_2D, _textureID);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+  //  Loads the texture data "NULL" to OpenGL
+  //  TODO
+  //  For now it takes 800 800 as screen size, but later it should be as big as
+  //  texture
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 800, 800, 0, GL_RGBA, GL_FLOAT,
+               NULL);
+
+  //  Specifies the mipmap level = 0 of the texture
+  glBindImageTexture(0, _textureID, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, _textureID);
+#endif
+}
+
