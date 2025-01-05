@@ -19,19 +19,19 @@
 #define ASSET_RELATIVE_PATH "assets"
 #endif
 
-inline const fs::path get_relative_shader_folder_path(){
+inline const fs::path get_relative_shader_folder_path() {
   return fs::path(fs::path(".") / SHADER_RELATIVE_PATH);
 }
 
-inline const fs::path get_absolute_shader_folder_path(){
+inline const fs::path get_absolute_shader_folder_path() {
   return fs::absolute(fs::path(get_relative_shader_folder_path()));
 }
 
-inline const fs::path get_relative_asset_folder_path(){
+inline const fs::path get_relative_asset_folder_path() {
   return fs::path(fs::path(".") / ASSET_RELATIVE_PATH);
 }
 
-inline const fs::path get_absolute_asset_folder_path(){
+inline const fs::path get_absolute_asset_folder_path() {
   return fs::absolute(fs::path(get_relative_asset_folder_path()));
 }
 
@@ -98,12 +98,13 @@ struct AssetManager : public Storage<fs::path> {
   };
 
   struct DefaultAssets {
-    explicit DefaultAssets(AssetManager *am) : shader(am, std::filesystem::path(SHADER_ABSOLUTE_PATH) / "default_shader"),
-                                      mtl(am, std::filesystem::path(ASSET_ABSOLUTE_PATH) / "default.mtl"),
-                                      obj(am, std::filesystem::path(ASSET_ABSOLUTE_PATH) / "default.obj") {}
-     Asset shader;
-     Asset mtl;
-     Asset obj;
+    explicit DefaultAssets(AssetManager *am)
+        : shader(am, get_relative_shader_folder_path() / "default_shader"),
+          mtl(am, get_relative_asset_folder_path() / "default.mtl"),
+          obj(am, get_relative_asset_folder_path() / "default.obj") {}
+    Asset shader;
+    Asset mtl;
+    Asset obj;
   };
 
   inline void set(uuid id, fs::path path) {
