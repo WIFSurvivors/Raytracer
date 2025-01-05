@@ -183,7 +183,7 @@ Closing="Window_Closing">
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
-                            <Slider Name="sldX" Style="{DynamicResource SecondarySliderStyle}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="20" Value="10" ValueChanged="SliderValueChanged" PreviewMouseUp="SliderPreviewMouseUp" />
+                            <Slider Name="sldX" Style="{DynamicResource PrimarySliderStyle}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"  Minimum="0" Maximum="20" Value="10" ValueChanged="SliderValueChanged" PreviewMouseUp="SliderPreviewMouseUp" />
 
                             <Grid Grid.Row="1">
                                 <Grid.ColumnDefinitions>
@@ -315,7 +315,7 @@ Closing="Window_Closing">
                                 <RowDefinition Height="*" />
                             </Grid.RowDefinitions>
 
-                            <Slider Name="sldZoom" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="20" Value="10" Width="256" Height="16" Margin="8" ValueChanged="SliderValueChanged" PreviewMouseUp="SliderPreviewMouseUp"/>
+                            <Slider Name="sldZoom" Style="{StaticResource PrimarySliderStyle}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="20" Value="10" ValueChanged="SliderValueChanged" PreviewMouseUp="SliderPreviewMouseUp" />
 
                             <Grid Grid.Row="1">
                                 <Grid.ColumnDefinitions>

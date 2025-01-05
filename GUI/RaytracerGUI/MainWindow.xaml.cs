@@ -414,8 +414,8 @@ namespace RaytracerGUI
 
             if (changedSlider != null)
             { 
-                //changedSlider.Minimum = changedSlider.Value - 10;
-                //changedSlider.Maximum = changedSlider.Value + 10;
+                changedSlider.Minimum = changedSlider.Value - 10;
+                changedSlider.Maximum = changedSlider.Value + 10;
 
                 string slider = changedSlider.Name;
 
