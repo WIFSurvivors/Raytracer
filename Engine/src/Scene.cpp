@@ -65,6 +65,7 @@ void Scene::generate_sample_content() {
   LOG_NEW_LINE();
 
   auto a = create_asset("test");
+  
   LOG(std::format("1) Asset {} {}", a._path.string(),  boost::uuids::to_string(a._uuid)));
   auto b = create_asset("test");
   LOG(std::format("2) Asset {} {}", b._path.string(),  boost::uuids::to_string(b._uuid)));
@@ -127,8 +128,8 @@ void Scene::generate_sample_content() {
                                glm::vec2{0.0f, 1.0f}};
 
   auto root_ptr = get_root().lock();
-  _render_system.create_component(root_ptr.get(), v2, u2);
-  _render_system.create_component(root_ptr.get(), v3, u3);
+  _render_system.create_component(root_ptr.get());
+  //_render_system.create_component(root_ptr.get(), v3, u3);
 
   LOG_NEW_LINE();
   LOG(std::string(100, '*'));

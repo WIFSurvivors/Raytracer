@@ -41,25 +41,40 @@ struct FrameSnapshot;
  *	- Do we really need a separate class for shaders
  */
 struct RenderSystem : public System<RenderComponent> {
-  RenderSystem(UUIDManager *um, WindowManager *wm, CameraSystem *cs, LightSystem *ls, AssetManager::DefaultAssets *da);
+  RenderSystem(UUIDManager *um, WindowManager *wm, CameraSystem *cs,
+               LightSystem *ls, AssetManager::DefaultAssets *da);
 
   void init();
   void update(const FrameSnapshot &snapshot); // represents render
   void destroy();
 
-  RenderComponent *create_component(Entity *e, std::optional<AssetManager::Asset> obj_asset = {}, std::optional<AssetManager::Asset> mtl_asset = {}, std::optional<AssetManager::Asset> shader_asset = {});
-  RenderComponent *create_component(Entity *e, uuid id, std::optional<AssetManager::Asset> obj_asset = {}, std::optional<AssetManager::Asset> mtl_asset = {}, std::optional<AssetManager::Asset> shader_asset = {});
-  RenderComponent *create_component(Entity *e,
-                                    const std::vector<glm::vec3> &vertices,
-                                    const std::vector<glm::vec2> &UV, std::optional<AssetManager::Asset> obj_asset = {}, std::optional<AssetManager::Asset> mtl_asset = {}, std::optional<AssetManager::Asset> shader_asset = {});
-  RenderComponent *create_component(Entity *e, uuid id,
-                                    const std::vector<glm::vec3> &vertices,
-                                    const std::vector<glm::vec2> &UV, std::optional<AssetManager::Asset> obj_asset = {}, std::optional<AssetManager::Asset> mtl_asset = {}, std::optional<AssetManager::Asset> shader_asset = {});
+  RenderComponent *
+  create_component(Entity *e, std::optional<AssetManager::Asset> obj_asset = {},
+                   std::optional<AssetManager::Asset> mtl_asset = {},
+                   std::optional<AssetManager::Asset> shader_asset = {});
+  RenderComponent *
+  create_component(Entity *e, uuid id,
+                   std::optional<AssetManager::Asset> obj_asset = {},
+                   std::optional<AssetManager::Asset> mtl_asset = {},
+                   std::optional<AssetManager::Asset> shader_asset = {});
+  RenderComponent *
+  create_component(Entity *e, const std::vector<glm::vec3> &vertices,
+                   const std::vector<glm::vec2> &UV,
+                   std::optional<AssetManager::Asset> obj_asset = {},
+                   std::optional<AssetManager::Asset> mtl_asset = {},
+                   std::optional<AssetManager::Asset> shader_asset = {});
+  RenderComponent *
+  create_component(Entity *e, uuid id, const std::vector<glm::vec3> &vertices,
+                   const std::vector<glm::vec2> &UV,
+                   std::optional<AssetManager::Asset> obj_asset = {},
+                   std::optional<AssetManager::Asset> mtl_asset = {},
+                   std::optional<AssetManager::Asset> shader_asset = {});
 
   inline virtual const std::string get_name() const final {
     return "Render System";
   }
 
+  void setTextures();
   //  temporal
   //  we need, this because Render System is responsible for the window and
   //  input handling
@@ -86,9 +101,21 @@ private:
   GLuint ssbo_mats;
   GLuint ssbo_matsIDX;
   GLuint _vao;
-  std::vector<glm::vec3> v = {glm::vec3{-0.5f, -0.5f, 0.0f},
-                              glm::vec3{0.5f, -0.5f, 0.0f},
-                              glm::vec3{0.0f, 0.5f, 0.0f}};
+  GLuint _vbo;
+  GLuint _uvVBO;
+  GLuint _textU;
+  GLuint _modelU;
+  
+  GLuint _textureID;
+  std::vector<glm::vec3> _vertices = {
+      glm::vec3{-1.0f, -1.0f, 0.0f}, glm::vec3{1.0f, -1.0f, 0.0f},
+      glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, -1.0f, 0.0f},
+      glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, 1.0f, 0.0f}};
+
+  int _nverticesCanvas = 6; // Number of vertices of Canvas
+  std::vector<glm::vec2> _uv = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 0.0f},
+                                glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 0.0f},
+                                glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 1.0f}};
 
   glm::vec3 _cameraPosition;
   glm::vec3 _cameraDirection;
@@ -96,7 +123,9 @@ private:
 
   glm::mat4 _viewMatrix;
   glm::mat4 _projectionMatrix;
+  
 
+  glm::mat4 _modelMatrix_Canvas = glm::mat4(1.0f);
   GLuint _timeU;
   GLuint _cameraU;
   GLuint _projU;

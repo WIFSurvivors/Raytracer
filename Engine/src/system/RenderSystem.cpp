@@ -70,6 +70,26 @@ void RenderSystem::init() {
       std::make_pair(GL_COMPUTE_SHADER, compute_shader_file.string())};
   compute = std::make_unique<Shader>(computeShader);
 
+  /*********************************************************************************/
+
+  glGenBuffers(1, &_vbo);
+  glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+
+  glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(glm::vec3),
+               _vertices.data(), GL_STATIC_DRAW);
+
+  glGenBuffers(1, &_uvVBO);
+
+  glBindBuffer(GL_ARRAY_BUFFER, _uvVBO);
+
+  glBufferData(GL_ARRAY_BUFFER, _uv.size() * sizeof(glm::vec2), _uv.data(),
+               GL_STATIC_DRAW);
+
+  setTextures();
+
+  _textU = glGetUniformLocation(program->programID, "text");
+  _modelU = glGetUniformLocation(program->programID, "MVP");
+  /*********************************************************************************/
   _cameraPosition = glm::vec3(0.0f, 8.0f, 15.0f);
   _cameraDirection = glm::vec3(0.0f, 3.0f, 0.0f);
   _viewMatrix =
@@ -257,6 +277,23 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   program->activateShader();
   glBindVertexArray(_vao);
 
+/*********************************************************************************/
+
+  glUniform1i(_textU, 0);
+  glUniformMatrix4fv(_modelU, 1, GL_FALSE, &_modelMatrix_Canvas[0][0]);
+
+  glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+  glEnableVertexAttribArray(0);
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
+                        reinterpret_cast<void *>(0));
+
+  glBindBuffer(GL_ARRAY_BUFFER, _uvVBO);
+  glEnableVertexAttribArray(1);
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float),
+                        reinterpret_cast<void *>(0));
+
+  glDrawArrays(GL_TRIANGLES, 0, _nverticesCanvas);
+/*********************************************************************************/
   for (auto &&c : _components) {
     c.second->update(snapshot);
   }
@@ -357,3 +394,35 @@ void RenderSystem::print() {
   vt.print(std::cout);
   std::cout << std::endl;
 }
+
+
+void RenderSystem::setTextures() {
+#if SHOW_UI
+  //  Generate n = 1 texture IDs
+  glGenTextures(1, &_textureID);
+
+  //  Activate Texture unit GL_TEXTURE0
+  glActiveTexture(GL_TEXTURE0);
+
+  //  Binds new OpenGL texture to the TextureID
+  //  It means all future texture functions will modify specified texture
+  glBindTexture(GL_TEXTURE_2D, _textureID);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+  //  Loads the texture data "NULL" to OpenGL
+  //  TODO
+  //  For now it takes 800 800 as screen size, but later it should be as big as
+  //  texture
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 800, 800, 0, GL_RGBA, GL_FLOAT,
+               NULL);
+
+  //  Specifies the mipmap level = 0 of the texture
+  glBindImageTexture(0, _textureID, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+  glActiveTexture(GL_TEXTURE0);
+  glBindTexture(GL_TEXTURE_2D, _textureID);
+#endif
+}
+
