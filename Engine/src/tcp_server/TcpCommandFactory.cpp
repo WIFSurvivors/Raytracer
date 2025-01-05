@@ -9,10 +9,13 @@
 #include "includes/tcp_server/Commands/GetComponentsCommand.hpp"
 #include "includes/tcp_server/Commands/GetEntityOptionsCommand.hpp"
 #include "includes/tcp_server/Commands/ImportJsonCommand.hpp"
+#include "includes/tcp_server/Commands/ExportJsonCommand.hpp"
 #include "includes/tcp_server/Commands/CreateEntityCommand.hpp"
 #include "includes/tcp_server/Commands/GetComponentOptionsCommand.hpp"
 #include "includes/tcp_server/Commands/SetComponentOptionsCommand.hpp"
 #include "includes/tcp_server/Commands/CreateComponentCommand.hpp"
+#include "includes/tcp_server/Commands/GetBouncesCommand.hpp"
+#include "includes/tcp_server/Commands/SetBouncesCommand.hpp"
 #include "includes/tcp_server/Commands/GetLogPath.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/string_generator.hpp>
@@ -86,6 +89,18 @@ TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
   else if (command_string.compare(CREATE_COMPONENT_COMMAND) == 0) {
     LOG_TCP("Create CreateComponentCommand");
     return std::make_unique<CreateComponentCommand>(_uuid, parameters[0]);
+  }
+  else if (command_string.compare(GET_BOUNCES_COMMAND) == 0) {
+    LOG_TCP("Create GetBouncesCommand");
+    return std::make_unique<GetBouncesCommand>();
+  }
+  else if (command_string.compare(SET_BOUNCES_COMMAND) == 0) {
+    LOG_TCP("Create SetBouncesCommand");
+    return std::make_unique<SetBouncesCommand>(std::stoi(parameters[0]));
+  }
+  else if (command_string.compare(EXPORT_JSON_COMMAND) == 0) {
+    LOG_TCP("Create ExportJsonCommand");
+    return std::make_unique<ExportJsonCommand>(parameters[0]);
   }
   else if (command_string.compare(GET_LOG_PATH_COMMAND) == 0) {
     LOG_TCP("Create GetLogPathCommand");

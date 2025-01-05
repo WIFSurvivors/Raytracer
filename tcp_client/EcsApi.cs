@@ -96,4 +96,18 @@ public class EcsApi
     {
         return _client.Send("GetLogPath null");
     }
+
+    public string export_Json(String path)
+    {
+        return _client.Send(String.Format("ExportJson null {0}", path));
+    }
+
+    public string get_bounces()
+    {
+        return _client.Send("GetBounces");
+    }
+    public string set_bounces(int bounces)
+    {
+        return _client.Send(String.Format("SetBounces null {0}", bounces));
+    }
 }

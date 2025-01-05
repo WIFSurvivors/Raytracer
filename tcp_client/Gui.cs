@@ -22,6 +22,11 @@ public class Gui
             string message1 = api.get_child_entities(thing);
             string message2 = api.create_entity(thing, "test");
             string message6 = api.create_component(thing, "light");
+            string message7 = api.create_component(thing, "camera");
+            string message8 = api.create_component(thing, "render");
+            string message9 = api.get_bounces();
+            string message10 = api.set_bounces(1);
+            string message11 = api.export_Json("test");
             string message3 = api.get_components(thing);
             string message4 = api.get_root();
             string message22 = api.get_log_path();

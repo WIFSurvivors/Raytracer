@@ -56,6 +56,10 @@ struct RenderSystem : public System<RenderComponent> {
                                     const std::vector<glm::vec3> &vertices,
                                     const std::vector<glm::vec2> &UV, std::optional<AssetManager::Asset> obj_asset = {}, std::optional<AssetManager::Asset> mtl_asset = {}, std::optional<AssetManager::Asset> shader_asset = {});
 
+
+  inline void set_bounces(int bounce) { _bounces = bounce; }
+  inline int get_bounces() const { return _bounces; }
+
   inline virtual const std::string get_name() const final {
     return "Render System";
   }
@@ -72,7 +76,7 @@ private:
   CameraSystem *_cs;
   LightSystem *_ls;
   AssetManager::DefaultAssets *_da;
-
+  int _bounces = 4;
   using typename System::uuid;
 
 #if SHOW_UI

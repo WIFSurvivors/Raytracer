@@ -13,6 +13,9 @@ set(TCP_COMMANDS_HEADERS
     SetComponentOptionsCommand.hpp
     CreateComponentCommand.hpp
     GetLogPath.hpp
+    ExportJsonCommand.hpp
+    SetBouncesCommand.hpp
+    GetBouncesCommand.hpp
 )
 
 list(TRANSFORM TCP_COMMANDS_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
