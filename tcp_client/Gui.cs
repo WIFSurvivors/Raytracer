@@ -27,7 +27,7 @@ public class Gui
             string message22 = api.get_log_path();
             //uncomment which one you dont need
             //camera
-            string message5 = api.set_component_option(thing, "{\"is_main_camera\":false,\"fov\":6E33}");
+            string message5 = api.set_component_option(thing, "{\"is_main_camera\":false,\"fov\":120.0}");
             //light
             string message33 = api.set_component_option(thing, "{\"r\":1.0000000149011612E1,\"g\":1.0000000149011612E1,\"b\":1E-2,\"intensity\":1.5E1}");
 
