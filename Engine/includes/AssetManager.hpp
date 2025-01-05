@@ -9,6 +9,7 @@
 #include <filesystem>
 #include <vector>
 #include <format>
+#include <string>
 
 #ifndef SHADER_RELATIVE_PATH
 #define SHADER_RELATIVE_PATH "shaders"
@@ -38,7 +39,7 @@ namespace fs = std::filesystem;
 struct AssetManager : public Storage<fs::path> {
   const std::string get_name() const override { return "Asset Manager"; }
 
-  AssetManager(UUIDManager *um) : Storage(um) {
+  explicit AssetManager(UUIDManager *um) : Storage(um) {
     LOG(std::format("created {}", get_name()));
   }
 
@@ -97,14 +98,12 @@ struct AssetManager : public Storage<fs::path> {
   };
 
   struct DefaultAssets {
-    DefaultAssets(AssetManager *am)
-        : shader(am, get_relative_shader_folder_path() /
-                         "default_shader"),
-          mtl(am, get_relative_asset_folder_path() / "default.mtl"),
-          obj(am, get_relative_asset_folder_path() / "default.obj") {}
-    Asset shader;
-    Asset mtl;
-    Asset obj;
+    explicit DefaultAssets(AssetManager *am) : shader(am, std::filesystem::path(SHADER_ABSOLUTE_PATH) / "default_shader"),
+                                      mtl(am, std::filesystem::path(ASSET_ABSOLUTE_PATH) / "default.mtl"),
+                                      obj(am, std::filesystem::path(ASSET_ABSOLUTE_PATH) / "default.obj") {}
+     Asset shader;
+     Asset mtl;
+     Asset obj;
   };
 
   inline void set(uuid id, fs::path path) {

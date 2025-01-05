@@ -65,6 +65,7 @@ void Scene::generate_sample_content() {
   LOG_NEW_LINE();
 
   auto a = create_asset("test");
+  
   LOG(std::format("1) Asset {} {}", a._path.string(),  boost::uuids::to_string(a._uuid)));
   auto b = create_asset("test");
   LOG(std::format("2) Asset {} {}", b._path.string(),  boost::uuids::to_string(b._uuid)));
@@ -93,15 +94,18 @@ void Scene::generate_sample_content() {
 
   // =================== LIGHT =====================
   auto c2 = _light_system.create_component(e3.get());
-  c2->set_color(0.8576f, 0.1f, 0.1f);
+  /*c2->set_color(0.8576f, 0.1f, 0.1f);*/
+  c2->set_color(1.0f, 1.0f, 1.0f);
   c2->set_intensity(25.f);
 
   auto c3 = _light_system.create_component(e4.get());
-  c3->set_color(0.1f, 0.96752f, 0.1f);
+  /*c3->set_color(0.1f, 0.96752f, 0.1f);*/
+  c3->set_color(1.0f, 1.0f, 1.0f);
   c3->set_intensity(25.f);
 
   auto c4 = _light_system.create_component(e5.get());
-  c4->set_color(0.1f, 0.1f, 1.f);
+  /*c4->set_color(0.1f, 0.1f, 1.f);*/
+  c4->set_color(1.0f, 1.0f, 1.0f);
   c4->set_intensity(15.f);
 
   // =================== RENDER =====================
@@ -124,8 +128,8 @@ void Scene::generate_sample_content() {
                                glm::vec2{0.0f, 1.0f}};
 
   auto root_ptr = get_root().lock();
-  _render_system.create_component(root_ptr.get(), v2, u2);
-  _render_system.create_component(root_ptr.get(), v3, u3);
+  _render_system.create_component(root_ptr.get());
+  //_render_system.create_component(root_ptr.get(), v3, u3);
 
   LOG_NEW_LINE();
   LOG(std::string(100, '*'));

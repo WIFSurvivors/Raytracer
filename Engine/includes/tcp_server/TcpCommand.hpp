@@ -3,6 +3,7 @@
 #include <string>
 #include <boost/uuid/uuid.hpp>
 #include <memory>
+#include <vector>
 
 struct Engine;
 

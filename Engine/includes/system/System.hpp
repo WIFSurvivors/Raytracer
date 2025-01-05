@@ -30,7 +30,7 @@ concept is_base_of_component = std::is_base_of<IComponent, T>::value;
 template <is_base_of_component T> struct System : public IStorage {
   using uuid = boost::uuids::uuid;
 
-  System(UUIDManager *um)
+  explicit System(UUIDManager *um)
       : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/
   }
   ~System() override = default;

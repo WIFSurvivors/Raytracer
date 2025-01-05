@@ -6,6 +6,7 @@
 #include <functional>
 #include <optional>
 #include <string>
+#include <map>
 
 /**
  * Defines Getter via UUID by returning an optional object pointer.
@@ -14,7 +15,7 @@
 template <class T> struct Storage : public IStorage {
   using uuid = boost::uuids::uuid;
   
-  Storage(UUIDManager *um) : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/ }
+  explicit Storage(UUIDManager *um) : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/ }
   virtual ~Storage() = default;
 
   inline virtual std::optional<uuid> get(T obj){

@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <memory>
+#include <string>
 
 struct FrameSnapshot;
 
@@ -33,9 +34,9 @@ struct RenderComponent : public IComponent {
                   const std::vector<glm::vec2> &UV);
   virtual ~RenderComponent();
 
-  void update(const FrameSnapshot& snapshot) override;
+  void update(const FrameSnapshot &snapshot) override;
 
-  // in theory not required? entity controls the position of an object
+  // in theory not req uired? entity controls the position of an object
   // update modelMatrix based on the entity instead
   void translate(glm::vec3 dir);
 
@@ -43,6 +44,13 @@ struct RenderComponent : public IComponent {
 #if SHOW_UI
     _vertices = vertices;
     _nvertices = vertices.size();
+#endif
+  }
+
+  inline void set_indices(const std::vector<unsigned int> &indices) {
+
+#if SHOW_UI
+    _indices = indices;
 #endif
   }
   inline void set_uv(const std::vector<glm::vec2> &UV) {
@@ -56,54 +64,75 @@ struct RenderComponent : public IComponent {
   inline const GLuint get_textureID() { return _textureID; }
   inline const GLuint get_uvVBO() { return _textureID; }
 
-  inline const AssetManager::Asset  get_obj_asset() const { return *_obj_asset; }
-  inline void set_obj_asset(AssetManager::Asset obj_asset) { 
+  inline const AssetManager::Asset get_obj_asset() const { return *_obj_asset; }
+
+  inline void set_obj_asset(AssetManager::Asset obj_asset) {
     objl::Loader loader;
     loader.LoadFile(obj_asset.get_path().string());
     std::vector<glm::vec3> vertices;
-    for (const auto& vertex : loader.LoadedVertices) {
-        vertices.push_back(glm::vec3(vertex.Position.x, vertex.Position.y, vertex.Position.z));
-    }
-    //set_vertices(vertices);
-    for(const auto &ver: vertices) {
-      std::cout << ver.x << " " << ver.y << " " << ver.z << std::endl;
-    }
-    _obj_asset = std::make_shared<AssetManager::Asset>(obj_asset); }
-  inline void set_obj_asset(uuid obj_uuid) {  
-    _obj_asset->set_uuid(obj_uuid); 
-        objl::Loader loader;
-    loader.LoadFile(_obj_asset->get_path().string());
-    std::vector<glm::vec3> vertices;
-    for (const auto& vertex : loader.LoadedVertices) {
-        vertices.push_back(glm::vec3(vertex.Position.x, vertex.Position.y, vertex.Position.z));
+    for (const auto &vertex : loader.LoadedVertices) {
+      vertices.push_back(
+          glm::vec3(vertex.Position.x, vertex.Position.y, vertex.Position.z));
     }
     set_vertices(vertices);
+    for (const auto &ver : vertices) {
+      std::cout << ver.x << " " << ver.y << " " << ver.z << std::endl;
     }
+    _obj_asset = std::make_shared<AssetManager::Asset>(obj_asset);
+  }
+
+  inline void set_obj_asset(uuid obj_uuid) {
+    _obj_asset->set_uuid(obj_uuid);
+    objl::Loader loader;
+    loader.LoadFile(_obj_asset->get_path().string());
+    std::vector<glm::vec3> vertices;
+    for (const auto &vertex : loader.LoadedVertices) {
+      vertices.push_back(
+          glm::vec3(vertex.Position.x, vertex.Position.y, vertex.Position.z));
+    }
+    set_vertices(vertices);
+  }
   inline void set_obj_asset(std::filesystem::path obj_path) {
-        objl::Loader loader;
+    objl::Loader loader;
     loader.LoadFile(obj_path.string());
     std::vector<glm::vec3> vertices;
-    for (const auto& vertex : loader.LoadedVertices) {
-        vertices.push_back(glm::vec3(vertex.Position.x, vertex.Position.y, vertex.Position.z));
+    for (const auto &vertex : loader.LoadedVertices) {
+      vertices.push_back(
+          glm::vec3(vertex.Position.x, vertex.Position.y, vertex.Position.z));
     }
-    for( const auto& mat: loader.LoadedMaterials) {
+    for (const auto &mat : loader.LoadedMaterials) {
       std::cout << mat.name << std::endl;
     }
     set_vertices(vertices);
-    _obj_asset->set_path(obj_path);  }
+    _obj_asset->set_path(obj_path);
+  }
 
   inline const AssetManager::Asset get_mtl_asset() const { return *_mtl_asset; }
-  inline void set_mtl_asset(AssetManager::Asset mtl_asset) { _mtl_asset = std::make_shared<AssetManager::Asset>(mtl_asset); }
-  inline void set_mtl_asset(std::filesystem::path mtl_path) {_mtl_asset->set_path(mtl_path);  }
+  inline void set_mtl_asset(AssetManager::Asset mtl_asset) {
+    _mtl_asset = std::make_shared<AssetManager::Asset>(mtl_asset);
+  }
+  inline void set_mtl_asset(std::filesystem::path mtl_path) {
+    _mtl_asset->set_path(mtl_path);
+  }
   inline void set_mtl_asset(uuid mtl_uuid) { _mtl_asset->set_uuid(mtl_uuid); }
 
-  inline const AssetManager::Asset get_shader_asset() const { return *_shader_asset; }
-  inline void set_shader_asset(AssetManager::Asset shader_asset) { _shader_asset = std::make_shared<AssetManager::Asset>(shader_asset); }
-  inline void set_shader_asset(std::filesystem::path shader_path) {_shader_asset->set_path(shader_path);  }
-  inline void set_shader_asset(uuid shader_uuid) { _shader_asset->set_uuid(shader_uuid); }
-  #if SHOW_UI
-  inline void get_vertices(std::vector<glm::vec3> &vertices) { vertices = _vertices; }
-  #endif
+  inline const AssetManager::Asset get_shader_asset() const {
+    return *_shader_asset;
+  }
+  inline void set_shader_asset(AssetManager::Asset shader_asset) {
+    _shader_asset = std::make_shared<AssetManager::Asset>(shader_asset);
+  }
+  inline void set_shader_asset(std::filesystem::path shader_path) {
+    _shader_asset->set_path(shader_path);
+  }
+  inline void set_shader_asset(uuid shader_uuid) {
+    _shader_asset->set_uuid(shader_uuid);
+  }
+#if SHOW_UI
+  inline std::vector<glm::vec3> get_vertices() {
+    return _vertices;
+  }
+#endif
   void set_from_json(boost::json::object obj) override;
 
 protected:
@@ -111,7 +140,6 @@ protected:
 
 private:
   void destroy();
-  
 
   // void setVertices(); // for now does nothing but later here we can load an
   // object
@@ -134,12 +162,10 @@ private:
   glm::mat4 _viewMatrix;       // shouldn't be here
   glm::mat4 _projectionMatrix; // shouldn't be here
 
-  std::vector<glm::vec3> _vertices = {
-      glm::vec3{-1.0f, -1.0f, 0.0f}, glm::vec3{1.0f, -1.0f, 0.0f},
-      glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, -1.0f, 0.0f},
-      glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, 1.0f, 0.0f}};
+  std::vector<glm::vec3> _vertices;
+  std::vector<unsigned int> _indices;
 
-  int _nvertices = 6; // Number of vertices
+  int _nvertices=0; // Number of vertices
 
   std::vector<glm::vec2> _uv = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 0.0f},
                                 glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 0.0f},

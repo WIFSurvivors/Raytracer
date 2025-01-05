@@ -1,0 +1,94 @@
+newmtl default
+	Ns 32
+	d 1
+	illum 2
+	Kd 0.4 0.4 0.4
+	Ks 0.7 0.7 0.7
+	Ka 0.3 0.3 0.3
+
+
+newmtl or_isabelle
+	Ns 21
+	d 1
+	illum 2
+	Kd 0.427451 0.384314 0.309804
+	Ks 1.7 1.52844 1.23211
+	Ka 0.0313726 0.0196078 0
+
+newmtl chrome_lang
+	Ns 21
+	d 1
+	illum 2
+	Kd 0.317647 0.354902 0.345098
+	Ks 1.52155 1.7 1.65304
+	Ka 0.0313726 0.0196078 0
+
+newmtl material__8
+	Ns 32
+	d 1
+	illum 2
+	Kd 0.4 0.4 0.4
+	Ks 0.7 0.7 0.7
+	Ka 0.3 0.3 0.3
+
+newmtl material__25
+	Ns 32
+	d 1
+	illum 2
+	Kd 0.4 0.4 0.4
+	Ks 0.7 0.7 0.7
+	Ka 0.3 0.3 0.3
+
+newmtl material__26
+	Ns 32
+	d 1
+	illum 2
+	Kd 0.4 0.4 0.4
+	Ks 0.7 0.7 0.7
+	Ka 0.3 0.3 0.3
+
+
+
+newmtl proc_face
+	Ns 16
+	d 1
+	illum 2
+	Kd 0.0705882 0.0705882 0.0705882
+	Ks 0.583725 0.583725 0.583725
+	Ka 0.0705882 0.0705882 0.0705882
+	map_Kd proc_face.tif
+
+newmtl or
+	Ns 21
+	d 1
+	illum 2
+	Kd 0.427451 0.384314 0.309804
+	Ks 1.7 1.52844 1.23211
+	Ka 0.0313726 0.0196078 0
+
+newmtl chrome
+	Ns 21
+	d 1
+	illum 2
+	Kd 0.317647 0.354902 0.345098
+	Ks 1.52155 1.7 1.65304
+	Ka 0.0313726 0.0196078 0
+
+newmtl proc_support
+	Ns 6
+	d 1
+	illum 2
+	Kd 0.513726 0.137255 0.568627
+	Ks 0.044902 0.044902 0.044902
+	Ka 0.396809 0.106018 0.439216
+	map_Kd proc_support.tif
+
+newmtl proc_dos
+	Ns 6
+	d 1
+	illum 2
+	Kd 0.498039 0.498039 0.498039
+	Ks 0.044902 0.044902 0.044902
+	Ka 0.439216 0.439216 0.439216
+	map_Kd proc_dos.tif
+
