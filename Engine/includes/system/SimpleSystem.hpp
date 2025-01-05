@@ -21,7 +21,7 @@ struct SimpleSystem : public System<SimpleComponent> {
 
   void print() override;
 
-  inline virtual const std::string get_name() const final {
+  inline const std::string get_name() const final {
     return "Simple System";
   }
 

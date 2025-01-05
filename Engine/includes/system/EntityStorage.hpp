@@ -20,7 +20,7 @@ struct EntityStorage : public Storage<Entity*> {
   
   explicit EntityStorage(UUIDManager *um);
 
-  inline virtual const std::string get_name() const final {
+  inline const std::string get_name() const final {
     return "Entity Storage";
   }
   
