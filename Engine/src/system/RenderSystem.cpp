@@ -70,7 +70,7 @@ void RenderSystem::init() {
       std::make_pair(GL_COMPUTE_SHADER, compute_shader_file.string())};
   compute = std::make_unique<Shader>(computeShader);
 
-  /*********************************************************************************/
+  /**************************************************************************/
 
   glGenBuffers(1, &_vbo);
   glBindBuffer(GL_ARRAY_BUFFER, _vbo);
@@ -89,7 +89,7 @@ void RenderSystem::init() {
 
   _textU = glGetUniformLocation(program->programID, "text");
   _modelU = glGetUniformLocation(program->programID, "MVP");
-  /*********************************************************************************/
+  /**************************************************************************/
   _cameraPosition = glm::vec3(0.0f, 8.0f, 15.0f);
   _cameraDirection = glm::vec3(0.0f, 3.0f, 0.0f);
   _viewMatrix =
@@ -116,7 +116,7 @@ void RenderSystem::init() {
   _ls_colorsU = glGetUniformLocation(compute->programID, "ls_colors");
   _ls_intensitiesU = glGetUniformLocation(compute->programID, "ls_intensities");
 
-  /*********************************************************************************/
+  /**************************************************************************/
   std::vector<Triangle> triforce1 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
   std::vector<Triangle> triforce2 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
   std::vector<Triangle> triforce3 = createCube(glm::vec3{-2.0f, 0.0f, 0.0f});
@@ -141,7 +141,7 @@ void RenderSystem::init() {
       glm::vec3(0.0f, 0.6f, 0.9f),
       0.0f,
   }; // Bright red, more reflective
-  /*********************************************************************************/
+  /**************************************************************************/
 
   std::vector<ObjectData> data;
   data.push_back(ObjectData(triforce1, Material1));
@@ -277,7 +277,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   program->activateShader();
   glBindVertexArray(_vao);
 
-/*********************************************************************************/
+/****************************************************************************/
 
   glUniform1i(_textU, 0);
   glUniformMatrix4fv(_modelU, 1, GL_FALSE, &_modelMatrix_Canvas[0][0]);
@@ -293,7 +293,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
                         reinterpret_cast<void *>(0));
 
   glDrawArrays(GL_TRIANGLES, 0, _nverticesCanvas);
-/*********************************************************************************/
+/****************************************************************************/
   for (auto &&c : _components) {
     c.second->update(snapshot);
   }

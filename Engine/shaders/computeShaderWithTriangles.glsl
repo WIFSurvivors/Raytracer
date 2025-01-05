@@ -97,8 +97,8 @@ struct Light {
 
 /*********************************************************************************/
 // VARIABLES
-const int hittableCount = 60;
-const int MAX_RECURSION_DEPTH = 4;
+int hittableCount = 60;
+int MAX_RECURSION_DEPTH = 4;
 
 const int STACK_SIZE = 128;
 Ray stack[STACK_SIZE];
@@ -275,10 +275,10 @@ bvh_return processBVH(Ray currentRay) {
             pushb(currentNode.rightChild);
         }
     }
-    return bvh_return(t,index);
+    return bvh_return(t, index);
 }
 
-bool processBVH_Shadow( Ray currentRay, int originObject, float distance) {
+bool processBVH_Shadow(Ray currentRay, int originObject, float distance) {
     float t = 5e+10;
     int index = -1;
 
@@ -292,7 +292,7 @@ bool processBVH_Shadow( Ray currentRay, int originObject, float distance) {
 
         if (currentNode.isLeaf == 1) {
             for (int i = 0; i < currentNode.count; ++i) {
-				if(currentNode.start + i == originObject) continue;
+                if (currentNode.start + i == originObject) continue;
                 int firstVertexIndex = triIdx[currentNode.start + i];
                 vec3 v00 = trivertex[firstVertexIndex * 3];
                 vec3 v11 = trivertex[firstVertexIndex * 3 + 1];
@@ -312,8 +312,8 @@ bool processBVH_Shadow( Ray currentRay, int originObject, float distance) {
         }
     }
 
-  if(t > 0.0 && t < distance) return true;
-  return false;
+    if (t > 0.0 && t < distance) return true;
+    return false;
 }
 
 bool isInShadowTriangleAlt(Ray r, int originObject, float distance) {
@@ -339,10 +339,10 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
     while (!isEmpty()) {
         Ray currentRay = pop();
         if (currentRay.depth >= MAX_RECURSION_DEPTH) continue;
-		//bvh_return ret = bvh_return(5e+10,-1);
-		bvh_return ret = processBVH(currentRay);
-		float t = ret.t;
-		int index = ret.index;
+        //bvh_return ret = bvh_return(5e+10,-1);
+        bvh_return ret = processBVH(currentRay);
+        float t = ret.t;
+        int index = ret.index;
 
         if (t >= 0.0 && index != -1) {
 
@@ -403,12 +403,17 @@ vec4 rayColor(Ray r) {
     //return CalcColorWithLightSourcesTriangle(trianglesCube1, r, lightSources);
 }
 
+void handleUniforms() {
+    hittableCount = hittable;
+    MAX_RECURSION_DEPTH = bounce;
+}
+
 void main() {
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
     ivec2 dims = imageSize(textureOutput);
     float x = float(pixelCoords.x * 2 - dims.x) / dims.x; // transforms to [-1.0, 1.0]
     float y = float(pixelCoords.y * 2 - dims.y) / dims.y; // transforms to [-1.0, 1.0]
-
+	handleUniforms();
     vec3 rayOrigin = cameraPos - vec3(0.0, 5.0, 5.0); // Origin of the inital ray
 
     //ray in clip
