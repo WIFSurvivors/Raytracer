@@ -14,6 +14,7 @@ int main() {
   Log::get_instance().display_color_demo();
   Log::get_instance().init_file();
   Log::get_instance().clear_buffer();
+
 #if SHOW_UI
   LOG("=== APP STARTED | UI=ON ===")
 #else

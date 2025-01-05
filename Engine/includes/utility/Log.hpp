@@ -21,8 +21,16 @@
 #define ROOT_ABSOLUTE_PATH "/this_is_an_error/"
 #endif
 
-#ifndef LOG_ABSOLUTE_PATH
-#define LOG_ABSOLUTE_PATH "/this_is_an_error/"
+#ifndef LOG_RELATIVE_PATH
+#define LOG_RELATIVE_PATH "/this_is_an_error/"
+#endif
+
+#ifndef SHADER_RELATIVE_PATH
+#define SHADER_RELATIVE_PATH "/this_is_an_error/"
+#endif
+
+#ifndef ASSET_RELATIVE_PATH
+#define ASSET_RELATIVE_PATH "/this_is_an_error/"
 #endif
 
 #define LOG_ERROR(msg)		Log::get_instance().print(msg, Log::Level::Error);
@@ -35,6 +43,11 @@
 #define LOG_FILE_PATH       Log::get_instance().get_file_path()
 
 namespace fs = std::filesystem;
+
+inline fs::path get_root_pathadad() { return fs::path{"."}; }
+constexpr std::string get_root_path() { return fs::path{"."}.string(); }
+constexpr std::string get_shader_path() { return fs::path{"."}.string(); }
+
 
 struct Log {
   inline static Log &get_instance() {
