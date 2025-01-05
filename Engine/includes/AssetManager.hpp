@@ -20,7 +20,7 @@
 #endif
 
 inline const fs::path get_relative_shader_folder_path() {
-  return fs::path(fs::path(".") / SHADER_RELATIVE_PATH);
+  return fs::path(SHADER_RELATIVE_PATH);
 }
 
 inline const fs::path get_absolute_shader_folder_path() {
@@ -28,7 +28,7 @@ inline const fs::path get_absolute_shader_folder_path() {
 }
 
 inline const fs::path get_relative_asset_folder_path() {
-  return fs::path(fs::path(".") / ASSET_RELATIVE_PATH);
+  return fs::path(ASSET_RELATIVE_PATH);
 }
 
 inline const fs::path get_absolute_asset_folder_path() {

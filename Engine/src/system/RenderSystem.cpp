@@ -7,6 +7,7 @@
 #include "includes/utility/Log.hpp"
 #include "includes/utility/FrameSnapshot.hpp"
 #include "includes/utility/bvhtree_tiny.hpp"
+#include "includes/AssetManager.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glm/ext/matrix_transform.hpp>
@@ -18,10 +19,6 @@
 #include <iostream>
 #include <filesystem>
 #include <map>
-
-#ifndef SHADER_ABSOLUTE_PATH
-#define SHADER_ABSOLUTE_PATH "wawawaww"
-#endif
 
 // #define SHOW_UI true
 
@@ -49,7 +46,7 @@ void RenderSystem::init() {
     return;
   }
 
-  std::filesystem::path shader_folder(SHADER_ABSOLUTE_PATH);
+  std::filesystem::path shader_folder(get_relative_shader_folder_path());
   std::filesystem::path compute_shader_file =
       shader_folder / "computeShaderWithTriangles.glsl";
   std::filesystem::path vertex_shader_file =
