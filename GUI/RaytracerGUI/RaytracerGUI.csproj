@@ -36,6 +36,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.6.1" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="fonts\lucon.ttf" />
     <Resource Include="images\arrow-back.png" />
     <Resource Include="images\arrow-down.png" />
