@@ -112,26 +112,27 @@ struct RenderComponent : public IComponent {
       renderMesh._vertices.clear();
       renderMesh._indices.clear();
       for (const auto &vertex : mesh.Vertices) {
+		
         renderMesh._vertices.push_back(
+
             glm::vec3(vertex.Position.x, vertex.Position.y, vertex.Position.z));
       }
       renderMesh._indices.insert(renderMesh._indices.end(),
                                  mesh.Indices.begin(), mesh.Indices.end());
       renderMesh.MeshMaterial = mesh.MeshMaterial;
 
-      for (int i = 0; i < mesh.Indices.size(); i++) {
-        std::cout << "T " << i << "\t: ( " << mesh.Vertices[i].Position.x
-                  << " , " << mesh.Vertices[i].Position.y << " , "
-                  << mesh.Vertices[i].Position.z << " ) \n";
-        std::cout << "( " << mesh.Vertices[i + 1].Position.x << " , "
-                  << mesh.Vertices[i + 1].Position.y << " , "
-                  << mesh.Vertices[i + 1].Position.z << " ) \n";
-        std::cout << "( " << mesh.Vertices[i + 2].Position.x << " , "
-                  << mesh.Vertices[i + 2].Position.y << " , "
-                  << mesh.Vertices[i + 2].Position.z << " ) \n";
-      }
       _meshes.push_back(renderMesh);
     }
+	
+	for(const auto& mesh : _meshes){
+	  std::cout << "Duuchlauf\n";
+	  for(const auto& v: mesh._vertices){
+		std::cout << "V: " << v.x << "|" << v.y << "|" <<v.z << std::endl;
+	  }
+	  for(int i = 0 ; i < mesh._indices.size() ; i+=3){
+		std::cout << "T: " << mesh._indices[i]<< "|" <<mesh._indices[i+1]<< "|"<< mesh._indices[i+2] << std::endl;
+	  }
+	}
 
     // loader.LoadedMeshes[0]
     // set_vertices(vertices);
@@ -158,17 +159,6 @@ struct RenderComponent : public IComponent {
                                  mesh.Indices.begin(), mesh.Indices.end());
       renderMesh.MeshMaterial = mesh.MeshMaterial;
       _meshes.push_back(renderMesh);
-      for (int i = 0; i < mesh.Indices.size(); i++) {
-        std::cout << "T " << i << "\t: ( " << mesh.Vertices[i].Position.x
-                  << " , " << mesh.Vertices[i].Position.y << " , "
-                  << mesh.Vertices[i].Position.z << " ) \n";
-        std::cout << "( " << mesh.Vertices[i + 1].Position.x << " , "
-                  << mesh.Vertices[i + 1].Position.y << " , "
-                  << mesh.Vertices[i + 1].Position.z << " ) \n";
-        std::cout << "( " << mesh.Vertices[i + 2].Position.x << " , "
-                  << mesh.Vertices[i + 2].Position.y << " , "
-                  << mesh.Vertices[i + 2].Position.z << " ) \n";
-      }
     }
   }
   inline void set_obj_asset(std::filesystem::path obj_path) {
@@ -190,15 +180,16 @@ struct RenderComponent : public IComponent {
       _meshes.push_back(renderMesh);
 
       for (int i = 0; i < mesh.Indices.size(); i++) {
-        std::cout << "T " << i << "\t: ( " << mesh.Vertices[i].Position.x
-                  << " , " << mesh.Vertices[i].Position.y << " , "
-                  << mesh.Vertices[i].Position.z << " ) \n";
-        std::cout << "( " << mesh.Vertices[i + 1].Position.x << " , "
-                  << mesh.Vertices[i + 1].Position.y << " , "
-                  << mesh.Vertices[i + 1].Position.z << " ) \n";
-        std::cout << "( " << mesh.Vertices[i + 2].Position.x << " , "
-                  << mesh.Vertices[i + 2].Position.y << " , "
-                  << mesh.Vertices[i + 2].Position.z << " ) \n";
+        std::cout << "Triangle : " << i << std::endl;
+        std::cout << "\t v0(" << mesh.Vertices[i].Position.x << ","
+                  << mesh.Vertices[i].Position.y << ","
+                  << mesh.Vertices[i].Position.z << ")" << std::endl;
+        std::cout << "\t v1(" << mesh.Vertices[i + 1].Position.x << ","
+                  << mesh.Vertices[i + 1].Position.y << ","
+                  << mesh.Vertices[i + 1].Position.z << ")" << std::endl;
+        std::cout << "\t v2(" << mesh.Vertices[i + 2].Position.x << ","
+                  << mesh.Vertices[i + 2].Position.y << ","
+                  << mesh.Vertices[i + 2].Position.z << ")" << std::endl;
       }
     }
     _obj_asset->set_path(obj_path);

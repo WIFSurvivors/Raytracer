@@ -80,7 +80,7 @@ void Scene::generate_sample_content() {
 
   // =================== ENTITIES =====================
   auto e1 = create_entity("camera");
-  e1->set_local_position(glm::vec3{0.f, +8.f, 15.f});
+  e1->set_local_position(glm::vec3{0.f, +0.f, 100.f});
   auto e2 = create_entity("light sources");
   auto e3 = create_entity("light red", e2);
   e3->set_local_position(glm::vec3{0, 5, 5});
@@ -90,13 +90,13 @@ void Scene::generate_sample_content() {
   e5->set_local_position(glm::vec3{0, 0, 5});
 
   // =================== CAMERA =====================
-  auto c1 = _camera_system.create_component(e1.get(), 60.f);
+  auto c1 = _camera_system.create_component(e1.get(), 120.f);
 
   // =================== LIGHT =====================
   auto c2 = _light_system.create_component(e3.get());
   /*c2->set_color(0.8576f, 0.1f, 0.1f);*/
   c2->set_color(1.0f, 1.0f, 1.0f);
-  c2->set_intensity(25.f);
+  c2->set_intensity(2500.f);
 
   auto c3 = _light_system.create_component(e4.get());
   /*c3->set_color(0.1f, 0.96752f, 0.1f);*/
@@ -131,7 +131,7 @@ void Scene::generate_sample_content() {
   */
 
   auto root_ptr = get_root().lock();
-  auto cpu_asset = create_asset("./assets/default.obj");
+  auto cpu_asset = create_asset("./assets/Teapot.obj");
   _render_system.create_component(root_ptr.get(), cpu_asset);
   //_render_system.create_component(root_ptr.get(), v3, u3);
 

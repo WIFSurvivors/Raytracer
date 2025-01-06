@@ -212,16 +212,8 @@ struct TreeBuilder {
 
         mats.push_back(Materials(mesh.MeshMaterial.Kd, 0.0f));
         for (int i = 0; i < mesh._indices.size(); i += 3) {
-          Triangle tri{mesh._vertices[i], mesh._vertices[i + 1],
-                       mesh._vertices[i + 2]};
-
-          std::cout << "Triangle : " << i << std::endl;
-          std::cout << "\t v0(" << tri.v0.x << "," << tri.v0.y << ","
-                    << tri.v0.z << ")" << std::endl;
-          std::cout << "\t v1(" << tri.v1.x << "," << tri.v1.y << ","
-                    << tri.v1.z << ")" << std::endl;
-          std::cout << "\t v2(" << tri.v2.x << "," << tri.v2.y << ","
-                    << tri.v2.z << ")" << std::endl;
+          Triangle tri{mesh._vertices[mesh._indices[i]], mesh._vertices[mesh._indices[i + 1]],
+                       mesh._vertices[mesh._indices[i + 2]]};
           inserted_triangles.push_back(tri);
           matIndx.push_back(mats.size() - 1);
         }
@@ -233,7 +225,7 @@ struct TreeBuilder {
 
     tree.Build(bvhData.data(), inserted_triangles.size());
     std::cout << "2\n";
-    // tree.Compact();
+    tree.Compact();
 
     triIdxData.assign(tree.triIdx, tree.triIdx + tree.triCount);
     if (tree.verts) { // Ensure verts is not null
