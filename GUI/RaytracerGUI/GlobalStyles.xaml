@@ -97,7 +97,7 @@
     <!-- Style for Rectangle -->
     <Style TargetType="Rectangle">
         <Setter Property="Stroke" Value="{StaticResource ComponentPrimaryColor}"/>
-        <Setter Property="StrokeThickness" Value="2"/>
+        <Setter Property="StrokeThickness" Value="0"/>
     </Style>
 
     <!-- Style for TextBox -->
@@ -160,8 +160,6 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-
-
 
 
     <!-- Style for Label -->

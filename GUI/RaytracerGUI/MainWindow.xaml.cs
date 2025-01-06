@@ -20,6 +20,7 @@ using System.Reflection.PortableExecutable;
 using System.Text.Json;
 using System;
 using System.Reflection;
+using System.Windows.Controls.Primitives;
 
 namespace RaytracerGUI
 {
@@ -51,7 +52,7 @@ namespace RaytracerGUI
         }
 
         //Menu clicks
-        private void generalMenuClick(object sender, RoutedEventArgs e)
+        private void FileMenuClick(object sender, RoutedEventArgs e)
         {
             MenuItem? clickedMenuItem = sender as MenuItem;
             OpenFileDialog openFileDialog;
@@ -127,6 +128,37 @@ namespace RaytracerGUI
                 }
             }
         }
+
+        private void AddMenuClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem clickedMenuItem)
+            {
+                // Der Name des angeklickten Menüelements wird verwendet
+                string itemName = clickedMenuItem.Name;
+
+                switch (itemName)
+                {
+                    case "mniAddRender":
+                        AddRenderComponent();
+                        tbxLog.AppendText($"{itemName} was clicked!\n");
+                        tbxLog.ScrollToEnd();
+                        break;
+
+                    case "mniAddLight":
+                        AddLightComponent();
+                        tbxLog.AppendText($"{itemName} was clicked!\n");
+                        tbxLog.ScrollToEnd();
+                        break;
+
+                    case "mniAddCamera":
+                        AddCameraComponent();
+                        tbxLog.AppendText($"{itemName} was clicked!\n");
+                        tbxLog.ScrollToEnd();
+                        break;
+                }
+            }
+        }
+
 
 
         //Button clicks
@@ -335,6 +367,8 @@ namespace RaytracerGUI
             }
         }
 
+
+        //Slider events
         private void SliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             Slider? changedSlider = sender as Slider;
@@ -465,9 +499,19 @@ namespace RaytracerGUI
                         break;
 
                     case "sldZoom":
-                        lblZoomMin.Content = minValue; 
+                        if(changedSlider.Value < 10) 
+                        { 
+                            changedSlider.Value = 10;
+                        }
+                        else if(changedSlider.Value > 100)
+                        {
+                            changedSlider.Value = 100;
+                        }
+
+                        changedSlider.Minimum = changedSlider.Value - 25;
+                        changedSlider.Maximum = changedSlider.Value + 25;
+                        medValue = Math.Round(changedSlider.Value, 0);
                         lblZoomMed.Content = medValue;
-                        lblZoomMax.Content = maxValue;
                         break;
                 }
 
@@ -762,33 +806,6 @@ namespace RaytracerGUI
         }
 
 
-        private void cmbAddComponent_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (cmbAddComponent.SelectedItem is ComboBoxItem selectedItem && selectedItem.Tag != null)
-            {
-                string methodTag = selectedItem.Tag.ToString();
-                switch (methodTag)
-                {
-                    case "RenderMethod":
-                        AddRenderComponent();
-                        break;
-                    case "LightMethod":
-                        AddLightComponent();
-                        break;
-                    case "CameraMethod":
-                        AddCameraComponent();
-                        break;
-                    case "NoMethod":
-                        break;
-                }
-                // Reset the ComboBox
-                cmbAddComponent.SelectedIndex = -1; // Clear selection
-                cmbAddComponent.Text = "Select Component";
-
-            }
-        }
-
-        
         private void AddRenderComponent()
         {
             if (_ecsApi != null)
@@ -842,6 +859,8 @@ namespace RaytracerGUI
                 }
             }
         }
+
+       
 
 
 

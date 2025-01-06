@@ -34,21 +34,28 @@ Closing="Window_Closing">
             <Grid VerticalAlignment="Center" Grid.Row="0">
                 <Menu VerticalAlignment="Top">
                     <MenuItem Header="File" Width="170">
-                        <MenuItem Name="mniOpen" Header="Open" Click="generalMenuClick"/>
-                        <MenuItem Name="mniSave" Header="Save" Click="generalMenuClick"/>
-                        <MenuItem Name="mniImport" Header="Import Scene" Click="generalMenuClick"/>
-                        <MenuItem Name="mniExport" Header="Export Scene" Click="generalMenuClick" />
-                        <MenuItem Name="mniExit" Header="Exit" Click="generalMenuClick" />
+                        <MenuItem Name="mniOpen" Header="Open" Click="FileMenuClick"/>
+                        <MenuItem Name="mniSave" Header="Save" Click="FileMenuClick"/>
+                        <MenuItem Name="mniImport" Header="Import Scene" Click="FileMenuClick"/>
+                        <MenuItem Name="mniExport" Header="Export Scene" Click="FileMenuClick"/>
+                        <MenuItem Name="mniExit" Header="Exit" Click="FileMenuClick"/>
                     </MenuItem>
-                    <MenuItem Header="View" Width="169">
-                        <MenuItem Name="mniReset" Header="Reset" Click="generalMenuClick" />
+                    
+                    <MenuItem Header="Add" Width="169">
+                        <MenuItem Name="mniAddRender" Header="Add Render" Tag="RenderMethod" Click="AddMenuClick" />
+                        <MenuItem Name="mniAddLight" Header="Add Light" Tag="LightMethod" Click="AddMenuClick" />
+                        <MenuItem Name="mniAddCamera" Header="Add Camera" Tag="CameraMethod" Click="AddMenuClick" />
                     </MenuItem>
+
                     <MenuItem Header="Settings" Width="169">
-                        <MenuItem  Name="mniPreferences" Header="Preferences" Click="generalMenuClick" />
-                        <MenuItem Name="mniAbout" Header="About" Click="generalMenuClick" />
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5">
+                            <TextBlock Text="Bounces:" VerticalAlignment="Center" FontWeight="Bold" Foreground="White" Margin="0,0,5,0" />
+                            <xctk:IntegerUpDown Name="nudBounces" Minimum="0" Maximum="20" Value="4" Width="40" HorizontalAlignment="Right" />
+                        </StackPanel>
                     </MenuItem>
                 </Menu>
             </Grid>
+            
             <!--Everything below Menu -->
             <Grid VerticalAlignment="Stretch" Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -60,41 +67,22 @@ Closing="Window_Closing">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" MinHeight="256" MaxHeight="512"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="40"/>
                     </Grid.RowDefinitions>
 
                     <TreeView Name="trvEntities" Grid.Row="0" SelectedItemChanged="trvEntities_SelectedItemChanged"/>
                     <TreeView Name="trvComponents" Grid.Row="1" SelectedItemChanged="trvComponents_SelectedItemChanged"/>
-                    <ComboBox Grid.Row="2" Name="cmbAddComponent" Margin="5" VerticalAlignment="Center" SelectionChanged="cmbAddComponent_SelectionChanged">
-                        <ComboBoxItem Content="Add Component here" IsEnabled="False" IsSelected="True" />
-                        <ComboBoxItem Content="Add Render" Tag="RenderMethod" />
-                        <ComboBoxItem Content="Add Light" Tag="LightMethod" />
-                        <ComboBoxItem Content="Add Camera" Tag="CameraMethod" />
-                    </ComboBox>
-
-
                 </Grid>
 
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" MinHeight="256" MaxHeight="512"/>
                         <RowDefinition Height="*"/>
-                        <RowDefinition Height="40"/>
                     </Grid.RowDefinitions>
 
                     <TreeView Name="trvEntitiesOptions" Grid.Row="0" SelectedItemChanged="trvEntitiesOptions_SelectedItemChanged"/>
                     <TreeView Name="trvComponentsOptions" Grid.Row="1" SelectedItemChanged="trvComponentsOptions_SelectedItemChanged"/>
-
-                    <StackPanel Orientation="Horizontal" Grid.Row="2" VerticalAlignment="Center" Margin="5">
-                        <TextBlock Text="Bounces:" VerticalAlignment="Center" FontWeight="Bold" Foreground="White" Margin="0,0,5,0"/>
-                        <xctk:IntegerUpDown Name="nudBounces" 
-                            Minimum="0" 
-                            Maximum="20" 
-                            Value="4" 
-                            Width="40"
-                            HorizontalAlignment="Right"/>
-                    </StackPanel>
                 </Grid>
+                
             </Grid>
         </Grid>
         <!--Preview-->
@@ -104,7 +92,7 @@ Closing="Window_Closing">
                 <RowDefinition Height="180" x:Name="GUIBottom"/>
             </Grid.RowDefinitions>
             <!--Preview Picture-->
-            <Rectangle Name="rctRenderArea" Grid.Row="0" Margin="5"  SizeChanged="rctRenderArea_SizeChanged" />
+            <Rectangle Name="rctRenderArea" Grid.Row="0" Margin="5" StrokeThickness="2" SizeChanged="rctRenderArea_SizeChanged" />
             <!--GuiBottom-->
             <Grid HorizontalAlignment="Stretch" Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -179,7 +167,7 @@ Closing="Window_Closing">
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="128"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="32"/>
                             <ColumnDefinition Width="*"/>
@@ -328,24 +316,26 @@ Closing="Window_Closing">
                         </Grid>
 
                         <!-- Slider Zoom -->
-                        <Grid Grid.Row="2" Grid.Column="0" Margin="8">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*" />
-                            </Grid.RowDefinitions>
+                        <Grid Grid.Row="1"  Grid.RowSpan="3" Grid.Column="0" Margin="8" HorizontalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                            <Slider Name="sldZoom" Style="{StaticResource PrimarySliderStyle}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="20" Value="10" ValueChanged="SliderValueChanged" PreviewMouseUp="SliderPreviewMouseUp" />
+                            <Slider Name="sldZoom" Style="{StaticResource PrimarySliderStyle}" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="50" Value="25" ValueChanged="SliderValueChanged" PreviewMouseUp="SliderPreviewMouseUp" Orientation="Vertical" Height="128" Width="24" />
 
-                            <Grid Grid.Row="1">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
 
-                                <Label Name="lblZoomMin" Content="0" HorizontalAlignment="Left" VerticalAlignment="Top" />
-                                <Label Name="lblZoomMed" Content="10" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1" />
-                                <Label Name="lblZoomMax" Content="20" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="2" />
+
+                            <Grid Grid.Column="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <Label Name="lblZoomMin" Content="-" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2"/>
+                                <Label Name="lblZoomMed" Content="10" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" />
+                                <Label Name="lblZoomMax" Content="+" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="0" />
                             </Grid>
                         </Grid>
 
