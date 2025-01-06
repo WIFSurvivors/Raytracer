@@ -41,6 +41,7 @@ namespace RaytracerGUI
 
         bool connection = false;
         string rotation = "xpos";
+        bool textboxChange = false;
 
         private EcsNode selectedEntityOptionItem;
 
@@ -369,77 +370,61 @@ namespace RaytracerGUI
 
 
         //Slider events
+
         private void SliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             Slider? changedSlider = sender as Slider;
 
-            //TODO get information (which textbox must be updated)
-            //TODO get xyz from textbox and update _ecsapi
-            //var UUID;
-            //var x;
-            //var y;
-            //var z;
-
-            if (changedSlider != null)
+            if (changedSlider != null && textboxChange)
             {
-                string slider = changedSlider.Name;
+                SliderPreviewMouseUp(changedSlider.Name, null);
+            }
 
-                // Round the slider value to 2 decimal places
-                double roundedValue = Math.Round(e.NewValue, 2);
+            double roundedValue = Math.Round(e.NewValue, 2);
+            tbxLog.AppendText($"{changedSlider.Name} value changed to: {roundedValue}\n");
+        }
 
-                // Prevent unnecessary updates
-                if (changedSlider.Value != roundedValue)
+
+        private void SliderEcsApiUpdate(int sliderType, string uuid)
+        {
+            string UUID = uuid;
+            float x;
+            float y;
+            float z;
+
+
+            if (_ecsApi != null)
+            {
+                try
                 {
-                    changedSlider.Value = roundedValue;
+                    if (sliderType == 0)
+                    {
+                        x = (float) sldX.Value;
+                        y = (float) sldY.Value;
+                        z = (float) sldZ.Value;
+                        //_ecsApi.move_entity(UUID, x, y, z);
+                    }
+                    else if (sliderType == 1)
+                    {
+                        x = (float)sldRx.Value;
+                        y = (float)sldRy.Value;
+                        z = (float)sldRz.Value;
+                        //_ecsApi.rotate_entity(UUID, x, y, z);
+                    }
+                    else if (sliderType == 2)
+                    {
+                        float zoom = (float)sldZoom.Value;
+                        //_ecsApi.scale_entity(UUID, x, y, z);
+                    }
+
                 }
-
-                // Log the updated value
-                tbxLog.AppendText($"{slider} value changed to: {roundedValue}\n");
-                tbxLog.ScrollToEnd();
-
-                if (_ecsApi != null)
+                catch (InvalidOperationException ex)
                 {
-                    try
-                    {
-                        switch (slider)
-                        {
-                            // Send rounded values to the server
-                            case "sldX":
-                                //_ecsApi.move_entity(UUID, x, y, z);
-                                break;
-
-                            case "sldY":
-                                //_ecsApi.move_entity(UUID, x, y, z);
-                                break;
-
-                            case "sldZ":
-                                //_ecsApi.move_entity(UUID, x, y, z);
-                                break;
-
-                            case "sldRx":
-                                //_ecsApi.rotate_entity(UUID, x, y, z);
-                                break;
-
-                            case "sldRy":
-                                //_ecsApi.rotate_entity(UUID, x, y, z);
-                                break;
-
-                            case "sldRz":
-                                //_ecsApi.rotate_entity(UUID, x, y, z);
-                                break;
-
-                            case "sldZoom":
-                                //_ecsApi.scale_entity(UUID, x, y, z);
-                                break;
-                        }
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        tbxLog.AppendText($"Error updating server with {slider}: {ex.Message}\n");
-                        tbxLog.ScrollToEnd();
-                    }
+                    tbxLog.AppendText($"Error updating server: {ex.Message}\n");
+                    tbxLog.ScrollToEnd();
                 }
             }
+            
         }
 
         private void SliderPreviewMouseUp(object sender, MouseButtonEventArgs e)
@@ -466,36 +451,48 @@ namespace RaytracerGUI
                         lblXMin.Content = minValue;
                         lblXMed.Content = medValue;
                         lblXMax.Content = maxValue;
+
+                        SliderEcsApiUpdate(0, "UUID");
                         break;
 
                     case "sldY":
                         lblYMin.Content = minValue;
                         lblYMed.Content = medValue;
                         lblYMax.Content = maxValue;
+
+                        SliderEcsApiUpdate(0, "UUID");
                         break;
 
                     case "sldZ":
                         lblZMin.Content = minValue;
                         lblZMed.Content = medValue;
                         lblZMax.Content = maxValue;
+
+                        SliderEcsApiUpdate(0, "UUID");
                         break;
 
                     case "sldRx":
                         lblRxMin.Content = minValue;
                         lblRxMed.Content = medValue;
                         lblRxMax.Content = maxValue;
+
+                        SliderEcsApiUpdate(1, "UUID");
                         break;
 
                     case "sldRy":
                         lblRyMin.Content = minValue;
                         lblRyMed.Content = medValue;
                         lblRyMax.Content = maxValue;
+
+                        SliderEcsApiUpdate(1, "UUID");
                         break;
 
                     case "sldRz":
                         lblRzMin.Content = minValue;
                         lblRzMed.Content = medValue;
                         lblRzMax.Content = maxValue;
+
+                        SliderEcsApiUpdate(1, "UUID");
                         break;
 
                     case "sldZoom":
@@ -512,10 +509,12 @@ namespace RaytracerGUI
                         changedSlider.Maximum = changedSlider.Value + 25;
                         medValue = Math.Round(changedSlider.Value, 0);
                         lblZoomMed.Content = medValue;
+
+                        SliderEcsApiUpdate(2, "UUID");
                         break;
                 }
 
-
+                //TODO get information (which textbox must be updated)
 
 
 
@@ -690,6 +689,7 @@ namespace RaytracerGUI
             {
                 // Log the TextBox change
                 tbxLog.AppendText($"TextBox '{textBox.Name}' text changed to: {textBox.Text}\n");
+                textboxChange = true;
 
                 // Attempt to parse the text and update the appropriate slider
                 switch (textBox.Name)
