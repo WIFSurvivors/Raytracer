@@ -97,7 +97,7 @@ struct Light {
 
 /*********************************************************************************/
 // VARIABLES
-int hittableCount = 60;
+int hittableCount = 15076;
 int MAX_RECURSION_DEPTH = 4;
 
 const int STACK_SIZE = 128;

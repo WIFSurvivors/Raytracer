@@ -6,8 +6,8 @@
 #include "includes/utility/NotImplementedError.hpp"
 #include "includes/utility/Log.hpp"
 #include "includes/utility/FrameSnapshot.hpp"
-#include "includes/utility/bvhtree_tiny.hpp"
 #include "includes/AssetManager.hpp"
+#include "includes/utility/bvhtree_tiny.hpp"
 
 #include <GLFW/glfw3.h>
 #include <glm/ext/matrix_transform.hpp>
@@ -31,6 +31,8 @@
  *	  - e.g. Call it something else
  *	  - Separate other functionality to the functions
  */
+//NEED TO FIX
+std::unique_ptr<TreeBuilder> BVH_Tree;
 
 RenderSystem::RenderSystem(UUIDManager *um, WindowManager *wm, CameraSystem *cs,
                            LightSystem *ls, AssetManager::DefaultAssets *da)
@@ -146,9 +148,9 @@ void RenderSystem::init() {
   data.push_back(ObjectData(triforce3, Material3));
   data.push_back(ObjectData(triforce4, Material4));
   data.push_back(ObjectData(triforce5, Material5));
-  TreeBuilder builder{};
-  builder.loadData(data);
-  builder.prepareSSBOData();
+  BVH_Tree = std::make_unique<TreeBuilder>();
+  BVH_Tree->loadData(data);
+  BVH_Tree->prepareSSBOData();
   //   builder.checkData(); // Debug statements
 
   LOG(std::format("SSBONodes size: {}", sizeof(SSBONodes)));
@@ -158,38 +160,38 @@ void RenderSystem::init() {
   glGenBuffers(1, &ssbo_vertex);
   glGenBuffers(1, &ssbo_mats);
   glGenBuffers(1, &ssbo_matsIDX);
-
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);
-
-  glBufferData(GL_SHADER_STORAGE_BUFFER,
-               builder.ssboData.size() * sizeof(SSBONodes),
-               builder.ssboData.data(), GL_STATIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo_tree);
-
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_indices);
-  glBufferData(GL_SHADER_STORAGE_BUFFER,
-               builder.triIdxData.size() * sizeof(uint32_t),
-               builder.triIdxData.data(), GL_STATIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, ssbo_indices);
-
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_vertex);
-  glBufferData(GL_SHADER_STORAGE_BUFFER,
-               builder.vertex.size() * sizeof(Vec3Padded),
-               builder.vertex.data(), GL_STATIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, ssbo_vertex);
-
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_mats);
-  glBufferData(GL_SHADER_STORAGE_BUFFER,
-               builder.mats.size() * sizeof(Materials), builder.mats.data(),
-               GL_STATIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, ssbo_mats);
-
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_matsIDX);
-  glBufferData(GL_SHADER_STORAGE_BUFFER,
-               builder.matIndx.size() * sizeof(uint32_t),
-               builder.matIndx.data(), GL_STATIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, ssbo_matsIDX);
-
+  /**/
+  /*glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);*/
+  /**/
+  /*glBufferData(GL_SHADER_STORAGE_BUFFER,*/
+  /*             BVH_Tree->ssboData.size() * sizeof(SSBONodes),*/
+  /*             BVH_Tree->ssboData.data(), GL_STATIC_DRAW);*/
+  /*glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo_tree);*/
+  /**/
+  /*glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_indices);*/
+  /*glBufferData(GL_SHADER_STORAGE_BUFFER,*/
+  /*             BVH_Tree->triIdxData.size() * sizeof(uint32_t),*/
+  /*             BVH_Tree->triIdxData.data(), GL_STATIC_DRAW);*/
+  /*glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, ssbo_indices);*/
+  /**/
+  /*glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_vertex);*/
+  /*glBufferData(GL_SHADER_STORAGE_BUFFER,*/
+  /*             BVH_Tree->vertex.size() * sizeof(Vec3Padded),*/
+  /*             BVH_Tree->vertex.data(), GL_STATIC_DRAW);*/
+  /*glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, ssbo_vertex);*/
+  /**/
+  /*glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_mats);*/
+  /*glBufferData(GL_SHADER_STORAGE_BUFFER,*/
+  /*             BVH_Tree->mats.size() * sizeof(Materials), BVH_Tree->mats.data(),*/
+  /*             GL_STATIC_DRAW);*/
+  /*glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, ssbo_mats);*/
+  /**/
+  /*glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_matsIDX);*/
+  /*glBufferData(GL_SHADER_STORAGE_BUFFER,*/
+  /*             BVH_Tree->matIndx.size() * sizeof(uint32_t),*/
+  /*             BVH_Tree->matIndx.data(), GL_STATIC_DRAW);*/
+  /*glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, ssbo_matsIDX);*/
+  updateSSBOBuffers();
   // DEBUG INFORMATION
   //
 
@@ -212,13 +214,53 @@ void RenderSystem::init() {
   LOG(std::format("Max invocations count per work group: {}", work_grp_inv));
 #endif
 }
-
 void RenderSystem::update(const FrameSnapshot &snapshot) {
 #if SHOW_UI
   //  Specifies the background color1
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
   //  Calculation for the Camera
+
+  for (auto &&c : _components) {
+    if (c.second->get_entity()->has_Updated()) {
+      glm::vec3 scaleVector = c.second->get_entity()->get_local_scale();
+      glm::vec3 translationVector =
+          c.second->get_entity()->get_local_position();
+      glm::vec3 rotationVector = c.second->get_entity()->get_local_rotation();
+
+      glm::mat4 ScaleMatrix = glm::scale(glm::mat4{1.0f}, scaleVector);
+
+      glm::mat4 rotationMatrixX =
+          glm::rotate(glm::mat4(1.0f), glm::radians(rotationVector.x),
+                      glm::vec3(1.0f, 0.0f, 0.0f));
+      glm::mat4 rotationMatrixY =
+          glm::rotate(glm::mat4(1.0f), glm::radians(rotationVector.y),
+                      glm::vec3(0.0f, 1.0f, 0.0f));
+      glm::mat4 rotationMatrixZ =
+          glm::rotate(glm::mat4(1.0f), glm::radians(rotationVector.z),
+                      glm::vec3(0.0f, 0.0f, 1.0f));
+      glm::mat4 rotationMatrix =
+          rotationMatrixZ * rotationMatrixY * rotationMatrixX;
+
+      glm::mat4 translationMatrix =
+          glm::translate(glm::mat4(1.0f), translationVector);
+      c.second->set_scaleMatrix(ScaleMatrix);
+      c.second->set_rotationMatrix(rotationMatrix);
+      c.second->set_translationMatrix(translationMatrix);
+      c.second->update_ModelMatrix();
+
+      MeshGallary object{c.second->get_meshes(),
+                         c.second->get_entity()->get_uuid(),
+                         c.second->get_ModelMatrix()};
+
+      BVH_Tree->update_gallary(object);
+	  BVH_Tree->loadData();
+	  BVH_Tree->prepareSSBOData();
+	  updateSSBOBuffers();
+	  c.second->get_entity()->did_update();
+	  std::cout << "UPDATED\n";
+    }
+  }
 
   //  Setup compute shader
   compute->activateShader();
@@ -260,7 +302,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
     glUniform1fv(_ls_intensitiesU, size, intensities.data());
   }
   glUniform1i(_maximalBouncesU, _bounces);
-  glUniform1i(_maxHittableTrianglesU, 60);
+  glUniform1i(_maxHittableTrianglesU, BVH_Tree->get_numberOfTriangles());
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
 
@@ -274,7 +316,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   program->activateShader();
   glBindVertexArray(_vao);
 
-/****************************************************************************/
+  /****************************************************************************/
 
   glUniform1i(_textU, 0);
   glUniformMatrix4fv(_modelU, 1, GL_FALSE, &_modelMatrix_Canvas[0][0]);
@@ -290,7 +332,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
                         reinterpret_cast<void *>(0));
 
   glDrawArrays(GL_TRIANGLES, 0, _nverticesCanvas);
-/****************************************************************************/
+  /****************************************************************************/
   for (auto &&c : _components) {
     c.second->update(snapshot);
   }
@@ -392,7 +434,6 @@ void RenderSystem::print() {
   std::cout << std::endl;
 }
 
-
 void RenderSystem::setTextures() {
 #if SHOW_UI
   //  Generate n = 1 texture IDs
@@ -422,4 +463,35 @@ void RenderSystem::setTextures() {
   glBindTexture(GL_TEXTURE_2D, _textureID);
 #endif
 }
+void RenderSystem::updateSSBOBuffers() {
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);
 
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               BVH_Tree->ssboData.size() * sizeof(SSBONodes),
+               BVH_Tree->ssboData.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo_tree);
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_indices);
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               BVH_Tree->triIdxData.size() * sizeof(uint32_t),
+               BVH_Tree->triIdxData.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, ssbo_indices);
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_vertex);
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               BVH_Tree->vertex.size() * sizeof(Vec3Padded),
+               BVH_Tree->vertex.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, ssbo_vertex);
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_mats);
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               BVH_Tree->mats.size() * sizeof(Materials), BVH_Tree->mats.data(),
+               GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, ssbo_mats);
+
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_matsIDX);
+  glBufferData(GL_SHADER_STORAGE_BUFFER,
+               BVH_Tree->matIndx.size() * sizeof(uint32_t),
+               BVH_Tree->matIndx.data(), GL_STATIC_DRAW);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, ssbo_matsIDX);
+}

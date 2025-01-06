@@ -109,6 +109,7 @@ void Scene::generate_sample_content() {
   c4->set_intensity(15.f);
 
   // =================== RENDER =====================
+  /*
   std::vector<glm::vec3> v1 = {
       glm::vec3{-1.0f, -1.0f, 0.0f}, glm::vec3{1.0f, -1.0f, 0.0f},
       glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, -1.0f, 0.0f},
@@ -127,8 +128,11 @@ void Scene::generate_sample_content() {
   std::vector<glm::vec2> u3 = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 1.0f},
                                glm::vec2{0.0f, 1.0f}};
 
+  */
+
   auto root_ptr = get_root().lock();
-  _render_system.create_component(root_ptr.get());
+  auto cpu_asset = create_asset("./assets/default.obj");
+  _render_system.create_component(root_ptr.get(), cpu_asset);
   //_render_system.create_component(root_ptr.get(), v3, u3);
 
   LOG_NEW_LINE();

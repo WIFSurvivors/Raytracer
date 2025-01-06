@@ -18,7 +18,6 @@
 #include <optional>
 
 struct FrameSnapshot;
-
 // #define SHOW_UI true
 
 /**
@@ -79,6 +78,7 @@ struct RenderSystem : public System<RenderComponent> {
   }
 
   void setTextures();
+  void updateSSBOBuffers();
   //  temporal
   //  we need, this because Render System is responsible for the window and
   //  input handling
