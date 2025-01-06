@@ -93,7 +93,7 @@ void RenderSystem::init() {
       glm::lookAt(_cameraPosition, _cameraDirection, glm::vec3(0, 1, 0));
   //  TODO:
   //  calculate the aspect ratio appropriately
-  _fov = 60.0f;
+//   _fov = 60.0f;
   _projectionMatrix = glm::perspective(glm::radians(_fov), 1.0f, 0.1f, 100.0f);
 
   _timeU = glGetUniformLocation(compute->programID, "time");
@@ -219,6 +219,9 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
   //  Calculation for the Camera
+  
+  // update window texture thingy
+  setTextures();
 
   //  Setup compute shader
   compute->activateShader();
@@ -231,11 +234,9 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
     _viewMatrix =
         glm::lookAt(_cameraPosition, _cameraDirection, glm::vec3(0, 1, 0));
 
+    auto s = _wm->get_screen_size();
     _projectionMatrix = glm::perspective(
-        glm::radians(_cs->get_main_camera()->get_fov()), 1.0f, 0.1f, 100.0f);
-    // DELETE THIS LINE AT SOME POINT :C
-    // _cs->get_main_camera()->get_entity()->set_local_position(
-    //     glm::vec3(0.0f, 8.0f, 15.0f));
+        glm::radians(_cs->get_main_camera()->get_fov()), (float)s.x/(float)s.y, 0.1f, 100.0f);
   } else {
     LOG_ERROR("No main camera found -> using 0., 0., +10.");
     _cameraPosition = glm::vec3{0., 0., +10.};
@@ -413,7 +414,8 @@ void RenderSystem::setTextures() {
   //  TODO
   //  For now it takes 800 800 as screen size, but later it should be as big as
   //  texture
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 800, 800, 0, GL_RGBA, GL_FLOAT,
+  auto s = _wm->get_screen_size();
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, s.x, s.y, 0, GL_RGBA, GL_FLOAT,
                NULL);
 
   //  Specifies the mipmap level = 0 of the texture

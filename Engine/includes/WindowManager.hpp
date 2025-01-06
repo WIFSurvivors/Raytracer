@@ -27,8 +27,8 @@ struct WindowManager {
   void swap_buffers();
 
 private:
-  glm::vec2 _mousePos{0., 0.};
-  glm::ivec2 _screenSize{800, 800};
+  inline static glm::vec2 _mousePos{0., 0.};
+  inline static glm::ivec2 _screenSize{800, 800};
 #if SHOW_UI
   GLFWwindow *_window;
 #endif

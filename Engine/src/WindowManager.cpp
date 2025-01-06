@@ -14,6 +14,8 @@ void WindowManager::framebuffer_size_callback(GLFWwindow *window, int width,
   // note that width and height will be significantly larger than specified on
   // retina displays.
   glad_glViewport(0, 0, width, height);
+  std::cout << width << height << "\n";
+  _screenSize.x = width; _screenSize.y = height;
 }
 #endif
 
@@ -67,7 +69,7 @@ bool WindowManager::_initGLFW() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-  glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+  glfwWindowHint(GLFW_DECORATED, GL_FALSE);
   // glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
 
 #ifdef __APPLE__
