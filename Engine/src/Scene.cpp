@@ -50,8 +50,7 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
 }
 
 void Scene::print() { _root->print(); }
-
-void Scene::generate_sample_content() {
+void Scene::print_system_data() {
   _uuid_manager.print();
   _asset_manager.print();
   _entity_storage.print();
@@ -59,20 +58,28 @@ void Scene::generate_sample_content() {
   _camera_system.print();
   _light_system.print();
   _root->print();
-  
+}
+
+void Scene::generate_sample_content() {
+  print_system_data();
+
   LOG_NEW_LINE();
   LOG(std::string(100, '*'));
   LOG_NEW_LINE();
 
   auto a = create_asset("test");
-  
-  LOG(std::format("1) Asset {} {}", a._path.string(),  boost::uuids::to_string(a._uuid)));
+
+  LOG(std::format("1) Asset {} {}", a._path.string(),
+                  boost::uuids::to_string(a._uuid)));
   auto b = create_asset("test");
-  LOG(std::format("2) Asset {} {}", b._path.string(),  boost::uuids::to_string(b._uuid)));
+  LOG(std::format("2) Asset {} {}", b._path.string(),
+                  boost::uuids::to_string(b._uuid)));
   AssetManager::Asset c{&_asset_manager, "test"};
-  LOG(std::format("3) Asset {} {}", c._path.string(),  boost::uuids::to_string(c._uuid)));
+  LOG(std::format("3) Asset {} {}", c._path.string(),
+                  boost::uuids::to_string(c._uuid)));
   AssetManager::Asset d{&_asset_manager, "test2"};
-  LOG(std::format("4) Asset {} {}", d._path.string(),  boost::uuids::to_string(d._uuid)));
+  LOG(std::format("4) Asset {} {}", d._path.string(),
+                  boost::uuids::to_string(d._uuid)));
 
   LOG_NEW_LINE();
   LOG(std::string(100, '*'));
@@ -152,13 +159,7 @@ void Scene::generate_sample_content() {
   LOG(std::string(100, '*'));
   LOG_NEW_LINE();
 
-  _uuid_manager.print();
-  _asset_manager.print();
-  _entity_storage.print();
-  _render_system.print();
-  _camera_system.print();
-  _light_system.print();
-  _root->print();
+  print_system_data();
 }
 
 // currently only tell the render system to update itself
