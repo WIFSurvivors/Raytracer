@@ -80,7 +80,7 @@ void Scene::generate_sample_content() {
 
   // =================== ENTITIES =====================
   auto e1 = create_entity("camera");
-  e1->set_local_position(glm::vec3{0.f, +0.f, 100.f});
+  e1->set_local_position(glm::vec3{0.f, +0.f, 300.f});
   auto e2 = create_entity("light sources");
   auto e3 = create_entity("light red", e2);
   e3->set_local_position(glm::vec3{0, 5, 5});

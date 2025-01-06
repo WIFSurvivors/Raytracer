@@ -124,15 +124,15 @@ struct RenderComponent : public IComponent {
       _meshes.push_back(renderMesh);
     }
 	
-	for(const auto& mesh : _meshes){
-	  std::cout << "Duuchlauf\n";
-	  for(const auto& v: mesh._vertices){
-		std::cout << "V: " << v.x << "|" << v.y << "|" <<v.z << std::endl;
-	  }
-	  for(int i = 0 ; i < mesh._indices.size() ; i+=3){
-		std::cout << "T: " << mesh._indices[i]<< "|" <<mesh._indices[i+1]<< "|"<< mesh._indices[i+2] << std::endl;
-	  }
-	}
+	//for(const auto& mesh : _meshes){
+	//  std::cout << "Duuchlauf\n";
+	//  for(const auto& v: mesh._vertices){
+	//	std::cout << "V: " << v.x << "|" << v.y << "|" <<v.z << std::endl;
+	//  }
+	//  for(int i = 0 ; i < mesh._indices.size() ; i+=3){
+	//	std::cout << "T: " << mesh._indices[i]<< "|" <<mesh._indices[i+1]<< "|"<< mesh._indices[i+2] << std::endl;
+	//  }
+	//}
 
     // loader.LoadedMeshes[0]
     // set_vertices(vertices);

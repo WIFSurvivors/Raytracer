@@ -120,8 +120,16 @@ struct Vec3Padded {
 };
 
 struct alignas(16) Materials {
-  glm::vec3 color;
-  float reflection;
+  glm::vec3 Kd;   // Diffuse Color
+  float Ns;  // Specular Exponent
+  glm::vec3 Ka;   // Ambient Color
+  float Ni;  // Optical Density
+  glm::vec3 Ks;   // Specular Color
+  float d;   // Dissolve
+  int illum; // Illumination
+  float pad0;
+  float pad1;
+  float pad2;
 };
 
 struct ObjectData {
@@ -129,14 +137,6 @@ struct ObjectData {
   Materials material;
 };
 
-void printMat4(const glm::mat4 &mat) {
-  for (int i = 0; i < 4; ++i) {
-    for (int j = 0; j < 4; ++j) {
-      std::cout << mat[i][j] << " ";
-    }
-    std::cout << std::endl;
-  }
-}
 struct TreeBuilder {
 
   tinybvh::BVH tree;
@@ -210,9 +210,12 @@ struct TreeBuilder {
     for (auto &obj : gallary) {
       for (auto &mesh : obj._meshes) {
 
-        mats.push_back(Materials(mesh.MeshMaterial.Kd, 0.0f));
+        //mats.push_back(Materials(mesh.MeshMaterial.Kd,0.0f,mesh.MeshMaterial.Ka,0.0f,mesh.MeshMaterial.Ks,0.0f,mesh.MeshMaterial.d,mesh.MeshMaterial.illum,mesh.MeshMaterial.Ns,mesh.MeshMaterial.Ni));
+
+		mats.push_back(Materials(glm::vec3(1.0f,0.0f,1.0f),mesh.MeshMaterial.Ns, mesh.MeshMaterial.Ka, mesh.MeshMaterial.Ni,mesh.MeshMaterial.Ks,mesh.MeshMaterial.d, mesh.MeshMaterial.illum,0.0f,0.0f,0.0f));
         for (int i = 0; i < mesh._indices.size(); i += 3) {
-          Triangle tri{mesh._vertices[mesh._indices[i]], mesh._vertices[mesh._indices[i + 1]],
+          Triangle tri{mesh._vertices[mesh._indices[i]],
+                       mesh._vertices[mesh._indices[i + 1]],
                        mesh._vertices[mesh._indices[i + 2]]};
           inserted_triangles.push_back(tri);
           matIndx.push_back(mats.size() - 1);

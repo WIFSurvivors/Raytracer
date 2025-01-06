@@ -61,9 +61,31 @@ struct Triangle {
     vec3 v2;
 };
 
-struct Material {
-    vec3 color;
-    float reflection;
+// struct Material {
+//     vec3 color;	// Diffuse Color
+// 	float pad0;
+// 	vec3 Ka;	// Ambient Color
+// 	float pad1;
+// 	vec3 Ks;	// Specular Color
+// 	float pad2;
+// 	float d;	// Dissolve
+// 	int illum;	// Illumination
+//     float reflection;	// Specular Exponent
+// 	float Ni;	// Optical Density
+// };
+
+struct Material{
+  vec3 color;
+  float reflection;
+  vec3 Ka;
+  float Ni;
+  vec3 Ks;
+  float d;
+  int illum;
+  float pad0;
+  float pad1;
+  float pad2;
+
 };
 
 layout(std430, binding = 5) buffer MaterialBuffer {
@@ -107,7 +129,7 @@ int stackTop = 0;
 const int BVH_STACK_SIZE = 128;
 int bvh_stack[BVH_STACK_SIZE];
 int bvhStackTop = 0;
-
+vec3 ambientLightColor = vec3(0.2,0.2,0.2);
 /*********************************************************************************/
 // STACK OPERATIONS
 
@@ -356,7 +378,11 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
             vec3 N = normalize(cross(edge1, edge2));
             vec3 localColor = vec3(0.0);
             bool anyLightHit = false;
-
+			
+			
+            // Ambient Lighting
+            vec3 ambient = materials[matIndex[index]].Ka * ambientLightColor;
+            color += ambient;
             for (int lIndex = 0; lIndex < ls_active_light_sources; lIndex++) {
                 Light light = emitter[lIndex];
 
@@ -370,6 +396,13 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
                 if (!isShadow) {
                     float diffuse = max(dot(N, shadowRay), 0.0);
                     vec3 lighting = reflec_accumulation * light.color * materials[matIndex[index]].color * light.intensity * diffuse * attenuation;
+
+
+                    // Specular Lighting
+                    vec3 viewDir = normalize(cameraPositawdaowjd - sectionPoint);
+                    vec3 halfVec = normalize(shadowRay + viewDir);
+                    float specular = pow(max(dot(N, halfVec), 0.0), materials[matIndex[index]].reflectawdawion);
+                    vec3 specLighting = materials[matIndex[index]].Ks * light.color * light.intensity * specular * attenuation;
                     localColor += lighting;
                     anyLightHit = true;
                 }
