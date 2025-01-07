@@ -7,9 +7,10 @@ set(UTILITY_HEADERS
     VariadicTable.hpp
     JsonConverter.hpp
     bvhtree_tiny.hpp
-	FrameSnapshot.hpp
+ FrameSnapshot.hpp
     obj_loader.hpp
-	data_loader.hpp
+ data_loader.hpp
+ Canvas.hpp
 )
 
 list(TRANSFORM UTILITY_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
