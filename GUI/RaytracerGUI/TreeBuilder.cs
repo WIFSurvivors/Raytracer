@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml.Linq;
 
@@ -12,6 +13,8 @@ namespace RaytracerGUI
     class TreeBuilder
     {
         private readonly MainWindow _mainWindow;
+        private Dictionary<string, TextBox> _textBoxMapping = new Dictionary<string, TextBox>();
+
 
         public TreeView TreeView { get; private set; }
 
@@ -139,21 +142,34 @@ namespace RaytracerGUI
                                 Tag = property.Key // Store the property key for easy reference
                             };
 
+
+                            string textBoxName = $"{category.Key.Substring(0, 3).ToLower()}{property.Key.First().ToString().ToUpper()}{property.Key.Substring(1)}";
+                            _mainWindow.tbxLog.AppendText("_treebuilder.Textbox added: " + textBoxName + " , " + property.Value);
                             // Create a TextBox to make the property value editable
                             var textBox = new TextBox
                             {
-                                Name = property.Key, // Set the name (e.g., "x", "y", "z") for reference
+                                Name = textBoxName, // Set the name (e.g., "x", "y", "z") for reference
                                 Text = property.Value, // Set initial value
                                 VerticalAlignment = VerticalAlignment.Center
                             };
+                            _textBoxMapping[textBoxName] = textBox;
 
                             // Handle TextChanged event to update value when user edits it
-                            textBox.TextChanged += _mainWindow.TextBox_TextChanged;
+                            //textBox.TextChanged += _mainWindow.TextBox_TextChanged;
+                            // Attach KeyDown and LostFocus event handlers
+                            textBox.KeyDown += TextBox_KeyDown;
+                            textBox.LostFocus += TextBox_LostFocus;
+
+
+
 
                             // Add the TextBox to the TreeViewItem
                             propertyItem.Items.Add(textBox);
                             categoryItem.Items.Add(propertyItem);
                             propertyItem.IsExpanded = true;
+
+                            // Simulate a TextChanged event
+                            SimulateTextChanged(textBox);
                         }
 
                         rootItem.Items.Add(categoryItem);
@@ -181,6 +197,51 @@ namespace RaytracerGUI
                 return (T)parent;
 
             return FindParent<T>(parent);
+        }
+
+        public TextBox? GetTextBox(string key)
+        {
+            return _textBoxMapping.TryGetValue(key, out var textBox) ? textBox : null;
+        }
+
+        // Simulate a TextChanged event for a TextBox
+        private void SimulateTextChanged(TextBox textBox)
+        {
+            var textChangedEventArgs = new TextChangedEventArgs(TextBox.TextChangedEvent, UndoAction.None);
+            _mainWindow.TextBox_TextChanged(textBox, textChangedEventArgs);
+        }
+
+        // Handle the Enter key press
+        private void TextBox_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (sender is TextBox textBox && e.Key == Key.Enter)
+            {
+                ProcessTextBoxChange(textBox);
+                e.Handled = true; // Prevent further processing of the Enter key
+            }
+        }
+
+        // Handle the LostFocus event
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                ProcessTextBoxChange(textBox);
+            }
+        }
+
+        // Common method to process the change
+        private void ProcessTextBoxChange(TextBox textBox)
+        {
+            // Log and process the change
+            string name = textBox.Name;
+            string value = textBox.Text;
+
+            _mainWindow.tbxLog.AppendText($"TextBox '{name}' changed to: {value}\n");
+
+            // Call the original TextBox_TextChanged method if needed
+            var textChangedEventArgs = new TextChangedEventArgs(TextBox.TextChangedEvent, UndoAction.None);
+            _mainWindow.TextBox_TextChanged(textBox, textChangedEventArgs);
         }
 
     }
