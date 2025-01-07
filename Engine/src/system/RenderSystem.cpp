@@ -227,6 +227,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
       glm::vec3 translationVector =
           c.second->get_entity()->get_local_position();
       glm::vec3 rotationVector = c.second->get_entity()->get_local_rotation();
+	  rotationVector = glm::vec3(0.0f,0.0f,0.0f);
 
       glm::mat4 ScaleMatrix = glm::scale(glm::mat4{1.0f}, scaleVector);
 
@@ -270,7 +271,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   if (_cs && _cs->get_main_camera()) {
     _cameraPosition =
         _cs->get_main_camera()->get_entity()->get_world_position();
-	_cameraDirection = glm::vec3(0.0f,0.0f,0.0f);
+	_cameraDirection = glm::vec3(0.0f,8.0f,4.0f);
     _viewMatrix =
         glm::lookAt(_cameraPosition, _cameraDirection, glm::vec3(0, 1, 0));
 

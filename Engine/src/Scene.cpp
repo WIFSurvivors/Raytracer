@@ -80,33 +80,33 @@ void Scene::generate_sample_content() {
 
   // =================== ENTITIES =====================
   auto e1 = create_entity("camera");
-  e1->set_local_position(glm::vec3{0.f, +0.f, 300.f});
+  e1->set_local_position(glm::vec3{0.f, +8.f, 150.f});
   auto e2 = create_entity("light sources");
   auto e3 = create_entity("light red", e2);
-  e3->set_local_position(glm::vec3{0, 5, 5});
+  e3->set_local_position(glm::vec3{0, 8, 100});
   auto e4 = create_entity("light green", e2);
   e4->set_local_position(glm::vec3{0, -5, 5});
   auto e5 = create_entity("light blue", e2);
   e5->set_local_position(glm::vec3{0, 0, 5});
 
   // =================== CAMERA =====================
-  auto c1 = _camera_system.create_component(e1.get(), 120.f);
+  auto c1 = _camera_system.create_component(e1.get(), 60.f);
 
   // =================== LIGHT =====================
   auto c2 = _light_system.create_component(e3.get());
   /*c2->set_color(0.8576f, 0.1f, 0.1f);*/
   c2->set_color(1.0f, 1.0f, 1.0f);
-  c2->set_intensity(2500.f);
+  c2->set_intensity(250.0f);
 
   auto c3 = _light_system.create_component(e4.get());
   /*c3->set_color(0.1f, 0.96752f, 0.1f);*/
   c3->set_color(1.0f, 1.0f, 1.0f);
-  c3->set_intensity(25.f);
+  c3->set_intensity(250.f);
 
   auto c4 = _light_system.create_component(e5.get());
   /*c4->set_color(0.1f, 0.1f, 1.f);*/
   c4->set_color(1.0f, 1.0f, 1.0f);
-  c4->set_intensity(15.f);
+  c4->set_intensity(500.f);
 
   // =================== RENDER =====================
   /*
@@ -131,7 +131,7 @@ void Scene::generate_sample_content() {
   */
 
   auto root_ptr = get_root().lock();
-  auto cpu_asset = create_asset("./assets/Teapot.obj");
+  auto cpu_asset = create_asset("./assets/porsche.obj");
   _render_system.create_component(root_ptr.get(), cpu_asset);
   //_render_system.create_component(root_ptr.get(), v3, u3);
 

@@ -71,21 +71,20 @@ struct Triangle {
 // 	float d;	// Dissolve
 // 	int illum;	// Illumination
 //     float reflection;	// Specular Exponent
-// 	float Ni;	// Optical Density
+// 	float Ni;	// optical density
 // };
 
-struct Material{
-  vec3 color;
-  float reflection;
-  vec3 Ka;
-  float Ni;
-  vec3 Ks;
-  float d;
-  int illum;
-  float pad0;
-  float pad1;
-  float pad2;
-
+struct Material {
+    vec3 color; // Diffuse Color
+    float reflection;
+    vec3 Ka; // Ambient Color
+    float Ni; // optical density
+    vec3 Ks; // Specular Color
+    float d; // Dissolve
+    int illum; // Illumination
+    float pad0;
+    float pad1;
+    float pad2;
 };
 
 layout(std430, binding = 5) buffer MaterialBuffer {
@@ -129,7 +128,7 @@ int stackTop = 0;
 const int BVH_STACK_SIZE = 128;
 int bvh_stack[BVH_STACK_SIZE];
 int bvhStackTop = 0;
-vec3 ambientLightColor = vec3(0.2,0.2,0.2);
+vec3 ambientLightColor = vec3(0.0);
 /*********************************************************************************/
 // STACK OPERATIONS
 
@@ -353,10 +352,15 @@ bool isInShadowTriangleAlt(Ray r, int originObject, float distance) {
     return false;
 }
 
+vec3 backgroundColor(vec3 direction) {
+    float t = 0.5 * (normalize(direction).y + 1.0);
+    return mix(vec3(0.1, 0.1, 0.2), vec3(0.5, 0.7, 1.0), t); // Dark blue to light blue
+}
 // Actual Raytrace Function
 vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
     vec3 color = vec3(0.0);
     vec3 reflec_accumulation = vec3(1.0); // Reflection strength
+    bool hit = false;
     push(r);
     while (!isEmpty()) {
         Ray currentRay = pop();
@@ -378,8 +382,7 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
             vec3 N = normalize(cross(edge1, edge2));
             vec3 localColor = vec3(0.0);
             bool anyLightHit = false;
-			
-			
+
             // Ambient Lighting
             vec3 ambient = materials[matIndex[index]].Ka * ambientLightColor;
             color += ambient;
@@ -391,18 +394,12 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
                 float attenuation = 1.0 / (distanceToLight * distanceToLight);
 
                 //bool isShadow = isInShadowTriangleAlt(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
-                //bool isShadow = processBVH_Shadow(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
-				bool isShadow = false;
+                bool isShadow = processBVH_Shadow(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
+                //bool isShadow = false;
                 if (!isShadow) {
                     float diffuse = max(dot(N, shadowRay), 0.0);
                     vec3 lighting = reflec_accumulation * light.color * materials[matIndex[index]].color * light.intensity * diffuse * attenuation;
 
-
-                    // Specular Lighting
-                    vec3 viewDir = normalize(cameraPositawdaowjd - sectionPoint);
-                    vec3 halfVec = normalize(shadowRay + viewDir);
-                    float specular = pow(max(dot(N, halfVec), 0.0), materials[matIndex[index]].reflectawdawion);
-                    vec3 specLighting = materials[matIndex[index]].Ks * light.color * light.intensity * specular * attenuation;
                     localColor += lighting;
                     anyLightHit = true;
                 }
@@ -415,8 +412,19 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
                 Ray nextRay = Ray(sectionPoint + 0.01 * N, reflecDirection, currentRay.depth + 1);
                 push(nextRay);
             }
+
+            if (materials[matIndex[index]].illum == 4) {
+                vec3 refractDirection = refract(currentRay.direction, N, materials[matIndex[index]].Ni);
+                Ray refractRay = Ray(sectionPoint - 0.01 * N, refractDirection, currentRay.depth + 1);
+                push(refractRay);
+            }
+            color *= materials[matIndex[index]].d;
+            hit = true;
+        } else {
+            color += reflec_accumulation * backgroundColor(currentRay.direction);
         }
     }
+    //if(!hit){color = vec3(1.0f,0.0f,0.0f);}
     return vec4(color, 0.0);
 }
 
@@ -446,7 +454,7 @@ void main() {
     ivec2 dims = imageSize(textureOutput);
     float x = float(pixelCoords.x * 2 - dims.x) / dims.x; // transforms to [-1.0, 1.0]
     float y = float(pixelCoords.y * 2 - dims.y) / dims.y; // transforms to [-1.0, 1.0]
-	handleUniforms();
+    handleUniforms();
     vec3 rayOrigin = cameraPos - vec3(0.0, 5.0, 5.0); // Origin of the inital ray
 
     //ray in clip
