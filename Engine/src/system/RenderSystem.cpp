@@ -3,7 +3,7 @@
 #include "includes/component/Component.hpp"
 #include "includes/component/RenderComponent.hpp"
 #include "includes/ShaderCompiler.hpp"
-#include "includes/utility/NotImplementedError.hpp"
+// #include "includes/utility/NotImplementedError.hpp"
 #include "includes/utility/Log.hpp"
 #include "includes/utility/FrameSnapshot.hpp"
 #include "includes/AssetManager.hpp"

@@ -9,7 +9,7 @@
 #include <glm/glm.hpp>
 #include <vector>
 #include <memory>
-#include <string>
+// #include <string>
 
 struct FrameSnapshot;
 
@@ -99,7 +99,7 @@ struct RenderComponent : public IComponent {
   inline void set_obj_asset(AssetManager::Asset obj_asset) {
     objl::Loader loader;
     loader.LoadFile(obj_asset.get_path().string());
-	
+
     std::vector<glm::vec3> vertices;
 
     /*for (const auto &vertex : loader.LoadedVertices) {*/
@@ -113,7 +113,7 @@ struct RenderComponent : public IComponent {
       renderMesh._vertices.clear();
       renderMesh._indices.clear();
       for (const auto &vertex : mesh.Vertices) {
-		
+
         renderMesh._vertices.push_back(
 
             glm::vec3(vertex.Position.x, vertex.Position.y, vertex.Position.z));
@@ -127,7 +127,7 @@ struct RenderComponent : public IComponent {
 	  std::cout << "Ni1: " << renderMesh.MeshMaterial.Ni << std::endl;
 	  std::cout << "Illum1: " << renderMesh.MeshMaterial.illum << std::endl;
     }
-	
+
 	//for(const auto& mesh : _meshes){
 	//  std::cout << "Duuchlauf\n";
 	//  for(const auto& v: mesh._vertices){
