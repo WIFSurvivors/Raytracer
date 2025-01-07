@@ -12,7 +12,7 @@
 #include <string>
 #include <utility>
 
-inline std::string format_double(double value) {
+inline std::string format_float(float value) {
     std::ostringstream out;
     out << std::fixed << std::setprecision(3) << value;
     return out.str();
@@ -51,21 +51,21 @@ inline boost::json::object entity_options_to_json(const std::shared_ptr<Entity>&
     //boost::json::array options;
     boost::json::object _options;
     boost::json::object loc_options;
-    loc_options["x"] = format_double(entity->get_local_position().x);
-    loc_options["y"] = format_double(entity->get_local_position().y);
-    loc_options["z"] = format_double(entity->get_local_position().z);
+    loc_options["x"] = format_float(entity->get_local_position().x);
+    loc_options["y"] = format_float(entity->get_local_position().y);
+    loc_options["z"] = format_float(entity->get_local_position().z);
     _options["Translation"] = std::move(loc_options);
     boost::json::object rotation;
     boost::json::object rot_options; 
-    rot_options["x"] = format_double(entity->get_local_rotation().x);
-    rot_options["y"] = format_double(entity->get_local_rotation().y);
-    rot_options["z"] = format_double(entity->get_local_rotation().z);
+    rot_options["x"] = format_float(entity->get_local_rotation().x);
+    rot_options["y"] = format_float(entity->get_local_rotation().y);
+    rot_options["z"] = format_float(entity->get_local_rotation().z);
     _options["rotation"] = std::move(rot_options);
     boost::json::object scale;
     boost::json::object scale_options;
-    scale_options["x"] = format_double(entity->get_local_scale().x);
-    scale_options["y"] = format_double(entity->get_local_scale().y);
-    scale_options["z"] = format_double(entity->get_local_scale().z);
+    scale_options["x"] = format_float(entity->get_local_scale().x);
+    scale_options["y"] = format_float(entity->get_local_scale().y);
+    scale_options["z"] = format_float(entity->get_local_scale().z);
     _options["scale"] = std::move(scale_options);
 
     obj["options"] = std::move(_options);

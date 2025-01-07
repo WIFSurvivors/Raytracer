@@ -45,8 +45,8 @@
 namespace fs = std::filesystem;
 
 inline fs::path get_root_pathadad() { return fs::path{"."}; }
-constexpr std::string get_root_path() { return fs::path{"."}.string(); }
-constexpr std::string get_shader_path() { return fs::path{"."}.string(); }
+inline std::string get_root_path() { return fs::path{"."}.string(); }
+inline std::string get_shader_path() { return fs::path{"."}.string(); }
 
 
 struct Log {

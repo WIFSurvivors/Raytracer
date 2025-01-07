@@ -116,4 +116,14 @@ public class EcsApi
     {
         return _client.Send(String.Format(adjustSeparator("SetBounces null {0}"), bounces));
     }
+
+        public string set_fov(float fov)
+    {
+        return _client.Send(String.Format(adjustSeparator("SetFov null {0}"), fov));
+    }
+
+    public string get_fov()
+    {
+        return _client.Send("GetFov");
+    }
 }
