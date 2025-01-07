@@ -6,6 +6,9 @@
 #include "includes/component/RenderComponent.hpp"
 #include "includes/ShaderCompiler.hpp"
 #include "includes/WindowManager.hpp"
+#include "includes/utility/Canvas.hpp"
+
+// #include <algorithm>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -13,7 +16,7 @@
 #include <glm/ext/matrix_clip_space.hpp>
 #include <memory>
 #include <vector>
-#include <map>
+// #include <map>
 #include <string>
 #include <optional>
 
@@ -77,7 +80,7 @@ struct RenderSystem : public System<RenderComponent> {
     return "Render System";
   }
 
-  void setTextures();
+  // void setTextures();
   void updateSSBOBuffers();
   //  temporal
   //  we need, this because Render System is responsible for the window and
@@ -95,31 +98,31 @@ private:
   using typename System::uuid;
 
 #if SHOW_UI
-  std::unique_ptr<Shader> program;
-
+  std::unique_ptr<Shader> _program;
+  std::unique_ptr<Canvas> _canvas;
   // GLuint mouseUniformID; // a bit cringe... but it stays here for now
-  GLuint ssbo_tree;
-  GLuint ssbo_triangle;
-  GLuint ssbo_vertex;
-  GLuint ssbo_indices;
-  GLuint ssbo_mats;
-  GLuint ssbo_matsIDX;
+  GLuint _ssbo_tree;
+  GLuint _ssbo_triangle;
+  GLuint _ssbo_vertex;
+  GLuint _ssbo_indices;
+  GLuint _ssbo_mats;
+  GLuint _ssbo_matsIDX;
   GLuint _vao;
-  GLuint _vbo;
-  GLuint _uvVBO;
-  GLuint _textU;
-  GLuint _modelU;
-  
-  GLuint _textureID;
-  std::vector<glm::vec3> _vertices = {
-      glm::vec3{-1.0f, -1.0f, 0.0f}, glm::vec3{1.0f, -1.0f, 0.0f},
-      glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, -1.0f, 0.0f},
-      glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, 1.0f, 0.0f}};
+  // GLuint _vbo;
+  // GLuint _uvVBO;
+  // GLuint _textU;
+  // GLuint _modelU;
 
-  int _nverticesCanvas = 6; // Number of vertices of Canvas
-  std::vector<glm::vec2> _uv = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 0.0f},
-                                glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 0.0f},
-                                glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 1.0f}};
+  // GLuint _textureID;
+  // std::vector<glm::vec3> _vertices = {
+  //     glm::vec3{-1.0f, -1.0f, 0.0f}, glm::vec3{1.0f, -1.0f, 0.0f},
+  //     glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, -1.0f, 0.0f},
+  //     glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, 1.0f, 0.0f}};
+
+  // int _nverticesCanvas = 6; // Number of vertices of Canvas
+  // std::vector<glm::vec2> _uv = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 0.0f},
+  //                               glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 0.0f},
+  //                               glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 1.0f}};
 
   glm::vec3 _cameraPosition;
   glm::vec3 _cameraDirection;
@@ -127,7 +130,7 @@ private:
 
   glm::mat4 _viewMatrix;
   glm::mat4 _projectionMatrix;
-  
+
 
   glm::mat4 _modelMatrix_Canvas = glm::mat4(1.0f);
   GLuint _timeU;
@@ -144,6 +147,6 @@ private:
   GLuint _maximalBouncesU;
   GLuint _maxHittableTrianglesU;
 
-  std::unique_ptr<Shader> compute;
+  std::unique_ptr<Shader> _compute;
 #endif
 };

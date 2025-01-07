@@ -63,32 +63,34 @@ void RenderSystem::init() {
   Shader simpleShader{
       std::make_pair(GL_VERTEX_SHADER, vertex_shader_file.string()),
       std::make_pair(GL_FRAGMENT_SHADER, fragment_shader_file.string())};
-  program = std::make_unique<Shader>(simpleShader);
+  _program = std::make_unique<Shader>(simpleShader);
+
+  _canvas = std::make_unique<Canvas>(_program->programID);
 
   Shader computeShader{
       std::make_pair(GL_COMPUTE_SHADER, compute_shader_file.string())};
-  compute = std::make_unique<Shader>(computeShader);
+  _compute = std::make_unique<Shader>(computeShader);
 
   /**************************************************************************/
 
-  glGenBuffers(1, &_vbo);
-  glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+  // glGenBuffers(1, &_vbo);
+  // glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 
-  glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(glm::vec3),
-               _vertices.data(), GL_STATIC_DRAW);
+  // glBufferData(GL_ARRAY_BUFFER, _vertices.size() * sizeof(glm::vec3),
+  //              _vertices.data(), GL_STATIC_DRAW);
 
-  glGenBuffers(1, &_uvVBO);
+  // glGenBuffers(1, &_uvVBO);
 
-  glBindBuffer(GL_ARRAY_BUFFER, _uvVBO);
+  // glBindBuffer(GL_ARRAY_BUFFER, _uvVBO);
 
-  glBufferData(GL_ARRAY_BUFFER, _uv.size() * sizeof(glm::vec2), _uv.data(),
-               GL_STATIC_DRAW);
+  // glBufferData(GL_ARRAY_BUFFER, _uv.size() * sizeof(glm::vec2), _uv.data(),
+  //              GL_STATIC_DRAW);
 
-  setTextures();
+  // setTextures();
 
-  _textU = glGetUniformLocation(program->programID, "text");
-  _modelU = glGetUniformLocation(program->programID, "MVP");
-  /**************************************************************************/
+  // _textU = glGetUniformLocation(program->programID, "text");
+  // _modelU = glGetUniformLocation(program->programID, "MVP");
+  // /**************************************************************************/
   _cameraPosition = glm::vec3(0.0f, 8.0f, 15.0f);
   _cameraDirection = glm::vec3(0.0f, 3.0f, 0.0f);
   _viewMatrix =
@@ -98,22 +100,22 @@ void RenderSystem::init() {
   _fov = 60.0f;
   _projectionMatrix = glm::perspective(glm::radians(_fov), 1.0f, 0.1f, 100.0f);
 
-  _timeU = glGetUniformLocation(compute->programID, "time");
-  _cameraU = glGetUniformLocation(compute->programID, "cameraPos");
-  _projU = glGetUniformLocation(compute->programID, "Projection");
-  _viewU = glGetUniformLocation(compute->programID, "View");
+  _timeU = glGetUniformLocation(_compute->programID, "time");
+  _cameraU = glGetUniformLocation(_compute->programID, "cameraPos");
+  _projU = glGetUniformLocation(_compute->programID, "Projection");
+  _viewU = glGetUniformLocation(_compute->programID, "View");
 
   // This Uniforoms can be user defined and are required to be defined to work
   // properly
-  _maximalBouncesU = glGetUniformLocation(compute->programID, "bounce");
-  _maxHittableTrianglesU = glGetUniformLocation(compute->programID, "hittable");
+  _maximalBouncesU = glGetUniformLocation(_compute->programID, "bounce");
+  _maxHittableTrianglesU = glGetUniformLocation(_compute->programID, "hittable");
 
   _ls_active_light_sourcesU =
-      glGetUniformLocation(compute->programID, "ls_active_light_sources");
-  _ls_positionsU = glGetUniformLocation(compute->programID, "ls_positions");
-  _ls_directionsU = glGetUniformLocation(compute->programID, "ls_directions");
-  _ls_colorsU = glGetUniformLocation(compute->programID, "ls_colors");
-  _ls_intensitiesU = glGetUniformLocation(compute->programID, "ls_intensities");
+      glGetUniformLocation(_compute->programID, "ls_active_light_sources");
+  _ls_positionsU = glGetUniformLocation(_compute->programID, "ls_positions");
+  _ls_directionsU = glGetUniformLocation(_compute->programID, "ls_directions");
+  _ls_colorsU = glGetUniformLocation(_compute->programID, "ls_colors");
+  _ls_intensitiesU = glGetUniformLocation(_compute->programID, "ls_intensities");
 
   /**************************************************************************/
   std::vector<Triangle> triforce1 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
@@ -155,11 +157,11 @@ void RenderSystem::init() {
 
   LOG(std::format("SSBONodes size: {}", sizeof(SSBONodes)));
 
-  glGenBuffers(1, &ssbo_tree);
-  glGenBuffers(1, &ssbo_indices);
-  glGenBuffers(1, &ssbo_vertex);
-  glGenBuffers(1, &ssbo_mats);
-  glGenBuffers(1, &ssbo_matsIDX);
+  glGenBuffers(1, &_ssbo_tree);
+  glGenBuffers(1, &_ssbo_indices);
+  glGenBuffers(1, &_ssbo_vertex);
+  glGenBuffers(1, &_ssbo_mats);
+  glGenBuffers(1, &_ssbo_matsIDX);
   /**/
   /*glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);*/
   /**/
@@ -264,7 +266,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   }
 
   //  Setup compute shader
-  compute->activateShader();
+  _compute->activateShader();
   glUniform1f(_timeU, snapshot.get_total_time());
 
   // === CAMERA ====
@@ -315,29 +317,31 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
   // Setup fragment and vertex shader
-  program->activateShader();
+  _program->activateShader();
   glBindVertexArray(_vao);
 
   /****************************************************************************/
 
-  glUniform1i(_textU, 0);
-  glUniformMatrix4fv(_modelU, 1, GL_FALSE, &_modelMatrix_Canvas[0][0]);
+  // glUniform1i(_textU, 0);
+  // glUniformMatrix4fv(_modelU, 1, GL_FALSE, &_modelMatrix_Canvas[0][0]);
 
-  glBindBuffer(GL_ARRAY_BUFFER, _vbo);
-  glEnableVertexAttribArray(0);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
-                        reinterpret_cast<void *>(0));
+  // glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+  // glEnableVertexAttribArray(0);
+  // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float),
+  //                       reinterpret_cast<void *>(0));
 
-  glBindBuffer(GL_ARRAY_BUFFER, _uvVBO);
-  glEnableVertexAttribArray(1);
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float),
-                        reinterpret_cast<void *>(0));
+  // glBindBuffer(GL_ARRAY_BUFFER, _uvVBO);
+  // glEnableVertexAttribArray(1);
+  // glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float),
+  //                       reinterpret_cast<void *>(0));
 
-  glDrawArrays(GL_TRIANGLES, 0, _nverticesCanvas);
-  /****************************************************************************/
+  // glDrawArrays(GL_TRIANGLES, 0, _nverticesCanvas);
+  // /****************************************************************************/
   for (auto &&c : _components) {
     c.second->update(snapshot);
   }
+
+  _canvas->update(snapshot);
 #endif
 }
 
@@ -384,7 +388,7 @@ RenderComponent *RenderSystem::create_component(
 
   int programmID = 0;
 #if SHOW_UI
-  programmID = program->programID;
+  programmID = _program->programID;
 #endif
   c->init(programmID);
   return c;
@@ -406,7 +410,7 @@ RenderComponent *RenderSystem::create_component(
                                                : _da->shader);
   int programmID = 0;
 #if SHOW_UI
-  programmID = program->programID;
+  programmID = _program->programID;
 #endif
   c->init(programmID);
   return c;
@@ -436,64 +440,64 @@ void RenderSystem::print() {
   std::cout << std::endl;
 }
 
-void RenderSystem::setTextures() {
-#if SHOW_UI
-  //  Generate n = 1 texture IDs
-  glGenTextures(1, &_textureID);
+// void RenderSystem::setTextures() {
+// #if SHOW_UI
+//   //  Generate n = 1 texture IDs
+//   glGenTextures(1, &_textureID);
 
-  //  Activate Texture unit GL_TEXTURE0
-  glActiveTexture(GL_TEXTURE0);
+//   //  Activate Texture unit GL_TEXTURE0
+//   glActiveTexture(GL_TEXTURE0);
 
-  //  Binds new OpenGL texture to the TextureID
-  //  It means all future texture functions will modify specified texture
-  glBindTexture(GL_TEXTURE_2D, _textureID);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//   //  Binds new OpenGL texture to the TextureID
+//   //  It means all future texture functions will modify specified texture
+//   glBindTexture(GL_TEXTURE_2D, _textureID);
+//   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+//   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 
-  //  Loads the texture data "NULL" to OpenGL
-  //  TODO
-  //  For now it takes 800 800 as screen size, but later it should be as big as
-  //  texture
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 800, 800, 0, GL_RGBA, GL_FLOAT,
-               NULL);
+//   //  Loads the texture data "NULL" to OpenGL
+//   //  TODO
+//   //  For now it takes 800 800 as screen size, but later it should be as big as
+//   //  texture
+//   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 800, 800, 0, GL_RGBA, GL_FLOAT,
+//                NULL);
 
-  //  Specifies the mipmap level = 0 of the texture
-  glBindImageTexture(0, _textureID, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, _textureID);
-#endif
-}
+//   //  Specifies the mipmap level = 0 of the texture
+//   glBindImageTexture(0, _textureID, 0, GL_FALSE, 0, GL_READ_WRITE, GL_RGBA32F);
+//   glActiveTexture(GL_TEXTURE0);
+//   glBindTexture(GL_TEXTURE_2D, _textureID);
+// #endif
+// }
 void RenderSystem::updateSSBOBuffers() {
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_tree);
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, _ssbo_tree);
 
   glBufferData(GL_SHADER_STORAGE_BUFFER,
                BVH_Tree->ssboData.size() * sizeof(SSBONodes),
                BVH_Tree->ssboData.data(), GL_STATIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, ssbo_tree);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 1, _ssbo_tree);
 
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_indices);
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, _ssbo_indices);
   glBufferData(GL_SHADER_STORAGE_BUFFER,
                BVH_Tree->triIdxData.size() * sizeof(uint32_t),
                BVH_Tree->triIdxData.data(), GL_STATIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, ssbo_indices);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 2, _ssbo_indices);
 
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_vertex);
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, _ssbo_vertex);
   glBufferData(GL_SHADER_STORAGE_BUFFER,
                BVH_Tree->vertex.size() * sizeof(Vec3Padded),
                BVH_Tree->vertex.data(), GL_STATIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, ssbo_vertex);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 4, _ssbo_vertex);
 
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_mats);
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, _ssbo_mats);
   glBufferData(GL_SHADER_STORAGE_BUFFER,
                BVH_Tree->mats.size() * sizeof(Materials), BVH_Tree->mats.data(),
                GL_STATIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, ssbo_mats);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 5, _ssbo_mats);
 
-  glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo_matsIDX);
+  glBindBuffer(GL_SHADER_STORAGE_BUFFER, _ssbo_matsIDX);
   glBufferData(GL_SHADER_STORAGE_BUFFER,
                BVH_Tree->matIndx.size() * sizeof(uint32_t),
                BVH_Tree->matIndx.data(), GL_STATIC_DRAW);
-  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, ssbo_matsIDX);
+  glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, _ssbo_matsIDX);
 }
