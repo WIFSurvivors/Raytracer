@@ -2,6 +2,7 @@
 #include "includes/utility/Log.hpp"
 #include "includes/tcp_server/TcpServer.hpp"
 #include "includes/utility/FrameSnapshot.hpp"
+#include "includes/utility/BigJsonReader.hpp"
 #include <iostream>
 
 class TcpServer;
@@ -27,6 +28,14 @@ void Engine::stop_server() {
   } catch (const std::exception &e) {
     LOG_ERROR("Error: " + std::string(e.what()));
   }
+}
+
+
+void Engine::save_scene_as_json(std::filesystem::path p){
+	BigJsonReader j;
+	j.do_sth();
+	// auto wawa = j.to_json(_scene);
+    // std::cout << "RETURN:\n" << wawa << std::endl;
 }
 
 void Engine::startLoop() {

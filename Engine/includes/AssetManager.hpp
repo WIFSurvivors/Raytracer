@@ -19,12 +19,24 @@
 #define ASSET_RELATIVE_PATH "assets"
 #endif
 
+#ifndef JSON_RELATIVE_PATH
+#define JSON_RELATIVE_PATH "json"
+#endif
+
 inline const fs::path get_relative_shader_folder_path() {
   return fs::path(SHADER_RELATIVE_PATH);
 }
 
 inline const fs::path get_absolute_shader_folder_path() {
   return fs::absolute(fs::path(get_relative_shader_folder_path()));
+}
+
+inline const fs::path get_relative_json_folder_path() {
+  return fs::path(JSON_RELATIVE_PATH);
+}
+
+inline const fs::path get_absolute_json_folder_path() {
+  return fs::absolute(fs::path(get_relative_json_folder_path()));
 }
 
 inline const fs::path get_relative_asset_folder_path() {

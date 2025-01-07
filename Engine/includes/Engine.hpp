@@ -3,6 +3,7 @@
 #include "includes/Scene.hpp"
 #include "includes/UUIDManager.hpp"
 
+#include <filesystem>
 #include <memory>
 #include <mutex>
 #include <chrono>
@@ -26,6 +27,7 @@ public:
   Engine();
   virtual ~Engine();
 
+  void save_scene_as_json(std::filesystem::path p);
   void startLoop();
 
   inline UUIDManager *get_active_uuid_manager() {

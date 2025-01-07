@@ -59,6 +59,7 @@ struct Scene {
   //   bool remove(uuid id);
 
   void print();
+  void print_system_data();
 
   void generate_sample_content();
 

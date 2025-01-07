@@ -29,6 +29,7 @@ FetchContent_MakeAvailable(googletest)
 set(RELATIVE_SHADER_PATH "./shaders/" CACHE STRING "Relative path to shader scripts")
 set(RELATIVE_ASSET_PATH "./assets/" CACHE STRING "Relative path to assets (obj and mat files)")
 set(RELATIVE_LOG_PATH "./logs/" CACHE STRING "Relative path to logs. This folder is created at app start")
+set(RELATIVE_JSON_PATH "./json/" CACHE STRING "Relative path to json files. Currently used for testing purposes.")
 
 option(SHOW_UI "Show UI, which means WindowManager and RenderSystem are active" ON)
 set(FRAME_RATE_HZ 30 CACHE STRING "Determines the upper-limit for the Frame Rate")
@@ -60,8 +61,10 @@ FetchContent_Declare(
   GIT_TAG main
   GIT_PROGRESS    TRUE
 )
-# find_package(OpenGL REQUIRED)
 
+FetchContent_Declare(trestoig URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
+
+FetchContent_MakeAvailable(trestoig)
 
 option(USE_AVX "Enable AVX and AVX2" ON)
 
@@ -95,6 +98,7 @@ add_compile_definitions(ROOT_ABSOLUTE_PATH="${ABSOLUTE_ROOT_PATH}")
 add_compile_definitions(SHADER_RELATIVE_PATH="${RELATIVE_SHADER_PATH}") 
 add_compile_definitions(ASSET_RELATIVE_PATH="${RELATIVE_ASSET_PATH}") 
 add_compile_definitions(LOG_RELATIVE_PATH="${RELATIVE_LOG_PATH}") 
+add_compile_definitions(JSON_RELATIVE_PATH="${RELATIVE_JSON_PATH}") 
 
 message(STATUS "Show UI: ${SHOW_UI}")
 message(STATUS "Frame Rate (Hz): ${FRAME_RATE_HZ}")
@@ -102,6 +106,7 @@ message(STATUS "Frame Rate (Hz): ${FRAME_RATE_HZ}")
 message(STATUS "Log Path (relative): ${RELATIVE_LOG_PATH}")
 message(STATUS "Asset Path (relative): ${RELATIVE_ASSET_PATH}")
 message(STATUS "Shader Path (relative): ${RELATIVE_SHADER_PATH}")
+message(STATUS "JSON Path (relative): ${RELATIVE_JSON_PATH}")
 
 # Add subdirectories
 add_subdirectory(includes)
@@ -121,10 +126,12 @@ target_link_libraries(${PROJECT_NAME} PUBLIC  glad glfw glm::glm Boost::asio Boo
 if (WIN32)
   target_link_libraries(${PROJECT_NAME} PUBLIC ws2_32 mswsock)
 endif()
+target_link_libraries(${PROJECT_NAME} PUBLIC nlohmann_json::nlohmann_json)
 
 # Specify the source and destination directories
 set(DEV_ASSETS_DIR "${CMAKE_SOURCE_DIR}/assets")
 set(DEV_SHADER_DIR "${CMAKE_SOURCE_DIR}/shaders")
+set(DEV_JSON_DIR "${CMAKE_SOURCE_DIR}/json")
 
 # get_target_property(EXECUTABLE_PATH ${PROJECT_NAME} RUNTIME_OUTPUT_DIRECTORY)
 message(STATUS "Executable will be placed at: ${CMAKE_BINARY_DIR}")
@@ -139,6 +146,9 @@ add_custom_command(
 	COMMAND ${CMAKE_COMMAND} -E copy_directory
 		"${DEV_SHADER_DIR}"
 		"${CMAKE_BINARY_DIR}/shaders"
+	COMMAND ${CMAKE_COMMAND} -E copy_directory
+		"${DEV_JSON_DIR}"
+		"${CMAKE_BINARY_DIR}/json"
     COMMAND ${CMAKE_COMMAND} -E echo "Copy operation completed!"
     COMMENT "Copying asset folder to the build directory"
 )

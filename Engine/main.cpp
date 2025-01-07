@@ -18,6 +18,7 @@ int main() {
 #endif
   try {
     Engine engine{};
+	engine.save_scene_as_json("wawa.txt");
     engine.startLoop();
   } catch (std::exception &e) {
 	LOG_ERROR("App crashed!!!!");
