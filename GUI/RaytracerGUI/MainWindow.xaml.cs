@@ -33,15 +33,16 @@ namespace RaytracerGUI
         private string ReceivedEcsJsonString;
         private GLFWLoader loader;
         private IntPtr hWndParent;
-        private TreeBuilder entityBuilder;
-        private TreeBuilder entityOptionsBuilder;
+        private TreeBuilder _entityBuilder;
+        private TreeBuilder _entityOptionsBuilder;
 
-        private TreeBuilder componentBuilder;
-        private TreeBuilder componentOptionsBuilder;
+        private TreeBuilder _componentBuilder;
+        private TreeBuilder _componentOptionsBuilder;
 
         bool connection = false;
         string rotation = "xpos";
         bool textboxChange = false;
+        int sliderOffset = 10;
 
         private EcsNode selectedEntityOptionItem;
 
@@ -304,8 +305,8 @@ namespace RaytracerGUI
                         }
 
                         // TreeBuilder testing
-                        entityBuilder = new TreeBuilder(trvEntities, this);
-                       entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
+                        _entityBuilder = new TreeBuilder(trvEntities, this);
+                       _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
                        break;
 
                     case "btnToggleLog":
@@ -433,8 +434,8 @@ namespace RaytracerGUI
 
             if (changedSlider != null)
             { 
-                changedSlider.Minimum = changedSlider.Value - 10;
-                changedSlider.Maximum = changedSlider.Value + 10;
+                changedSlider.Minimum = changedSlider.Value - sliderOffset;
+                changedSlider.Maximum = changedSlider.Value + sliderOffset;
 
                 string slider = changedSlider.Name;
 
@@ -444,7 +445,7 @@ namespace RaytracerGUI
                 double maxValue = Math.Round(changedSlider.Maximum, 2);
 
 
-                // Update min, med, max labels
+                // Update 
                 switch (slider)
                 {
                     case "sldX":
@@ -452,6 +453,8 @@ namespace RaytracerGUI
                         lblXMed.Content = medValue;
                         lblXMax.Content = maxValue;
 
+
+                        _entityOptionsBuilder.GetTextBox("traX")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(0, "UUID");
                         break;
 
@@ -460,6 +463,7 @@ namespace RaytracerGUI
                         lblYMed.Content = medValue;
                         lblYMax.Content = maxValue;
 
+                        _entityOptionsBuilder.GetTextBox("traY")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(0, "UUID");
                         break;
 
@@ -468,6 +472,7 @@ namespace RaytracerGUI
                         lblZMed.Content = medValue;
                         lblZMax.Content = maxValue;
 
+                        _entityOptionsBuilder.GetTextBox("traZ")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(0, "UUID");
                         break;
 
@@ -476,6 +481,7 @@ namespace RaytracerGUI
                         lblRxMed.Content = medValue;
                         lblRxMax.Content = maxValue;
 
+                        _entityOptionsBuilder.GetTextBox("rotX")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(1, "UUID");
                         break;
 
@@ -484,6 +490,7 @@ namespace RaytracerGUI
                         lblRyMed.Content = medValue;
                         lblRyMax.Content = maxValue;
 
+                        _entityOptionsBuilder.GetTextBox("rotY")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(1, "UUID");
                         break;
 
@@ -492,6 +499,7 @@ namespace RaytracerGUI
                         lblRzMed.Content = medValue;
                         lblRzMax.Content = maxValue;
 
+                        _entityOptionsBuilder.GetTextBox("rotZ")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(1, "UUID");
                         break;
 
@@ -513,9 +521,6 @@ namespace RaytracerGUI
                         SliderEcsApiUpdate(2, "UUID");
                         break;
                 }
-
-                //TODO get information (which textbox must be updated)
-
 
 
             }
@@ -665,7 +670,7 @@ namespace RaytracerGUI
                 selectedItem.Items.Clear();
 
                 // Rebuild the children based on the new data
-                entityBuilder.CreateChildItems(updatedNode, selectedItem);
+                _entityBuilder.CreateChildItems(updatedNode, selectedItem);
                 //tbxLog.AppendText($"Updated children for UUID: {uuid}\n");
             }
         }
@@ -682,8 +687,8 @@ namespace RaytracerGUI
                     return;
                 }
 
-                entityOptionsBuilder = new TreeBuilder(trvEntitiesOptions, this);
-                entityOptionsBuilder.BuildTreeFromOptions(ecsJsonNode);
+                _entityOptionsBuilder = new TreeBuilder(trvEntitiesOptions, this);
+                _entityOptionsBuilder.BuildTreeFromOptions(ecsJsonNode);
             }
             catch (Exception ex)
             {
@@ -698,45 +703,70 @@ namespace RaytracerGUI
                 tbxLog.AppendText($"TextBox '{textBox.Name}' text changed to: {textBox.Text}\n");
                 textboxChange = true;
 
-                // Attempt to parse the text and update the appropriate slider
-                switch (textBox.Name)
-                {
-                    case "x":
-                        if (double.TryParse(textBox.Text, out double valueX))
-                        {
-                            sldX.Value = valueX;
-                        }
-                        else
-                        {
-                            tbxLog.AppendText("Invalid value for X.\n");
-                        }
-                        break;
+                if (double.TryParse(textBox.Text, out double value)){
 
-                    case "y":
-                        if (double.TryParse(textBox.Text, out double valueY))
-                        {
-                            sldY.Value = valueY;
-                        }
-                        else
-                        {
-                            tbxLog.AppendText("Invalid value for Y.\n");
-                        }
-                        break;
 
-                    case "z":
-                        if (double.TryParse(textBox.Text, out double valueZ))
-                        {
-                            sldZ.Value = valueZ;
-                        }
-                        else
-                        {
-                            tbxLog.AppendText("Invalid value for Z.\n");
-                        }
-                        break;
+                    // Attempt to parse the text and update the appropriate slider
+                    switch (textBox.Name)
+                    {
+                        case "traX":
+                            sldX.Value = value;
+                            sldX.Minimum = value - sliderOffset;
+                            sldX.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldX, null);
+                            break;
 
-                    default:
-                        tbxLog.AppendText($"TextBox '{textBox.Name}' does not match known sliders.\n");
-                        break;
+                        case "traY":
+                            sldY.Value = value;
+                            sldY.Minimum = value - sliderOffset;
+                            sldY.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldY, null);
+                            break;
+
+                        case "traZ":
+                            sldZ.Value = value;
+                            sldZ.Minimum = value - sliderOffset;
+                            sldZ.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldZ, null);
+                            break;
+
+                        case "rotX":
+                            sldRx.Value = value;
+                            sldRx.Minimum = value - sliderOffset;
+                            sldRx.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldRx, null);
+                            break;
+
+                        case "rotY":
+                            sldRy.Value = value;
+                            sldRy.Minimum = value - sliderOffset;
+                            sldRy.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldRy, null);
+                            break;
+
+                        case "rotZ":
+                            sldRz.Value = value;
+                            sldRz.Minimum = value - sliderOffset;
+                            sldRz.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldRz, null);
+                            break;
+
+
+                        case "zoom":
+                                sldX.Value = value;
+                                sldX.Minimum = value - sliderOffset;
+                                sldX.Maximum = value + sliderOffset;
+                                SliderPreviewMouseUp(sldX, null);
+                            break;
+
+
+
+                        default:
+                            tbxLog.AppendText($"TextBox '{textBox.Name}' does not match known sliders.\n");
+                            break;
+                    } }
+                else {
+                    tbxLog.AppendText("Invalid value for Slider" + textBox.Name + ".\n");
                 }
             }
         }
@@ -746,7 +776,7 @@ namespace RaytracerGUI
         }
 
 
-        /// Components Update
+        // Components Update
         private void trvComponents_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (e.NewValue is TreeViewItem selectedItem)
@@ -775,7 +805,7 @@ namespace RaytracerGUI
                 //PROBLEM: Exception when deserialized, no class for object existent:
                 //JSON: {"components":[{"uuid":"67949d3e-de96-487f-a03c-5b900da73e4b"}]}
                 var updatedNode = JsonSerializer.Deserialize<string>(componentsJsonNode);
-                componentBuilder = new TreeBuilder(trvComponents, this);
+                _componentBuilder = new TreeBuilder(trvComponents, this);
 
             if (componentsJsonNode == null)
             {
@@ -783,7 +813,7 @@ namespace RaytracerGUI
                 return;
             }
 
-            componentBuilder.BuildTreeFromJson(updatedNode);
+            _componentBuilder.BuildTreeFromJson(updatedNode);
             }
             catch (Exception ex)
             {
@@ -803,8 +833,8 @@ namespace RaytracerGUI
                 return;
             }
 
-            componentOptionsBuilder = new TreeBuilder(trvComponentsOptions, this);
-            componentOptionsBuilder.BuildTreeFromOptions(componentsJsonNode);
+            _componentOptionsBuilder = new TreeBuilder(trvComponentsOptions, this);
+            _componentOptionsBuilder.BuildTreeFromOptions(componentsJsonNode);
         }
 
         private void trvComponentsOptions_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -812,7 +842,7 @@ namespace RaytracerGUI
            
         }
 
-
+        //Add Components
         private void AddRenderComponent()
         {
             if (_ecsApi != null)
