@@ -126,6 +126,7 @@ struct AssetManager : public Storage<fs::path> {
                            "inconsistent behaviour!!",
                            boost::uuids::to_string(id)));
     }
+    _um->add(id, this);
     _storage[id] = path;
   }
 
