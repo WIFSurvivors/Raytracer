@@ -671,17 +671,24 @@ namespace RaytracerGUI
         }
         public void UpdateEntitiesOptions(string uuid, RoutedPropertyChangedEventArgs<object>? e)
         {
-            string? ecsJsonNode = _ecsApi.get_entity_options(uuid);
-            tbxLog.AppendText("EntityList Update : JSON\n\n " + ecsJsonNode + "\n\n");
-
-            if (ecsJsonNode == null)
+            try
             {
-                tbxLog.AppendText("JSON = null.\n");
-                return;
-            }
+                string? ecsJsonNode = _ecsApi.get_entity_options(uuid);
+                tbxLog.AppendText("EntityList Update : JSON\n\n " + ecsJsonNode + "\n\n");
 
-            entityOptionsBuilder = new TreeBuilder(trvEntitiesOptions,this);
-            entityOptionsBuilder.BuildTreeFromOptions(ecsJsonNode);
+                if (ecsJsonNode == null)
+                {
+                    tbxLog.AppendText("JSON = null.\n");
+                    return;
+                }
+
+                entityOptionsBuilder = new TreeBuilder(trvEntitiesOptions, this);
+                entityOptionsBuilder.BuildTreeFromOptions(ecsJsonNode);
+            }
+            catch (Exception ex)
+            {
+                tbxLog.AppendText("\n Exception fired" + "\n\n\n" + ex);
+            }
         }
         public void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -860,7 +867,23 @@ namespace RaytracerGUI
             }
         }
 
-       
+
+        private void nudBounces_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue != null && _ecsApi != null)
+            {
+                int newValue = (int)e.NewValue;
+                try
+                {
+                    string? result = _ecsApi.set_bounces(newValue);
+                    tbxLog.AppendText(result + "\n");
+                }
+                catch (Exception ex)
+                {
+                    tbxLog.AppendText("\n Exception fired" + "\n\n\n" + ex);
+                }
+            }
+        }
 
 
 
