@@ -118,7 +118,7 @@ struct Light {
 
 /*********************************************************************************/
 // VARIABLES
-int hittableCount = 15076;
+int hittableCount = 60;
 int MAX_RECURSION_DEPTH = 4;
 
 const int STACK_SIZE = 128;
@@ -421,7 +421,7 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
             color *= materials[matIndex[index]].d;
             hit = true;
         } else {
-            color += reflec_accumulation * backgroundColor(currentRay.direction);
+            //color += reflec_accumulation * backgroundColor(currentRay.direction);
         }
     }
     //if(!hit){color = vec3(1.0f,0.0f,0.0f);}

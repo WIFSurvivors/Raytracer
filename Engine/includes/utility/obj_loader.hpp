@@ -886,9 +886,19 @@ private:
     }
   }
 
+
+  std::string trim(const std::string& str) {
+	  size_t start = str.find_first_not_of(" \t\n\r");
+	  size_t end = str.find_last_not_of(" \t\n\r");
+	  return (start == std::string::npos || end == std::string::npos) 
+				 ? "" 
+				 : str.substr(start, end - start + 1);
+  }
+
   // Load Materials from .mtl file
   inline bool LoadMaterials(std::string path) {
     // If the file is not a material file return false
+	path = trim(path);
     if (path.substr(path.size() - 4, path.size()) != ".mtl")
       return false;
 

@@ -99,6 +99,7 @@ struct RenderComponent : public IComponent {
   inline void set_obj_asset(AssetManager::Asset obj_asset) {
     objl::Loader loader;
     loader.LoadFile(obj_asset.get_path().string());
+	
     std::vector<glm::vec3> vertices;
 
     /*for (const auto &vertex : loader.LoadedVertices) {*/

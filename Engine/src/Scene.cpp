@@ -6,6 +6,15 @@
 #include <cassert>
 #include <format>
 
+
+std::string trim(const std::string& str) {
+    size_t start = str.find_first_not_of(" \t\n\r");
+    size_t end = str.find_last_not_of(" \t\n\r");
+    return (start == std::string::npos || end == std::string::npos) 
+               ? "" 
+               : str.substr(start, end - start + 1);
+}
+
 Scene::Scene(Engine *e)
     : _render_system{&_uuid_manager, e->get_window_manager(), &_camera_system,
                      &_light_system, &_default_assets},
@@ -80,10 +89,10 @@ void Scene::generate_sample_content() {
 
   // =================== ENTITIES =====================
   auto e1 = create_entity("camera");
-  e1->set_local_position(glm::vec3{0.f, +8.f, 150.f});
+  e1->set_local_position(glm::vec3{0.f, +8.f, 15.f});
   auto e2 = create_entity("light sources");
   auto e3 = create_entity("light red", e2);
-  e3->set_local_position(glm::vec3{0, 8, 100});
+  e3->set_local_position(glm::vec3{0, 4, 0});
   auto e4 = create_entity("light green", e2);
   e4->set_local_position(glm::vec3{0, -5, 5});
   auto e5 = create_entity("light blue", e2);
@@ -96,17 +105,17 @@ void Scene::generate_sample_content() {
   auto c2 = _light_system.create_component(e3.get());
   /*c2->set_color(0.8576f, 0.1f, 0.1f);*/
   c2->set_color(1.0f, 1.0f, 1.0f);
-  c2->set_intensity(250.0f);
+  c2->set_intensity(5.0f);
 
   auto c3 = _light_system.create_component(e4.get());
   /*c3->set_color(0.1f, 0.96752f, 0.1f);*/
   c3->set_color(1.0f, 1.0f, 1.0f);
-  c3->set_intensity(250.f);
+  c3->set_intensity(0.f);
 
   auto c4 = _light_system.create_component(e5.get());
   /*c4->set_color(0.1f, 0.1f, 1.f);*/
   c4->set_color(1.0f, 1.0f, 1.0f);
-  c4->set_intensity(500.f);
+  c4->set_intensity(0.f);
 
   // =================== RENDER =====================
   /*
