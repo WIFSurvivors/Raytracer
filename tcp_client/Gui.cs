@@ -31,6 +31,9 @@ public class Gui
             /*string message3 = api.get_components(thing);*/
             /*string message4 = api.get_root();*/
             /*string message22 = api.get_log_path();*/
+            string message222 = api.get_fov();
+            string message2222 = api.set_fov(120.0f);
+            string message22222 = api.get_fov();
             /*//uncomment which one you dont need*/
             /*//camera*/
             /*string message5 = api.set_component_option(thing, "{\"is_main_camera\":false,\"fov\":120.0}");*/
