@@ -131,7 +131,7 @@ void Scene::generate_sample_content() {
   */
 
   auto root_ptr = get_root().lock();
-  auto cpu_asset = create_asset("./assets/porsche.obj");
+  auto cpu_asset = create_asset("./assets/cornell-box.obj");
   _render_system.create_component(root_ptr.get(), cpu_asset);
   //_render_system.create_component(root_ptr.get(), v3, u3);
 

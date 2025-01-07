@@ -122,6 +122,9 @@ struct RenderComponent : public IComponent {
       renderMesh.MeshMaterial = mesh.MeshMaterial;
 
       _meshes.push_back(renderMesh);
+	  std::cout << "Ns1: " << renderMesh.MeshMaterial.Ns << std::endl;
+	  std::cout << "Ni1: " << renderMesh.MeshMaterial.Ni << std::endl;
+	  std::cout << "Illum1: " << renderMesh.MeshMaterial.illum << std::endl;
     }
 	
 	//for(const auto& mesh : _meshes){
@@ -159,6 +162,7 @@ struct RenderComponent : public IComponent {
                                  mesh.Indices.begin(), mesh.Indices.end());
       renderMesh.MeshMaterial = mesh.MeshMaterial;
       _meshes.push_back(renderMesh);
+	  std::cout << "Ns2: " << renderMesh.MeshMaterial.Ns << std::endl;
     }
   }
   inline void set_obj_asset(std::filesystem::path obj_path) {
@@ -191,6 +195,9 @@ struct RenderComponent : public IComponent {
                   << mesh.Vertices[i + 2].Position.y << ","
                   << mesh.Vertices[i + 2].Position.z << ")" << std::endl;
       }
+
+
+	  std::cout << "Ns3: " << renderMesh.MeshMaterial.Ns << std::endl;
     }
     _obj_asset->set_path(obj_path);
   }
