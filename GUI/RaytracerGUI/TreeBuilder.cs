@@ -48,8 +48,9 @@ namespace RaytracerGUI
                     ToolTipService.SetToolTip(rootItem, jsonRoot.uuid);
                 }
             }
-            catch (Exception e) {
-                _mainWindow.tbxLog.AppendText("\n"+e.Message);
+            catch (Exception e)
+            {
+                _mainWindow.tbxLog.AppendText("\n" + e.Message);
             }
         }
 
@@ -98,7 +99,7 @@ namespace RaytracerGUI
         }
 
 
-        public void BuildTreeFromOptions(string jsonString)
+        public void BuildTreeFromEntityOptions(string jsonString)
         {
             TreeView.Items.Clear();
 
@@ -114,7 +115,7 @@ namespace RaytracerGUI
             {
                 var rootItem = new TreeViewItem
                 {
-                    Header = "Name: "+ jsonData.Name,
+                    Header = "Name: " + jsonData.Name,
                     Tag = jsonData.UUID
                 };
 
@@ -181,7 +182,7 @@ namespace RaytracerGUI
                 {
                     _mainWindow.tbxLog.AppendText("\n" + ex.Message);
                 }
-                
+
                 // Add root to the TreeView
                 TreeView.Items.Add(rootItem);
                 rootItem.IsExpanded = true;
@@ -244,5 +245,49 @@ namespace RaytracerGUI
             _mainWindow.TextBox_TextChanged(textBox, textChangedEventArgs);
         }
 
+        public void BuildTreeFromComponents(string jsonString)
+        {
+            TreeView.Items.Clear();
+
+            List<EcsComponentNode>? componentList = JsonSerializer.Deserialize<List<EcsComponentNode>>(jsonString);
+
+            if (componentList != null && componentList.Count > 0)
+            {
+                TreeViewItem rootItem = new TreeViewItem
+                {
+                    Header = "root",
+                    Tag = "Root"
+                };
+
+                foreach (var component in componentList)
+                {
+                    TreeViewItem componentItem = new TreeViewItem
+                    {
+                        Header = component.name,
+                        Tag = new TreeItemData
+                        {
+                            UUID = component.uuid,
+                            Name = component.name
+                        }
+                    };
+
+                    rootItem.Items.Add(componentItem);
+                }
+
+                TreeView.Items.Add(rootItem);
+                rootItem.IsExpanded = true;
+            }
+            else
+            {
+                _mainWindow.tbxLog.AppendText("No components found in JSON.\n");
+            }
+        }
+
+        public void BuildTreeFromComponentOptions(string jsonString)
+        {
+
+
+        }
     }
-    }
+
+}
