@@ -20,8 +20,8 @@ int main() {
 #endif
   try {
     Engine engine{};
-    engine.load_sample_scene();
-    // engine.read_scene_from_json("wawa.txt");
+    //engine.load_sample_scene();
+     engine.read_scene_from_json("wawa.txt");
     engine.startLoop();
   } catch (std::exception &e) {
     LOG_ERROR("App crashed!!!!");
