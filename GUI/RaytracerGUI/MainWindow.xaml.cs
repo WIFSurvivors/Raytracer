@@ -43,7 +43,8 @@ namespace RaytracerGUI
         bool textboxChange = false;
         int sliderOffset = 10;
 
-        string currentUUID = "uuid";
+        string currentEntityUUID = "uuid";
+        string currentComponentUUID = "uuid";
 
 
         public MainWindow()
@@ -392,7 +393,7 @@ namespace RaytracerGUI
 
         private void SliderEcsApiUpdate(int sliderType)
         {
-            string UUID = currentUUID;
+            string UUID = currentEntityUUID;
             float x;
             float y;
             float z;
@@ -647,7 +648,7 @@ namespace RaytracerGUI
 
                     //tbxLog.AppendText($"{header} was clicked with UUID: {uuid}, Name: {name}, Children: {childrenCount}\n");
 
-                    currentUUID = uuid;
+                    currentEntityUUID = uuid;
 
                     UpdateEntities(uuid, e);
                     UpdateEntitiesOptions(uuid, e);
@@ -797,6 +798,8 @@ namespace RaytracerGUI
                     string uuid = tagData.UUID;       // Access UUID
                     string name = tagData.Name;       // Access Name
 
+                    currentComponentUUID = uuid;
+
                     UpdateComponentsOptions(uuid, e);
                 }
                 else
@@ -809,7 +812,13 @@ namespace RaytracerGUI
         private void UpdateComponents(string uuidEntity, RoutedPropertyChangedEventArgs<object> e)
         {
             string? componentsJsonNode = _ecsApi.get_components(uuidEntity);
+            tbxLog.AppendText("ComponentList Update : JSON\n\n " + componentsJsonNode + "\n\n");
 
+            if (componentsJsonNode == null)
+            {
+                tbxLog.AppendText("JSON = null.\n");
+                return;
+            }
             _componentBuilder = new TreeBuilder(trvComponents, this);
 
             try
@@ -827,8 +836,8 @@ namespace RaytracerGUI
         {
             try
             {
-                string? ecsJsonNode = _ecsApi.get_entity_options(uuid);
-                tbxLog.AppendText("EntityList Update : JSON\n\n " + ecsJsonNode + "\n\n");
+                string? ecsJsonNode = _ecsApi.get_component_options(uuid);
+                tbxLog.AppendText("ComponentOptions Update : JSON\n\n " + ecsJsonNode + "\n\n");
 
                 if (ecsJsonNode == null)
                 {
@@ -858,9 +867,11 @@ namespace RaytracerGUI
 
                 try
                 {
-                    // TODO: get the parent Entity to send with command 
-                    //string pathSentStatus = _ecsApi.create_component( type siehe createComponent command im if statement);
+
+                    string pathSentStatus = _ecsApi.create_component(currentEntityUUID, "render");
                     tbxLog.AppendText("Render Component Added!\n");
+                    UpdateComponents(currentEntityUUID, null);
+
                 }
                 catch (InvalidOperationException ex)
                 {
@@ -876,9 +887,10 @@ namespace RaytracerGUI
 
                 try
                 {
-                    // TODO: get the parent Entity to send with command 
-                    //string pathSentStatus = _ecsApi.create_component( type siehe createComponent command im if statement);
+                    string pathSentStatus = _ecsApi.create_component(currentEntityUUID, "light");
                     tbxLog.AppendText("Render Component Added!\n");
+                    UpdateComponents(currentEntityUUID, null);
+
                 }
                 catch (InvalidOperationException ex)
                 {
@@ -894,9 +906,10 @@ namespace RaytracerGUI
 
                 try
                 {
-                    // TODO: get the parent Entity to send with command 
-                    //string pathSentStatus = _ecsApi.create_component( type siehe createComponent command im if statement);
+
+                    string pathSentStatus = _ecsApi.create_component(currentEntityUUID, "camera");
                     tbxLog.AppendText("Render Component Added!\n");
+                    UpdateComponents(currentEntityUUID, null);
                 }
                 catch (InvalidOperationException ex)
                 {

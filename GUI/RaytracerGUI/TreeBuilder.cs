@@ -285,7 +285,25 @@ namespace RaytracerGUI
 
         public void BuildTreeFromComponentOptions(string jsonString)
         {
+            TreeView.Items.Clear();
+            
+            var componentOptions = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonString);
 
+                        
+            if (componentOptions != null && componentOptions.Keys.Count > 0)
+            {
+                foreach (var key in componentOptions.Keys)
+                {
+                    
+
+                }
+                
+              
+            }
+            else
+            {
+                _mainWindow.tbxLog.AppendText("No components found in JSON.\n");
+            }
 
         }
     }
