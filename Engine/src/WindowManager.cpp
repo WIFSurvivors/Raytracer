@@ -15,7 +15,6 @@ void WindowManager::framebuffer_size_callback(GLFWwindow *window, int width,
   // note that width and height will be significantly larger than specified on
   // retina displays.
   glad_glViewport(0, 0, width, height);
-  std::cout << width << height << "\n";
   _screenSize.x = width;
   _screenSize.y = height;
 }
