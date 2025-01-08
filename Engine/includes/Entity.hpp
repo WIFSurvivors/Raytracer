@@ -43,10 +43,20 @@ struct Entity : public std::enable_shared_from_this<Entity>,
 
   inline glm::vec3 get_local_rotation() const { return _rotation; }
   inline void set_local_rotation(const glm::vec3 rot) { _rotation = rot; }
+  inline void set_local_rotation(float x, float y, float z) {
+    _rotation.x = x;
+    _rotation.y = y;
+    _rotation.z = z;
+  }
   glm::vec3 get_world_rotation() const;
 
   inline glm::vec3 get_local_scale() const { return _scale; }
   inline void set_local_scale(const glm::vec3 scale) { _scale = scale; }
+  inline void set_local_scale(float x, float y, float z) {
+    _scale.x = x;
+    _scale.y = y;
+    _scale.z = z;
+  }
   glm::vec3 get_world_scale() const;
 
   inline uuid get_uuid() const { return _uuid; }

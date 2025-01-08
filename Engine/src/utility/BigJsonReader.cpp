@@ -135,12 +135,121 @@ BigJsonReader::read_from_json(const std::filesystem::path filePath,
       }
 
       auto new_entity = new_scene->create_entity(name);
+      auto has_translation = e.get_translation().has_value();
+      if (has_translation) {
+        auto translation = e.get_translation().value();
+        if (translation.get_position().has_value()) {
+          auto position = translation.get_position().value();
+
+          float x = 0.f;
+          if (position.get_x().has_value())
+            x = position.get_x().value();
+
+          float y = 0.f;
+          if (position.get_y().has_value())
+            y = position.get_y().value();
+
+          float z = 0.f;
+          if (position.get_z().has_value())
+            z = position.get_z().value();
+
+          new_entity->set_local_position(x, y, z);
+        }
+
+        if (translation.get_rotation().has_value()) {
+          auto rotation = translation.get_rotation().value();
+
+          float x = 0.f;
+          if (rotation.get_x().has_value())
+            x = rotation.get_x().value();
+
+          float y = 0.f;
+          if (rotation.get_y().has_value())
+            y = rotation.get_y().value();
+
+          float z = 0.f;
+          if (rotation.get_z().has_value())
+            z = rotation.get_z().value();
+
+          new_entity->set_local_rotation(x, y, z);
+        }
+
+        if (translation.get_scale().has_value()) {
+          auto scale = translation.get_scale().value();
+
+          float x = 0.f;
+          if (scale.get_x().has_value())
+            x = scale.get_x().value();
+
+          float y = 0.f;
+          if (scale.get_y().has_value())
+            y = scale.get_y().value();
+
+          float z = 0.f;
+          if (scale.get_z().has_value())
+            z = scale.get_z().value();
+
+          new_entity->set_local_scale(x, y, z);
+        }
+      }
 
       auto has_components = e.get_components().has_value();
-      e.get_uuid();
-      e.get_name();
-      e.get_translation();
-      e.get_components();
+      if (has_components) {
+        auto components = e.get_components().value();
+
+        if (components.get_camera_component().has_value()) {
+          auto json_cc = components.get_camera_component().value();
+          auto camera = new_scene->get_camera_system()->create_component(
+              new_entity.get());
+
+          json_cc.get_fov();
+          json_cc.get_near_clip();
+          json_cc.get_aspect_ratio();
+          json_cc.get_far_clip();
+        }
+        if (components.get_light_component().has_value()) {
+          has_found_camera = true;
+          auto json_lc = components.get_light_component().value();
+
+          auto lc =
+              new_scene->get_light_system()->create_component(new_entity.get());
+          if (json_lc.get_intensity().has_value()) {
+            lc->set_intensity(json_lc.get_intensity().value());
+          }
+
+          if (json_lc.get_color().has_value()) {
+            auto color = json_lc.get_color().value();
+            color.get_b().has_value();
+
+            float r = 0.f;
+            if (color.get_r().has_value())
+              r = color.get_r().value();
+
+            float g = 0.f;
+            if (color.get_g().has_value())
+              g = color.get_g().value();
+
+            float b = 0.f;
+            if (color.get_b().has_value())
+              b = color.get_b().value();
+
+            lc->set_color(r, g, b);
+          }
+        }
+
+        if (components.get_render_component().has_value()) {
+          auto json_rc = components.get_render_component().value();
+
+          auto rc = new_scene->get_render_system()->create_component(
+              new_entity.get());
+
+          if (json_rc.get_obj_uuid().has_value()) {
+            LOG_WARN(std::format(
+                ".obj UUID {} found but not applied to render component",
+                json_rc.get_obj_uuid().value()))
+          }
+        }
+      }
     }
   }
 

@@ -228,18 +228,18 @@ public:
 
 private:
   std::optional<double> x;
-  std::optional<int64_t> y;
-  std::optional<int64_t> z;
+  std::optional<double> y;
+  std::optional<double> z;
 
 public:
   std::optional<double> get_x() const { return x; }
   void set_x(std::optional<double> value) { this->x = value; }
 
-  std::optional<int64_t> get_y() const { return y; }
-  void set_y(std::optional<int64_t> value) { this->y = value; }
+  std::optional<double> get_y() const { return y; }
+  void set_y(std::optional<double> value) { this->y = value; }
 
-  std::optional<int64_t> get_z() const { return z; }
-  void set_z(std::optional<int64_t> value) { this->z = value; }
+  std::optional<double> get_z() const { return z; }
+  void set_z(std::optional<double> value) { this->z = value; }
 };
 
 class Translation {
