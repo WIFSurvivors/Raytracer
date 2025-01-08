@@ -51,7 +51,7 @@ namespace RaytracerGUI
         private const uint WS_VISIBLE = 0x10000000;
         private const int SW_HIDE = 0;
         private const int SW_SHOW = 5;
-        private IntPtr hWndGLFW;
+        public IntPtr hWndGLFW;
         private bool _isHandlingSizeChanged = false;
         private nint hWndParent;
         RaytracerGUI.MainWindow _mainWindow;
