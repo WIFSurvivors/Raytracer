@@ -65,7 +65,7 @@ void RenderSystem::init() {
       std::make_pair(GL_FRAGMENT_SHADER, fragment_shader_file.string())};
   _program = std::make_unique<Shader>(simpleShader);
 
-  _canvas = std::make_unique<Canvas>(_program->programID);
+  _canvas = std::make_unique<Canvas>(_program->programID, _wm->get_screen_size());
 
   Shader computeShader{
       std::make_pair(GL_COMPUTE_SHADER, compute_shader_file.string())};
@@ -91,6 +91,10 @@ void RenderSystem::init() {
   // _textU = glGetUniformLocation(program->programID, "text");
   // _modelU = glGetUniformLocation(program->programID, "MVP");
   // /**************************************************************************/
+
+
+  _screen_size = _wm->get_screen_size();
+
   _cameraPosition = glm::vec3(0.0f, 8.0f, 15.0f);
   _cameraDirection = glm::vec3(0.0f, 3.0f, 0.0f);
   _viewMatrix =
@@ -310,10 +314,10 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   glUniformMatrix4fv(_projU, 1, GL_FALSE, &_projectionMatrix[0][0]);
   glUniformMatrix4fv(_viewU, 1, GL_FALSE, &_viewMatrix[0][0]);
 
-  auto screen_size = _wm->get_screen_size();
+  // auto screen_size = _wm->get_screen_size();
   // int groupsX = (screen_size.x + 16 - 1) / 16;
   // int groupsY = (screen_size.y + 16 - 1) / 16;
-  glDispatchCompute(ceil(screen_size.x / 32.0), ceil(screen_size.y / 32.0), 1);
+  glDispatchCompute(ceil(_screen_size.x / 32.0), ceil(_screen_size.y / 32.0), 1);
   glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
 
   // Setup fragment and vertex shader
@@ -380,7 +384,7 @@ RenderComponent *RenderSystem::create_component(
   LOG("create render component (b1)");
   auto c = create_component_base(e);
   c->set_vertices(vertices);
-  c->set_uv(UV);
+  // c->set_uv(UV);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
   c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
   c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
@@ -403,7 +407,7 @@ RenderComponent *RenderSystem::create_component(
   LOG("create render component (b2)");
   auto c = create_component_base(e, id);
   c->set_vertices(vertices);
-  c->set_uv(UV);
+  // c->set_uv(UV);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
   c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
   c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()

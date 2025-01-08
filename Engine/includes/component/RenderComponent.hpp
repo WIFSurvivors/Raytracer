@@ -83,11 +83,11 @@ struct RenderComponent : public IComponent {
 #endif
   }
 
-  inline void set_uv(const std::vector<glm::vec2> &UV) {
-#if SHOW_UI
-    _uv = UV;
-#endif
-  }
+//   inline void set_uv(const std::vector<glm::vec2> &UV) {
+// #if SHOW_UI
+//     _uv = UV;
+// #endif
+//   }
   void init(GLuint programID);
 
   inline const GLuint get_vbo() { return _vbo; }

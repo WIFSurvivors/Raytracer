@@ -6,12 +6,12 @@
 #include <vector>
 
 struct Canvas {
-  Canvas(GLuint programID);
+  Canvas(GLuint programID, glm::ivec2 screen_size);
   ~Canvas();
 
   void update(const FrameSnapshot& snapshot);
 
-  void init(GLuint programID);
+  void init(GLuint programID, glm::ivec2 screen_size);
 
   inline const GLuint get_vbo() { return _vbo; }
   inline const GLuint get_textureID() { return _textureID; }
@@ -20,7 +20,7 @@ struct Canvas {
 private:
   void destroy();
 
- void setTextures();
+ void setTextures(glm::ivec2 screen_size);
 
   bool _is_ready = false;
   GLuint _vbo;

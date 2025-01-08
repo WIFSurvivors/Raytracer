@@ -10,18 +10,18 @@
 
 struct FrameSnapshot;
 
-Canvas::Canvas(GLuint programID) {
+Canvas::Canvas(GLuint programID, glm::ivec2 screen_size) {
 #if SHOW_UI
   // _vertices = vertices;
   // _nvertices = vertices.size();
   // _uv = UV;
-  init(programID);
+  init(programID, screen_size);
 #endif
 }
 
 Canvas::~Canvas() { destroy(); }
 
-void Canvas::init(GLuint programID) {
+void Canvas::init(GLuint programID, glm::ivec2 screen_size) {
   LOG("RenderComponent::init()");
 #if SHOW_UI
   glGenBuffers(1, &_vbo);
@@ -35,7 +35,7 @@ void Canvas::init(GLuint programID) {
   glBufferData(GL_ARRAY_BUFFER, _uv.size() * sizeof(glm::vec2), _uv.data(),
                GL_STATIC_DRAW);
 
-  setTextures();
+  setTextures(screen_size);
 
   _textU = glGetUniformLocation(programID, "text");
   // _modelU = glGetUniformLocation(programID, "MVP");
@@ -73,7 +73,7 @@ void Canvas::destroy() {
 #endif
 }
 
-void Canvas::setTextures() {
+void Canvas::setTextures(glm::ivec2 screen_size) {
 #if SHOW_UI
   //  Generate n = 1 texture IDs
   glGenTextures(1, &_textureID);
@@ -93,7 +93,7 @@ void Canvas::setTextures() {
   //  TODO
   //  For now it takes 800 800 as screen size, but later it should be as big as
   //  texture
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, 800, 800, 0, GL_RGBA, GL_FLOAT,
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, screen_size.x, screen_size.y, 0, GL_RGBA, GL_FLOAT,
                NULL);
 
   //  Specifies the mipmap level = 0 of the texture

@@ -123,6 +123,7 @@ private:
   // std::vector<glm::vec2> _uv = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 0.0f},
   //                               glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 0.0f},
   //                               glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 1.0f}};
+  glm::ivec2 _screen_size;
 
   glm::vec3 _cameraPosition;
   glm::vec3 _cameraDirection;
