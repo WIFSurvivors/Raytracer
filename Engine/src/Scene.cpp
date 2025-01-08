@@ -131,7 +131,8 @@ void Scene::generate_sample_content() {
                                glm::vec2{0.0f, 1.0f}};
 
   auto root_ptr = get_root().lock();
-  _render_system.create_component(root_ptr.get());
+  auto asset1 = create_asset("./assets/cornell-box.obj");
+  _render_system.create_component(root_ptr.get(),asset1);
   //_render_system.create_component(root_ptr.get(), v3, u3);
 
   LOG_NEW_LINE();
