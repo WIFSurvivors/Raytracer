@@ -23,6 +23,7 @@
 #define JSON_RELATIVE_PATH "json"
 #endif
 
+namespace RT {
 inline const fs::path get_relative_shader_folder_path() {
   return fs::path(SHADER_RELATIVE_PATH);
 }
@@ -155,3 +156,4 @@ struct AssetManager : public Storage<fs::path> {
 private:
   // map<uuid, path> _storage; // part of base class
 };
+} // namespace RT

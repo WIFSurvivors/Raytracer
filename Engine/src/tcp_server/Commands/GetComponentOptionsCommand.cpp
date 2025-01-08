@@ -13,6 +13,8 @@
 #include "includes/component/LightComponent.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 
+using namespace RT;
+
 std::string GetComponentOptions::execute(Engine *e) {
   auto uuid_manager = e->get_active_uuid_manager();
   if (!uuid_manager) {
@@ -28,8 +30,8 @@ std::string GetComponentOptions::execute(Engine *e) {
       if (camera.has_value()) {
         auto component = camera.value();
         LOG("CameraComponent found");
-        std::string json_msg =
-            boost::json::serialize(component->to_json()["component_options"]); // SORRY SPYRO :C
+        std::string json_msg = boost::json::serialize(
+            component->to_json()["component_options"]); // SORRY SPYRO :C
         LOG(json_msg);
         return json_msg;
       }
@@ -38,8 +40,8 @@ std::string GetComponentOptions::execute(Engine *e) {
       if (render.has_value()) {
         auto component = render.value();
         LOG("RenderComponent found");
-        std::string json_msg =
-            boost::json::serialize(component->to_json()["component_options"]); // SORRY SPYRO :C
+        std::string json_msg = boost::json::serialize(
+            component->to_json()["component_options"]); // SORRY SPYRO :C
         LOG(json_msg);
         return json_msg;
       }
@@ -48,24 +50,22 @@ std::string GetComponentOptions::execute(Engine *e) {
       if (simple.has_value()) {
         auto component = simple.value();
         LOG("SimpleComponent found");
-        std::string json_msg =
-            boost::json::serialize(component->to_json()["component_options"]); // SORRY SPYRO :C
+        std::string json_msg = boost::json::serialize(
+            component->to_json()["component_options"]); // SORRY SPYRO :C
         LOG(json_msg);
         return json_msg;
       }
-    } 
-    else if (auto light_system = dynamic_cast<LightSystem *>(system)) {
+    } else if (auto light_system = dynamic_cast<LightSystem *>(system)) {
       auto light = light_system->get_component(_uuid);
       if (light.has_value()) {
         auto component = light.value();
         LOG("LightComponent found");
-        std::string json_msg =
-            boost::json::serialize(component->to_json()["component_options"]); // SORRY SPYRO :C
+        std::string json_msg = boost::json::serialize(
+            component->to_json()["component_options"]); // SORRY SPYRO :C
         LOG(json_msg);
         return json_msg;
       }
-    } 
-    else {
+    } else {
       LOG_ERROR("System found but no component found");
       return "System found but no component found";
     }

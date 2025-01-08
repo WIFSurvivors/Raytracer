@@ -12,6 +12,7 @@
 #include <string>
 #include <format>
 
+namespace RT {
 struct Shader {
   /**
    *	TODO:
@@ -56,7 +57,7 @@ private:
       ShaderCode = shaderstream.str();
       ShaderFile.close();
     } catch (std::exception &e) {
-		LOG_ERROR(e.what());
+      LOG_ERROR(e.what());
     }
 
     //  Content of File should now be loaded succesfully
@@ -131,3 +132,4 @@ private:
     return success;
   }
 };
+} // namespace RT

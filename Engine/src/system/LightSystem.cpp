@@ -4,6 +4,7 @@
 #include <format>
 #include <iomanip> // for std::setprecision
 
+namespace RT {
 LightSystem::LightSystem(UUIDManager *um) : System{um} {
   LOG(std::format("created {}", get_name()));
 }
@@ -83,3 +84,4 @@ void LightSystem::print() {
   vt.print(std::cout);
   std::cout << std::setprecision(defaultPrecision) << std::endl;
 }
+} // namespace RT

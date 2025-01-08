@@ -2,6 +2,7 @@
 
 #include <boost/json.hpp>
 
+namespace RT {
 struct JSONConvertable {
   virtual ~JSONConvertable() = default;
 
@@ -10,3 +11,4 @@ struct JSONConvertable {
   // dunno how to do as of right meow :)
   // virtual boost::json::object from_json() = 0;
 };
+} // namespace RT

@@ -32,6 +32,7 @@
  *	  - Separate other functionality to the functions
  */
 
+namespace RT {
 RenderSystem::RenderSystem(UUIDManager *um, WindowManager *wm, CameraSystem *cs,
                            LightSystem *ls, AssetManager::DefaultAssets *da)
     : System{um}, _wm{wm}, _cs{cs}, _ls{ls}, _da{da} {
@@ -93,7 +94,7 @@ void RenderSystem::init() {
       glm::lookAt(_cameraPosition, _cameraDirection, glm::vec3(0, 1, 0));
   //  TODO:
   //  calculate the aspect ratio appropriately
-//   _fov = 60.0f;
+  //   _fov = 60.0f;
   _projectionMatrix = glm::perspective(glm::radians(_fov), 1.0f, 0.1f, 100.0f);
 
   _timeU = glGetUniformLocation(compute->programID, "time");
@@ -219,7 +220,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
   //  Calculation for the Camera
-  
+
   // update window texture thingy
   setTextures();
 
@@ -235,8 +236,9 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
         glm::lookAt(_cameraPosition, _cameraDirection, glm::vec3(0, 1, 0));
 
     auto s = _wm->get_screen_size();
-    _projectionMatrix = glm::perspective(
-        glm::radians(_cs->get_main_camera()->get_fov()), (float)s.x/(float)s.y, 0.1f, 100.0f);
+    _projectionMatrix =
+        glm::perspective(glm::radians(_cs->get_main_camera()->get_fov()),
+                         (float)s.x / (float)s.y, 0.1f, 100.0f);
   } else {
     LOG_ERROR("No main camera found -> using 0., 0., +10.");
     _cameraPosition = glm::vec3{0., 0., +10.};
@@ -275,7 +277,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   program->activateShader();
   glBindVertexArray(_vao);
 
-/****************************************************************************/
+  /****************************************************************************/
 
   glUniform1i(_textU, 0);
   glUniformMatrix4fv(_modelU, 1, GL_FALSE, &_modelMatrix_Canvas[0][0]);
@@ -291,7 +293,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
                         reinterpret_cast<void *>(0));
 
   glDrawArrays(GL_TRIANGLES, 0, _nverticesCanvas);
-/****************************************************************************/
+  /****************************************************************************/
   for (auto &&c : _components) {
     c.second->update(snapshot);
   }
@@ -393,7 +395,6 @@ void RenderSystem::print() {
   std::cout << std::endl;
 }
 
-
 void RenderSystem::setTextures() {
 #if SHOW_UI
   //  Generate n = 1 texture IDs
@@ -424,4 +425,4 @@ void RenderSystem::setTextures() {
   glBindTexture(GL_TEXTURE_2D, _textureID);
 #endif
 }
-
+} // namespace RT

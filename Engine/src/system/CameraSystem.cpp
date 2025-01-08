@@ -10,6 +10,7 @@
 // #include "glm/vec3.hpp"
 #include "glm/ext.hpp"
 
+namespace RT {
 CameraSystem::CameraSystem(UUIDManager *um) : System{um} {
   LOG("created camera system");
 }
@@ -77,3 +78,4 @@ void CameraSystem::print() {
   std::cout << std::setprecision(defaultPrecision) << std::endl;
   std::cout.unsetf(std::ios::boolalpha);
 }
+} // namespace RT

@@ -8,6 +8,9 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/ext.hpp"
+
+using namespace RT;
+
 std::string MoveCommand::execute(Engine *engine) {
   auto scene = engine->get_scene();
   if (!scene) {

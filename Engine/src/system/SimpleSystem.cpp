@@ -13,6 +13,7 @@
 #include <type_traits>
 #include <format>
 
+namespace RT {
 SimpleSystem::SimpleSystem(UUIDManager *um) : System{um} {
   LOG(std::format("created {}", get_name()));
 }
@@ -50,3 +51,4 @@ void SimpleSystem::print() {
   vt.print(std::cout);
   std::cout << std::endl;
 }
+} // namespace RT

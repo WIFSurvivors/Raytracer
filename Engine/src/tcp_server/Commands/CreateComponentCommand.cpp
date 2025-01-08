@@ -9,6 +9,8 @@
 #include <format>
 #include "includes/utility/NotImplementedError.hpp"
 
+using namespace RT;
+
 std::string CreateComponentCommand::execute(Engine *e) {
   try {
     auto scene = e->get_scene();
@@ -23,65 +25,60 @@ std::string CreateComponentCommand::execute(Engine *e) {
                             boost::uuids::to_string(_uuid)));
       return "Entity not found";
     }
-    if(_type.compare("simple") == 0) {
+    if (_type.compare("simple") == 0) {
       auto system = scene->get_simple_system();
-        if (!system) {
-            LOG_ERROR("SimpleSystem is null");
-            return "SimpleSystem is null";
-        }
-        auto component = system->create_component(parent.value(), 123);
-        if (component == nullptr) {
-            LOG_ERROR("Component could not be created.");
-            return "Component could not be created.";
-        }
-        return "Component created";
+      if (!system) {
+        LOG_ERROR("SimpleSystem is null");
+        return "SimpleSystem is null";
+      }
+      auto component = system->create_component(parent.value(), 123);
+      if (component == nullptr) {
+        LOG_ERROR("Component could not be created.");
+        return "Component could not be created.";
+      }
+      return "Component created";
+    } else if (_type.compare("render") == 0) {
+      auto system = scene->get_render_system();
+      if (!system) {
+        LOG_ERROR("RenderSystem is null");
+        return "RenderSystem is null";
+      }
+      auto component = system->create_component(parent.value());
+      if (component == nullptr) {
+        LOG_ERROR("Component could not be created.");
+        return "Component could not be created.";
+      }
+      return "Component created";
+    } else if (_type.compare("camera") == 0) {
+      auto system = scene->get_camera_system();
+      if (!system) {
+        LOG_ERROR("CameraSystem is null");
+        return "CameraSystem is null";
+      }
+      auto component = system->create_component(parent.value());
+      LOG(std::format("Get system name in camera: {}", system->get_name()));
+      if (component == nullptr) {
+        LOG_ERROR("Component could not be created.");
+        return "Component could not be created.";
+      }
+      return "Component created";
+    } else if (_type.compare("light") == 0) {
+      auto system = scene->get_light_system();
+      if (!system) {
+        LOG_ERROR("LightSystem is null");
+        return "LightSystem is null";
+      }
+      auto component = system->create_component(parent.value());
+      if (component == nullptr) {
+        LOG_ERROR("Component could not be created.");
+        return "Component could not be created.";
+      }
+      return "Component created";
+    } else {
+      LOG_ERROR(std::format("Component type not found: {}", _type));
+      return "Component type not found";
     }
-    else if(_type.compare("render") == 0) {
-        auto system = scene->get_render_system();
-            if (!system) {
-                LOG_ERROR("RenderSystem is null");
-                return "RenderSystem is null";
-            }
-            auto component = system->create_component(parent.value());
-            if (component == nullptr) {
-                LOG_ERROR("Component could not be created.");
-                return "Component could not be created.";
-            }
-            return "Component created";
-    }
-    else if(_type.compare("camera") == 0) {
-        auto system = scene->get_camera_system();
-            if (!system) {
-                LOG_ERROR("CameraSystem is null");
-                return "CameraSystem is null";
-            }
-            auto component = system->create_component( parent.value());
-            LOG(std::format("Get system name in camera: {}", system->get_name()));
-            if (component == nullptr) {
-                LOG_ERROR("Component could not be created.");
-                return "Component could not be created.";
-            }
-            return "Component created";
-    }
-    else if(_type.compare("light") == 0) {
-        auto system = scene->get_light_system();
-            if (!system) {
-                LOG_ERROR("LightSystem is null");
-                return "LightSystem is null";
-            }
-            auto component = system->create_component(parent.value());
-            if (component == nullptr) {
-                LOG_ERROR("Component could not be created.");
-                return "Component could not be created.";
-            }
-            return "Component created";
-    }
-    else {
-    LOG_ERROR(std::format("Component type not found: {}", _type));
-    return "Component type not found";
-    }
-    }
-   catch (const std::bad_alloc &e) {
+  } catch (const std::bad_alloc &e) {
     LOG_ERROR(std::format("Memory allocation failed: {}", e.what()));
     return "Memory allocation failed";
   } catch (const std::exception &e) {

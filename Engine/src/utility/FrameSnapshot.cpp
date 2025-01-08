@@ -2,6 +2,7 @@
 #include "includes/utility/Log.hpp"
 #include <format>
 
+namespace RT {
 FrameSnapshot::FrameSnapshot(float total_time, float delta_time,
                              float accumulated_time, int frame_nr,
                              int sub_frame_count)
@@ -14,3 +15,4 @@ FrameSnapshot::FrameSnapshot(float total_time, float delta_time,
       _total_time, _delta_time, _accumulated_time, _frame_nr,
       _sub_frame_count));
 }
+} // namespace RT

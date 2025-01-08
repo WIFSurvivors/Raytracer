@@ -3,9 +3,9 @@
 #include "includes/utility/NotImplementedError.hpp"
 #include <format>
 
-void CommandManager::execute_commands() {
-  throw NotImplementedError();
-}
+using namespace RT;
+
+void CommandManager::execute_commands() { throw NotImplementedError(); }
 
 void CommandManager::execute_command() {
   auto command = pop();
@@ -13,7 +13,8 @@ void CommandManager::execute_command() {
     return;
   }
   auto msg = _executer.execute(command.get(), _engine);
-  LOG_TCP(std::format("Command from queue received. Currently in Queue: {0}", _command_queue.size()));
+  LOG_TCP(std::format("Command from queue received. Currently in Queue: {0}",
+                      _command_queue.size()));
   if (msg.compare("0") != 0) {
     LOG("Command executed: " + msg);
   }
@@ -32,7 +33,3 @@ std::unique_ptr<TcpCommand> CommandManager::pop() {
   _command_queue.pop();
   return std::move(command);
 }
-
-
-
-

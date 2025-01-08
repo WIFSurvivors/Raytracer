@@ -3,9 +3,13 @@
 #include "includes/tcp_server/TcpServer.hpp"
 #include "includes/utility/FrameSnapshot.hpp"
 #include "includes/utility/BigJsonReader.hpp"
+#include <algorithm>
 #include <iostream>
+#include <memory>
 
 class TcpServer;
+
+namespace RT {
 Engine::Engine() : _tcp_server(std::make_shared<TcpServer>(51234, this)) {
   init_server();
   _start_time = std::chrono::high_resolution_clock::now();
@@ -30,13 +34,24 @@ void Engine::stop_server() {
   }
 }
 
-
-void Engine::save_scene_as_json(std::filesystem::path p){
-	BigJsonReader j;
-	j.do_sth();
-	// auto wawa = j.to_json(_scene);
-    // std::cout << "RETURN:\n" << wawa << std::endl;
+void Engine::read_scene_from_json(std::filesystem::path p/*,
+                                  std::unique_ptr<Scene> s*/) {
+  BigJsonReader j;
+  auto s = j.read_from_json("", this);
+  if (s.has_value()) {
+    change_scene(std::move(s.value()));
+  }
 }
+
+void Engine::save_scene_as_json(std::filesystem::path p) {
+  BigJsonReader j;
+  // j.read();
+
+  // auto wawa = j.to_json(_scene);
+  // std::cout << "RETURN:\n" << wawa << std::endl;
+}
+
+void Engine::change_scene(std::unique_ptr<Scene> s) { _scene = std::move(s); }
 
 void Engine::startLoop() {
   LOG("Engine::startLoop()");
@@ -50,13 +65,7 @@ void Engine::startLoop() {
   int sub_frames = 0;
 
   float frame_time, new_time;
-
-#if SHOW_UI
   while (_wm.should_close()) {
-#else
-  while (true) {
-#endif
-
     // update the difference of the previous and the new frame
     new_time = get_total_time();
     frame_time = new_time - current_time;
@@ -77,7 +86,7 @@ void Engine::startLoop() {
       // create snapshot here
       FrameSnapshot s(total_time, MS_PER_UPDATE, accumulated_time, frames,
                       sub_frames);
-      _scene.update(s);
+      _scene->update(s);
       _wm.swap_buffers();
       sub_frames = 0;
 
@@ -86,3 +95,4 @@ void Engine::startLoop() {
     }
   }
 }
+} // namespace RT

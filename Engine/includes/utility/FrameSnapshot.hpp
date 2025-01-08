@@ -1,9 +1,10 @@
 #pragma once
 
+namespace RT {
 class FrameSnapshot {
 public:
   FrameSnapshot(float total_time, float delta_time, float accumulated_time,
-           int frame_nr, int sub_frame_count);
+                int frame_nr, int sub_frame_count);
 
   inline const float get_total_time() const { return _total_time; }
   inline const float get_delta_time() const { return _delta_time; }
@@ -16,3 +17,4 @@ private:
   float _total_time, _delta_time, _accumulated_time;
   int _frame_nr, _sub_frame_count;
 };
+} // namespace RT

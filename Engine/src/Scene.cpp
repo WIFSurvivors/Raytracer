@@ -6,20 +6,16 @@
 #include <cassert>
 #include <format>
 
+namespace RT {
 Scene::Scene(Engine *e)
     : _render_system{&_uuid_manager, e->get_window_manager(), &_camera_system,
                      &_light_system, &_default_assets},
-      _root{create_root("root")} {
-  generate_sample_content();
-}
+      _root{create_root("root")} {}
 
-Scene::Scene(Engine *e, uuid id)
+Scene::Scene(Engine *e, std::string title)
     : _render_system{&_uuid_manager, e->get_window_manager(), &_camera_system,
                      &_light_system, &_default_assets},
-      _root{create_root("root", id)} {
-  // does not generate sample content
-  // this should be called when loading from json
-}
+      _root{create_root("root")}, _title{title} {}
 
 Scene::~Scene() { _render_system.destroy(); }
 
@@ -168,3 +164,4 @@ void Scene::update(const FrameSnapshot &snapshot) {
   //   _camera_system.sample_update_move_main_camera(timer.get_delta_time());
   _render_system.update(snapshot);
 }
+} // namespace RT

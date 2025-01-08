@@ -18,6 +18,7 @@
 #include <format>
 #include <string>
 
+namespace RT {
 struct Entity;
 
 template <typename T>
@@ -31,8 +32,7 @@ template <is_base_of_component T> struct System : public IStorage {
   using uuid = boost::uuids::uuid;
 
   explicit System(UUIDManager *um)
-      : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/
-  }
+      : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/ }
   ~System() override = default;
 
   /**
@@ -121,3 +121,4 @@ protected:
 
   std::map<uuid, std::unique_ptr<T>> _components;
 };
+} // namespace RT

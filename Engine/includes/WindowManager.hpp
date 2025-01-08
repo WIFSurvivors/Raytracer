@@ -8,6 +8,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
+namespace RT {
 struct WindowManager {
 #if SHOW_UI
   //  This function is called, whenever the window size changes
@@ -35,3 +36,4 @@ private:
 
   bool _initGLFW();
 };
+} // namespace RT

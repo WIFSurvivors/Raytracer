@@ -2,11 +2,12 @@
 #include "includes/utility/Log.hpp"
 #include <iostream>
 
+namespace RT {
 #if SHOW_UI
 void WindowManager::processInput(GLFWwindow *window) {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, true);
-}
+} // namespace WindowManager::processInput(GLFWwindow*window)
 
 void WindowManager::framebuffer_size_callback(GLFWwindow *window, int width,
                                               int height) {
@@ -15,7 +16,8 @@ void WindowManager::framebuffer_size_callback(GLFWwindow *window, int width,
   // retina displays.
   glad_glViewport(0, 0, width, height);
   std::cout << width << height << "\n";
-  _screenSize.x = width; _screenSize.y = height;
+  _screenSize.x = width;
+  _screenSize.y = height;
 }
 #endif
 
@@ -51,6 +53,8 @@ void WindowManager::swap_buffers() {
 bool WindowManager::should_close() {
 #if SHOW_UI
   return !glfwWindowShouldClose(_window);
+#else
+  return false;
 #endif
 }
 
@@ -93,3 +97,4 @@ bool WindowManager::_initGLFW() {
   return true;
 #endif
 }
+} // namespace RT

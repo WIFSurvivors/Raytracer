@@ -10,6 +10,7 @@
 #include <memory>
 #include <string>
 
+namespace RT {
 struct FrameSnapshot;
 
 /**
@@ -129,9 +130,7 @@ struct RenderComponent : public IComponent {
     _shader_asset->set_uuid(shader_uuid);
   }
 #if SHOW_UI
-  inline std::vector<glm::vec3> get_vertices() {
-    return _vertices;
-  }
+  inline std::vector<glm::vec3> get_vertices() { return _vertices; }
 #endif
   void set_from_json(boost::json::object obj) override;
 
@@ -165,7 +164,7 @@ private:
   std::vector<glm::vec3> _vertices;
   std::vector<unsigned int> _indices;
 
-  int _nvertices=0; // Number of vertices
+  int _nvertices = 0; // Number of vertices
 
   std::vector<glm::vec2> _uv = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 0.0f},
                                 glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 0.0f},
@@ -175,3 +174,4 @@ private:
   GLuint _modelU;
 #endif
 };
+}; // namespace RT

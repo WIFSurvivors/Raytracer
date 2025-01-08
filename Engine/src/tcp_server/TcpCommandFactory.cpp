@@ -22,8 +22,7 @@
 #include <map>
 #include <string>
 
-
-
+using namespace RT;
 
 TcpCommandFactory::TcpCommandFactory() {}
 
@@ -32,10 +31,11 @@ TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
   uuid _uuid;
   std::string uuid_string = parsed_command.get_uuid();
   std::string command_string = parsed_command.get_command();
-  std::vector<std::string> parameters = parsed_command.get_parameters();  
-  LOG_TCP(std::format("Creating command from message: {0} {1} with {2} parameters" , command_string, uuid_string, parameters.size()));
-  if (!uuid_string.empty() &&
-      uuid_string.compare("null") != 0) {
+  std::vector<std::string> parameters = parsed_command.get_parameters();
+  LOG_TCP(
+      std::format("Creating command from message: {0} {1} with {2} parameters",
+                  command_string, uuid_string, parameters.size()));
+  if (!uuid_string.empty() && uuid_string.compare("null") != 0) {
     boost::uuids::string_generator generator;
     _uuid = generator(uuid_string);
   }
@@ -62,8 +62,7 @@ TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
     return std::make_unique<GetRootCommand>();
   } else if (command_string.compare(CREATE_ENTITY_COMMAND) == 0) {
     LOG_TCP("Create CreateEntityCommand");
-    return std::make_unique<CreateEntityCommand>(_uuid,
-                                                 parameters[0]);
+    return std::make_unique<CreateEntityCommand>(_uuid, parameters[0]);
   } else if (command_string.compare(CLOSE_RENDER_COMMAND) == 0) {
     LOG_TCP("Create CloseRenderCommand");
     return std::make_unique<CloseRenderCommand>();
@@ -81,32 +80,27 @@ TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
     return std::make_unique<GetEntityOptionsCommand>(_uuid);
   } else if (command_string.compare(SET_COMPONENT_OPTIONS_COMMAND) == 0) {
     LOG_TCP("Create SetComponentOptionsCommand");
-    return std::make_unique<SetComponentOptions>(_uuid, boost::json::parse(parameters[0]).as_object());
+    return std::make_unique<SetComponentOptions>(
+        _uuid, boost::json::parse(parameters[0]).as_object());
   } else if (command_string.compare(GET_COMPONENT_OPTIONS_COMMAND) == 0) {
     LOG_TCP("Create GetComponentOptionsCommand");
     return std::make_unique<GetComponentOptions>(_uuid);
-  }
-  else if (command_string.compare(CREATE_COMPONENT_COMMAND) == 0) {
+  } else if (command_string.compare(CREATE_COMPONENT_COMMAND) == 0) {
     LOG_TCP("Create CreateComponentCommand");
     return std::make_unique<CreateComponentCommand>(_uuid, parameters[0]);
-  }
-  else if (command_string.compare(GET_BOUNCES_COMMAND) == 0) {
+  } else if (command_string.compare(GET_BOUNCES_COMMAND) == 0) {
     LOG_TCP("Create GetBouncesCommand");
     return std::make_unique<GetBouncesCommand>();
-  }
-  else if (command_string.compare(SET_BOUNCES_COMMAND) == 0) {
+  } else if (command_string.compare(SET_BOUNCES_COMMAND) == 0) {
     LOG_TCP("Create SetBouncesCommand");
     return std::make_unique<SetBouncesCommand>(std::stoi(parameters[0]));
-  }
-  else if (command_string.compare(EXPORT_JSON_COMMAND) == 0) {
+  } else if (command_string.compare(EXPORT_JSON_COMMAND) == 0) {
     LOG_TCP("Create ExportJsonCommand");
     return std::make_unique<ExportJsonCommand>(parameters[0]);
-  }
-  else if (command_string.compare(GET_LOG_PATH_COMMAND) == 0) {
+  } else if (command_string.compare(GET_LOG_PATH_COMMAND) == 0) {
     LOG_TCP("Create GetLogPathCommand");
     return std::make_unique<GetLogPath>();
-  }
-  else {
+  } else {
     LOG_ERROR("Command not found");
     return nullptr;
   }

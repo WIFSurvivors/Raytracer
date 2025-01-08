@@ -17,6 +17,7 @@
 #include <string>
 #include <optional>
 
+namespace RT {
 struct FrameSnapshot;
 
 // #define SHOW_UI true
@@ -70,13 +71,10 @@ struct RenderSystem : public System<RenderComponent> {
                    std::optional<AssetManager::Asset> mtl_asset = {},
                    std::optional<AssetManager::Asset> shader_asset = {});
 
-
   inline void set_bounces(int bounce) { _bounces = bounce; }
   inline int get_bounces() const { return _bounces; }
 
-  inline const std::string get_name() const final {
-    return "Render System";
-  }
+  inline const std::string get_name() const final { return "Render System"; }
 
   void setTextures();
   //  temporal
@@ -109,7 +107,7 @@ private:
   GLuint _uvVBO;
   GLuint _textU;
   GLuint _modelU;
-  
+
   GLuint _textureID;
   std::vector<glm::vec3> _vertices = {
       glm::vec3{-1.0f, -1.0f, 0.0f}, glm::vec3{1.0f, -1.0f, 0.0f},
@@ -127,7 +125,6 @@ private:
 
   glm::mat4 _viewMatrix;
   glm::mat4 _projectionMatrix;
-  
 
   glm::mat4 _modelMatrix_Canvas = glm::mat4(1.0f);
   GLuint _timeU;
@@ -147,3 +144,4 @@ private:
   std::unique_ptr<Shader> compute;
 #endif
 };
+} // namespace RT

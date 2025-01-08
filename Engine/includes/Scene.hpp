@@ -12,6 +12,7 @@
 #include <memory>
 #include <string>
 
+namespace RT {
 struct Entity;
 struct Engine;
 struct SimpleSystem;
@@ -26,12 +27,8 @@ struct Scene {
    * Construct a default scene and the required system, managers and so on.
    */
   explicit Scene(Engine *e);
-
-  /**
-   * Construct an empty scene and provides the scene root the specified UUID.
-   */
-  Scene(Engine *e, uuid id);
-  virtual ~Scene();  
+  Scene(Engine *e, std::string title);
+  virtual ~Scene();
 
   inline UUIDManager *get_uuid_manager() { return &_uuid_manager; }
   inline AssetManager *get_asset_manager() { return &_asset_manager; }
@@ -65,17 +62,19 @@ struct Scene {
 
   void update(const FrameSnapshot &snapshot);
 
-  inline AssetManager::Asset create_asset(std::filesystem::path p){
+  inline AssetManager::Asset create_asset(std::filesystem::path p) {
     return AssetManager::Asset(get_asset_manager(), p);
   }
-  
-  inline AssetManager::Asset create_asset(uuid id, std::filesystem::path p){
+
+  inline AssetManager::Asset create_asset(uuid id, std::filesystem::path p) {
     return AssetManager::Asset(get_asset_manager(), id, p);
   }
 
 private:
   std::shared_ptr<Entity> create_root(const std::string &name);
   std::shared_ptr<Entity> create_root(const std::string &name, uuid id);
+
+  std::string _title{"default"};
 
   UUIDManager _uuid_manager{};
   AssetManager _asset_manager{&_uuid_manager};
@@ -89,3 +88,4 @@ private:
 
   std::shared_ptr<Entity> _root;
 };
+} // namespace RT

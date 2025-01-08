@@ -16,6 +16,8 @@
 #include <string>
 #include "includes/utility/Log.hpp"
 
+using namespace RT;
+
 struct alignas(16) Triangle {
   glm::vec3 v0;
   float pad0; // Pad to 16 bytes
@@ -139,7 +141,7 @@ struct TreeBuilder {
 
   std::vector<uint32_t> matIndx;
   int RenderEntities;
-  TreeBuilder(){}
+  TreeBuilder() {}
 
   void loadData(std::vector<ObjectData> objects) {
     if (objects.empty()) {
@@ -151,13 +153,15 @@ struct TreeBuilder {
     mats.clear();
     matIndx.clear();
     vertex.clear();
-	inserted_triangles.clear();
+    inserted_triangles.clear();
 
     for (auto &obj : objects) {
-      inserted_triangles.insert(inserted_triangles.end(), obj.triangles.begin(), obj.triangles.end());
+      inserted_triangles.insert(inserted_triangles.end(), obj.triangles.begin(),
+                                obj.triangles.end());
     }
 
-    std::vector<tinybvh::bvhvec4> bvhData = convertToBVHFormat(inserted_triangles);
+    std::vector<tinybvh::bvhvec4> bvhData =
+        convertToBVHFormat(inserted_triangles);
     tree.Build(bvhData.data(), inserted_triangles.size());
     tree.Compact();
     triIdxData.assign(tree.triIdx, tree.triIdx + tree.triCount);
@@ -172,7 +176,7 @@ struct TreeBuilder {
 
     int matIndex = 0;
     for (auto &obj : objects) {
-	  mats.push_back(obj.material);
+      mats.push_back(obj.material);
       for (size_t i = 0; i < obj.triangles.size(); ++i) {
         matIndx.push_back(matIndex);
       }
@@ -186,7 +190,6 @@ struct TreeBuilder {
     }
 
     matIndx = rearrangedMatIndx;
-
   }
 
   void loadSampleData() {
@@ -222,11 +225,11 @@ struct TreeBuilder {
                 << v.data.z << ")" << std::endl;
     }*/
 
-    mats.push_back(Materials{glm::vec3(0.8f, 0.2f, 0.8f), 0.0f}); 
-    mats.push_back(Materials{glm::vec3(0.0f, 0.0f, 1.0f), 0.0f}); 
-    mats.push_back(Materials{glm::vec3(0.8f, 0.2f, 0.2f), 0.0f}); 
-    mats.push_back(Materials{glm::vec3(0.1f, 0.6f, 0.5f), 0.0f}); 
-    mats.push_back(Materials{glm::vec3(0.0f, 0.6f, 0.9f), 0.0f}); 
+    mats.push_back(Materials{glm::vec3(0.8f, 0.2f, 0.8f), 0.0f});
+    mats.push_back(Materials{glm::vec3(0.0f, 0.0f, 1.0f), 0.0f});
+    mats.push_back(Materials{glm::vec3(0.8f, 0.2f, 0.2f), 0.0f});
+    mats.push_back(Materials{glm::vec3(0.1f, 0.6f, 0.5f), 0.0f});
+    mats.push_back(Materials{glm::vec3(0.0f, 0.6f, 0.9f), 0.0f});
 
     uint32_t materialIndex = 0;
     for (size_t i = 0; i < triforce1.size(); ++i) {
@@ -328,14 +331,17 @@ struct TreeBuilder {
     /*  std::cout << "\t start: " << node.start << std::endl;*/
     /*  std::cout << "\t count: " << node.count << std::endl;*/
     /*}*/
-	
-	int count = 0;
+
+    int count = 0;
     for (auto &tri : inserted_triangles) {
-	  std::cout << "Triangle : " << count << std::endl;
-	  std::cout << "\t v0(" << tri.v0.x << ","<< tri.v0.y << ","<< tri.v0.z << ")" << std::endl;
-	  std::cout << "\t v1(" << tri.v1.x << ","<< tri.v1.y << ","<< tri.v1.z << ")" << std::endl;
-	  std::cout << "\t v2(" << tri.v2.x << ","<< tri.v2.y << ","<< tri.v2.z << ")" << std::endl;
-	  count++;
-	}
+      std::cout << "Triangle : " << count << std::endl;
+      std::cout << "\t v0(" << tri.v0.x << "," << tri.v0.y << "," << tri.v0.z
+                << ")" << std::endl;
+      std::cout << "\t v1(" << tri.v1.x << "," << tri.v1.y << "," << tri.v1.z
+                << ")" << std::endl;
+      std::cout << "\t v2(" << tri.v2.x << "," << tri.v2.y << "," << tri.v2.z
+                << ")" << std::endl;
+      count++;
+    }
   }
 };

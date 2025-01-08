@@ -4,9 +4,8 @@
 
 struct ParsedTcpCommand {
   ParsedTcpCommand(std::string command, std::string uuid,
-                   std::vector<std::string> parameters) : command(command),
-                                                          uuid(uuid),
-                                                          parameters(parameters) {}
+                   std::vector<std::string> parameters)
+      : command(command), uuid(uuid), parameters(parameters) {}
   inline std::string get_command() const { return command; }
   inline std::string get_uuid() const { return uuid; }
   inline std::vector<std::string> get_parameters() const { return parameters; }

@@ -10,7 +10,7 @@
 #include <optional>
 
 // typedef boost::uuids::uuid uuid;
-
+namespace RT {
 struct Entity : public std::enable_shared_from_this<Entity>,
                 public JSONConvertable {
   using uuid = boost::uuids::uuid;
@@ -25,13 +25,19 @@ struct Entity : public std::enable_shared_from_this<Entity>,
 
   void add_child_entity(std::shared_ptr<Entity> e);
   bool remove_child_entity(std::shared_ptr<Entity> e);
-  inline const std::vector<std::shared_ptr<Entity>> &get_child_entities() const {
+  inline const std::vector<std::shared_ptr<Entity>> &
+  get_child_entities() const {
     return _child_entities;
   }
 
   inline std::weak_ptr<Entity> get_parent_entity() const { return _parent; }
 
   inline glm::vec3 get_local_position() const { return _position; }
+  inline void set_local_position(float x, float y, float z) {
+    _position.x = x;
+    _position.y = y;
+    _position.z = z;
+  }
   inline void set_local_position(const glm::vec3 pos) { _position = pos; }
   glm::vec3 get_world_position() const;
 
@@ -86,3 +92,4 @@ struct Entity::make_shared_enabler : public Entity {
                       std::shared_ptr<Entity> parent)
       : Entity(name, id, parent) {}
 };
+} // namespace RT

@@ -9,6 +9,8 @@
 #include <string>
 #include "includes/utility/NotImplementedError.hpp"
 
+using namespace RT;
+
 std::string GetEntityOptionsCommand::execute(Engine *e) {
   try {
     auto scene = e->get_scene();

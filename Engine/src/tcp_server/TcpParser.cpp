@@ -2,6 +2,8 @@
 #include "includes/utility/Log.hpp"
 #include <sstream>
 
+using namespace RT;
+
 TcpParser::TcpParser() {}
 
 std::unique_ptr<ParsedTcpCommand> TcpParser::parse(std::string msg) {

@@ -7,9 +7,11 @@
 #include <string>
 #include "includes/utility/NotImplementedError.hpp"
 
-
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/ext.hpp"
+
+using namespace RT;
+
 std::string ScaleCommand::execute(Engine *engine) {
   auto scene = engine->get_scene();
   if (!scene) {

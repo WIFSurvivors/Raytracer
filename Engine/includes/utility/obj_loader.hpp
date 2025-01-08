@@ -21,9 +21,6 @@
 #include <glm/glm.hpp>
 //------------------------------------
 
-
-
-
 // Namespace: OBJL
 //
 // Description: The namespace that holds eveyrthing that
@@ -63,7 +60,7 @@ namespace objl {
 //   Vector2 operator*(const float &other) const {
 //     return Vector2(this->X * other, this->Y * other);
 //   }
-// 
+//
 //   // Positional Variables
 //   float X;
 //   float Y;
@@ -109,36 +106,35 @@ namespace objl {
 //   Vector3 operator/(const float &other) const {
 //     return Vector3(this->X / other, this->Y / other, this->Z / other);
 //   }
-// 
+//
 //   // Positional Variables
 //   float X;
 //   float Y;
 //   float Z;
 // };
-// 
+//
 // Structure: Vertex
 //
 // Description: Model Vertex object that holds
 //	a Position, Normal, and Texture Coordinate
 
-
 struct Vertex {
   // Position Vector
-  //Vector3 Position;
-    glm::vec3 Position;
+  // Vector3 Position;
+  glm::vec3 Position;
 
   // Normal Vector
   // Vector3 Normal;
-    glm::vec3 Normal;
+  glm::vec3 Normal;
 
   // Texture Coordinate Vector
   // Vector2 TextureCoordinate;
-    glm::vec2 TextureCoordinate;
+  glm::vec2 TextureCoordinate;
 };
 
 struct Material {
   Material() {
-    name;
+    // name;
     Ns = 0.0f;
     Ni = 0.0f;
     d = 0.0f;
@@ -149,13 +145,13 @@ struct Material {
   std::string name;
   // Ambient Color
   // Vector3 Ka;
-    glm::vec3 Ka;
+  glm::vec3 Ka;
   // Diffuse Color
   // Vector3 Kd;
-    glm::vec3 Kd;
+  glm::vec3 Kd;
   // Specular Color
   // Vector3 Ks;
-    glm::vec3 Ks;
+  glm::vec3 Ks;
   // Specular Exponent
   float Ns;
   // Optical Density
@@ -209,7 +205,7 @@ namespace math {
 // Vector3 Cross Product
 inline glm::vec3 CrossV3(const glm::vec3 a, const glm::vec3 b) {
   return glm::vec3(a.y * b.z - a.z * b.y, a.z * b.x - a.x * b.z,
-                 a.x * b.y - a.y * b.x);
+                   a.x * b.y - a.y * b.x);
 }
 
 // Vector3 Magnitude Calculation
@@ -268,7 +264,8 @@ inline glm::vec3 GenTriNormal(glm::vec3 t1, glm::vec3 t2, glm::vec3 t3) {
 }
 
 // Check to see if a Vector3 Point is within a 3 Vector3 Triangle
-inline bool inTriangle(glm::vec3 point, glm::vec3 tri1, glm::vec3 tri2, glm::vec3 tri3) {
+inline bool inTriangle(glm::vec3 point, glm::vec3 tri1, glm::vec3 tri2,
+                       glm::vec3 tri3) {
   // Test to see if it is within an infinite prism that the triangle outlines.
   bool within_tri_prisim = SameSide(point, tri1, tri2, tri3) &&
                            SameSide(point, tri2, tri1, tri3) &&
@@ -641,10 +638,10 @@ private:
   // Generate vertices from a list of positions,
   //	tcoords, normals and a face line
   inline void GenVerticesFromRawOBJ(std::vector<Vertex> &oVerts,
-                             const std::vector<glm::vec3> &iPositions,
-                             const std::vector<glm::vec2> &iTCoords,
-                             const std::vector<glm::vec3> &iNormals,
-                             std::string icurline) {
+                                    const std::vector<glm::vec3> &iPositions,
+                                    const std::vector<glm::vec2> &iTCoords,
+                                    const std::vector<glm::vec3> &iNormals,
+                                    std::string icurline) {
     std::vector<std::string> sface, svert;
     Vertex vVert;
     algorithm::split(algorithm::tail(icurline), sface, " ");
@@ -740,7 +737,7 @@ private:
   // Triangulate a list of vertices into a face by printing
   //	inducies corresponding with triangles within it
   inline void VertexTriangluation(std::vector<unsigned int> &oIndices,
-                           const std::vector<Vertex> &iVerts) {
+                                  const std::vector<Vertex> &iVerts) {
     // If there are 2 or less verts,
     // no triangle can be created,
     // so exit

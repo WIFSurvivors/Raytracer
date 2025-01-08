@@ -11,6 +11,7 @@
 #include <vector>
 #include <algorithm>
 
+namespace RT {
 struct LightSystem : public System<LightComponent> {
   explicit LightSystem(UUIDManager *um);
 
@@ -24,9 +25,7 @@ struct LightSystem : public System<LightComponent> {
   LightComponent *create_component(Entity *e, uuid id, float intensity,
                                    glm::vec3 color);
 
-  inline const std::string get_name() const final {
-    return "Light System";
-  }
+  inline const std::string get_name() const final { return "Light System"; }
 
   const std::vector<glm::vec3> get_positions() const {
     std::vector<glm::vec3> positions;
@@ -64,3 +63,4 @@ struct LightSystem : public System<LightComponent> {
 
 private:
 };
+} // namespace RT

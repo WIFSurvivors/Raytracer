@@ -8,6 +8,7 @@
 #include <map>
 #include <string>
 
+namespace RT {
 struct Entity;
 
 /**
@@ -15,27 +16,27 @@ struct Entity;
  * Scene that is creating that Entity. Most importantly, it maps UUIDs to
  * Entities Pointers.
  */
-struct EntityStorage : public Storage<Entity*> {
+struct EntityStorage : public Storage<Entity *> {
   using uuid = boost::uuids::uuid;
-  
+
   explicit EntityStorage(UUIDManager *um);
 
-  inline const std::string get_name() const final {
-    return "Entity Storage";
-  }
-  
+  inline const std::string get_name() const final { return "Entity Storage"; }
+
   /**
    * A root entity doesn't have a parent and is used for generating new scenes.
    */
   std::shared_ptr<Entity> create_root_entity(const std::string &name);
 
   /**
-   * A root entity doesn't have a parent and is used when reading scene file (json).
+   * A root entity doesn't have a parent and is used when reading scene file
+   * (json).
    */
   std::shared_ptr<Entity> create_root_entity(const std::string &name, uuid id);
-  
+
   /**
-   * Create a entites with a given name and parent entity. UUID is generated automatically.
+   * Create a entites with a given name and parent entity. UUID is generated
+   * automatically.
    */
   std::shared_ptr<Entity> create_entity(const std::string &name,
                                         std::shared_ptr<Entity> parent);
@@ -52,7 +53,7 @@ struct EntityStorage : public Storage<Entity*> {
    */
   inline std::optional<Entity *> get_entity(uuid id) {
     return _storage.contains(id) ? std::make_optional(_storage[id])
-                                  : std::nullopt;
+                                 : std::nullopt;
   }
 
   /**
@@ -78,3 +79,4 @@ struct EntityStorage : public Storage<Entity*> {
 
 private:
 };
+} // namespace RT
