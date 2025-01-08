@@ -1,7 +1,7 @@
 #pragma once
 #include "glm/ext/vector_float3.hpp"
 #include <vector>
-#include "obj_loader.hpp"
+#include "includes/utility/obj_loader.hpp"
 #include <boost/uuid/uuid.hpp>
 
 
@@ -17,3 +17,4 @@ struct MeshGallary{
   boost::uuids::uuid id;
   glm::mat4 model;
 };
+
