@@ -34,8 +34,8 @@ void Engine::stop_server() {
   }
 }
 
-void Engine::read_scene_from_json(std::filesystem::path p/*,
-                                  std::unique_ptr<Scene> s*/) {
+void Engine::read_scene_from_json(std::filesystem::path p) {
+  //,std::unique_ptr<Scene> s
   BigJsonReader j;
   auto s = j.read_from_json("", this);
   if (s.has_value()) {

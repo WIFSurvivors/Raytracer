@@ -281,7 +281,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
     auto s = _wm->get_screen_size();
     _projectionMatrix = glm::perspective(
         glm::radians(_cs->get_main_camera()->get_fov()),
-        (float)s.x / (float)s.y, _cs->get_main_camera()->get_near(),
+        static_cast<float>(s.x) / static_cast<float>(s.y), _cs->get_main_camera()->get_near(),
         _cs->get_main_camera()->get_far());
   } else {
     LOG_ERROR("No main camera found -> using 0., 0., +10.");
