@@ -17,6 +17,6 @@ boost::json::object LightComponent::to_json_details() const {
 }
 
 void LightComponent::set_from_json(boost::json::object obj) {
-  set_color(obj["r"].as_double(), obj["g"].as_double(), obj["b"].as_double());
-  set_intensity(obj["intensity"].as_double());
+  set_color(std::stod(boost::json::value_to<std::string>(obj["r"])), std::stod(boost::json::value_to<std::string>(obj["g"])), std::stod(boost::json::value_to<std::string>(obj["b"])));
+  set_intensity(std::stod(boost::json::value_to<std::string>(obj["intensity"])));
 }

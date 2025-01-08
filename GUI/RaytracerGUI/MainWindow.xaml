@@ -87,7 +87,7 @@
                                     <!-- Read-only TextBlock for Key -->
                                     <TextBlock Text="{Binding Key}" Width="150" Margin="5,0,10,0" VerticalAlignment="Center" />
                                     <!-- Editable TextBox for Value -->
-                                    <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="5" VerticalAlignment="Center" />
+                                    <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="5" VerticalAlignment="Center" PreviewKeyDown="TextBoxComponentOptions_PreviewKeyDown"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>

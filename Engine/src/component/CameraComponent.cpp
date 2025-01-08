@@ -19,6 +19,7 @@ boost::json::object CameraComponent::to_json_details() const {
 }
 
 void CameraComponent::set_from_json(boost::json::object obj) {
-  set_fov(obj["fov"].as_double());
+  
+  set_fov(std::stod(boost::json::value_to<std::string>(obj["fov"])));
   set_is_main_camera(obj["is_main_camera"].as_bool());
 }

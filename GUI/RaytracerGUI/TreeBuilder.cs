@@ -316,6 +316,26 @@ namespace RaytracerGUI
             }
 
         }
+        public string CreateJsonFromListBox()
+        {
+            if (_jsonKeyValuePairs == null || _jsonKeyValuePairs.Count == 0)
+            {
+                _mainWindow.tbxLog.AppendText("No data in ListBox to create JSON.\n");
+                return ""; 
+            }
+
+            // Create a dictionary from the key-value pairs
+            var dictionary = _jsonKeyValuePairs.ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+
+            // Serialize the dictionary to a JSON string
+            string jsonString = JsonSerializer.Serialize(dictionary, new JsonSerializerOptions
+            {
+                WriteIndented = true // Optional: makes the JSON output readable
+            });
+
+            return jsonString;
+        }
     }
 
-}
+
+    }
