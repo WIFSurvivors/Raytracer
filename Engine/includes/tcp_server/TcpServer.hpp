@@ -8,9 +8,7 @@
 
 using boost::asio::ip::tcp;
 
-namespace RT {
-struct Engine;
-}
+using RT::Engine;
 
 struct TcpServer : public std::enable_shared_from_this<TcpServer> {
   explicit TcpServer(int port, RT::Engine *e);

@@ -3,7 +3,7 @@
 #include "includes/utility/NotImplementedError.hpp"
 #include <format>
 
-using namespace RT;
+using RT::Log;
 
 void CommandManager::execute_commands() { throw NotImplementedError(); }
 

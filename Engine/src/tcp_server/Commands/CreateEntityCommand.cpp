@@ -9,7 +9,8 @@
 #include <memory>
 #include <format>
 
-using namespace RT;
+using RT::Log;
+using RT::Engine;
 
 std::string CreateEntityCommand::execute(Engine *e) {
   try {

@@ -7,7 +7,8 @@
 #include <format>
 #include "includes/utility/NotImplementedError.hpp"
 
-using namespace RT;
+using RT::Log;
+using RT::Engine;
 
 std::string GetChildEntitiesCommand::execute(Engine *e) {
   auto scene = e->get_scene();

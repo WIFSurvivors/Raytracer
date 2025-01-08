@@ -9,7 +9,9 @@
 #include <string>
 #include "includes/utility/NotImplementedError.hpp"
 
-using namespace RT;
+using RT::Log;
+using RT::Engine;
+using RT::Entity;
 
 std::string GetEntityOptionsCommand::execute(Engine *e) {
   try {

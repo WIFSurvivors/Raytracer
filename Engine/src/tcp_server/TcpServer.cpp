@@ -4,7 +4,8 @@
 #include "includes/utility/Log.hpp"
 #include <string>
 
-using namespace RT;
+using RT::Log;
+using RT::Engine;
 
 TcpServer::TcpServer(int port, Engine *e)
     : _io_context(), _acceptor(_io_context, tcp::endpoint(tcp::v4(), port)),

@@ -9,7 +9,8 @@
 #include "includes/utility/Log.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 
-using namespace RT;
+using RT::Log;
+using RT::Engine;
 
 std::string importJsonCommand::execute(Engine *engine) {
   // TODO: Implement this method to read the json file with quicktype generated

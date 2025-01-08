@@ -1,6 +1,5 @@
 #pragma once
 #include "includes/tcp_server/TcpCommand.hpp"
-#include "includes/Engine.hpp"
 #include <string>
 
 #define GET_ENTITIY_OPTIONS_COMMAND "GetEntityOptions"

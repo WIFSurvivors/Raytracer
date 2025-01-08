@@ -17,7 +17,7 @@
 #include <string>
 #include "includes/utility/Log.hpp"
 #include "includes/utility/data_loader.hpp"
-using namespace RT;
+using RT::Log;
 
 struct alignas(16) Triangle {
   glm::vec3 v0;

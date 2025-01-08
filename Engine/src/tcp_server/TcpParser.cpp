@@ -2,7 +2,7 @@
 #include "includes/utility/Log.hpp"
 #include <sstream>
 
-using namespace RT;
+using RT::Log;
 
 TcpParser::TcpParser() {}
 

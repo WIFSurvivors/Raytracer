@@ -1,14 +1,13 @@
 #pragma once
 #include "includes/component/Component.hpp"
 #include "includes/tcp_server/TcpCommand.hpp"
-#include "includes/Engine.hpp"
 #include <string>
 #include <boost/json.hpp>
 #include <vector>
 
 #define GET_COMPONENTS_COMMAND "GetComponents"
 
-struct IComponent;
+using RT::IComponent;
 
 struct GetComponentsCommand : public TcpCommand {
   explicit GetComponentsCommand(uuid uuid) : TcpCommand(uuid) {}

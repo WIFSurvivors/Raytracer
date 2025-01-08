@@ -3,11 +3,10 @@
 #include <string>
 #include <boost/uuid/uuid.hpp>
 #include <memory>
+#include "includes/Engine.hpp"
 #include <vector>
 
-namespace RT {
-struct Engine;
-}
+using RT::Engine;
 
 struct TcpCommand {
   using uuid = boost::uuids::uuid;

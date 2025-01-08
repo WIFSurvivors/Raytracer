@@ -9,7 +9,8 @@
 #include <format>
 #include "includes/utility/NotImplementedError.hpp"
 
-using namespace RT;
+using RT::Engine;
+using RT::Log;
 
 std::string CreateComponentCommand::execute(Engine *e) {
   try {

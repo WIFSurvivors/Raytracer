@@ -3,7 +3,8 @@
 #include "includes/utility/NotImplementedError.hpp"
 #include <string>
 
-using namespace RT;
+using RT::Log;
+using RT::Engine;
 
 TcpExecuter::TcpExecuter() {}
 

@@ -13,7 +13,12 @@
 #include "includes/component/LightComponent.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 
-using namespace RT;
+using RT::Log;
+using RT::Engine;
+using RT::CameraSystem;
+using RT::RenderSystem;
+using RT::SimpleSystem;
+using RT::LightSystem;
 
 std::string GetComponentOptions::execute(Engine *e) {
   auto uuid_manager = e->get_active_uuid_manager();

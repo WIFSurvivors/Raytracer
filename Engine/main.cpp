@@ -4,7 +4,7 @@
 #include <exception>
 #include <string>
 
-using namespace RT;
+using RT::Log;
 
 int main() {
   Log::get_instance().set_cout_log_level(Log::Level::Tcp);

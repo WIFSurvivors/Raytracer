@@ -13,9 +13,7 @@
 
 class TcpServer;
 
-namespace RT {
-class Engine;
-}
+using RT::Engine;
 
 struct CommandManager {
   CommandManager(TcpServer *tcp_server, RT::Engine *engine)

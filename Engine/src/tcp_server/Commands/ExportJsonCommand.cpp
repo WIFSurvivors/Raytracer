@@ -3,7 +3,8 @@
 #include "includes/utility/Log.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 
-using namespace RT;
+using RT::Log;
+using RT::Engine;
 
 std::string ExportJsonCommand::execute(Engine *engine) {
   return "ExportJsonCommand executed but empty";

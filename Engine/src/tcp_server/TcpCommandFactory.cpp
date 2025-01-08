@@ -22,7 +22,7 @@
 #include <map>
 #include <string>
 
-using namespace RT;
+using  RT::Log;
 
 TcpCommandFactory::TcpCommandFactory() {}
 

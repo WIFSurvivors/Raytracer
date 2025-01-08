@@ -1,10 +1,10 @@
 #pragma once
 #include "includes/tcp_server/TcpCommand.hpp"
-#include "includes/Engine.hpp"
 #include <string>
 #include <glm/vec3.hpp>
 
 #define SCALE_COMMAND "ScaleCommand"
+
 
 struct ScaleCommand : public TcpCommand {
   ScaleCommand(uuid uuid, int new_x, int new_y, int new_z)
