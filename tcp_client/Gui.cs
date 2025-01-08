@@ -14,9 +14,9 @@ public class Gui
             // Send first message
             string thing = uuid;
             string message = api.get_component_options(thing);
-            String uuid1 = api.move_entity(thing, 2.0f, 0.0f, 0.0f);
+            String uuid1 = api.move_entity(thing, 0.0f, 2.0f, 0.0f);
             /*// Send second message*/
-            /*String uuid2 = api.rotate_entity(thing, 0.0f, 45.0f, 0.0f);*/
+            String uuid2 = api.rotate_entity(thing, 180.0f, 45.0f, 45.0f);
             /*//client.Close();*/
             /*string test = api.get_entity_options(thing);*/
             /*string message1 = api.get_child_entities(thing);*/

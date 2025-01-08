@@ -104,12 +104,12 @@ void Scene::generate_sample_content() {
   auto c3 = _light_system.create_component(e4.get());
   /*c3->set_color(0.1f, 0.96752f, 0.1f);*/
   c3->set_color(1.0f, 1.0f, 1.0f);
-  c3->set_intensity(0.f);
+  c3->set_intensity(5.f);
 
   auto c4 = _light_system.create_component(e5.get());
   /*c4->set_color(0.1f, 0.1f, 1.f);*/
   c4->set_color(1.0f, 1.0f, 1.0f);
-  c4->set_intensity(0.f);
+  c4->set_intensity(5.f);
 
   // =================== RENDER =====================
   std::vector<glm::vec3> v1 = {
@@ -131,8 +131,12 @@ void Scene::generate_sample_content() {
                                glm::vec2{0.0f, 1.0f}};
 
   auto root_ptr = get_root().lock();
-  auto asset1 = create_asset("./assets/cornell-box.obj");
-  _render_system.create_component(root_ptr.get(),asset1);
+  auto asset1 = create_asset("./assets/default.obj");
+  auto asset2 = create_asset("./assets/default.obj");
+  auto ComponentEntity1 = create_entity("ComponentEntity1", root_ptr);
+  auto ComponentEntity2 = create_entity("ComponentEntity2", root_ptr);
+  _render_system.create_component(ComponentEntity1.get(),asset1);
+  _render_system.create_component(ComponentEntity2.get(),asset2);
   //_render_system.create_component(root_ptr.get(), v3, u3);
 
   LOG_NEW_LINE();

@@ -213,6 +213,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   glClear(GL_COLOR_BUFFER_BIT);
   //  Calculation for the Camera
   static bool loadData = false;
+  std::vector<MeshGallary> temp_holder;
   for (auto &&c : _components) {
     if (c.second->get_entity()->has_Updated()) {
       glm::vec3 scaleVector = c.second->get_entity()->get_local_scale();
@@ -245,19 +246,24 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
       MeshGallary object{c.second->get_meshes(),
                          c.second->get_entity()->get_uuid(),
                          c.second->get_ModelMatrix()};
-
-      BVH_Tree->update_gallary(object);
+      temp_holder.push_back(object);
+      // BVH_Tree->update_gallary(object);
       c.second->get_entity()->did_update();
       std::cout << "UPDATED\n";
-	  loadData = true;
+      loadData = true;
     }
   }
 
-  if(loadData){
-  BVH_Tree->loadData();
-  BVH_Tree->prepareSSBOData();
-  updateSSBOBuffers();
-  loadData = false;
+  if (loadData) {
+    BVH_Tree = std::make_unique<TreeBuilder>();
+    for (auto &object : temp_holder) {
+      update_galary(object);
+    }
+	BVH_Tree->setGallary(gallary);
+    BVH_Tree->loadData();
+    BVH_Tree->prepareSSBOData();
+    updateSSBOBuffers();
+    loadData = false;
   }
 
   //  Setup compute shader
@@ -451,6 +457,35 @@ void RenderSystem::updateSSBOBuffers() {
                BVH_Tree->matIndx.data(), GL_STATIC_DRAW);
   glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, _ssbo_matsIDX);
 #endif
+}
+
+void RenderSystem::update_galary(MeshGallary &mesh_object) {
+  bool found = false;
+  for (auto &c : gallary) {
+    if (mesh_object.id == c.id) {
+      c._meshes.clear();
+      for (RenderComponentMesh &mesh : mesh_object._meshes) {
+        for (glm::vec3 &vertex : mesh._vertices) {
+          vertex = glm::vec3(mesh_object.model * glm::vec4(vertex, 1.0f));
+        }
+      }
+
+      c._meshes = mesh_object._meshes;
+      found = true;
+      break;
+    }
+  }
+
+  if (!found) {
+
+    for (RenderComponentMesh &mesh : mesh_object._meshes) {
+      for (glm::vec3 &vertex : mesh._vertices) {
+        vertex = glm::vec3(mesh_object.model * glm::vec4(vertex, 1.0f));
+      }
+    }
+
+    gallary.push_back(mesh_object);
+  }
 }
 
 } // namespace RT
