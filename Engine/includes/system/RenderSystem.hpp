@@ -84,7 +84,7 @@ struct RenderSystem : public System<RenderComponent> {
   // void render();
   // std::unique_ptr<RenderComponent> _component;
   void print() override;
-  void update_galary(MeshGallary &mesh_object);
+  void update_galary(std::shared_ptr<MeshGallary> mesh_object);
 private:
   WindowManager *_wm;
   CameraSystem *_cs;
@@ -131,7 +131,7 @@ private:
   GLuint _maxHittableTrianglesU;
 
   std::unique_ptr<Shader> _compute;
-  std::vector<MeshGallary> gallary;
+  std::vector<std::shared_ptr<MeshGallary>> gallary;
 #endif
 };
 } // namespace RT
