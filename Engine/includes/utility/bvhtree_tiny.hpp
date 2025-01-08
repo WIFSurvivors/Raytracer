@@ -156,44 +156,47 @@ struct TreeBuilder {
 
   int get_numberOfTriangles() { return triangles.size(); }
 
-  /*void update_gallary(MeshGallary &mesh_object) {*/
-  /*  bool found = false;*/
-  /*  for (auto &c : gallary) {*/
-  /*    if (mesh_object.id == c.id) {*/
-  /*      c._meshes.clear();*/
-  /*      for (RenderComponentMesh &mesh : mesh_object._meshes) {*/
-  /*        for (glm::vec3 &vertex : mesh._vertices) {*/
-  /*          vertex = glm::vec3(mesh_object.model * glm::vec4(vertex, 1.0f));*/
-  /*        }*/
-  /*      }*/
-  /**/
-  /*      c._meshes = mesh_object._meshes;*/
-  /*      found = true;*/
-  /*      break;*/
-  /*    }*/
-  /*  }*/
-  /**/
-  /*  if (!found) {*/
-  /**/
-  /*    for (RenderComponentMesh &mesh : mesh_object._meshes) {*/
-  /*      for (glm::vec3 &vertex : mesh._vertices) {*/
-  /*        vertex = glm::vec3(mesh_object.model * glm::vec4(vertex, 1.0f));*/
-  /*      }*/
-  /*    }*/
-  /**/
-  /*    gallary.push_back(mesh_object);*/
-  /*  }*/
-  /*}*/
+  //void update_gallary(MeshGallary &mesh_object) {
+  //  bool found = false;
+  //  for (auto &c : gallary) {
+  //    if (mesh_object.id == c.id) {
+  //      c._meshes.clear();
+  //      for (RenderComponentMesh &mesh : mesh_object._meshes) {
+  //        for (glm::vec3 &vertex : mesh._vertices) {
+  //          vertex = glm::vec3(mesh_object.model * glm::vec4(vertex, 1.0f));
+  //        }
+  //      }
 
-  /*void new_gallary(MeshGallary &mesh_object) {*/
-  /*  gallary.clear();*/
-  /*  for (RenderComponentMesh &mesh : mesh_object._meshes) {*/
-  /*    for (glm::vec3 &vertex : mesh._vertices) {*/
-  /*      vertex = glm::vec3(mesh_object.model * glm::vec4(vertex, 1.0f));*/
-  /*    }*/
-  /*    gallary.push_back(mesh_object);*/
-  /*  }*/
-  /*}*/
+  //      c._meshes = mesh_object._meshes;
+  //      found = true;
+  //      break;
+  //    }
+  //  }
+
+  //  if (!found) {
+
+  //    for (RenderComponentMesh &mesh : mesh_object._meshes) {
+  //      for (glm::vec3 &vertex : mesh._vertices) {
+  //        vertex = glm::vec3(mesh_object.model * glm::vec4(vertex, 1.0f));
+  //      }
+  //    }
+
+  //    gallary.push_back(mesh_object);
+  //  }
+  //}
+
+  //void new_gallary(MeshGallary &mesh_object) {
+  //  gallary.clear();
+  //  for (RenderComponentMesh &mesh : mesh_object._meshes) {
+  //    for (glm::vec3 &vertex : mesh._vertices) {
+  //      vertex = glm::vec3(mesh_object.model * glm::vec4(vertex, 1.0f));
+  //    }
+  //    gallary.push_back(mesh_object);
+  //  }
+  //}
+  
+
+
   void setGallary(std::vector<MeshGallary> o){
 	gallary = o;
   }
