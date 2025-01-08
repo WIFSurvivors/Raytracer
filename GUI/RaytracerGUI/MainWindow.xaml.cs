@@ -845,7 +845,7 @@ namespace RaytracerGUI
                     return;
                 }
 
-                _componentOptionsBuilder = new TreeBuilder(trvComponentsOptions, this);
+                _componentOptionsBuilder = new TreeBuilder(this, trvComponentsOptions);
                 _componentOptionsBuilder.BuildTreeFromComponentOptions(ecsJsonNode);
             }
             catch (Exception ex)

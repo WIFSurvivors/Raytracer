@@ -80,7 +80,18 @@
                     </Grid.RowDefinitions>
 
                     <TreeView Name="trvEntitiesOptions" Grid.Row="0"/>
-                    <TreeView Name="trvComponentsOptions" Grid.Row="1"/>
+                    <ListBox Name="trvComponentsOptions" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <!-- Read-only TextBlock for Key -->
+                                    <TextBlock Text="{Binding Key}" Width="150" Margin="5,0,10,0" VerticalAlignment="Center" />
+                                    <!-- Editable TextBox for Value -->
+                                    <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="5" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Grid>
                 
             </Grid>
