@@ -407,14 +407,14 @@ namespace RaytracerGUI
                         x = (float)sldX.Value;
                         y = (float)sldY.Value;
                         z = (float)sldZ.Value;
-                        //_ecsApi.move_entity(UUID, x, y, z);
+                        _ecsApi.move_entity(UUID, x, y, z);
                     }
                     else if (sliderType == 1)
                     {
                         x = (float)sldRx.Value;
                         y = (float)sldRy.Value;
                         z = (float)sldRz.Value;
-                        //_ecsApi.rotate_entity(UUID, x, y, z);
+                        _ecsApi.rotate_entity(UUID, x, y, z);
                     }
                     else if (sliderType == 2)
                     {
@@ -699,7 +699,7 @@ namespace RaytracerGUI
                 }
 
                 _entityOptionsBuilder = new TreeBuilder(trvEntitiesOptions, this);
-                _entityOptionsBuilder.BuildTreeFromOptions(ecsJsonNode);
+                _entityOptionsBuilder.BuildTreeFromEntityOptions(ecsJsonNode);
             }
             catch (Exception ex)
             {
@@ -796,7 +796,6 @@ namespace RaytracerGUI
                 {
                     string uuid = tagData.UUID;       // Access UUID
                     string name = tagData.Name;       // Access Name
-                    int childrenCount = tagData.Children; // Access Children count
 
                     UpdateComponentsOptions(uuid, e);
                 }
@@ -810,20 +809,12 @@ namespace RaytracerGUI
         private void UpdateComponents(string uuidEntity, RoutedPropertyChangedEventArgs<object> e)
         {
             string? componentsJsonNode = _ecsApi.get_components(uuidEntity);
+
+            _componentBuilder = new TreeBuilder(trvComponents, this);
+
             try
             {
-                //PROBLEM: Exception when deserialized, no class for object existent:
-                //JSON: {"components":[{"uuid":"67949d3e-de96-487f-a03c-5b900da73e4b"}]}
-                var updatedNode = JsonSerializer.Deserialize<string>(componentsJsonNode);
-                _componentBuilder = new TreeBuilder(trvComponents, this);
-
-                if (componentsJsonNode == null)
-                {
-                    tbxLog.AppendText($"No valid component data found for UUID: {uuidEntity}.\n");
-                    return;
-                }
-
-                _componentBuilder.BuildTreeFromJson(updatedNode);
+                _componentBuilder.BuildTreeFromComponents(componentsJsonNode);
             }
             catch (Exception ex)
             {
@@ -834,17 +825,24 @@ namespace RaytracerGUI
 
         public void UpdateComponentsOptions(string uuid, RoutedPropertyChangedEventArgs<object>? e)
         {
-            string? componentsJsonNode = _ecsApi.get_component_options(uuid);
-            tbxLog.AppendText("ComponentList Update : JSON\n\n " + componentsJsonNode + "\n\n");
-
-            if (componentsJsonNode == null)
+            try
             {
-                tbxLog.AppendText("JSON = null.\n");
-                return;
-            }
+                string? ecsJsonNode = _ecsApi.get_entity_options(uuid);
+                tbxLog.AppendText("EntityList Update : JSON\n\n " + ecsJsonNode + "\n\n");
 
-            _componentOptionsBuilder = new TreeBuilder(trvComponentsOptions, this);
-            _componentOptionsBuilder.BuildTreeFromOptions(componentsJsonNode);
+                if (ecsJsonNode == null)
+                {
+                    tbxLog.AppendText("JSON = null.\n");
+                    return;
+                }
+
+                _componentOptionsBuilder = new TreeBuilder(trvComponentsOptions, this);
+                _componentOptionsBuilder.BuildTreeFromComponentOptions(ecsJsonNode);
+            }
+            catch (Exception ex)
+            {
+                tbxLog.AppendText("\n Exception fired" + "\n\n\n" + ex);
+            }
         }
 
         private void trvComponentsOptions_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)

@@ -9,9 +9,7 @@ namespace RaytracerGUI
 {
     class EcsComponentNode
     {
-        //TODO not sure if needed
+        public string uuid { get; set; }
         public string name { get; set; }
-        public int children_count { get; set; }
-        public List<EcsEntityNode> children { get; set; }
     }
 }
