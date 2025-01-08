@@ -925,12 +925,11 @@ namespace RaytracerGUI
 
         private void TakeScreenshot()
         {
-            int glfwWidth = (int) rctRenderArea.Width;
-            int glfwHeight = (int) rctRenderArea.Height;
 
             try
             {
-                GLFWScreenshot.Capture(hWndParent, "screenshot.png", glfwWidth, glfwHeight);
+            
+                GdiCapture.CaptureWindow(loader.hWndGLFW, "screenshot.png");
             }
             catch (System.InvalidOperationException e)
             {
