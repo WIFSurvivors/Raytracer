@@ -13,19 +13,19 @@ using RT::Log;
 using RT::Engine;
 
 std::string importJsonCommand::execute(Engine *engine) {
-  // TODO: Implement this method to read the json file with quicktype generated
-  // code
-  FILE *file = fopen(_json_path.c_str(), "r");
-  if (!file) {
-    std::string msg = std::format("File not found: {}", _json_path);
-    LOG_ERROR(msg);
-    return msg;
+  try {
+    std::ifstream file(_json_path);
+    if (!file.is_open()) {
+      std::string error = "Failed to open file: " + _json_path;
+      LOG_ERROR(error);
+      return error;
+    }
+    file.close();
+    engine->read_scene_from_json(_json_path);
+  } catch (const std::exception &e) {
+    std::cerr << e.what() << '\n';
+    return e.what();
   }
-  while (!feof(file)) {
-    char c = fgetc(file);
-    std::cout << c;
-  }
-  fclose(file);
-  return "Imported json file";
+  return "Scene loaded";
 }
 std::string importJsonCommand::undo() { throw NotImplementedError{}; }

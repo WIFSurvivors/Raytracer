@@ -54,7 +54,7 @@ void BigJsonReader::write_to_json(const std::filesystem::path filePath,
 std::optional<std::unique_ptr<Scene>>
 BigJsonReader::read_from_json(const std::filesystem::path filePath,
                               Engine *engine) {
-  using namespace quicktype;
+  using quicktype::QuicktypeJson;
   auto test = std::filesystem::path(get_relative_json_folder_path() /
                                     "JsonParser_DummyFile.json");
   std::cout << "TRY OPENING LOAD FILE " << test.string() << "\n";

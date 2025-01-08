@@ -2,6 +2,7 @@
 
 #include <filesystem>
 #include "includes/Scene.hpp"
+#include <memory>
 
 namespace RT {
 struct Scene;

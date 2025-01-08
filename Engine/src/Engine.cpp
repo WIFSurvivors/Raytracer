@@ -37,9 +37,12 @@ void Engine::stop_server() {
 void Engine::read_scene_from_json(std::filesystem::path p) {
   //,std::unique_ptr<Scene> s
   BigJsonReader j;
-  auto s = j.read_from_json("", this);
+  auto s = j.read_from_json(p, this);
   if (s.has_value()) {
     change_scene(std::move(s.value()));
+  } else {
+    LOG_ERROR("Scene could not be loaded");
+    throw std::runtime_error("Scene could not be loaded");
   }
 }
 
