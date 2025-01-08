@@ -244,9 +244,10 @@ BigJsonReader::read_from_json(const std::filesystem::path filePath,
               new_entity.get());
 
           if (json_rc.get_obj_uuid().has_value()) {
-            LOG_WARN(std::format(
-                ".obj UUID {} found but not applied to render component",
-                json_rc.get_obj_uuid().value()))
+            // LOG_WARN(std::format(
+            //     ".obj UUID {} found but not applied to render component",
+            //     json_rc.get_obj_uuid().value()))
+            rc->set_obj_asset(to_uuid(json_rc.get_mat_uuid().value()));
           }
         }
       }
