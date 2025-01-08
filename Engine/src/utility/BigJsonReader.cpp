@@ -57,6 +57,7 @@ BigJsonReader::read_from_json(const std::filesystem::path filePath,
   using namespace quicktype;
   auto test = std::filesystem::path(get_relative_json_folder_path() /
                                     "JsonParser_DummyFile.json");
+  std::cout << "TRY OPENING LOAD FILE " << test.string() << "\n";
   if (!std::filesystem::exists(test)) {
     LOG_WARN(std::format(
         "{} doesn't exist. Ignore this right now if you are not Jeb! :3",
@@ -68,25 +69,25 @@ BigJsonReader::read_from_json(const std::filesystem::path filePath,
       std::make_unique<Scene>(engine, filePath.filename().string());
 
   auto path = std::filesystem::absolute(test).string();
-  std::cout << "PATH FOR JSON -> " << path << std::endl;
   auto str = readFileToString(path);
   // std::cout << str << std::endl;
   // writeStringToFile(path, str);
   QuicktypeJson data = nlohmann::json::parse(str);
 
+  std::cout << "PARSING METADATA "
+            << "\n";
   auto metadata = data.get_metadata();
   if (metadata.has_value()) {
     auto a = metadata->get_background_color();
     auto b = metadata->get_global_illumination();
-    auto c = metadata->get_max_depth();
-    auto d = metadata->get_samples_per_pixel();
+    auto c = metadata->get_max_depth();         // bounces
+    auto d = metadata->get_samples_per_pixel(); // we don't have
   }
 
   auto asset_manager = new_scene->get_asset_manager();
   auto o_resources = data.get_resources();
-
+  std::cout << "PARSING RESOURCES " << "\n";
   if (o_resources.has_value()) {
-    std::allocator<Resource> t;
     auto resources = o_resources.value();
     for (auto &&r : resources) {
       auto id = r.get_uuid();
@@ -97,25 +98,33 @@ BigJsonReader::read_from_json(const std::filesystem::path filePath,
         continue;
       }
 
-      auto u = to_uuid(id.value());
+      auto abs_path = std::filesystem::absolute(path.value());
+      std::cout << "-- TRYING TO ACCESS PATH " << abs_path.string() << "\n";
 
-      std::cout << "XXX Resource! " << path.value() << "\n";
-      asset_manager->set(u, path.value());
+      if (!std::filesystem::exists(abs_path)) {
+        std::cerr << "!! FILE DOESN'T EXIST"
+                  << "\n";
+        continue;
+      }
+      auto u = to_uuid(id.value());
+      asset_manager->set(u, abs_path);
     }
   }
 
-  auto has_components = [](quicktype::Entity &e) {
-    size_t component_count = 0;
-    auto c = e.get_components().value();
-    if (c.get_camera_component().has_value())
-      component_count++;
-    if (c.get_light_component().has_value())
-      component_count++;
-    if (c.get_render_component().has_value())
-      component_count++;
-    return component_count != 0;
-  };
+  //   auto has_components = [](quicktype::Entity &e) {
+  //     size_t component_count = 0;
+  //     auto c = e.get_components().value();
+  //     if (c.get_camera_component().has_value())
+  //       component_count++;
+  //     if (c.get_light_component().has_value())
+  //       component_count++;
+  //     if (c.get_render_component().has_value())
+  //       component_count++;
+  //     return component_count != 0;
+  //   };
 
+  std::cout << "PARSING ENTITIES "
+            << "\n";
   // if there is only one camera, it will automatically be deemed the main one
   bool has_found_camera = false;
   auto o_entities = data.get_entity();
@@ -125,15 +134,15 @@ BigJsonReader::read_from_json(const std::filesystem::path filePath,
       auto name = e.get_name().has_value() ? e.get_name().value() : "undefined";
       auto has_uuid = e.get_uuid().has_value();
 
-      std::shared_ptr<Entity> t;
+      std::cout << "PARSING TRANSLATION FOR " << name << "\n";
+      std::shared_ptr<Entity> new_entity = nullptr;
       if (has_uuid) {
-        t = new_scene->create_entity(name);
+        new_entity = new_scene->create_entity(name);
       } else {
         auto u = to_uuid(e.get_uuid().value());
-        t = new_scene->create_entity(name, u);
+        new_entity = new_scene->create_entity(name, u);
       }
 
-      auto new_entity = new_scene->create_entity(name);
       auto has_translation = e.get_translation().has_value();
       if (has_translation) {
         auto translation = e.get_translation().value();
@@ -192,21 +201,31 @@ BigJsonReader::read_from_json(const std::filesystem::path filePath,
         }
       }
 
+      std::cout << "PARSING COMPONENTS FOR " << name << "\n";
       auto has_components = e.get_components().has_value();
       if (has_components) {
         auto components = e.get_components().value();
 
         if (components.get_camera_component().has_value()) {
+          std::cout << "-> CREATE CAMERA FOR " << name << "\n";
           auto json_cc = components.get_camera_component().value();
           auto camera = new_scene->get_camera_system()->create_component(
               new_entity.get());
 
-          json_cc.get_fov();
-          json_cc.get_near_clip();
-          json_cc.get_aspect_ratio();
-          json_cc.get_far_clip();
+		  if(json_cc.get_fov().has_value()){
+			camera->set_fov(json_cc.get_fov().value());
+		  }		  
+		  if(json_cc.get_far_clip().has_value()){
+			camera->set_far(json_cc.get_far_clip().value());
+		  }		  
+		  if(json_cc.get_near_clip().has_value()){
+			camera->set_near(json_cc.get_near_clip().value());
+		  }
+
+          json_cc.get_aspect_ratio(); // that's weird...
         }
         if (components.get_light_component().has_value()) {
+          std::cout << "-> CREATE LIGHT FOR " << name << "\n";
           has_found_camera = true;
           auto json_lc = components.get_light_component().value();
 
@@ -237,6 +256,7 @@ BigJsonReader::read_from_json(const std::filesystem::path filePath,
         }
 
         if (components.get_render_component().has_value()) {
+          std::cout << "-> CREATE RENDER COMPONENT FOR " << name << "\n";
           auto json_rc = components.get_render_component().value();
 
           auto rc = new_scene->get_render_system()->create_component(
@@ -254,6 +274,8 @@ BigJsonReader::read_from_json(const std::filesystem::path filePath,
   }
 
   if (!has_found_camera) {
+    std::cout << "CREATE DEFAULT CAMERA"
+              << "\n";
     auto e = new_scene->create_entity("Camera");
     e->set_local_position(0.f, 0.f, 10.f);
     auto c = new_scene->get_camera_system()->create_component(e.get());
