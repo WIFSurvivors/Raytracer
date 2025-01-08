@@ -53,7 +53,7 @@ struct RenderComponent : public IComponent {
 #if SHOW_UI
     return _meshes;
 #endif
-  };
+  }
 
   inline void set_translationMatrix(const glm::mat4 translation) {
 #if SHOW_UI
@@ -130,21 +130,6 @@ struct RenderComponent : public IComponent {
 	  std::cout << "Illum1: " << renderMesh.MeshMaterial.illum << std::endl;
     }
 
-	//for(const auto& mesh : _meshes){
-	//  std::cout << "Duuchlauf\n";
-	//  for(const auto& v: mesh._vertices){
-	//	std::cout << "V: " << v.x << "|" << v.y << "|" <<v.z << std::endl;
-	//  }
-	//  for(int i = 0 ; i < mesh._indices.size() ; i+=3){
-	//	std::cout << "T: " << mesh._indices[i]<< "|" <<mesh._indices[i+1]<< "|"<< mesh._indices[i+2] << std::endl;
-	//  }
-	//}
-
-    // loader.LoadedMeshes[0]
-    // set_vertices(vertices);
-    // for (const auto &ver : vertices) {
-    //  std::cout << ver.x << " " << ver.y << " " << ver.z << std::endl;
-    //}
     #endif
     _obj_asset = std::make_shared<AssetManager::Asset>(obj_asset);
   }

@@ -150,7 +150,7 @@ struct TreeBuilder {
 
   std::vector<uint32_t> matIndx;
   int RenderEntities;
-  std::vector<MeshGallary> gallary;
+  std::vector<std::shared_ptr<MeshGallary>> gallary;
 
   TreeBuilder() {}
 
@@ -197,7 +197,7 @@ struct TreeBuilder {
   
 
 
-  void setGallary(std::vector<MeshGallary> o){
+  void setGallary(std::vector<std::shared_ptr<MeshGallary>> o){
 	gallary = o;
   }
   void loadData() {
@@ -214,7 +214,7 @@ struct TreeBuilder {
     ssboData.clear();
 
     for (auto &obj : gallary) {
-      for (auto &mesh : obj._meshes) {
+      for (auto &mesh : obj->_meshes) {
 
         //mats.push_back(Materials(mesh.MeshMaterial.Kd,0.0f,mesh.MeshMaterial.Ka,0.0f,mesh.MeshMaterial.Ks,0.0f,mesh.MeshMaterial.d,mesh.MeshMaterial.illum,mesh.MeshMaterial.Ns,mesh.MeshMaterial.Ni));
 
