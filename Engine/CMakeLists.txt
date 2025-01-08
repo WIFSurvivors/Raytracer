@@ -129,31 +129,45 @@ endif()
 target_link_libraries(${PROJECT_NAME} PUBLIC nlohmann_json::nlohmann_json)
 
 # Specify the source and destination directories
-set(DEV_ASSETS_DIR "${CMAKE_SOURCE_DIR}/assets")
-set(DEV_SHADER_DIR "${CMAKE_SOURCE_DIR}/shaders")
-set(DEV_JSON_DIR "${CMAKE_SOURCE_DIR}/json")
+set(DEV_ASSETS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/assets")
+set(DEV_SHADER_DIR "${CMAKE_CURRENT_SOURCE_DIR}/shaders")
+set(DEV_JSON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/json")
 
 # get_target_property(EXECUTABLE_PATH ${PROJECT_NAME} RUNTIME_OUTPUT_DIRECTORY)
 message(STATUS "Executable will be placed at: ${CMAKE_BINARY_DIR}")
 
-# Define the custom command to copy folders
-add_custom_command(
-    TARGET ${PROJECT_NAME}
-    POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-        "${DEV_ASSETS_DIR}"
-        "${CMAKE_BINARY_DIR}/assets"
-	COMMAND ${CMAKE_COMMAND} -E copy_directory
-		"${DEV_SHADER_DIR}"
-		"${CMAKE_BINARY_DIR}/shaders"
-	COMMAND ${CMAKE_COMMAND} -E copy_directory
-		"${DEV_JSON_DIR}"
-		"${CMAKE_BINARY_DIR}/json"
-    COMMAND ${CMAKE_COMMAND} -E echo "Copy operation completed!"
-    COMMENT "Copying asset folder to the build directory"
-)
+file(GLOB_RECURSE
+    JSON_FILES
+    RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} 
+    CONFIGURE_DEPENDS
+    ${DEV_JSON_DIR}/*)
+  
+  message(STATUS "Copying json to: ${CMAKE_BINARY_DIR}/json")
+  FOREACH(MY_RESOURCE_FILE ${JSON_FILES})
+    file(COPY ${MY_RESOURCE_FILE} DESTINATION ${CMAKE_BINARY_DIR}/json)
+  ENDFOREACH()
 
-# Ensure the command runs for both build systems (make/ninja/MSVC)
-add_custom_target(copy_resources ALL
-    DEPENDS ${PROJECT_NAME}
-)
+
+  file(GLOB_RECURSE
+  ASSET_FILES
+  RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} 
+  CONFIGURE_DEPENDS
+  ${DEV_ASSETS_DIR}/*)
+  
+message(STATUS "Copying assets to: ${CMAKE_BINARY_DIR}/assets")
+FOREACH(MY_RESOURCE_FILE ${ASSET_FILES})
+  file(COPY ${MY_RESOURCE_FILE} DESTINATION ${CMAKE_BINARY_DIR}/assets)
+ENDFOREACH()
+
+file(GLOB_RECURSE
+  SHADER_FILES
+  RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} 
+  CONFIGURE_DEPENDS
+  ${DEV_SHADER_DIR}/*)
+
+message(STATUS "Copying shaders to: ${CMAKE_BINARY_DIR}/shaders")
+FOREACH(MY_RESOURCE_FILE ${SHADER_FILES})
+  file(COPY ${MY_RESOURCE_FILE} DESTINATION ${CMAKE_BINARY_DIR}/shaders)
+ENDFOREACH()
+
+
