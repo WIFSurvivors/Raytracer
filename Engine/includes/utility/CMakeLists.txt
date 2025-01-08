@@ -11,6 +11,7 @@ set(UTILITY_HEADERS
     obj_loader.hpp
 	BigJsonRedear.hpp
 	quicktype_json.hpp
+    Canvas.hpp
 )
 
 list(TRANSFORM UTILITY_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
