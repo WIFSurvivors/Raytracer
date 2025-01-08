@@ -7,7 +7,7 @@ class GetFovCommand : public TcpCommand
 {
 public:
     explicit GetFovCommand() {}
-    std::string execute(Engine * engine) override;
+    std::string execute(RT::Engine * engine) override;
     std::string undo() override;
 private:
 

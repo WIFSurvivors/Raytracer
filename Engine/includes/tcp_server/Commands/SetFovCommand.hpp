@@ -7,7 +7,7 @@ class SetFovCommand : public TcpCommand
 {
 public:
     explicit SetFovCommand(float fov) : _fov(fov) {}
-    std::string execute(Engine * engine) override;
+    std::string execute(RT::Engine * engine) override;
     std::string undo() override;
     inline float get_bounces() const { return _fov; }
     inline void set_bounces(float fov) { _fov = fov; }

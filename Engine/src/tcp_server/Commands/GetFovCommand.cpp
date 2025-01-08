@@ -3,6 +3,8 @@
 #include "includes/utility/Log.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 
+using RT::Engine;
+using RT::Log;
 std::string GetFovCommand::execute(Engine *engine)
 {
     if(!engine) {
