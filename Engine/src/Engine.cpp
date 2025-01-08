@@ -65,7 +65,7 @@ void Engine::startLoop() {
   int sub_frames = 0;
 
   float frame_time, new_time;
-  while (_wm.should_close()) {
+  while (!_wm.should_close()) {
     // update the difference of the previous and the new frame
     new_time = get_total_time();
     frame_time = new_time - current_time;

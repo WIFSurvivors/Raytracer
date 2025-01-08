@@ -52,7 +52,7 @@ void WindowManager::swap_buffers() {
 
 bool WindowManager::should_close() {
 #if SHOW_UI
-  return !glfwWindowShouldClose(_window);
+  return glfwWindowShouldClose(_window);
 #else
   return false;
 #endif
