@@ -10,10 +10,10 @@ build() {
 
 debug() {
 	# mkdir -p build-debug && \
-	cmake -D CMAKE_BUILD_TYPE=DEBUG -D GLFW_BUILD_X11=1 -D GLFW_BUILD_WAYLAND=0 -S . -B build-debug -G "Ninja" && \
+	cmake -D CMAKE_BUILD_TYPE=DEBUG -D GLFW_BUILD_X11=1 -D GLFW_BUILD_WAYLAND=0 -S . -B build-debug -G "Ninja" -DFRAME_RATE_HZ=1 && \
 	cd build-debug || exit && \
-	ninja && \
-	./TopLevelProject
+	ninja -j 14 && \
+	./Engine
 }
 
 while [[ $# -gt 0 ]];do
