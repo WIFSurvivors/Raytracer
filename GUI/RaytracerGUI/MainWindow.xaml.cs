@@ -1,4 +1,4 @@
-﻿﻿using System.Text;
+﻿using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -21,18 +21,17 @@ using System.Text.Json;
 using System;
 using System.Reflection;
 using System.Windows.Controls.Primitives;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace RaytracerGUI
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private EcsApi? _ecsApi;
         private string ReceivedEcsJsonString;
         private GLFWLoader loader;
         private IntPtr hWndParent;
+
         private TreeBuilder _entityBuilder;
         private TreeBuilder _entityOptionsBuilder;
 
@@ -44,7 +43,8 @@ namespace RaytracerGUI
         bool textboxChange = false;
         int sliderOffset = 10;
 
-        private EcsNode selectedEntityOptionItem;
+        string currentUUID = "uuid";
+
 
         public MainWindow()
         {
@@ -181,7 +181,7 @@ namespace RaytracerGUI
             {
                 // get variable name
                 string button = clickedButton.Name;
-           
+
                 tbxLog.AppendText(button + " was clicked! \n");
                 tbxLog.ScrollToEnd();
 
@@ -306,8 +306,8 @@ namespace RaytracerGUI
 
                         // TreeBuilder testing
                         _entityBuilder = new TreeBuilder(trvEntities, this);
-                       _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
-                       break;
+                        _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
+                        break;
 
                     case "btnToggleLog":
 
@@ -335,7 +335,7 @@ namespace RaytracerGUI
                         {
                             tbxLogEngine.Visibility = Visibility.Collapsed;
                             tbxLog.Visibility = Visibility.Visible;
-                            
+
                         };
                         break;
 
@@ -351,7 +351,7 @@ namespace RaytracerGUI
                             gridButtons.Visibility = Visibility.Visible;
                         }
                         break;
-                        
+
                     case "btnToggleS":
 
                         if (gridSliders.Visibility == Visibility.Visible)
@@ -364,6 +364,10 @@ namespace RaytracerGUI
                             gridSliders.Visibility = Visibility.Visible;
 
                         }
+                        break;
+
+                    case "btnScreenshot":
+                        TakeScreenshot();
                         break;
                 }
             }
@@ -386,9 +390,9 @@ namespace RaytracerGUI
         }
 
 
-        private void SliderEcsApiUpdate(int sliderType, string uuid)
+        private void SliderEcsApiUpdate(int sliderType)
         {
-            string UUID = uuid;
+            string UUID = currentUUID;
             float x;
             float y;
             float z;
@@ -400,9 +404,9 @@ namespace RaytracerGUI
                 {
                     if (sliderType == 0)
                     {
-                        x = (float) sldX.Value;
-                        y = (float) sldY.Value;
-                        z = (float) sldZ.Value;
+                        x = (float)sldX.Value;
+                        y = (float)sldY.Value;
+                        z = (float)sldZ.Value;
                         //_ecsApi.move_entity(UUID, x, y, z);
                     }
                     else if (sliderType == 1)
@@ -425,15 +429,21 @@ namespace RaytracerGUI
                     tbxLog.ScrollToEnd();
                 }
             }
-            
+
         }
 
         private void SliderPreviewMouseUp(object sender, MouseButtonEventArgs e)
         {
+            if (_entityOptionsBuilder == null)
+            {
+                tbxLog.AppendText("No entity or component with options has been selected!");
+                return;
+            }
+
             Slider? changedSlider = sender as Slider;
 
             if (changedSlider != null)
-            { 
+            {
                 changedSlider.Minimum = changedSlider.Value - sliderOffset;
                 changedSlider.Maximum = changedSlider.Value + sliderOffset;
 
@@ -453,9 +463,8 @@ namespace RaytracerGUI
                         lblXMed.Content = medValue;
                         lblXMax.Content = maxValue;
 
-
                         _entityOptionsBuilder.GetTextBox("traX")?.SetValue(TextBox.TextProperty, medValue.ToString());
-                        SliderEcsApiUpdate(0, "UUID");
+                        SliderEcsApiUpdate(0);
                         break;
 
                     case "sldY":
@@ -464,7 +473,7 @@ namespace RaytracerGUI
                         lblYMax.Content = maxValue;
 
                         _entityOptionsBuilder.GetTextBox("traY")?.SetValue(TextBox.TextProperty, medValue.ToString());
-                        SliderEcsApiUpdate(0, "UUID");
+                        SliderEcsApiUpdate(0);
                         break;
 
                     case "sldZ":
@@ -473,7 +482,7 @@ namespace RaytracerGUI
                         lblZMax.Content = maxValue;
 
                         _entityOptionsBuilder.GetTextBox("traZ")?.SetValue(TextBox.TextProperty, medValue.ToString());
-                        SliderEcsApiUpdate(0, "UUID");
+                        SliderEcsApiUpdate(0);
                         break;
 
                     case "sldRx":
@@ -482,7 +491,7 @@ namespace RaytracerGUI
                         lblRxMax.Content = maxValue;
 
                         _entityOptionsBuilder.GetTextBox("rotX")?.SetValue(TextBox.TextProperty, medValue.ToString());
-                        SliderEcsApiUpdate(1, "UUID");
+                        SliderEcsApiUpdate(1);
                         break;
 
                     case "sldRy":
@@ -491,7 +500,7 @@ namespace RaytracerGUI
                         lblRyMax.Content = maxValue;
 
                         _entityOptionsBuilder.GetTextBox("rotY")?.SetValue(TextBox.TextProperty, medValue.ToString());
-                        SliderEcsApiUpdate(1, "UUID");
+                        SliderEcsApiUpdate(1);
                         break;
 
                     case "sldRz":
@@ -500,15 +509,15 @@ namespace RaytracerGUI
                         lblRzMax.Content = maxValue;
 
                         _entityOptionsBuilder.GetTextBox("rotZ")?.SetValue(TextBox.TextProperty, medValue.ToString());
-                        SliderEcsApiUpdate(1, "UUID");
+                        SliderEcsApiUpdate(1);
                         break;
 
                     case "sldZoom":
-                        if(changedSlider.Value < 10) 
-                        { 
+                        if (changedSlider.Value < 10)
+                        {
                             changedSlider.Value = 10;
                         }
-                        else if(changedSlider.Value > 100)
+                        else if (changedSlider.Value > 100)
                         {
                             changedSlider.Value = 100;
                         }
@@ -518,7 +527,7 @@ namespace RaytracerGUI
                         medValue = Math.Round(changedSlider.Value, 0);
                         lblZoomMed.Content = medValue;
 
-                        SliderEcsApiUpdate(2, "UUID");
+                        SliderEcsApiUpdate(2);
                         break;
                 }
 
@@ -638,6 +647,8 @@ namespace RaytracerGUI
 
                     //tbxLog.AppendText($"{header} was clicked with UUID: {uuid}, Name: {name}, Children: {childrenCount}\n");
 
+                    currentUUID = uuid;
+
                     UpdateEntities(uuid, e);
                     UpdateEntitiesOptions(uuid, e);
                     UpdateComponents(uuid, e);
@@ -703,7 +714,8 @@ namespace RaytracerGUI
                 tbxLog.AppendText($"TextBox '{textBox.Name}' text changed to: {textBox.Text}\n");
                 textboxChange = true;
 
-                if (double.TryParse(textBox.Text, out double value)){
+                if (double.TryParse(textBox.Text, out double value))
+                {
 
 
                     // Attempt to parse the text and update the appropriate slider
@@ -753,10 +765,10 @@ namespace RaytracerGUI
 
 
                         case "zoom":
-                                sldX.Value = value;
-                                sldX.Minimum = value - sliderOffset;
-                                sldX.Maximum = value + sliderOffset;
-                                SliderPreviewMouseUp(sldX, null);
+                            sldX.Value = value;
+                            sldX.Minimum = value - sliderOffset;
+                            sldX.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldX, null);
                             break;
 
 
@@ -764,15 +776,13 @@ namespace RaytracerGUI
                         default:
                             tbxLog.AppendText($"TextBox '{textBox.Name}' does not match known sliders.\n");
                             break;
-                    } }
-                else {
+                    }
+                }
+                else
+                {
                     tbxLog.AppendText("Invalid value for Slider" + textBox.Name + ".\n");
                 }
             }
-        }
-        private void trvEntitiesOptions_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            selectedEntityOptionItem = e.NewValue as EcsNode;
         }
 
 
@@ -807,17 +817,17 @@ namespace RaytracerGUI
                 var updatedNode = JsonSerializer.Deserialize<string>(componentsJsonNode);
                 _componentBuilder = new TreeBuilder(trvComponents, this);
 
-            if (componentsJsonNode == null)
-            {
-                tbxLog.AppendText($"No valid component data found for UUID: {uuidEntity}.\n");
-                return;
-            }
+                if (componentsJsonNode == null)
+                {
+                    tbxLog.AppendText($"No valid component data found for UUID: {uuidEntity}.\n");
+                    return;
+                }
 
-            _componentBuilder.BuildTreeFromJson(updatedNode);
+                _componentBuilder.BuildTreeFromJson(updatedNode);
             }
             catch (Exception ex)
             {
-                tbxLog.AppendText("JSON is null for uuid " + uuidEntity+ "\n");
+                tbxLog.AppendText("JSON is null for uuid " + uuidEntity + "\n");
             }
 
         }
@@ -839,7 +849,7 @@ namespace RaytracerGUI
 
         private void trvComponentsOptions_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-           
+
         }
 
         //Add Components
@@ -915,8 +925,24 @@ namespace RaytracerGUI
             }
         }
 
+        private void TakeScreenshot()
+        {
+            int glfwWidth = (int) rctRenderArea.Width;
+            int glfwHeight = (int) rctRenderArea.Height;
 
+            try
+            {
+                GLFWScreenshot.Capture(hWndParent, "screenshot.png", glfwWidth, glfwHeight);
+            }
+            catch (System.InvalidOperationException e)
+            {
+                MessageBox.Show("Capturing failed!" + "\n" + e.Message);
+                return;
+            }
 
+            tbxLog.AppendText("Captured!" + "\n");
 
+        }
     }
+
 }

@@ -79,8 +79,8 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TreeView Name="trvEntitiesOptions" Grid.Row="0" SelectedItemChanged="trvEntitiesOptions_SelectedItemChanged"/>
-                    <TreeView Name="trvComponentsOptions" Grid.Row="1" SelectedItemChanged="trvComponentsOptions_SelectedItemChanged"/>
+                    <TreeView Name="trvEntitiesOptions" Grid.Row="0"/>
+                    <TreeView Name="trvComponentsOptions" Grid.Row="1"/>
                 </Grid>
                 
             </Grid>
@@ -156,6 +156,7 @@
                             <Image Source="/images/arrow-forward.png" Width="30" Height="30"/>
                         </Button>
                         <Button Name="btnConnect" Content="Connect" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"  Margin="10" Click="btnConnect_Click" />
+                        <Button Name="btnScreenshot" Content="Capture" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"  Margin="10" Click="generalButtonClick" />
                     </Grid>
 
                     <!--Sliders-->
