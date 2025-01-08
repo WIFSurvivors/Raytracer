@@ -421,7 +421,7 @@ namespace RaytracerGUI
                     else if (sliderType == 2)
                     {
                         float zoom = (float)sldZoom.Value;
-                        //_ecsApi.scale_entity(UUID, x, y, z);
+                        _ecsApi.set_fov(zoom);
                     }
 
                 }
