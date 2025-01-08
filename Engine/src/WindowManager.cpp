@@ -96,5 +96,6 @@ bool WindowManager::_initGLFW() {
   glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
   return true;
 #endif
+  return true;
 }
 } // namespace RT
