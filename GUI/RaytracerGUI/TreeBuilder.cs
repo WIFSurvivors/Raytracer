@@ -1,5 +1,6 @@
 ﻿﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Windows;
@@ -13,10 +14,18 @@ namespace RaytracerGUI
     class TreeBuilder
     {
         private readonly MainWindow _mainWindow;
+        private System.Windows.Controls.ListBox? _componentOptionsListbox;
         private Dictionary<string, TextBox> _textBoxMapping = new Dictionary<string, TextBox>();
+        public ObservableCollection<JsonKeyValue> _jsonKeyValuePairs = new ObservableCollection<JsonKeyValue>();
 
 
-        public TreeView TreeView { get; private set; }
+        public TreeView? TreeView { get; private set; }
+
+        public TreeBuilder(MainWindow mainWindow, ListBox componentOptionsListbox)
+        {
+            _mainWindow = mainWindow;
+            _componentOptionsListbox = componentOptionsListbox;
+        }
 
         public TreeBuilder(TreeView treeView, MainWindow mainWindow)
         {
@@ -285,21 +294,22 @@ namespace RaytracerGUI
 
         public void BuildTreeFromComponentOptions(string jsonString)
         {
-            TreeView.Items.Clear();
-            
-            var componentOptions = JsonSerializer.Deserialize<Dictionary<string, string>>(jsonString);
+            _jsonKeyValuePairs.Clear();
 
-                        
-            if (componentOptions != null && componentOptions.Keys.Count > 0)
+            var componentOptions = JsonSerializer.Deserialize<Dictionary<string, object>>(jsonString);
+
+
+            if (componentOptions != null && componentOptions.Count > 0)
             {
-                foreach (var key in componentOptions.Keys)
+                foreach (var kvp in componentOptions)
                 {
-                    
-
+                    // Add key-value pairs to the ListBox
+                    _jsonKeyValuePairs.Add(new JsonKeyValue { Key = kvp.Key, Value = kvp.Value });
                 }
-                
-              
+
+            _componentOptionsListbox.ItemsSource = _jsonKeyValuePairs;
             }
+
             else
             {
                 _mainWindow.tbxLog.AppendText("No components found in JSON.\n");
