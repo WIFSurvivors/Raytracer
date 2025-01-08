@@ -86,7 +86,7 @@ void Scene::generate_sample_content() {
   e1->set_local_position(glm::vec3{0.f, +8.f, 15.f});
   auto e2 = create_entity("light sources");
   auto e3 = create_entity("light red", e2);
-  e3->set_local_position(glm::vec3{0, 4, 0});
+  e3->set_local_position(glm::vec3{-0.25, 5.0, -2.0});
   auto e4 = create_entity("light green", e2);
   e4->set_local_position(glm::vec3{0, -5, 5});
   auto e5 = create_entity("light blue", e2);
@@ -131,12 +131,9 @@ void Scene::generate_sample_content() {
                                glm::vec2{0.0f, 1.0f}};
 
   auto root_ptr = get_root().lock();
-  auto asset1 = create_asset("./assets/default.obj");
-  auto asset2 = create_asset("./assets/default.obj");
+  auto asset1 = create_asset("./assets/cornell-box.obj");
   auto ComponentEntity1 = create_entity("ComponentEntity1", root_ptr);
-  auto ComponentEntity2 = create_entity("ComponentEntity2", root_ptr);
   _render_system.create_component(ComponentEntity1.get(),asset1);
-  _render_system.create_component(ComponentEntity2.get(),asset2);
   //_render_system.create_component(root_ptr.get(), v3, u3);
 
   LOG_NEW_LINE();
