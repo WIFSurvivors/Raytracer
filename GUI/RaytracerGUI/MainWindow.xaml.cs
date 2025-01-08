@@ -16,6 +16,7 @@ using System.Diagnostics;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Threading.Tasks;
 using System.Reflection.PortableExecutable;
 using System.Text.Json;
 using System;
@@ -375,7 +376,7 @@ namespace RaytracerGUI
         }
 
 
-        //Slider events
+       
 
         private void SliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -536,6 +537,138 @@ namespace RaytracerGUI
             }
         }
 
+        private void nudBounces_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue != null && _ecsApi != null)
+            {
+                int newValue = (int)e.NewValue;
+                try
+                {
+                    string? result = _ecsApi.set_bounces(newValue);
+                    tbxLog.AppendText(result + "\n");
+                }
+                catch (Exception ex)
+                {
+                    tbxLog.AppendText("\n Exception fired" + "\n\n\n" + ex);
+                }
+            }
+        }
+
+        public void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                // Log the TextBox change
+                tbxLog.AppendText($"TextBox '{textBox.Name}' text changed to: {textBox.Text}\n");
+                textboxChange = true;
+
+                if (double.TryParse(textBox.Text, out double value))
+                {
+
+
+                    // Attempt to parse the text and update the appropriate slider
+                    switch (textBox.Name)
+                    {
+                        case "traX":
+                            sldX.Value = value;
+                            sldX.Minimum = value - sliderOffset;
+                            sldX.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldX, null);
+                            break;
+
+                        case "traY":
+                            sldY.Value = value;
+                            sldY.Minimum = value - sliderOffset;
+                            sldY.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldY, null);
+                            break;
+
+                        case "traZ":
+                            sldZ.Value = value;
+                            sldZ.Minimum = value - sliderOffset;
+                            sldZ.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldZ, null);
+                            break;
+
+                        case "rotX":
+                            sldRx.Value = value;
+                            sldRx.Minimum = value - sliderOffset;
+                            sldRx.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldRx, null);
+                            break;
+
+                        case "rotY":
+                            sldRy.Value = value;
+                            sldRy.Minimum = value - sliderOffset;
+                            sldRy.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldRy, null);
+                            break;
+
+                        case "rotZ":
+                            sldRz.Value = value;
+                            sldRz.Minimum = value - sliderOffset;
+                            sldRz.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldRz, null);
+                            break;
+
+
+                        case "zoom":
+                            sldX.Value = value;
+                            sldX.Minimum = value - sliderOffset;
+                            sldX.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldX, null);
+                            break;
+
+
+
+                        default:
+                            tbxLog.AppendText($"TextBox '{textBox.Name}' does not match known sliders.\n");
+                            break;
+                    }
+                }
+                else
+                {
+                    tbxLog.AppendText("Invalid value for Slider" + textBox.Name + ".\n");
+                }
+            }
+        }
+
+        private void TextBoxComponentOptions_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            // Check if Enter key was pressed
+            if (e.Key == Key.Enter)
+            {
+                // Prevent the Enter key from propagating further
+                e.Handled = true;
+
+                // Get the TextBox and its DataContext (the bound JsonKeyValue object)
+                if (sender is TextBox textBox && textBox.DataContext is JsonKeyValue keyValue)
+                {
+                    // Call your desired function
+                    OnComponentsTextboxValueChanged(keyValue.Key, textBox.Text);
+                }
+            }
+        }
+
+        private void OnComponentsTextboxValueChanged(string key, string newValue)
+        {
+            string? componentOptionsJSON = _componentOptionsBuilder.CreateJsonFromListBox();
+            if (componentOptionsJSON != null && _ecsApi != null)
+            {
+                try
+                {
+                    _ecsApi.set_component_option(currentComponentUUID, componentOptionsJSON);
+                    tbxLog.AppendText("\n ComponentOptions updated with UUID: " + currentComponentUUID + " and JSON: \n" + componentOptionsJSON.ToString());
+
+                }
+                catch (Exception ex)
+                {
+                    tbxLog?.AppendText(ex.ToString());
+                }
+            }
+        }
+
+
 
 
         //Window Handling and first connect 
@@ -568,7 +701,7 @@ namespace RaytracerGUI
             {
                 try
                 {
-                    StartOtherExe("../../../../../Engine/build/Engine.exe");
+                    StartOtherExe("../../../../../Engine/Engine.exe");
                     await Task.Delay(500);
                     _ecsApi = new EcsApi("127.0.0.1", 51234);
 
@@ -616,10 +749,15 @@ namespace RaytracerGUI
         {
             try
             {
+                string engineExeDirPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..\Engine\");
+
+                // Create the ProcessStartInfo
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
-                    FileName = exePath,
-                    UseShellExecute = false,
+                    FileName = engineExeDirPath + @"build\Engine.exe",
+                    WorkingDirectory = System.IO.Path.GetDirectoryName(engineExeDirPath),  // Set the working directory
+                    UseShellExecute = false,  // Optionally, to redirect input/output (if needed)
+                    CreateNoWindow = true,     // Optionally, run without a window
                     WindowStyle = ProcessWindowStyle.Minimized
                 };
                 Process.Start(startInfo);
@@ -707,85 +845,6 @@ namespace RaytracerGUI
                 tbxLog.AppendText("\n Exception fired" + "\n\n\n" + ex);
             }
         }
-        public void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (sender is TextBox textBox)
-            {
-                // Log the TextBox change
-                tbxLog.AppendText($"TextBox '{textBox.Name}' text changed to: {textBox.Text}\n");
-                textboxChange = true;
-
-                if (double.TryParse(textBox.Text, out double value))
-                {
-
-
-                    // Attempt to parse the text and update the appropriate slider
-                    switch (textBox.Name)
-                    {
-                        case "traX":
-                            sldX.Value = value;
-                            sldX.Minimum = value - sliderOffset;
-                            sldX.Maximum = value + sliderOffset;
-                            SliderPreviewMouseUp(sldX, null);
-                            break;
-
-                        case "traY":
-                            sldY.Value = value;
-                            sldY.Minimum = value - sliderOffset;
-                            sldY.Maximum = value + sliderOffset;
-                            SliderPreviewMouseUp(sldY, null);
-                            break;
-
-                        case "traZ":
-                            sldZ.Value = value;
-                            sldZ.Minimum = value - sliderOffset;
-                            sldZ.Maximum = value + sliderOffset;
-                            SliderPreviewMouseUp(sldZ, null);
-                            break;
-
-                        case "rotX":
-                            sldRx.Value = value;
-                            sldRx.Minimum = value - sliderOffset;
-                            sldRx.Maximum = value + sliderOffset;
-                            SliderPreviewMouseUp(sldRx, null);
-                            break;
-
-                        case "rotY":
-                            sldRy.Value = value;
-                            sldRy.Minimum = value - sliderOffset;
-                            sldRy.Maximum = value + sliderOffset;
-                            SliderPreviewMouseUp(sldRy, null);
-                            break;
-
-                        case "rotZ":
-                            sldRz.Value = value;
-                            sldRz.Minimum = value - sliderOffset;
-                            sldRz.Maximum = value + sliderOffset;
-                            SliderPreviewMouseUp(sldRz, null);
-                            break;
-
-
-                        case "zoom":
-                            sldX.Value = value;
-                            sldX.Minimum = value - sliderOffset;
-                            sldX.Maximum = value + sliderOffset;
-                            SliderPreviewMouseUp(sldX, null);
-                            break;
-
-
-
-                        default:
-                            tbxLog.AppendText($"TextBox '{textBox.Name}' does not match known sliders.\n");
-                            break;
-                    }
-                }
-                else
-                {
-                    tbxLog.AppendText("Invalid value for Slider" + textBox.Name + ".\n");
-                }
-            }
-        }
-
 
         // Components Update
         private void trvComponents_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
@@ -918,23 +977,9 @@ namespace RaytracerGUI
             }
         }
 
+        //Items
 
-        private void nudBounces_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (e.NewValue != null && _ecsApi != null)
-            {
-                int newValue = (int)e.NewValue;
-                try
-                {
-                    string? result = _ecsApi.set_bounces(newValue);
-                    tbxLog.AppendText(result + "\n");
-                }
-                catch (Exception ex)
-                {
-                    tbxLog.AppendText("\n Exception fired" + "\n\n\n" + ex);
-                }
-            }
-        }
+
 
         private void TakeScreenshot()
         {
