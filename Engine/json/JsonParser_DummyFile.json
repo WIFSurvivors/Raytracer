@@ -52,7 +52,7 @@
             },
             "components": {
                 "LightComponent": {
-                    "intensity": 0.15,
+                    "intensity": 25.15,
                     "color": {
                         "r": 255,
                         "g": 255,
