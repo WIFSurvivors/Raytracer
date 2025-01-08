@@ -65,7 +65,7 @@ BigJsonReader::read_from_json(const std::filesystem::path filePath,
   }
 
   std::unique_ptr<Scene> new_scene =
-      std::make_unique<Scene>(engine, filePath.filename());
+      std::make_unique<Scene>(engine, filePath.filename().string());
 
   auto path = std::filesystem::absolute(test).string();
   std::cout << "PATH FOR JSON -> " << path << std::endl;
@@ -84,7 +84,6 @@ BigJsonReader::read_from_json(const std::filesystem::path filePath,
 
   auto asset_manager = new_scene->get_asset_manager();
   auto o_resources = data.get_resources();
-  std::cout << "XXX " << o_resources.has_value() << "\n";
 
   if (o_resources.has_value()) {
     std::allocator<Resource> t;
@@ -177,15 +176,15 @@ BigJsonReader::read_from_json(const std::filesystem::path filePath,
         if (translation.get_scale().has_value()) {
           auto scale = translation.get_scale().value();
 
-          float x = 0.f;
+          float x = 1.f;
           if (scale.get_x().has_value())
             x = scale.get_x().value();
 
-          float y = 0.f;
+          float y = 1.f;
           if (scale.get_y().has_value())
             y = scale.get_y().value();
 
-          float z = 0.f;
+          float z = 1.f;
           if (scale.get_z().has_value())
             z = scale.get_z().value();
 
