@@ -8,6 +8,7 @@
 #include <memory>
 #include <string>
 
+namespace RT {
 /**
  * Handles currently active main camera, which is used by RenderSystem.
  */
@@ -22,12 +23,11 @@ struct CameraSystem : public System<CameraComponent> {
 
   void sample_update_move_main_camera(float dt);
 
-  inline const std::string get_name() const final {
-    return "Camera System";
-  }
+  inline const std::string get_name() const final { return "Camera System"; }
 
   void print() override;
 
 private:
   CameraComponent *_main_camera = nullptr;
 };
+} // namespace RT

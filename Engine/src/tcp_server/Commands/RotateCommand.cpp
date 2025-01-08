@@ -9,6 +9,10 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/ext.hpp"
+
+using RT::Log;
+using RT::Engine;
+
 std::string RotateCommand::execute(Engine *engine) {
   auto scene = engine->get_scene();
   if (!scene) {

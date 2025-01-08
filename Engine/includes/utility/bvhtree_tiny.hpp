@@ -1,4 +1,5 @@
 #pragma once
+#include "glm/ext/matrix_transform.hpp"
 #include <iostream>
 #include <memory>
 #define TINYBVH_IMPLEMENTATION
@@ -15,6 +16,8 @@
 #include <vector>
 #include <string>
 #include "includes/utility/Log.hpp"
+#include "includes/utility/data_loader.hpp"
+using RT::Log;
 
 struct alignas(16) Triangle {
   glm::vec3 v0;
@@ -118,8 +121,16 @@ struct Vec3Padded {
 };
 
 struct alignas(16) Materials {
-  glm::vec3 color;
-  float reflection;
+  glm::vec3 Kd;   // Diffuse Color
+  float Ns;  // Specular Exponent
+  glm::vec3 Ka;   // Ambient Color
+  float Ni;  // Optical Density
+  glm::vec3 Ks;   // Specular Color
+  float d;   // Dissolve
+  int illum; // Illumination
+  float pad0;
+  float pad1;
+  float pad2;
 };
 
 struct ObjectData {
@@ -139,7 +150,112 @@ struct TreeBuilder {
 
   std::vector<uint32_t> matIndx;
   int RenderEntities;
-  TreeBuilder(){}
+  std::vector<std::shared_ptr<MeshGallary>> gallary;
+
+  TreeBuilder() {}
+
+  int get_numberOfTriangles() { return triangles.size(); }
+
+  //void update_gallary(MeshGallary &mesh_object) {
+  //  bool found = false;
+  //  for (auto &c : gallary) {
+  //    if (mesh_object.id == c.id) {
+  //      c._meshes.clear();
+  //      for (RenderComponentMesh &mesh : mesh_object._meshes) {
+  //        for (glm::vec3 &vertex : mesh._vertices) {
+  //          vertex = glm::vec3(mesh_object.model * glm::vec4(vertex, 1.0f));
+  //        }
+  //      }
+
+  //      c._meshes = mesh_object._meshes;
+  //      found = true;
+  //      break;
+  //    }
+  //  }
+
+  //  if (!found) {
+
+  //    for (RenderComponentMesh &mesh : mesh_object._meshes) {
+  //      for (glm::vec3 &vertex : mesh._vertices) {
+  //        vertex = glm::vec3(mesh_object.model * glm::vec4(vertex, 1.0f));
+  //      }
+  //    }
+
+  //    gallary.push_back(mesh_object);
+  //  }
+  //}
+
+  //void new_gallary(MeshGallary &mesh_object) {
+  //  gallary.clear();
+  //  for (RenderComponentMesh &mesh : mesh_object._meshes) {
+  //    for (glm::vec3 &vertex : mesh._vertices) {
+  //      vertex = glm::vec3(mesh_object.model * glm::vec4(vertex, 1.0f));
+  //    }
+  //    gallary.push_back(mesh_object);
+  //  }
+  //}
+  
+
+
+  void setGallary(std::vector<std::shared_ptr<MeshGallary>> o){
+	gallary = o;
+  }
+  void loadData() {
+
+    if (gallary.empty()) {
+      LOG_ERROR("Objects are not filled");
+      return;
+    }
+    triangles.clear();
+    mats.clear();
+    matIndx.clear();
+    vertex.clear();
+    inserted_triangles.clear();
+    ssboData.clear();
+
+    for (auto &obj : gallary) {
+      for (auto &mesh : obj->_meshes) {
+
+        //mats.push_back(Materials(mesh.MeshMaterial.Kd,0.0f,mesh.MeshMaterial.Ka,0.0f,mesh.MeshMaterial.Ks,0.0f,mesh.MeshMaterial.d,mesh.MeshMaterial.illum,mesh.MeshMaterial.Ns,mesh.MeshMaterial.Ni));
+
+		mats.push_back(Materials(mesh.MeshMaterial.Kd,0.05f, mesh.MeshMaterial.Ka, mesh.MeshMaterial.Ni,mesh.MeshMaterial.Ks,mesh.MeshMaterial.d, mesh.MeshMaterial.illum,0.0f,0.0f,0.0f));
+		std::cout << "NS: " << mesh.MeshMaterial.Ns << std::endl;
+        for (int i = 0; i < mesh._indices.size(); i += 3) {
+          Triangle tri{mesh._vertices[mesh._indices[i]],
+                       mesh._vertices[mesh._indices[i + 1]],
+                       mesh._vertices[mesh._indices[i + 2]]};
+          inserted_triangles.push_back(tri);
+          matIndx.push_back(mats.size() - 1);
+        }
+      }
+    }
+
+    std::vector<tinybvh::bvhvec4> bvhData =
+        convertToBVHFormat(inserted_triangles);
+
+    tree.Build(bvhData.data(), inserted_triangles.size());
+    std::cout << "2\n";
+    tree.Compact();
+
+    triIdxData.assign(tree.triIdx, tree.triIdx + tree.triCount);
+    if (tree.verts) { // Ensure verts is not null
+      for (uint32_t i = 0; i < tree.triCount * 3; ++i) {
+        const auto &v = tree.verts[i];
+        vertex.push_back(
+            Vec3Padded(glm::vec3(v.x, v.y, v.z), 0.0f)); // Convert to glm::vec3
+      }
+    }
+
+    std::cout << "TRIANGLES: " << inserted_triangles.size() << std::endl;
+
+    std::vector<uint32_t> rearrangedMatIndx(tree.triCount);
+
+    for (size_t i = 0; i < tree.triCount; ++i) {
+      rearrangedMatIndx[i] = matIndx[triIdxData[i]];
+    }
+
+    matIndx = rearrangedMatIndx;
+  }
 
   void loadData(std::vector<ObjectData> objects) {
     if (objects.empty()) {
@@ -151,13 +267,16 @@ struct TreeBuilder {
     mats.clear();
     matIndx.clear();
     vertex.clear();
-	inserted_triangles.clear();
+    inserted_triangles.clear();
+    ssboData.clear();
 
     for (auto &obj : objects) {
-      inserted_triangles.insert(inserted_triangles.end(), obj.triangles.begin(), obj.triangles.end());
+      inserted_triangles.insert(inserted_triangles.end(), obj.triangles.begin(),
+                                obj.triangles.end());
     }
 
-    std::vector<tinybvh::bvhvec4> bvhData = convertToBVHFormat(inserted_triangles);
+    std::vector<tinybvh::bvhvec4> bvhData =
+        convertToBVHFormat(inserted_triangles);
     tree.Build(bvhData.data(), inserted_triangles.size());
     tree.Compact();
     triIdxData.assign(tree.triIdx, tree.triIdx + tree.triCount);
@@ -172,7 +291,7 @@ struct TreeBuilder {
 
     int matIndex = 0;
     for (auto &obj : objects) {
-	  mats.push_back(obj.material);
+      mats.push_back(obj.material);
       for (size_t i = 0; i < obj.triangles.size(); ++i) {
         matIndx.push_back(matIndex);
       }
@@ -186,7 +305,6 @@ struct TreeBuilder {
     }
 
     matIndx = rearrangedMatIndx;
-
   }
 
   void loadSampleData() {
@@ -222,11 +340,11 @@ struct TreeBuilder {
                 << v.data.z << ")" << std::endl;
     }*/
 
-    mats.push_back(Materials{glm::vec3(0.8f, 0.2f, 0.8f), 0.0f}); 
-    mats.push_back(Materials{glm::vec3(0.0f, 0.0f, 1.0f), 0.0f}); 
-    mats.push_back(Materials{glm::vec3(0.8f, 0.2f, 0.2f), 0.0f}); 
-    mats.push_back(Materials{glm::vec3(0.1f, 0.6f, 0.5f), 0.0f}); 
-    mats.push_back(Materials{glm::vec3(0.0f, 0.6f, 0.9f), 0.0f}); 
+    mats.push_back(Materials{glm::vec3(0.8f, 0.2f, 0.8f), 0.0f});
+    mats.push_back(Materials{glm::vec3(0.0f, 0.0f, 1.0f), 0.0f});
+    mats.push_back(Materials{glm::vec3(0.8f, 0.2f, 0.2f), 0.0f});
+    mats.push_back(Materials{glm::vec3(0.1f, 0.6f, 0.5f), 0.0f});
+    mats.push_back(Materials{glm::vec3(0.0f, 0.6f, 0.9f), 0.0f});
 
     uint32_t materialIndex = 0;
     for (size_t i = 0; i < triforce1.size(); ++i) {
@@ -328,14 +446,17 @@ struct TreeBuilder {
     /*  std::cout << "\t start: " << node.start << std::endl;*/
     /*  std::cout << "\t count: " << node.count << std::endl;*/
     /*}*/
-	
-	int count = 0;
+
+    int count = 0;
     for (auto &tri : inserted_triangles) {
-	  std::cout << "Triangle : " << count << std::endl;
-	  std::cout << "\t v0(" << tri.v0.x << ","<< tri.v0.y << ","<< tri.v0.z << ")" << std::endl;
-	  std::cout << "\t v1(" << tri.v1.x << ","<< tri.v1.y << ","<< tri.v1.z << ")" << std::endl;
-	  std::cout << "\t v2(" << tri.v2.x << ","<< tri.v2.y << ","<< tri.v2.z << ")" << std::endl;
-	  count++;
-	}
+      std::cout << "Triangle : " << count << std::endl;
+      std::cout << "\t v0(" << tri.v0.x << "," << tri.v0.y << "," << tri.v0.z
+                << ")" << std::endl;
+      std::cout << "\t v1(" << tri.v1.x << "," << tri.v1.y << "," << tri.v1.z
+                << ")" << std::endl;
+      std::cout << "\t v2(" << tri.v2.x << "," << tri.v2.y << "," << tri.v2.z
+                << ")" << std::endl;
+      count++;
+    }
   }
 };

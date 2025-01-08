@@ -4,6 +4,7 @@
 #include "includes/Entity.hpp"
 #include <glm/glm.hpp>
 
+namespace RT {
 struct LightSystem;
 struct FrameSnapshot;
 
@@ -12,12 +13,14 @@ struct LightComponent : public IComponent {
 
   void update(const FrameSnapshot &snapshot) override;
 
-  // Shortcut function that accesses entities position, which acts as the lights position.
+  // Shortcut function that accesses entities position, which acts as the lights
+  // position.
   inline const glm::vec3 get_position() const {
     return get_entity()->get_world_position();
   }
 
-  // Shortcut function that accesses entities rotation, which acts as the lights direction.
+  // Shortcut function that accesses entities rotation, which acts as the lights
+  // direction.
   inline const glm::vec3 get_direction() const {
     return get_entity()->get_world_rotation();
   }
@@ -25,7 +28,9 @@ struct LightComponent : public IComponent {
   inline const glm::vec3 get_color() const { return _color; }
   inline const float get_intensity() const { return _intensity; }
 
-  inline void set_color(float r, float g, float b) { _color = glm::vec3{r, g, b}; }
+  inline void set_color(float r, float g, float b) {
+    _color = glm::vec3{r, g, b};
+  }
   inline void set_color(glm::vec3 c) { _color = c; }
   inline void set_intensity(float i) { _intensity = i; }
 
@@ -39,3 +44,4 @@ private:
   glm::vec3 _color = glm::vec3{1.f, 1.f, 1.f}; // RGB
   float _intensity = 10.f;
 };
+} // namespace RT

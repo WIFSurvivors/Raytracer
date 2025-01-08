@@ -1,6 +1,7 @@
 #include "includes/component/LightComponent.hpp"
 #include "includes/utility/FrameSnapshot.hpp"
 
+namespace RT {
 LightComponent::LightComponent(uuid id, Entity *e)
     : IComponent(id, e, "LightComponent") {}
 
@@ -19,3 +20,4 @@ void LightComponent::set_from_json(boost::json::object obj) {
   set_color(obj["r"].as_double(), obj["g"].as_double(), obj["b"].as_double());
   set_intensity(obj["intensity"].as_double());
 }
+} // namespace RT

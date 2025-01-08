@@ -9,6 +9,11 @@
 #include "includes/utility/Log.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 #include <string>
+
+using RT::Engine;
+using RT::Log;
+
+
 std::string GetRootCommand::undo() { throw NotImplementedError{}; }
 
 std::string GetRootCommand::execute(Engine *engine) {

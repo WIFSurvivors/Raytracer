@@ -3,6 +3,9 @@
 #include "includes/utility/NotImplementedError.hpp"
 #include <string>
 
+using RT::Log;
+using RT::Engine;
+
 TcpExecuter::TcpExecuter() {}
 
 std::string TcpExecuter::execute(TcpCommand *command, Engine *engine) {
@@ -11,4 +14,6 @@ std::string TcpExecuter::execute(TcpCommand *command, Engine *engine) {
   return return_value;
 }
 
-std::string TcpExecuter::undo(TcpCommand *command) { throw NotImplementedError(); }
+std::string TcpExecuter::undo(TcpCommand *command) {
+  throw NotImplementedError();
+}

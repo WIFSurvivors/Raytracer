@@ -17,37 +17,19 @@
 #include <mutex>
 #include <chrono>
 
-#ifndef ROOT_ABSOLUTE_PATH
-#define ROOT_ABSOLUTE_PATH "/this_is_an_error/"
-#endif
+namespace RT {
 
-#ifndef LOG_RELATIVE_PATH
-#define LOG_RELATIVE_PATH "/this_is_an_error/"
-#endif
-
-#ifndef SHADER_RELATIVE_PATH
-#define SHADER_RELATIVE_PATH "/this_is_an_error/"
-#endif
-
-#ifndef ASSET_RELATIVE_PATH
-#define ASSET_RELATIVE_PATH "/this_is_an_error/"
-#endif
-
-#define LOG_ERROR(msg)		Log::get_instance().print(msg, Log::Level::Error);
-#define LOG_WARN(msg)		Log::get_instance().print(msg, Log::Level::Warn);
-#define LOG(msg) 			Log::get_instance().print(msg, Log::Level::Message);
-#define LOG_DEBUG(msg) 		Log::get_instance().print(msg, Log::Level::Debug);
-#define LOG_TCP(msg) 		Log::get_instance().print(msg, Log::Level::Tcp);
-#define LOG_FRAME_DATA(msg)	Log::get_instance().print(msg, Log::Level::FrameData);
-#define LOG_NEW_LINE(msg) 	Log::get_instance().new_line();
-#define LOG_FILE_PATH       Log::get_instance().get_file_path()
+#define LOG_ERROR(msg) Log::get_instance().print(msg, Log::Level::Error);
+#define LOG_WARN(msg) Log::get_instance().print(msg, Log::Level::Warn);
+#define LOG(msg) Log::get_instance().print(msg, Log::Level::Message);
+#define LOG_DEBUG(msg) Log::get_instance().print(msg, Log::Level::Debug);
+#define LOG_TCP(msg) Log::get_instance().print(msg, Log::Level::Tcp);
+#define LOG_FRAME_DATA(msg)                                                    \
+  Log::get_instance().print(msg, Log::Level::FrameData);
+#define LOG_NEW_LINE(msg) Log::get_instance().new_line();
+#define LOG_FILE_PATH Log::get_instance().get_absolute_log_file_path()
 
 namespace fs = std::filesystem;
-
-inline fs::path get_root_pathadad() { return fs::path{"."}; }
-constexpr std::string get_root_path() { return fs::path{"."}.string(); }
-constexpr std::string get_shader_path() { return fs::path{"."}.string(); }
-
 
 struct Log {
   inline static Log &get_instance() {
@@ -76,7 +58,7 @@ private:
 
   fs::path _log_file_path;
   std::deque<std::string> _file_buffer;
-  
+
   std::string get_current_time_ms_full();
   std::string get_current_time_ms();
   void write_to_buffer(const std::string &msq, const Level &level);
@@ -92,7 +74,15 @@ public:
   void init_file();
   inline void set_cout_log_level(Level l) { _log_level = l; }
   inline void set_file_log_level(Level l) { _file_level = l; }
-  inline const std::string get_file_path() const { return fs::absolute(_log_file_path).string(); }
+
+  inline const std::string get_relative_log_file_path() const {
+    return _log_file_path.string();
+  }
+  inline const std::string get_absolute_log_file_path() const {
+    return fs::absolute(_log_file_path).string();
+  }
+
   void clear_buffer();
   void display_color_demo();
 };
+} // namespace RT

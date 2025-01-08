@@ -4,6 +4,8 @@
 #include <exception>
 #include <string>
 
+using RT::Log;
+
 int main() {
   Log::get_instance().set_cout_log_level(Log::Level::Tcp);
   Log::get_instance().set_file_log_level(Log::Level::Tcp);
@@ -18,9 +20,11 @@ int main() {
 #endif
   try {
     Engine engine{};
+    engine.load_sample_scene();
+	//engine.read_scene_from_json("wawa.txt");
     engine.startLoop();
   } catch (std::exception &e) {
-	LOG_ERROR("App crashed!!!!");
+    LOG_ERROR("App crashed!!!!");
     LOG_ERROR(std::string(e.what()));
   }
   LOG("=== APP ENDED ===");

@@ -5,8 +5,9 @@
 #define GET_ENTITIY_OPTIONS_COMMAND "GetEntityOptions"
 
 struct GetEntityOptionsCommand : public TcpCommand {
-    explicit GetEntityOptionsCommand(uuid uuid ) : TcpCommand(uuid) {}
-    std::string execute(Engine *e) override;
-    std::string undo() override;
-    private:
+  explicit GetEntityOptionsCommand(uuid uuid) : TcpCommand(uuid) {}
+  std::string execute(RT::Engine *e) override;
+  std::string undo() override;
+
+private:
 };

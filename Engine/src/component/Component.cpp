@@ -4,6 +4,7 @@
 #include <iostream>
 #include <cassert>
 
+namespace RT {
 IComponent::IComponent(uuid id, Entity *e, std::string name)
     : _uuid{id}, _entity{e}, _component_name{name} {
   // has to be rewritten for windows apparently?
@@ -39,5 +40,4 @@ boost::json::object IComponent::to_json_base() const {
   obj["entity_name"] = get_entity()->get_name();
   return obj;
 }
-
-
+} // namespace RT

@@ -8,20 +8,25 @@
 #include <string>
 #include <map>
 
+namespace RT {
 /**
  * Defines Getter via UUID by returning an optional object pointer.
  * Internal storage can be adjusted according to each system
  */
 template <class T> struct Storage : public IStorage {
   using uuid = boost::uuids::uuid;
-  
-  explicit Storage(UUIDManager *um) : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/ }
+
+  explicit Storage(UUIDManager *um)
+      : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/ }
   virtual ~Storage() = default;
 
-  inline virtual std::optional<uuid> get(T obj){
-	auto it = std::find_if(_storage.begin(), _storage.end(), [obj](const auto &val) {return val.second == obj;});
-	if(it == _storage.end()) return {};
-	return std::make_optional<uuid>(it->first);
+  inline virtual std::optional<uuid> get(T obj) {
+    auto it =
+        std::find_if(_storage.begin(), _storage.end(),
+                     [obj](const auto &val) { return val.second == obj; });
+    if (it == _storage.end())
+      return {};
+    return std::make_optional<uuid>(it->first);
   }
 
   /**
@@ -42,3 +47,4 @@ template <class T> struct Storage : public IStorage {
 protected:
   std::map<uuid, T> _storage;
 };
+} // namespace RT

@@ -7,6 +7,7 @@
 #include <format>
 #include <algorithm>
 
+namespace RT {
 UUIDManager::UUIDManager() { LOG("created UUID Manager"); }
 
 bool UUIDManager::add(uuid id, IStorage *s) {
@@ -45,3 +46,4 @@ bool UUIDManager::remove(uuid id) {
   throw NotImplementedError();
   return false;
 }
+} // namespace RT

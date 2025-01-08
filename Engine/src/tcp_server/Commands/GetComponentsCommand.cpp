@@ -9,6 +9,9 @@
 #include <string>
 #include "includes/utility/NotImplementedError.hpp"
 
+using RT::Log;
+using RT::Engine;
+
 std::string GetComponentsCommand::execute(Engine *e) {
   try {
     auto scene = e->get_scene();
@@ -56,7 +59,7 @@ std::string GetComponentsCommand::execute(Engine *e) {
 }
 
 boost::json::array GetComponentsCommand::get_components_short(
-    const std::vector<IComponent *> &components) {
+    const std::vector<RT::IComponent *> &components) {
   boost::json::array arr;
   std::for_each(components.begin(), components.end(),
                 [&arr](const auto &c) { arr.push_back(c->to_json_short()); });

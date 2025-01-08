@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 
+namespace RT {
 struct UUIDManager;
 
 /**
@@ -17,7 +18,7 @@ struct UUIDManager;
 struct IStorage {
   using uuid = boost::uuids::uuid;
 
-  explicit IStorage(UUIDManager *um) : _um{um}{}
+  explicit IStorage(UUIDManager *um) : _um{um} {}
   virtual ~IStorage() = default;
   virtual const std::string get_name() const = 0;
 
@@ -50,3 +51,4 @@ private:
   boost::uuids::random_generator gen{};
   std::map<uuid, IStorage *> _uuid_storage_mapping{};
 };
+} // namespace RT

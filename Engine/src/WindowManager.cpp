@@ -2,11 +2,12 @@
 #include "includes/utility/Log.hpp"
 #include <iostream>
 
+namespace RT {
 #if SHOW_UI
 void WindowManager::processInput(GLFWwindow *window) {
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
     glfwSetWindowShouldClose(window, true);
-}
+} // namespace WindowManager::processInput(GLFWwindow*window)
 
 void WindowManager::framebuffer_size_callback(GLFWwindow *window, int width,
                                               int height) {
@@ -14,6 +15,8 @@ void WindowManager::framebuffer_size_callback(GLFWwindow *window, int width,
   // note that width and height will be significantly larger than specified on
   // retina displays.
   glad_glViewport(0, 0, width, height);
+  _screenSize.x = width;
+  _screenSize.y = height;
 }
 #endif
 
@@ -48,7 +51,9 @@ void WindowManager::swap_buffers() {
 
 bool WindowManager::should_close() {
 #if SHOW_UI
-  return !glfwWindowShouldClose(_window);
+  return glfwWindowShouldClose(_window);
+#else
+  return false;
 #endif
 }
 
@@ -67,7 +72,7 @@ bool WindowManager::_initGLFW() {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
   glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-  glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+  glfwWindowHint(GLFW_DECORATED, GL_FALSE);
   // glfwInitHint(GLFW_PLATFORM, GLFW_PLATFORM_X11);
 
 #ifdef __APPLE__
@@ -90,4 +95,6 @@ bool WindowManager::_initGLFW() {
   glfwSetFramebufferSizeCallback(_window, framebuffer_size_callback);
   return true;
 #endif
+  return true;
 }
+} // namespace RT

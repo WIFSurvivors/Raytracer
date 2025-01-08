@@ -18,7 +18,6 @@ public class EcsApi
     }
 
     public string json_import(string path) {
-        //Aktuell gibt die Engine den Inhalt der Datei an. Wird noch geändert.
         string returnValue = _client.Send(String.Format("ImportJson null {0}", path));
         return returnValue;
     }

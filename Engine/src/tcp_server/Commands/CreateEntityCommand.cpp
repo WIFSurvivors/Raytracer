@@ -9,6 +9,9 @@
 #include <memory>
 #include <format>
 
+using RT::Log;
+using RT::Engine;
+
 std::string CreateEntityCommand::execute(Engine *e) {
   try {
     auto scene = e->get_scene();

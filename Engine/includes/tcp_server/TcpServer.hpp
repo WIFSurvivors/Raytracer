@@ -4,16 +4,19 @@
 #include <array>
 #include <memory>
 #include <string>
-#include "includes/Engine.hpp"
 #include "includes/tcp_server/CommandManager.hpp"
+
 using boost::asio::ip::tcp;
+
+using RT::Engine;
+
 struct TcpServer : public std::enable_shared_from_this<TcpServer> {
-  explicit TcpServer(int port, Engine* e);
+  explicit TcpServer(int port, RT::Engine *e);
   ~TcpServer();
   void start();
   void stop();
   void execute_commands();
-  void execute_command(); 
+  void execute_command();
   void send_message(std::string message);
 
 private:
@@ -26,6 +29,6 @@ private:
   std::array<char, 1024> _buffer;
   std::thread _server_thread;
   bool _is_stopped;
-  Engine* _engine;
+  RT::Engine *_engine;
   CommandManager _command_manager;
 };

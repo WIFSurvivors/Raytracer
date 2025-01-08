@@ -12,6 +12,7 @@
 // #include "glm/vec3.hpp"
 #include "glm/ext.hpp"
 
+namespace RT {
 EntityStorage::EntityStorage(UUIDManager *um) : Storage<Entity *>(um) {
   LOG(std::format("created {}", get_name()));
 }
@@ -19,10 +20,9 @@ EntityStorage::EntityStorage(UUIDManager *um) : Storage<Entity *>(um) {
 std::shared_ptr<Entity>
 EntityStorage::create_root_entity(const std::string &name) {
   auto id = _um->create(this);
-  auto e = Entity::create(name, id);  
-  LOG(std::format(
-      "scene: create_root_entity(name): \"{}\", [uuid:{}]\"", e->get_name(),
-      boost::uuids::to_string(e->get_uuid())));
+  auto e = Entity::create(name, id);
+  LOG(std::format("scene: create_root_entity(name): \"{}\", [uuid:{}]\"",
+                  e->get_name(), boost::uuids::to_string(e->get_uuid())));
   _storage[id] = e.get();
   return e;
 }
@@ -33,9 +33,8 @@ EntityStorage::create_root_entity(const std::string &name, uuid id) {
     return nullptr;
   }
   auto e = Entity::create(name, id);
-  LOG(std::format(
-      "scene: create_root_entity(name, uuid): \"{}\", {}\"", e->get_name(),
-      boost::uuids::to_string(e->get_uuid())));
+  LOG(std::format("scene: create_root_entity(name, uuid): \"{}\", {}\"",
+                  e->get_name(), boost::uuids::to_string(e->get_uuid())));
   _storage[id] = e.get();
   return e;
 }
@@ -44,10 +43,11 @@ std::shared_ptr<Entity>
 EntityStorage::create_entity(const std::string &name,
                              std::shared_ptr<Entity> parent) {
   auto id = _um->create(this);
-  auto e = Entity::create(name, id, parent);  
+  auto e = Entity::create(name, id, parent);
   LOG(std::format(
-      "scene: create_entity(name, parent): \"{}\", [uuid:{},] \"{}\"", e->get_name(),
-      boost::uuids::to_string(e->get_uuid()), parent->get_name()));
+      "scene: create_entity(name, parent): \"{}\", [uuid:{},] \"{}\"",
+      e->get_name(), boost::uuids::to_string(e->get_uuid()),
+      parent->get_name()));
   _storage[id] = e.get();
   return e;
 }
@@ -60,8 +60,9 @@ EntityStorage::create_entity(const std::string &name, uuid id,
   }
   auto e = Entity::create(name, id, parent);
   LOG(std::format(
-      "scene: create_entity(name, uuid, parent): \"{}\", {}, \"{}\"", e->get_name(),
-      boost::uuids::to_string(e->get_uuid()), parent->get_name()));
+      "scene: create_entity(name, uuid, parent): \"{}\", {}, \"{}\"",
+      e->get_name(), boost::uuids::to_string(e->get_uuid()),
+      parent->get_name()));
   _storage[id] = e.get();
   return e;
 }
@@ -112,3 +113,4 @@ void EntityStorage::print() {
   std::cout << std::setprecision(defaultPrecision) << std::endl;
   std::cout << std::endl;
 }
+} // namespace RT

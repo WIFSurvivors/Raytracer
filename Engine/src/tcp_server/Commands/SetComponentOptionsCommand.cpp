@@ -13,6 +13,13 @@
 #include "includes/component/SimpleComponent.hpp"
 #include "includes/utility/NotImplementedError.hpp"
 
+using RT::Engine;
+using RT::Log;
+using RT::CameraSystem;
+using RT::RenderSystem;
+using RT::SimpleSystem;
+using RT::LightSystem;
+
 std::string SetComponentOptions::execute(Engine *e) {
   auto uuid_manager = e->get_active_uuid_manager();
   if (!uuid_manager) {
@@ -28,16 +35,13 @@ std::string SetComponentOptions::execute(Engine *e) {
       if (camera.has_value()) {
         auto component = camera.value();
         LOG("CameraComponent found");
-        try
-        {
-            component->set_from_json(this->get_obj());
-            LOG("CameraComponent updated");
-            return "CameraComponent updated";
-        }
-        catch(const std::exception& e)
-        {
-            std::cerr << e.what() << '\n';
-            return e.what();
+        try {
+          component->set_from_json(this->get_obj());
+          LOG("CameraComponent updated");
+          return "CameraComponent updated";
+        } catch (const std::exception &e) {
+          std::cerr << e.what() << '\n';
+          return e.what();
         }
       }
     } else if (auto render_system = dynamic_cast<RenderSystem *>(system)) {
@@ -45,16 +49,13 @@ std::string SetComponentOptions::execute(Engine *e) {
       if (render.has_value()) {
         auto component = render.value();
         LOG("RenderComponent found");
-        try
-        {
-            component->set_from_json(this->get_obj());
-            LOG("RenderComponent updated");
-            return "RenderComponent updated";
-        }
-        catch(const std::exception& e)
-        {
-            std::cerr << e.what() << '\n';
-            return e.what();
+        try {
+          component->set_from_json(this->get_obj());
+          LOG("RenderComponent updated");
+          return "RenderComponent updated";
+        } catch (const std::exception &e) {
+          std::cerr << e.what() << '\n';
+          return e.what();
         }
       }
     } else if (auto simple_system = dynamic_cast<SimpleSystem *>(system)) {
@@ -62,34 +63,27 @@ std::string SetComponentOptions::execute(Engine *e) {
       if (simple.has_value()) {
         auto component = simple.value();
         LOG("SimpleComponent found");
-        try
-        {
-            component->set_from_json(this->get_obj());
-            LOG("SimpleComponent updated");
-            return "SimpleComponent updated";
+        try {
+          component->set_from_json(this->get_obj());
+          LOG("SimpleComponent updated");
+          return "SimpleComponent updated";
+        } catch (const std::exception &e) {
+          std::cerr << e.what() << '\n';
+          return e.what();
         }
-        catch(const std::exception& e)
-        {
-            std::cerr << e.what() << '\n';
-            return e.what();
-        }
-        }
-    }
-        else if (auto light_system = dynamic_cast<LightSystem *>(system)) {
+      }
+    } else if (auto light_system = dynamic_cast<LightSystem *>(system)) {
       auto light = light_system->get_component(_uuid);
       if (light.has_value()) {
         auto component = light.value();
         LOG("LightComponent found");
-        try
-        {
-            component->set_from_json(this->get_obj());
-            LOG("LightComponent updated");
-            return "LightComponent updated";
-        }
-        catch(const std::exception& e)
-        {
-            std::cerr << e.what() << '\n';
-            return e.what();
+        try {
+          component->set_from_json(this->get_obj());
+          LOG("LightComponent updated");
+          return "LightComponent updated";
+        } catch (const std::exception &e) {
+          std::cerr << e.what() << '\n';
+          return e.what();
         }
       }
     } else {
@@ -104,4 +98,3 @@ std::string SetComponentOptions::execute(Engine *e) {
 }
 
 std::string SetComponentOptions::undo() { throw NotImplementedError{}; }
-

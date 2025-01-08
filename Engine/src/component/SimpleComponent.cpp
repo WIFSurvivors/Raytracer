@@ -3,13 +3,14 @@
 #include <iostream>
 #include <string>
 
+namespace RT {
 SimpleComponent::SimpleComponent(uuid id, Entity *e)
     : IComponent{id, e, "SimpleComponent"}, _value{0} {}
 
 SimpleComponent::SimpleComponent(uuid id, Entity *e, int value)
     : IComponent{id, e, "SimpleComponent"}, _value{value} {}
 
-void SimpleComponent::update(const FrameSnapshot& snapshot) {}
+void SimpleComponent::update(const FrameSnapshot &snapshot) {}
 
 boost::json::object SimpleComponent::to_json_details() const {
   boost::json::object obj;
@@ -19,3 +20,4 @@ boost::json::object SimpleComponent::to_json_details() const {
 void SimpleComponent::set_from_json(boost::json::object obj) {
   set_value(obj.at("value").as_int64());
 }
+} // namespace RT

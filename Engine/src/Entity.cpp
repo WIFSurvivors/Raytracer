@@ -7,6 +7,7 @@
 #include <string>
 #include <optional>
 
+namespace RT {
 Entity::Entity(const std::string &name, uuid id) : _name{name}, _uuid{id} {}
 Entity::Entity(const std::string &name, uuid id, std::shared_ptr<Entity> parent)
     : _name{name}, _uuid{id}, _parent{parent} {}
@@ -119,3 +120,4 @@ boost::json::array Entity::children_to_json() const {
 }
 
 void Entity::print() { LOG(boost::json::serialize(to_json())); }
+} // namespace RT

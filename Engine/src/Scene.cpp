@@ -6,20 +6,16 @@
 #include <cassert>
 #include <format>
 
+namespace RT {
 Scene::Scene(Engine *e)
     : _render_system{&_uuid_manager, e->get_window_manager(), &_camera_system,
                      &_light_system, &_default_assets},
-      _root{create_root("root")} {
-  generate_sample_content();
-}
+      _root{create_root("root")} {}
 
-Scene::Scene(Engine *e, uuid id)
+Scene::Scene(Engine *e, std::string title)
     : _render_system{&_uuid_manager, e->get_window_manager(), &_camera_system,
                      &_light_system, &_default_assets},
-      _root{create_root("root", id)} {
-  // does not generate sample content
-  // this should be called when loading from json
-}
+      _root{create_root("root")}, _title{title} {}
 
 Scene::~Scene() { _render_system.destroy(); }
 
@@ -50,8 +46,7 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
 }
 
 void Scene::print() { _root->print(); }
-
-void Scene::generate_sample_content() {
+void Scene::print_system_data() {
   _uuid_manager.print();
   _asset_manager.print();
   _entity_storage.print();
@@ -59,20 +54,28 @@ void Scene::generate_sample_content() {
   _camera_system.print();
   _light_system.print();
   _root->print();
-  
+}
+
+void Scene::generate_sample_content() {
+  print_system_data();
+
   LOG_NEW_LINE();
   LOG(std::string(100, '*'));
   LOG_NEW_LINE();
 
   auto a = create_asset("test");
-  
-  LOG(std::format("1) Asset {} {}", a._path.string(),  boost::uuids::to_string(a._uuid)));
+
+  LOG(std::format("1) Asset {} {}", a._path.string(),
+                  boost::uuids::to_string(a._uuid)));
   auto b = create_asset("test");
-  LOG(std::format("2) Asset {} {}", b._path.string(),  boost::uuids::to_string(b._uuid)));
+  LOG(std::format("2) Asset {} {}", b._path.string(),
+                  boost::uuids::to_string(b._uuid)));
   AssetManager::Asset c{&_asset_manager, "test"};
-  LOG(std::format("3) Asset {} {}", c._path.string(),  boost::uuids::to_string(c._uuid)));
+  LOG(std::format("3) Asset {} {}", c._path.string(),
+                  boost::uuids::to_string(c._uuid)));
   AssetManager::Asset d{&_asset_manager, "test2"};
-  LOG(std::format("4) Asset {} {}", d._path.string(),  boost::uuids::to_string(d._uuid)));
+  LOG(std::format("4) Asset {} {}", d._path.string(),
+                  boost::uuids::to_string(d._uuid)));
 
   LOG_NEW_LINE();
   LOG(std::string(100, '*'));
@@ -83,7 +86,7 @@ void Scene::generate_sample_content() {
   e1->set_local_position(glm::vec3{0.f, +8.f, 15.f});
   auto e2 = create_entity("light sources");
   auto e3 = create_entity("light red", e2);
-  e3->set_local_position(glm::vec3{0, 5, 5});
+  e3->set_local_position(glm::vec3{-0.25, 5.0, -2.0});
   auto e4 = create_entity("light green", e2);
   e4->set_local_position(glm::vec3{0, -5, 5});
   auto e5 = create_entity("light blue", e2);
@@ -101,12 +104,12 @@ void Scene::generate_sample_content() {
   auto c3 = _light_system.create_component(e4.get());
   /*c3->set_color(0.1f, 0.96752f, 0.1f);*/
   c3->set_color(1.0f, 1.0f, 1.0f);
-  c3->set_intensity(25.f);
+  c3->set_intensity(5.f);
 
   auto c4 = _light_system.create_component(e5.get());
   /*c4->set_color(0.1f, 0.1f, 1.f);*/
   c4->set_color(1.0f, 1.0f, 1.0f);
-  c4->set_intensity(15.f);
+  c4->set_intensity(5.f);
 
   // =================== RENDER =====================
   std::vector<glm::vec3> v1 = {
@@ -128,7 +131,9 @@ void Scene::generate_sample_content() {
                                glm::vec2{0.0f, 1.0f}};
 
   auto root_ptr = get_root().lock();
-  _render_system.create_component(root_ptr.get());
+  auto asset1 = create_asset("./assets/cornell-box.obj");
+  auto ComponentEntity1 = create_entity("ComponentEntity1", root_ptr);
+  _render_system.create_component(ComponentEntity1.get(),asset1);
   //_render_system.create_component(root_ptr.get(), v3, u3);
 
   LOG_NEW_LINE();
@@ -152,13 +157,7 @@ void Scene::generate_sample_content() {
   LOG(std::string(100, '*'));
   LOG_NEW_LINE();
 
-  _uuid_manager.print();
-  _asset_manager.print();
-  _entity_storage.print();
-  _render_system.print();
-  _camera_system.print();
-  _light_system.print();
-  _root->print();
+  print_system_data();
 }
 
 // currently only tell the render system to update itself
@@ -167,3 +166,4 @@ void Scene::update(const FrameSnapshot &snapshot) {
   //   _camera_system.sample_update_move_main_camera(timer.get_delta_time());
   _render_system.update(snapshot);
 }
+} // namespace RT
