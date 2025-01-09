@@ -276,6 +276,8 @@ namespace RaytracerGUI
                         {
                             rotation = "zpos";
                             imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-zpos.png", UriKind.Relative));
+                            imgRotation.Width = 30;
+                            imgRotation.Height = 30;
                         }
                         else if (rotation == "zpos")
                         {
@@ -286,8 +288,11 @@ namespace RaytracerGUI
                         {
                             rotation = "xpos";
                             imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-xpos.png", UriKind.Relative));
+                            imgRotation.Width = 40;
+                            imgRotation.Height = 40;
                         }
                         break;
+
 
                     case "btnRz":
                         sldRz.Value += 10;
@@ -306,9 +311,6 @@ namespace RaytracerGUI
                             ColumnLog.Width = new GridLength(0);
                         }
 
-                        // TreeBuilder testing
-                        _entityBuilder = new TreeBuilder(trvEntities, this);
-                        _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
                         break;
 
                     case "btnToggleLog":
@@ -352,7 +354,7 @@ namespace RaytracerGUI
                         {
                             gridButtons.Visibility = Visibility.Collapsed;
                         }
-                        else
+                        else 
                         {
                             gridSliders.Visibility = Visibility.Collapsed;
                             gridButtons.Visibility = Visibility.Visible;
@@ -803,6 +805,11 @@ namespace RaytracerGUI
                     clickedButton.Foreground = Brushes.Black;
 
                     Window_Loaded(sender, e);
+
+
+                    // initial Treebuilding
+                    _entityBuilder = new TreeBuilder(trvEntities, this);
+                    _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
 
                 }
                 catch (InvalidOperationException ex)
