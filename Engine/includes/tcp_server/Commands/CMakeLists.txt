@@ -16,6 +16,8 @@ set(TCP_COMMANDS_HEADERS
     ExportJsonCommand.hpp
     SetBouncesCommand.hpp
     GetBouncesCommand.hpp
+    SetFovCommand.hpp
+    GetFovCommand.hpp
 )
 
 list(TRANSFORM TCP_COMMANDS_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")

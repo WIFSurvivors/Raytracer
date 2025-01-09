@@ -17,11 +17,13 @@
 #include "includes/tcp_server/Commands/GetBouncesCommand.hpp"
 #include "includes/tcp_server/Commands/SetBouncesCommand.hpp"
 #include "includes/tcp_server/Commands/GetLogPath.hpp"
+#include "includes/tcp_server/Commands/GetFovCommand.hpp"
+#include "includes/tcp_server/Commands/SetFovCommand.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/string_generator.hpp>
 #include <map>
 #include <string>
-
+#include <format>
 using  RT::Log;
 
 TcpCommandFactory::TcpCommandFactory() {}
@@ -100,7 +102,16 @@ TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
   } else if (command_string.compare(GET_LOG_PATH_COMMAND) == 0) {
     LOG_TCP("Create GetLogPathCommand");
     return std::make_unique<GetLogPath>();
-  } else {
+  }
+  else if (command_string.compare(GET_FOV_COMMAND) == 0) {
+    LOG_TCP("Create GetFovCommand");
+    return std::make_unique<GetFovCommand>();
+  }
+  else if (command_string.compare(SET_FOV_COMMAND) == 0) {
+    LOG_TCP("Create SetFovCommand");
+    return std::make_unique<SetFovCommand>(std::stof(parameters[0]));
+  }
+  else {
     LOG_ERROR("Command not found");
     return nullptr;
   }

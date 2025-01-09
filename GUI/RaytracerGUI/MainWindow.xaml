@@ -4,25 +4,21 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:RaytracerGUI"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="MainWindow" 
         Height="720" Width="1280"
         MinHeight="720" MinWidth="1280" 
         Loaded="Window_Loaded"
-Closing="Window_Closing">
+        Closing="Window_Closing">
 
     <Window.Resources>
-        <!-- Slide Out Animation -->
-        <Storyboard x:Key="SlideOut">
-            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                         To="200" Duration="0:0:0.3" />
-        </Storyboard>
-
-        <!-- Slide In Animation -->
-        <Storyboard x:Key="SlideIn">
-            <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(TranslateTransform.Y)"
-                         To="0" Duration="0:0:0.3" />
-        </Storyboard>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="GlobalStyles.xaml" />
+                <ResourceDictionary Source="SliderStyle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -38,21 +34,28 @@ Closing="Window_Closing">
             <Grid VerticalAlignment="Center" Grid.Row="0">
                 <Menu VerticalAlignment="Top">
                     <MenuItem Header="File" Width="170">
-                        <MenuItem Name="mniOpen" Header="Open" Click="generalMenuClick"/>
-                        <MenuItem Name="mniSave" Header="Save" Click="generalMenuClick"/>
-                        <MenuItem Name="mniImport" Header="Import Scene" Click="generalMenuClick"/>
-                        <MenuItem Name="mniExport" Header="Export Scene" Click="generalMenuClick" />
-                        <MenuItem Name="mniExit" Header="Exit" Click="generalMenuClick" />
+                        <MenuItem Name="mniOpen" Header="Open" Click="FileMenuClick"/>
+                        <MenuItem Name="mniSave" Header="Save" Click="FileMenuClick"/>
+                        <MenuItem Name="mniImport" Header="Import Scene" Click="FileMenuClick"/>
+                        <MenuItem Name="mniExport" Header="Export Scene" Click="FileMenuClick"/>
+                        <MenuItem Name="mniExit" Header="Exit" Click="FileMenuClick"/>
                     </MenuItem>
-                    <MenuItem Header="View" Width="169">
-                        <MenuItem Name="mniReset" Header="Reset" Click="generalMenuClick" />
+                    
+                    <MenuItem Header="Add" Width="169">
+                        <MenuItem Name="mniAddRender" Header="Add Render" Tag="RenderMethod" Click="AddMenuClick" />
+                        <MenuItem Name="mniAddLight" Header="Add Light" Tag="LightMethod" Click="AddMenuClick" />
+                        <MenuItem Name="mniAddCamera" Header="Add Camera" Tag="CameraMethod" Click="AddMenuClick" />
                     </MenuItem>
+
                     <MenuItem Header="Settings" Width="169">
-                        <MenuItem  Name="mniPreferences" Header="Preferences" Click="generalMenuClick" />
-                        <MenuItem Name="mniAbout" Header="About" Click="generalMenuClick" />
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5">
+                            <TextBlock Text="Bounces:" VerticalAlignment="Center" FontWeight="Bold" Foreground="White" Margin="0,0,5,0" />
+                            <xctk:IntegerUpDown Name="nudBounces" Minimum="0" Maximum="20" Value="4" Width="40" HorizontalAlignment="Right" ValueChanged="nudBounces_ValueChanged"/>
+                        </StackPanel>
                     </MenuItem>
                 </Menu>
             </Grid>
+            
             <!--Everything below Menu -->
             <Grid VerticalAlignment="Stretch" Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -68,7 +71,6 @@ Closing="Window_Closing">
 
                     <TreeView Name="trvEntities" Grid.Row="0" SelectedItemChanged="trvEntities_SelectedItemChanged"/>
                     <TreeView Name="trvComponents" Grid.Row="1" SelectedItemChanged="trvComponents_SelectedItemChanged"/>
-
                 </Grid>
 
                 <Grid Grid.Column="1">
@@ -77,10 +79,21 @@ Closing="Window_Closing">
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <TreeView Name="trvEntitiesOptions" Grid.Row="0" SelectedItemChanged="trvEntitiesOptions_SelectedItemChanged"/>
-                    <TreeView Name="trvComponentsOptions" Grid.Row="1" SelectedItemChanged="trvComponentsOptions_SelectedItemChanged"/>
-
+                    <TreeView Name="trvEntitiesOptions" Grid.Row="0"/>
+                    <ListBox Name="trvComponentsOptions" HorizontalAlignment="Stretch" Grid.Row="1" VerticalAlignment="Stretch">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <!-- Read-only TextBlock for Key -->
+                                    <TextBlock Text="{Binding Key}" Width="150" Margin="5,0,10,0" VerticalAlignment="Center" />
+                                    <!-- Editable TextBox for Value -->
+                                    <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="5" VerticalAlignment="Center" PreviewKeyDown="TextBoxComponentOptions_PreviewKeyDown"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </Grid>
+                
             </Grid>
         </Grid>
         <!--Preview-->
@@ -90,7 +103,7 @@ Closing="Window_Closing">
                 <RowDefinition Height="180" x:Name="GUIBottom"/>
             </Grid.RowDefinitions>
             <!--Preview Picture-->
-            <Rectangle Name="rctRenderArea" Grid.Row="0" Margin="5"  SizeChanged="rctRenderArea_SizeChanged" />
+            <Rectangle Name="rctRenderArea" Grid.Row="0" Margin="5" StrokeThickness="2" SizeChanged="rctRenderArea_SizeChanged" />
             <!--GuiBottom-->
             <Grid HorizontalAlignment="Stretch" Grid.Row="1">
                 <Grid.ColumnDefinitions>
@@ -101,8 +114,15 @@ Closing="Window_Closing">
 
                 <!--TCP Log-->
                 <Button Name="btnLog" Grid.Column="0" Style="{StaticResource PrimaryButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Right" Width="10" Height="160" Click="generalButtonClick"/>
-                <TextBox Name="tbxLog" Grid.Column="1" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" AcceptsReturn="True" VerticalAlignment="Top" TextChanged="tbxLog_TextChanged" TextWrapping="Wrap" />
-               
+                <Grid Name="gridLog" Grid.Column="1" Visibility="Collapsed">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Button Name="btnToggleLog" Grid.Row="0" Style="{StaticResource PrimaryButtonStyle}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Width="Auto" Height="10" Click="generalButtonClick"/>
+                    <TextBox Name="tbxLog" Grid.Row="1" Visibility="Visible" Style="{StaticResource PrimaryLogStyle}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" AcceptsReturn="True" VerticalAlignment="Top" TextChanged="tbxLog_TextChanged" TextWrapping="Wrap" />
+                    <TextBox Name="tbxLogEngine" Grid.Row="1" Visibility="Collapsed" Style="{StaticResource PrimaryLogStyle}" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" IsReadOnly="True" AcceptsReturn="True" VerticalAlignment="Top" TextChanged="tbxLog_TextChanged" TextWrapping="Wrap" />
+                </Grid>
                 <Grid Height="180" HorizontalAlignment="Right" VerticalAlignment="Bottom" Grid.Column="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -136,44 +156,202 @@ Closing="Window_Closing">
                         <Button Name="btnDown" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="4" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
                             <Image Source="/images/arrow-down.png" Width="40" Height="40"/>
                         </Button>
-                        <Button Name="btnRx" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
-                            <Image Source="/images/arrow-rotate-x.png" Width="40" Height="40"/>
+                        <Button Name="btnRotate" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick">
+                            <Image Name="imgRotation" Source="/images/arrow-rotate-xpos.png" Width="40" Height="40"/>
                         </Button>
-                        <Button Name="btnRy" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
-                            <Image Source="/images/arrow-rotate-y.png" Width="40" Height="40"/>
-                        </Button>
-                        <Button Name="btnRz" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
-                            <Image Source="/images/arrow-rotate-z.png" Width="30" Height="30"/>
-                        </Button>
-                        <Button Name="btnBack" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick">
+                        <Button Name="btnSwitchR" Content="Switch" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick" />
+                        <Button Name="btnBack" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="3" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
                             <Image Source="/images/arrow-back.png" Width="30" Height="30"/>
                         </Button>
-                        <Button Name="btnForward" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick">
+                        <Button Name="btnForward" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Margin="10" Click="generalButtonClick">
                             <Image Source="/images/arrow-forward.png" Width="30" Height="30"/>
                         </Button>
                         <Button Name="btnConnect" Content="Connect" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center"  Margin="10" Click="btnConnect_Click" />
+                        <Button Name="btnScreenshot" Content="Capture" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="1" Grid.Column="1" VerticalAlignment="Center"  Margin="10" Click="generalButtonClick" />
                     </Grid>
 
                     <!--Sliders-->
                     <Grid Name="gridSliders" Visibility="Collapsed" Height="180" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Column="0">
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="0.5*"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="128"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="32"/>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Slider Name="sldX" Grid.Row="0" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
-                        <Slider Name="sldY" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
-                        <Slider Name="sldZ" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
-                        <Slider Name="sldRx" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
-                        <Slider Name="sldRy" Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
-                        <Slider Name="sldRz" Grid.Row="2" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
-                        <Slider Name="sldZoom" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="100" Value="50" Width="300" Margin="5" ValueChanged="SliderValueChanged"/>
+                        <Label Name="lblZoom" Content="Zoom:" FontSize="14" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" />
+                        <Label Name="lblRot" Content="Rotation:" FontSize="14" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center"/>
+                        <Label Name="lblPos" Content="Position:" FontSize="14" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center" />
+
+                        <Label Name="lblX" Content="X" FontSize="14" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="4"/>
+                        <Label Name="lblY" Content="Y" FontSize="14" Grid.Row="2" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="4"/>
+                        <Label Name="lblZ" Content="Z" FontSize="14" Grid.Row="3" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="4"/>
+
+
+
+                        <!-- Slider X -->
+                        <Grid Grid.Row="1" Grid.Column="3" Margin="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Slider Name="sldX" Style="{DynamicResource PrimarySliderStyle}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"  Minimum="0" Maximum="20" Value="10" ValueChanged="SliderValueChanged" PreviewMouseUp="SliderPreviewMouseUp" />
+
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Name="lblXMin" Content="0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                <Label Name="lblXMed" Content="10" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1" />
+                                <Label Name="lblXMax" Content="20" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="2" />
+                            </Grid>
+                        </Grid>
+
+                        <!-- Slider Y -->
+                        <Grid Grid.Row="2" Grid.Column="3" Margin="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Slider Name="sldY" Style="{StaticResource PrimarySliderStyle}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="20" Value="10" ValueChanged="SliderValueChanged" PreviewMouseUp="SliderPreviewMouseUp" />
+
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Name="lblYMin" Content="0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                <Label Name="lblYMed" Content="10" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1" />
+                                <Label Name="lblYMax" Content="20" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="2" />
+                            </Grid>
+                        </Grid>
+
+                        <!-- Slider Z -->
+                        <Grid Grid.Row="3" Grid.Column="3" Margin="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Slider Name="sldZ" Style="{StaticResource PrimarySliderStyle}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="20" Value="10" ValueChanged="SliderValueChanged" PreviewMouseUp="SliderPreviewMouseUp" />
+
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Name="lblZMin" Content="0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                <Label Name="lblZMed" Content="10" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1" />
+                                <Label Name="lblZMax" Content="20" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="2" />
+                            </Grid>
+                        </Grid>
+
+                        <!-- Slider Rx -->
+                        <Grid Grid.Row="1" Grid.Column="1" Margin="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Slider Name="sldRx" Style="{StaticResource PrimarySliderStyle}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="20" Value="10" ValueChanged="SliderValueChanged" PreviewMouseUp="SliderPreviewMouseUp" />
+
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Name="lblRxMin" Content="0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                <Label Name="lblRxMed" Content="10" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1" />
+                                <Label Name="lblRxMax" Content="20" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="2" />
+                            </Grid>
+                        </Grid>
+
+                        <!-- Slider Ry -->
+                        <Grid Grid.Row="2" Grid.Column="1" Margin="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Slider Name="sldRy" Style="{StaticResource PrimarySliderStyle}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="20" Value="10" ValueChanged="SliderValueChanged" PreviewMouseUp="SliderPreviewMouseUp" />
+
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Name="lblRyMin" Content="0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                <Label Name="lblRyMed" Content="10" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1" />
+                                <Label Name="lblRyMax" Content="20" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="2" />
+                            </Grid>
+                        </Grid>
+
+                        <!-- Slider Rz -->
+                        <Grid Grid.Row="3" Grid.Column="1" Margin="8">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*" />
+                            </Grid.RowDefinitions>
+
+                            <Slider Name="sldRz" Style="{StaticResource PrimarySliderStyle}" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="20" Value="10" ValueChanged="SliderValueChanged" PreviewMouseUp="SliderPreviewMouseUp" />
+
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <Label Name="lblRzMin" Content="0" HorizontalAlignment="Left" VerticalAlignment="Top" />
+                                <Label Name="lblRzMed" Content="10" HorizontalAlignment="Center" VerticalAlignment="Top" Grid.Column="1" />
+                                <Label Name="lblRzMax" Content="20" HorizontalAlignment="Right" VerticalAlignment="Top" Grid.Column="2" />
+                            </Grid>
+                        </Grid>
+
+                        <!-- Slider Zoom -->
+                        <Grid Grid.Row="1"  Grid.RowSpan="3" Grid.Column="0" Margin="8" HorizontalAlignment="Center">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Slider Name="sldZoom" Style="{StaticResource PrimarySliderStyle}" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="50" Value="25" ValueChanged="SliderValueChanged" PreviewMouseUp="SliderPreviewMouseUp" Orientation="Vertical" Height="128" Width="24" />
+
+
+
+                            <Grid Grid.Column="0">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                    <RowDefinition Height="*" />
+                                </Grid.RowDefinitions>
+
+                                <Label Name="lblZoomMin" Content="-" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2"/>
+                                <Label Name="lblZoomMed" Content="10" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" />
+                                <Label Name="lblZoomMax" Content="+" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="0" />
+                            </Grid>
+                        </Grid>
+
+                        
                     </Grid>
 
                     <Grid Grid.Column="1" HorizontalAlignment="Right">

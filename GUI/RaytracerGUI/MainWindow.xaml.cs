@@ -1,4 +1,4 @@
-﻿﻿using System.Text;
+﻿using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -16,28 +16,37 @@ using System.Diagnostics;
 using System.Windows.Interop;
 using System.Runtime.InteropServices;
 using System.IO;
+using System.Threading.Tasks;
 using System.Reflection.PortableExecutable;
 using System.Text.Json;
 using System;
+using System.Reflection;
+using System.Windows.Controls.Primitives;
+using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 
 namespace RaytracerGUI
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private EcsApi? _ecsApi;
         private string ReceivedEcsJsonString;
         private GLFWLoader loader;
         private IntPtr hWndParent;
-        private TreeBuilder entityBuilder;
-        private TreeBuilder entityOptionsBuilder;
 
-        private TreeBuilder componentBuilder;
-        private TreeBuilder componentOptionsBuilder;
+        private TreeBuilder _entityBuilder;
+        private TreeBuilder _entityOptionsBuilder;
+
+        private TreeBuilder _componentBuilder;
+        private TreeBuilder _componentOptionsBuilder;
 
         bool connection = false;
+        string rotation = "xpos";
+        bool textboxChange = false;
+        int sliderOffset = 10;
+
+        string currentEntityUUID = "uuid";
+        string currentComponentUUID = "uuid";
+
 
         public MainWindow()
         {
@@ -47,7 +56,7 @@ namespace RaytracerGUI
         }
 
         //Menu clicks
-        private void generalMenuClick(object sender, RoutedEventArgs e)
+        private void FileMenuClick(object sender, RoutedEventArgs e)
         {
             MenuItem? clickedMenuItem = sender as MenuItem;
             OpenFileDialog openFileDialog;
@@ -101,7 +110,7 @@ namespace RaytracerGUI
                             try
                             {
                                 // send JSON path
-                                string pathSentStatus = _ecsApi.post_ScenePath(filePath);
+                                string pathSentStatus = _ecsApi.json_import('"' + filePath + '"');
                                 tbxLog.AppendText("pathSentStatus : " + pathSentStatus);
 
 
@@ -123,6 +132,37 @@ namespace RaytracerGUI
                 }
             }
         }
+
+        private void AddMenuClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem clickedMenuItem)
+            {
+                // Der Name des angeklickten Menüelements wird verwendet
+                string itemName = clickedMenuItem.Name;
+
+                switch (itemName)
+                {
+                    case "mniAddRender":
+                        AddRenderComponent();
+                        tbxLog.AppendText($"{itemName} was clicked!\n");
+                        tbxLog.ScrollToEnd();
+                        break;
+
+                    case "mniAddLight":
+                        AddLightComponent();
+                        tbxLog.AppendText($"{itemName} was clicked!\n");
+                        tbxLog.ScrollToEnd();
+                        break;
+
+                    case "mniAddCamera":
+                        AddCameraComponent();
+                        tbxLog.AppendText($"{itemName} was clicked!\n");
+                        tbxLog.ScrollToEnd();
+                        break;
+                }
+            }
+        }
+
 
 
         //Button clicks
@@ -150,58 +190,156 @@ namespace RaytracerGUI
                 switch (button)
                 {
                     case "btnLeft":
-                        //_ecsApi.post...
+                        sldX.Value -= 10;
+                        SliderPreviewMouseUp(sldX, null);
                         break;
 
                     case "btnRight":
-                        //_ecsApi.post...
+                        sldX.Value += 10;
+                        SliderPreviewMouseUp(sldX, null);
                         break;
 
                     case "btnUp":
-                        //_ecsApi.post...
+                        sldY.Value += 10;
+                        SliderPreviewMouseUp(sldY, null);
                         break;
 
                     case "btnDown":
-                        //_ecsApi.post...
+                        sldY.Value -= 10;
+                        SliderPreviewMouseUp(sldY, null);
                         break;
 
                     case "btnBack":
-                        //_ecsApi.post...
+                        sldZ.Value -= 10;
+                        SliderPreviewMouseUp(sldZ, null);
                         break;
 
                     case "btnForward":
-                        //_ecsApi.post...
+                        sldZ.Value += 10;
+                        SliderPreviewMouseUp(sldZ, null);
                         break;
 
-                    case "btnRx":
-                        //_ecsApi.post...
+                    case "btnRotate":
+
+                        switch (rotation)
+                        {
+                            case "xpos":
+                                sldRx.Value += 10;
+                                SliderPreviewMouseUp(sldRx, null);
+                                break;
+
+                            case "xneg":
+                                sldRx.Value -= 10;
+                                SliderPreviewMouseUp(sldRx, null);
+                                break;
+
+                            case "ypos":
+                                sldRy.Value += 10;
+                                SliderPreviewMouseUp(sldRy, null);
+                                break;
+
+                            case "yneg":
+                                sldRy.Value -= 10;
+                                SliderPreviewMouseUp(sldRy, null);
+                                break;
+
+                            case "zpos":
+                                sldRz.Value += 10;
+                                SliderPreviewMouseUp(sldRz, null);
+                                break;
+
+                            case "zneg":
+                                sldRz.Value -= 10;
+                                SliderPreviewMouseUp(sldRz, null);
+                                break;
+                        }
+
                         break;
 
-                    case "btnRy":
-                        //_ecsApi.post...
+                    case "btnSwitchR":
+                        if (rotation == "xpos")
+                        {
+                            rotation = "xneg";
+                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-xneg.png", UriKind.Relative));
+                        }
+                        else if (rotation == "xneg")
+                        {
+                            rotation = "ypos";
+                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-ypos.png", UriKind.Relative));
+                        }
+                        else if (rotation == "ypos")
+                        {
+                            rotation = "yneg";
+                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-yneg.png", UriKind.Relative));
+                        }
+                        else if (rotation == "yneg")
+                        {
+                            rotation = "zpos";
+                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-zpos.png", UriKind.Relative));
+                        }
+                        else if (rotation == "zpos")
+                        {
+                            rotation = "zneg";
+                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-zneg.png", UriKind.Relative));
+                        }
+                        else if (rotation == "zneg")
+                        {
+                            rotation = "xpos";
+                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-xpos.png", UriKind.Relative));
+                        }
                         break;
 
                     case "btnRz":
-                        //_ecsApi.post...
+                        sldRz.Value += 10;
                         break;
 
                     case "btnLog":
 
-                        if (tbxLog.Visibility == Visibility.Collapsed)
+                        if (gridLog.Visibility == Visibility.Collapsed)
                         {
-                            tbxLog.Visibility = Visibility.Visible;
+                            gridLog.Visibility = Visibility.Visible;
                             ColumnLog.Width = new GridLength(1, GridUnitType.Star);
                         }
                         else
                         {
-                            tbxLog.Visibility = Visibility.Collapsed;
+                            gridLog.Visibility = Visibility.Collapsed;
                             ColumnLog.Width = new GridLength(0);
                         }
 
                         // TreeBuilder testing
-                        entityBuilder = new TreeBuilder(trvEntities, this);
-                       entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
-                       break;
+                        _entityBuilder = new TreeBuilder(trvEntities, this);
+                        _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
+                        break;
+
+                    case "btnToggleLog":
+
+                        if (tbxLog.Visibility == Visibility.Visible)
+                        {
+                            tbxLog.Visibility = Visibility.Collapsed;
+                            tbxLogEngine.Visibility = Visibility.Visible;
+
+                            // Read Engine Log 
+                            string log;
+                            try
+                            {
+                                log = File.ReadAllText(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\sampleJSON.txt"); // to replace with log directory
+                            }
+                            catch (Exception ex)
+                            {
+                                log = "Engine Log unavailable!";
+                            }
+
+                            tbxLogEngine.AppendText(log);
+                            tbxLogEngine.ScrollToEnd();
+
+                        }
+                        else
+                        {
+                            tbxLogEngine.Visibility = Visibility.Collapsed;
+                            tbxLog.Visibility = Visibility.Visible;
+
+                        };
+                        break;
 
                     case "btnToggleB":
 
@@ -215,7 +353,7 @@ namespace RaytracerGUI
                             gridButtons.Visibility = Visibility.Visible;
                         }
                         break;
-                        
+
                     case "btnToggleS":
 
                         if (gridSliders.Visibility == Visibility.Visible)
@@ -229,82 +367,307 @@ namespace RaytracerGUI
 
                         }
                         break;
+
+                    case "btnScreenshot":
+                        TakeScreenshot();
+                        break;
                 }
             }
         }
+
+
+       
 
         private void SliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             Slider? changedSlider = sender as Slider;
 
-            //TODO get information (which textbox must be updated)
-            //TODO get xyz from textbox and update _ecsapi
-            //var UUID;
-            //var x;
-            //var y;
-            //var z;
+            if (changedSlider != null && textboxChange)
+            {
+                SliderPreviewMouseUp(changedSlider.Name, null);
+            }
+
+            double roundedValue = Math.Round(e.NewValue, 2);
+            tbxLog.AppendText($"{changedSlider.Name} value changed to: {roundedValue}\n");
+        }
+
+
+        private void SliderEcsApiUpdate(int sliderType)
+        {
+            string UUID = currentEntityUUID;
+            float x;
+            float y;
+            float z;
+
+
+            if (_ecsApi != null)
+            {
+                try
+                {
+                    if (sliderType == 0)
+                    {
+                        x = (float)sldX.Value;
+                        y = (float)sldY.Value;
+                        z = (float)sldZ.Value;
+                        _ecsApi.move_entity(UUID, x, y, z);
+                    }
+                    else if (sliderType == 1)
+                    {
+                        x = (float)sldRx.Value;
+                        y = (float)sldRy.Value;
+                        z = (float)sldRz.Value;
+                        _ecsApi.rotate_entity(UUID, x, y, z);
+                    }
+                    else if (sliderType == 2)
+                    {
+                        float zoom = (float)sldZoom.Value;
+                        _ecsApi.set_fov(zoom);
+                    }
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    tbxLog.AppendText($"Error updating server: {ex.Message}\n");
+                    tbxLog.ScrollToEnd();
+                }
+            }
+
+        }
+
+        private void SliderPreviewMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (_entityOptionsBuilder == null)
+            {
+                tbxLog.AppendText("No entity or component with options has been selected!");
+                return;
+            }
+
+            Slider? changedSlider = sender as Slider;
 
             if (changedSlider != null)
             {
+                changedSlider.Minimum = changedSlider.Value - sliderOffset;
+                changedSlider.Maximum = changedSlider.Value + sliderOffset;
+
                 string slider = changedSlider.Name;
 
-                // Round the slider value to 2 decimal places
-                double roundedValue = Math.Round(e.NewValue, 2);
+                // Round the slider values for lables
+                double minValue = Math.Round(changedSlider.Minimum, 2);
+                double medValue = Math.Round(changedSlider.Value, 2);
+                double maxValue = Math.Round(changedSlider.Maximum, 2);
 
-                // Prevent unnecessary updates
-                if (changedSlider.Value != roundedValue)
+
+                // Update 
+                switch (slider)
                 {
-                    changedSlider.Value = roundedValue;
+                    case "sldX":
+                        lblXMin.Content = minValue;
+                        lblXMed.Content = medValue;
+                        lblXMax.Content = maxValue;
+
+                        _entityOptionsBuilder.GetTextBox("traX")?.SetValue(TextBox.TextProperty, medValue.ToString());
+                        SliderEcsApiUpdate(0);
+                        break;
+
+                    case "sldY":
+                        lblYMin.Content = minValue;
+                        lblYMed.Content = medValue;
+                        lblYMax.Content = maxValue;
+
+                        _entityOptionsBuilder.GetTextBox("traY")?.SetValue(TextBox.TextProperty, medValue.ToString());
+                        SliderEcsApiUpdate(0);
+                        break;
+
+                    case "sldZ":
+                        lblZMin.Content = minValue;
+                        lblZMed.Content = medValue;
+                        lblZMax.Content = maxValue;
+
+                        _entityOptionsBuilder.GetTextBox("traZ")?.SetValue(TextBox.TextProperty, medValue.ToString());
+                        SliderEcsApiUpdate(0);
+                        break;
+
+                    case "sldRx":
+                        lblRxMin.Content = minValue;
+                        lblRxMed.Content = medValue;
+                        lblRxMax.Content = maxValue;
+
+                        _entityOptionsBuilder.GetTextBox("rotX")?.SetValue(TextBox.TextProperty, medValue.ToString());
+                        SliderEcsApiUpdate(1);
+                        break;
+
+                    case "sldRy":
+                        lblRyMin.Content = minValue;
+                        lblRyMed.Content = medValue;
+                        lblRyMax.Content = maxValue;
+
+                        _entityOptionsBuilder.GetTextBox("rotY")?.SetValue(TextBox.TextProperty, medValue.ToString());
+                        SliderEcsApiUpdate(1);
+                        break;
+
+                    case "sldRz":
+                        lblRzMin.Content = minValue;
+                        lblRzMed.Content = medValue;
+                        lblRzMax.Content = maxValue;
+
+                        _entityOptionsBuilder.GetTextBox("rotZ")?.SetValue(TextBox.TextProperty, medValue.ToString());
+                        SliderEcsApiUpdate(1);
+                        break;
+
+                    case "sldZoom":
+                        if (changedSlider.Value < 10)
+                        {
+                            changedSlider.Value = 10;
+                        }
+                        else if (changedSlider.Value > 100)
+                        {
+                            changedSlider.Value = 100;
+                        }
+
+                        changedSlider.Minimum = changedSlider.Value - 25;
+                        changedSlider.Maximum = changedSlider.Value + 25;
+                        medValue = Math.Round(changedSlider.Value, 0);
+                        lblZoomMed.Content = medValue;
+
+                        SliderEcsApiUpdate(2);
+                        break;
                 }
 
-                // Log the updated value
-                tbxLog.AppendText($"{slider} value changed to: {roundedValue}\n");
-                tbxLog.ScrollToEnd();
 
-                if (_ecsApi != null)
+            }
+        }
+
+        private void nudBounces_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue != null && _ecsApi != null)
+            {
+                int newValue = (int)e.NewValue;
+                try
                 {
-                    try
-                    {
-                        switch (slider)
-                        {
-                            // Send rounded values to the server
-                            case "sldX":
-                                //_ecsApi.move_entity(UUID, x, y, z);
-                                break;
-
-                            case "sldY":
-                                //_ecsApi.move_entity(UUID, x, y, z);
-                                break;
-
-                            case "sldZ":
-                                //_ecsApi.move_entity(UUID, x, y, z);
-                                break;
-
-                            case "sldRx":
-                                //_ecsApi.rotate_entity(UUID, x, y, z);
-                                break;
-
-                            case "sldRy":
-                                //_ecsApi.rotate_entity(UUID, x, y, z);
-                                break;
-
-                            case "sldRz":
-                                //_ecsApi.rotate_entity(UUID, x, y, z);
-                                break;
-
-                            case "sldZoom":
-                                //_ecsApi.scale_entity(UUID, x, y, z);
-                                break;
-                        }
-                    }
-                    catch (InvalidOperationException ex)
-                    {
-                        tbxLog.AppendText($"Error updating server with {slider}: {ex.Message}\n");
-                        tbxLog.ScrollToEnd();
-                    }
+                    string? result = _ecsApi.set_bounces(newValue);
+                    tbxLog.AppendText(result + "\n");
+                }
+                catch (Exception ex)
+                {
+                    tbxLog.AppendText("\n Exception fired" + "\n\n\n" + ex);
                 }
             }
         }
+
+        public void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (sender is TextBox textBox)
+            {
+                // Log the TextBox change
+                tbxLog.AppendText($"TextBox '{textBox.Name}' text changed to: {textBox.Text}\n");
+                textboxChange = true;
+
+                if (double.TryParse(textBox.Text, out double value))
+                {
+
+
+                    // Attempt to parse the text and update the appropriate slider
+                    switch (textBox.Name)
+                    {
+                        case "traX":
+                            sldX.Value = value;
+                            sldX.Minimum = value - sliderOffset;
+                            sldX.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldX, null);
+                            break;
+
+                        case "traY":
+                            sldY.Value = value;
+                            sldY.Minimum = value - sliderOffset;
+                            sldY.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldY, null);
+                            break;
+
+                        case "traZ":
+                            sldZ.Value = value;
+                            sldZ.Minimum = value - sliderOffset;
+                            sldZ.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldZ, null);
+                            break;
+
+                        case "rotX":
+                            sldRx.Value = value;
+                            sldRx.Minimum = value - sliderOffset;
+                            sldRx.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldRx, null);
+                            break;
+
+                        case "rotY":
+                            sldRy.Value = value;
+                            sldRy.Minimum = value - sliderOffset;
+                            sldRy.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldRy, null);
+                            break;
+
+                        case "rotZ":
+                            sldRz.Value = value;
+                            sldRz.Minimum = value - sliderOffset;
+                            sldRz.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldRz, null);
+                            break;
+
+
+                        case "zoom":
+                            sldX.Value = value;
+                            sldX.Minimum = value - sliderOffset;
+                            sldX.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldX, null);
+                            break;
+
+
+
+                        default:
+                            tbxLog.AppendText($"TextBox '{textBox.Name}' does not match known sliders.\n");
+                            break;
+                    }
+                }
+                else
+                {
+                    tbxLog.AppendText("Invalid value for Slider" + textBox.Name + ".\n");
+                }
+            }
+        }
+
+        private void TextBoxComponentOptions_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            // Check if Enter key was pressed
+            if (e.Key == Key.Enter)
+            {
+                // Prevent the Enter key from propagating further
+                e.Handled = true;
+
+                // Get the TextBox and its DataContext (the bound JsonKeyValue object)
+                if (sender is TextBox textBox && textBox.DataContext is JsonKeyValue keyValue)
+                {
+                    // Call your desired function
+                    OnComponentsTextboxValueChanged(keyValue.Key, textBox.Text);
+                }
+            }
+        }
+
+        private void OnComponentsTextboxValueChanged(string key, string newValue)
+        {
+            string? componentOptionsJSON = _componentOptionsBuilder.CreateJsonFromListBox();
+            if (componentOptionsJSON != null && _ecsApi != null)
+            {
+                try
+                {
+                    _ecsApi.set_component_option(currentComponentUUID, componentOptionsJSON);
+                    tbxLog.AppendText("\n ComponentOptions updated with UUID: " + currentComponentUUID + " and JSON: \n" + componentOptionsJSON.ToString());
+
+                }
+                catch (Exception ex)
+                {
+                    tbxLog?.AppendText(ex.ToString());
+                }
+            }
+        }
+
 
 
 
@@ -330,7 +693,7 @@ namespace RaytracerGUI
 
 
         }
-        private void btnConnect_Click(object sender, RoutedEventArgs e)
+        private async void btnConnect_Click(object sender, RoutedEventArgs e)
         {
             Button? clickedButton = sender as Button;
 
@@ -338,11 +701,13 @@ namespace RaytracerGUI
             {
                 try
                 {
-                    StartOtherExe("../../../../../Engine/build/Engine.exe");
+                    StartOtherExe("../../../../../Engine/Engine.exe");
+                    await Task.Delay(500);
                     _ecsApi = new EcsApi("127.0.0.1", 51234);
 
                     // initial root-request
                     ReceivedEcsJsonString = _ecsApi.get_root();
+                    //TODO set Bounces from ECS
                     tbxLog.AppendText(ReceivedEcsJsonString);
                     connection = true; // connection was successful 
 
@@ -384,10 +749,15 @@ namespace RaytracerGUI
         {
             try
             {
+                string engineExeDirPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..\Engine\");
+
+                // Create the ProcessStartInfo
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
-                    FileName = exePath,
-                    UseShellExecute = false,
+                    FileName = engineExeDirPath + @"build\Engine.exe",
+                    WorkingDirectory = System.IO.Path.GetDirectoryName(engineExeDirPath),  // Set the working directory
+                    UseShellExecute = false,  // Optionally, to redirect input/output (if needed)
+                    CreateNoWindow = true,     // Optionally, run without a window
                     WindowStyle = ProcessWindowStyle.Minimized
                 };
                 Process.Start(startInfo);
@@ -415,6 +785,8 @@ namespace RaytracerGUI
                     int childrenCount = tagData.Children; // Access Children count
 
                     //tbxLog.AppendText($"{header} was clicked with UUID: {uuid}, Name: {name}, Children: {childrenCount}\n");
+
+                    currentEntityUUID = uuid;
 
                     UpdateEntities(uuid, e);
                     UpdateEntitiesOptions(uuid, e);
@@ -448,80 +820,33 @@ namespace RaytracerGUI
                 selectedItem.Items.Clear();
 
                 // Rebuild the children based on the new data
-                entityBuilder.CreateChildItems(updatedNode, selectedItem);
+                _entityBuilder.CreateChildItems(updatedNode, selectedItem);
                 //tbxLog.AppendText($"Updated children for UUID: {uuid}\n");
             }
         }
         public void UpdateEntitiesOptions(string uuid, RoutedPropertyChangedEventArgs<object>? e)
         {
-            string? ecsJsonNode = _ecsApi.get_entity_options(uuid);
-            tbxLog.AppendText("EntityList Update : JSON\n\n " + ecsJsonNode + "\n\n");
-
-            if (ecsJsonNode == null)
+            try
             {
-                tbxLog.AppendText("JSON = null.\n");
-                return;
-            }
+                string? ecsJsonNode = _ecsApi.get_entity_options(uuid);
+                tbxLog.AppendText("EntityList Update : JSON\n\n " + ecsJsonNode + "\n\n");
 
-            entityOptionsBuilder = new TreeBuilder(trvEntitiesOptions,this);
-            entityOptionsBuilder.BuildTreeFromOptions(ecsJsonNode);
-        }
-        public void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (sender is TextBox textBox)
-            {
-                // Log the TextBox change
-                tbxLog.AppendText($"TextBox '{textBox.Name}' text changed to: {textBox.Text}\n");
-
-                // Attempt to parse the text and update the appropriate slider
-                switch (textBox.Name)
+                if (ecsJsonNode == null)
                 {
-                    case "x":
-                        if (double.TryParse(textBox.Text, out double valueX))
-                        {
-                            sldX.Value = valueX;
-                        }
-                        else
-                        {
-                            tbxLog.AppendText("Invalid value for X.\n");
-                        }
-                        break;
-
-                    case "y":
-                        if (double.TryParse(textBox.Text, out double valueY))
-                        {
-                            sldY.Value = valueY;
-                        }
-                        else
-                        {
-                            tbxLog.AppendText("Invalid value for Y.\n");
-                        }
-                        break;
-
-                    case "z":
-                        if (double.TryParse(textBox.Text, out double valueZ))
-                        {
-                            sldZ.Value = valueZ;
-                        }
-                        else
-                        {
-                            tbxLog.AppendText("Invalid value for Z.\n");
-                        }
-                        break;
-
-                    default:
-                        tbxLog.AppendText($"TextBox '{textBox.Name}' does not match known sliders.\n");
-                        break;
+                    tbxLog.AppendText("JSON = null.\n");
+                    return;
                 }
+
+                _entityOptionsBuilder = new TreeBuilder(trvEntitiesOptions, this);
+                _entityOptionsBuilder.BuildTreeFromEntityOptions(ecsJsonNode);
+            }
+            catch (Exception ex)
+            {
+                tbxLog.AppendText("\n Exception fired" + "\n\n\n" + ex);
             }
         }
-        private void trvEntitiesOptions_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            return;
-        }
 
-
-        /// Components Update
+        // Components Update
         private void trvComponents_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (e.NewValue is TreeViewItem selectedItem)
@@ -531,7 +856,8 @@ namespace RaytracerGUI
                 {
                     string uuid = tagData.UUID;       // Access UUID
                     string name = tagData.Name;       // Access Name
-                    int childrenCount = tagData.Children; // Access Children count
+
+                    currentComponentUUID = uuid;
 
                     UpdateComponentsOptions(uuid, e);
                 }
@@ -545,31 +871,6 @@ namespace RaytracerGUI
         private void UpdateComponents(string uuidEntity, RoutedPropertyChangedEventArgs<object> e)
         {
             string? componentsJsonNode = _ecsApi.get_components(uuidEntity);
-            try
-            {
-                //PROBLEM: Exception when deserialized, no class for object existent:
-                //JSON: {"components":[{"uuid":"67949d3e-de96-487f-a03c-5b900da73e4b"}]}
-                var updatedNode = JsonSerializer.Deserialize<string>(componentsJsonNode);
-                componentBuilder = new TreeBuilder(trvComponents, this);
-
-            if (componentsJsonNode == null)
-            {
-                tbxLog.AppendText($"No valid component data found for UUID: {uuidEntity}.\n");
-                return;
-            }
-
-            componentBuilder.BuildTreeFromJson(updatedNode);
-            }
-            catch (Exception ex)
-            {
-                tbxLog.AppendText("JSON is null for uuid " + uuidEntity+ "\n");
-            }
-
-        }
-
-        public void UpdateComponentsOptions(string uuid, RoutedPropertyChangedEventArgs<object>? e)
-        {
-            string? componentsJsonNode = _ecsApi.get_component_options(uuid);
             tbxLog.AppendText("ComponentList Update : JSON\n\n " + componentsJsonNode + "\n\n");
 
             if (componentsJsonNode == null)
@@ -577,18 +878,126 @@ namespace RaytracerGUI
                 tbxLog.AppendText("JSON = null.\n");
                 return;
             }
+            _componentBuilder = new TreeBuilder(trvComponents, this);
 
-            componentOptionsBuilder = new TreeBuilder(trvComponentsOptions, this);
-            componentOptionsBuilder.BuildTreeFromOptions(componentsJsonNode);
+            try
+            {
+                _componentBuilder.BuildTreeFromComponents(componentsJsonNode);
+            }
+            catch (Exception ex)
+            {
+                tbxLog.AppendText("JSON is null for uuid " + uuidEntity + "\n");
+            }
+
+        }
+
+        public void UpdateComponentsOptions(string uuid, RoutedPropertyChangedEventArgs<object>? e)
+        {
+            try
+            {
+                string? ecsJsonNode = _ecsApi.get_component_options(uuid);
+                tbxLog.AppendText("ComponentOptions Update : JSON\n\n " + ecsJsonNode + "\n\n");
+
+                if (ecsJsonNode == null)
+                {
+                    tbxLog.AppendText("JSON = null.\n");
+                    return;
+                }
+
+                _componentOptionsBuilder = new TreeBuilder(this, trvComponentsOptions);
+                _componentOptionsBuilder.BuildTreeFromComponentOptions(ecsJsonNode);
+            }
+            catch (Exception ex)
+            {
+                tbxLog.AppendText("\n Exception fired" + "\n\n\n" + ex);
+            }
         }
 
         private void trvComponentsOptions_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-           
+
         }
 
+        //Add Components
+        private void AddRenderComponent()
+        {
+            if (_ecsApi != null)
+            {
+
+                try
+                {
+
+                    string pathSentStatus = _ecsApi.create_component(currentEntityUUID, "render");
+                    tbxLog.AppendText("Render Component Added!\n");
+                    UpdateComponents(currentEntityUUID, null);
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    //TODO
+                }
+            }
+        }
+
+        private void AddLightComponent()
+        {
+            if (_ecsApi != null)
+            {
+
+                try
+                {
+                    string pathSentStatus = _ecsApi.create_component(currentEntityUUID, "light");
+                    tbxLog.AppendText("Render Component Added!\n");
+                    UpdateComponents(currentEntityUUID, null);
+
+                }
+                catch (InvalidOperationException ex)
+                {
+                    //TODO
+                }
+            }
+        }
+
+        private void AddCameraComponent()
+        {
+            if (_ecsApi != null)
+            {
+
+                try
+                {
+
+                    string pathSentStatus = _ecsApi.create_component(currentEntityUUID, "camera");
+                    tbxLog.AppendText("Render Component Added!\n");
+                    UpdateComponents(currentEntityUUID, null);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    //TODO
+                }
+            }
+        }
+
+        //Items
 
 
 
+        private void TakeScreenshot()
+        {
+
+            try
+            {
+            
+                GdiCapture.CaptureWindow(loader.hWndGLFW, "screenshot.png");
+            }
+            catch (System.InvalidOperationException e)
+            {
+                MessageBox.Show("Capturing failed!" + "\n" + e.Message);
+                return;
+            }
+
+            tbxLog.AppendText("Captured!" + "\n");
+
+        }
     }
+
 }

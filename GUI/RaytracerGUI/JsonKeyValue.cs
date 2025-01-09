@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace RaytracerGUI
 {
-    class EcsComponentNode
+    class JsonKeyValue
     {
-        public string uuid { get; set; }
-        public string name { get; set; }
+        public string Key { get; set; }
+        public object Value { get; set; } // Use object to allow for flexible types
     }
 }

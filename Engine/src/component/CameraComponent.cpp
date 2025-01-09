@@ -1,6 +1,7 @@
 #include "includes/component/CameraComponent.hpp"
 #include "includes/component/Component.hpp"
 #include "includes/utility/FrameSnapshot.hpp"
+#include "includes/utility/JsonConverter.hpp"
 
 namespace RT {
 CameraComponent::CameraComponent(uuid id, Entity *e)
@@ -14,14 +15,15 @@ void CameraComponent::update(const FrameSnapshot &snapshot) {}
 boost::json::object CameraComponent::to_json_details() const {
   boost::json::object obj;
   obj["is_main_camera"] = is_main_camera();
-  obj["fov"] = get_fov();
-  obj["far"] = get_far();
-  obj["near"] = get_near();
+  obj["fov"] = format_float(get_fov());
+  obj["far"] = format_float(get_far());
+  obj["near"] = format_float(get_near());  
   return obj;
 }
 
 void CameraComponent::set_from_json(boost::json::object obj) {
-  set_fov(obj["fov"].as_double());
+  
+  set_fov(std::stod(boost::json::value_to<std::string>(obj["fov"])));
   set_is_main_camera(obj["is_main_camera"].as_bool());
   set_far(obj["far"].as_double());
   set_near(obj["near"].as_double());
