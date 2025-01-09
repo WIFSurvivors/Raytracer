@@ -318,15 +318,20 @@ namespace RaytracerGUI
                             tbxLog.Visibility = Visibility.Collapsed;
                             tbxLogEngine.Visibility = Visibility.Visible;
 
+
                             // Read Engine Log 
+                            string engineLog;
                             string log;
+
+                            engineLog = _ecsApi.get_log_path();
+
                             try
                             {
-                                log = File.ReadAllText(Directory.GetParent(Directory.GetCurrentDirectory()).Parent.Parent.FullName + "\\sampleJSON.txt"); // to replace with log directory
+                                log = File.ReadAllText(engineLog);
                             }
                             catch (Exception ex)
                             {
-                                log = "Engine Log unavailable!";
+                                log = "Engine Log unavailable!" + engineLog;
                             }
 
                             tbxLogEngine.AppendText(log);
@@ -757,7 +762,7 @@ namespace RaytracerGUI
                     FileName = engineExeDirPath + @"build\Engine.exe",
                     WorkingDirectory = System.IO.Path.GetDirectoryName(engineExeDirPath),  // Set the working directory
                     UseShellExecute = false,  // Optionally, to redirect input/output (if needed)
-                    CreateNoWindow = true,     // Optionally, run without a window
+                    CreateNoWindow = false,     // Optionally, run without a window
                     WindowStyle = ProcessWindowStyle.Minimized
                 };
                 Process.Start(startInfo);

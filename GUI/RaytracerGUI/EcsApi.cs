@@ -100,7 +100,7 @@ public class EcsApi
 
     public string get_log_path()
     {
-        return _client.Send("GetLogPath null");
+        return _client.Send(adjustSeparator("GetLogPath null"));
     }
 
     public string export_Json(String path)
