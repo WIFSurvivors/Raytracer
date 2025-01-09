@@ -52,6 +52,8 @@ struct RenderComponent : public IComponent {
   inline std::vector<RenderComponentMesh> get_meshes() {
 #if SHOW_UI
     return _meshes;
+#else
+    return {};
 #endif
   }
 
@@ -81,6 +83,8 @@ struct RenderComponent : public IComponent {
   inline glm::mat4 get_ModelMatrix() {
 #if SHOW_UI
     return _modelMatrix;
+#else
+    return 0;
 #endif
   }
 
