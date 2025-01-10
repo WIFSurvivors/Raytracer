@@ -276,6 +276,8 @@ namespace RaytracerGUI
                         {
                             rotation = "zpos";
                             imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-zpos.png", UriKind.Relative));
+                            imgRotation.Width = 30;
+                            imgRotation.Height = 30;
                         }
                         else if (rotation == "zpos")
                         {
@@ -286,8 +288,11 @@ namespace RaytracerGUI
                         {
                             rotation = "xpos";
                             imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-xpos.png", UriKind.Relative));
+                            imgRotation.Width = 40;
+                            imgRotation.Height = 40;
                         }
                         break;
+
 
                     case "btnRz":
                         sldRz.Value += 10;
@@ -306,9 +311,6 @@ namespace RaytracerGUI
                             ColumnLog.Width = new GridLength(0);
                         }
 
-                        // TreeBuilder testing
-                        _entityBuilder = new TreeBuilder(trvEntities, this);
-                        _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
                         break;
 
                     case "btnToggleLog":
@@ -352,7 +354,7 @@ namespace RaytracerGUI
                         {
                             gridButtons.Visibility = Visibility.Collapsed;
                         }
-                        else
+                        else 
                         {
                             gridSliders.Visibility = Visibility.Collapsed;
                             gridButtons.Visibility = Visibility.Visible;
@@ -363,7 +365,34 @@ namespace RaytracerGUI
 
                         if (gridSliders.Visibility == Visibility.Visible)
                         {
-                            gridSliders.Visibility = Visibility.Collapsed;
+                            if (gridZoom.Visibility == Visibility.Visible)
+                            {
+                                gridZoom.Visibility = Visibility.Collapsed;
+                                lblZoom.Visibility = Visibility.Collapsed;
+
+                                gridSx.Visibility = Visibility.Visible;  
+                                gridSy.Visibility = Visibility.Visible;  
+                                gridSz.Visibility = Visibility.Visible;
+                                lblSca.Visibility = Visibility.Visible;
+
+                                // adapt column width for horizontal scaling sliders
+                                gridSliders.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+
+                            }
+                            else
+                            {
+                                gridSx.Visibility = Visibility.Collapsed;
+                                gridSy.Visibility = Visibility.Collapsed;
+                                gridSz.Visibility = Visibility.Collapsed;
+                                lblSca.Visibility = Visibility.Collapsed;
+
+                                gridZoom.Visibility = Visibility.Visible;
+                                lblZoom.Visibility = Visibility.Visible;
+
+                                // adapt column width for vertical zoom slider
+                                gridSliders.ColumnDefinitions[0].Width = new GridLength(128);
+
+                            }
                         }
                         else
                         {
@@ -427,6 +456,13 @@ namespace RaytracerGUI
                     {
                         float zoom = (float)sldZoom.Value;
                         _ecsApi.set_fov(zoom);
+                    }
+                    else if (sliderType == 3)
+                    {
+                        x = (float)sldSx.Value;
+                        y = (float)sldSy.Value;
+                        z = (float)sldSz.Value;
+                        _ecsApi.scale_entity(UUID, x, y, z);
                     }
 
                 }
@@ -536,6 +572,34 @@ namespace RaytracerGUI
 
                         SliderEcsApiUpdate(2);
                         break;
+
+                    case "sldSx":
+                        lblSxMin.Content = minValue;
+                        lblSxMed.Content = medValue;
+                        lblSxMax.Content = maxValue;
+
+                        _entityOptionsBuilder.GetTextBox("scaX")?.SetValue(TextBox.TextProperty, medValue.ToString());
+                        SliderEcsApiUpdate(3);
+                        break;
+
+                    case "sldSy":
+                        lblSyMin.Content = minValue;
+                        lblSyMed.Content = medValue;
+                        lblSyMax.Content = maxValue;
+
+                        _entityOptionsBuilder.GetTextBox("scaY")?.SetValue(TextBox.TextProperty, medValue.ToString());
+                        SliderEcsApiUpdate(3);
+                        break;
+
+                    case "sldSz":
+                        lblSzMin.Content = minValue;
+                        lblSzMed.Content = medValue;
+                        lblSzMax.Content = maxValue;
+
+                        _entityOptionsBuilder.GetTextBox("scaZ")?.SetValue(TextBox.TextProperty, medValue.ToString());
+                        SliderEcsApiUpdate(3);
+                        break;
+
                 }
 
 
@@ -616,13 +680,34 @@ namespace RaytracerGUI
                             SliderPreviewMouseUp(sldRz, null);
                             break;
 
-
                         case "zoom":
-                            sldX.Value = value;
-                            sldX.Minimum = value - sliderOffset;
-                            sldX.Maximum = value + sliderOffset;
-                            SliderPreviewMouseUp(sldX, null);
+                            sldZoom.Value = value;
+                            sldZoom.Minimum = value - sliderOffset;
+                            sldZoom.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldZoom, null);
                             break;
+
+                        case "scaX":
+                            sldSx.Value = value;
+                            sldSx.Minimum = value - sliderOffset;
+                            sldSx.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldSx, null);
+                            break;
+
+                        case "scaY":
+                            sldSy.Value = value;
+                            sldSy.Minimum = value - sliderOffset;
+                            sldSy.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldSy, null);
+                            break;
+
+                        case "scaZ":
+                            sldSz.Value = value;
+                            sldSz.Minimum = value - sliderOffset;
+                            sldSz.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldSz, null);
+                            break;
+
 
 
 
@@ -720,6 +805,11 @@ namespace RaytracerGUI
                     clickedButton.Foreground = Brushes.Black;
 
                     Window_Loaded(sender, e);
+
+
+                    // initial Treebuilding
+                    _entityBuilder = new TreeBuilder(trvEntities, this);
+                    _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
 
                 }
                 catch (InvalidOperationException ex)

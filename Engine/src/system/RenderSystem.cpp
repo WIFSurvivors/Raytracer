@@ -461,6 +461,7 @@ void RenderSystem::updateSSBOBuffers() {
 }
 
 void RenderSystem::update_galary(std::shared_ptr<MeshGallary> mesh_object) {
+  #if SHOW_UI
   bool found = false;
   for (auto &c : gallary) {
     if (mesh_object->id == c->id) {
@@ -487,6 +488,7 @@ void RenderSystem::update_galary(std::shared_ptr<MeshGallary> mesh_object) {
 
     gallary.push_back(mesh_object);
   }
+    #endif
 }
 
 } // namespace RT
