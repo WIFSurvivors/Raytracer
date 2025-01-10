@@ -1,5 +1,6 @@
 #include "includes/system/CameraSystem.hpp"
 #include "includes/utility/Log.hpp"
+#include "includes/utility/VariadicTable.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <format>
 #include <iostream>
@@ -11,7 +12,7 @@
 #include "glm/ext.hpp"
 
 namespace RT {
-CameraSystem::CameraSystem(UUIDManager *um) : System{um} {
+CameraSystem::CameraSystem(std::shared_ptr<UUIDManager> um) : System{um} {
   LOG("created camera system");
 }
 

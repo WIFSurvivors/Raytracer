@@ -8,12 +8,12 @@
 
 namespace RT {
 Scene::Scene(Engine *e)
-    : _render_system{&_uuid_manager, e->get_window_manager(), &_camera_system,
+    : _render_system{_uuid_manager, e->get_window_manager(), &_camera_system,
                      &_light_system, &_default_assets},
       _root{create_root("root")} {}
 
 Scene::Scene(Engine *e, std::string title)
-    : _render_system{&_uuid_manager, e->get_window_manager(), &_camera_system,
+    : _render_system{_uuid_manager, e->get_window_manager(), &_camera_system,
                      &_light_system, &_default_assets},
       _root{create_root("root")}, _title{title} {}
 
@@ -47,13 +47,12 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
 
 void Scene::print() { _root->print(); }
 void Scene::print_system_data() {
-  _uuid_manager.print();
+  _uuid_manager->print();
   _asset_manager.print();
   _entity_storage.print();
   _render_system.print();
   _camera_system.print();
   _light_system.print();
-  _root->print();
 }
 
 void Scene::generate_sample_content() {
@@ -133,7 +132,7 @@ void Scene::generate_sample_content() {
   auto root_ptr = get_root().lock();
   auto asset1 = create_asset("./assets/cornell-box.obj");
   auto ComponentEntity1 = create_entity("ComponentEntity1", root_ptr);
-  _render_system.create_component(ComponentEntity1.get(),asset1);
+  _render_system.create_component(ComponentEntity1.get(), asset1);
   //_render_system.create_component(root_ptr.get(), v3, u3);
 
   LOG_NEW_LINE();
@@ -142,7 +141,7 @@ void Scene::generate_sample_content() {
 
   // =================== SAMPLE MANIPULATION =====================
 
-  auto sys = _uuid_manager.get_storage(c1->get_uuid());
+  auto sys = _uuid_manager->get_storage(c1->get_uuid());
   auto csys = static_cast<CameraSystem *>(sys);
   auto occ = csys->get_component(c1->get_uuid());
   if (occ.has_value()) {

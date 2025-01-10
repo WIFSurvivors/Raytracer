@@ -14,7 +14,7 @@
 #include <format>
 
 namespace RT {
-SimpleSystem::SimpleSystem(UUIDManager *um) : System{um} {
+SimpleSystem::SimpleSystem(std::shared_ptr<UUIDManager> um) : System{um} {
   LOG(std::format("created {}", get_name()));
 }
 

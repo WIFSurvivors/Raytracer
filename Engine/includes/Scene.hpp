@@ -30,7 +30,9 @@ struct Scene {
   Scene(Engine *e, std::string title);
   virtual ~Scene();
 
-  inline UUIDManager *get_uuid_manager() { return &_uuid_manager; }
+  inline std::shared_ptr<UUIDManager> get_uuid_manager() {
+    return _uuid_manager;
+  }
   inline AssetManager *get_asset_manager() { return &_asset_manager; }
   inline EntityStorage *get_entity_storage() { return &_entity_storage; }
   inline RenderSystem *get_render_system() { return &_render_system; }
@@ -76,13 +78,13 @@ private:
 
   std::string _title{"default"};
 
-  UUIDManager _uuid_manager{};
-  AssetManager _asset_manager{&_uuid_manager};
+  std::shared_ptr<UUIDManager> _uuid_manager = std::make_shared<UUIDManager>();
+  AssetManager _asset_manager{_uuid_manager};
   AssetManager::DefaultAssets _default_assets{&_asset_manager};
-  EntityStorage _entity_storage{&_uuid_manager};
-  SimpleSystem _simple_system{&_uuid_manager};
-  CameraSystem _camera_system{&_uuid_manager};
-  LightSystem _light_system{&_uuid_manager};
+  EntityStorage _entity_storage{_uuid_manager};
+  SimpleSystem _simple_system{_uuid_manager};
+  CameraSystem _camera_system{_uuid_manager};
+  LightSystem _light_system{_uuid_manager};
   RenderSystem
       _render_system; // has a extensive constructor which depend on Engine
 

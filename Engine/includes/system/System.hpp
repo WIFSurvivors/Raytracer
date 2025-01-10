@@ -3,12 +3,10 @@
 #include "includes/UUIDManager.hpp"
 #include "includes/component/Component.hpp"
 #include "includes/utility/Log.hpp"
-#include "includes/utility/VariadicTable.hpp"
 #include "includes/Entity.hpp"
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_io.hpp>
-#include <algorithm>
 #include <memory>
 #include <optional>
 #include <memory>
@@ -31,7 +29,7 @@ concept is_base_of_component = std::is_base_of<IComponent, T>::value;
 template <is_base_of_component T> struct System : public IStorage {
   using uuid = boost::uuids::uuid;
 
-  explicit System(UUIDManager *um)
+  explicit System(std::shared_ptr<UUIDManager> um)
       : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/ }
   ~System() override = default;
 

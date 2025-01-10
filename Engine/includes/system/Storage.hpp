@@ -16,7 +16,7 @@ namespace RT {
 template <class T> struct Storage : public IStorage {
   using uuid = boost::uuids::uuid;
 
-  explicit Storage(UUIDManager *um)
+  explicit Storage(std::shared_ptr<UUIDManager> um)
       : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/ }
   virtual ~Storage() = default;
 

@@ -13,7 +13,7 @@
 
 namespace RT {
 struct LightSystem : public System<LightComponent> {
-  explicit LightSystem(UUIDManager *um);
+  explicit LightSystem(std::shared_ptr<UUIDManager> um);
 
   LightComponent *create_component(Entity *e);
   LightComponent *create_component(Entity *e, uuid id);

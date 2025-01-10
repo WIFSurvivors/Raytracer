@@ -36,7 +36,7 @@ public:
   void read_scene_from_json(std::filesystem::path p);
   void startLoop();
 
-  inline UUIDManager *get_active_uuid_manager() {
+  inline std::shared_ptr<UUIDManager> get_active_uuid_manager() {
     return _scene->get_uuid_manager();
   }
   inline WindowManager *get_window_manager() { return &_wm; }

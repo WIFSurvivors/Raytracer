@@ -7,6 +7,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/nil_generator.hpp>
 #include <filesystem>
+#include <memory>
 #include <vector>
 #include <format>
 #include <string>
@@ -52,7 +53,7 @@ namespace fs = std::filesystem;
 struct AssetManager : public Storage<fs::path> {
   const std::string get_name() const override { return "Asset Manager"; }
 
-  explicit AssetManager(UUIDManager *um) : Storage(um) {
+  explicit AssetManager(std::shared_ptr<UUIDManager> um) : Storage(um) {
     LOG(std::format("created {}", get_name()));
   }
 

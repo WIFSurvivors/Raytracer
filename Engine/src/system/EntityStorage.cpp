@@ -13,7 +13,8 @@
 #include "glm/ext.hpp"
 
 namespace RT {
-EntityStorage::EntityStorage(UUIDManager *um) : Storage<Entity *>(um) {
+EntityStorage::EntityStorage(std::shared_ptr<UUIDManager> um)
+    : Storage<Entity *>(um) {
   LOG(std::format("created {}", get_name()));
 }
 

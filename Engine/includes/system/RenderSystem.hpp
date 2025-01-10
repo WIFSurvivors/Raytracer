@@ -42,8 +42,9 @@ struct FrameSnapshot;
  *	- Do we really need a separate class for shaders
  */
 struct RenderSystem : public System<RenderComponent> {
-  RenderSystem(UUIDManager *um, WindowManager *wm, CameraSystem *cs,
-               LightSystem *ls, AssetManager::DefaultAssets *da);
+  RenderSystem(std::shared_ptr<UUIDManager> um, WindowManager *wm,
+               CameraSystem *cs, LightSystem *ls,
+               AssetManager::DefaultAssets *da);
 
   void init();
   void update(const FrameSnapshot &snapshot); // represents render
@@ -71,7 +72,6 @@ struct RenderSystem : public System<RenderComponent> {
                    std::optional<AssetManager::Asset> mtl_asset = {},
                    std::optional<AssetManager::Asset> shader_asset = {});
 
-
   inline void set_bounces(int bounce) { _bounces = bounce; }
   inline int get_bounces() const { return _bounces; }
 
@@ -85,6 +85,7 @@ struct RenderSystem : public System<RenderComponent> {
   // std::unique_ptr<RenderComponent> _component;
   void print() override;
   void update_galary(std::shared_ptr<MeshGallary> mesh_object);
+
 private:
   WindowManager *_wm;
   CameraSystem *_cs;
@@ -104,7 +105,7 @@ private:
   GLuint _ssbo_mats;
   GLuint _ssbo_matsIDX;
   GLuint _vao;
-  
+
   glm::ivec2 _screen_size;
 
   glm::vec3 _cameraPosition;
@@ -113,7 +114,6 @@ private:
 
   glm::mat4 _viewMatrix;
   glm::mat4 _projectionMatrix;
-
 
   glm::mat4 _modelMatrix_Canvas = glm::mat4(1.0f);
   GLuint _timeU;

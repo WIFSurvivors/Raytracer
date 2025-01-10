@@ -35,8 +35,9 @@
 std::unique_ptr<TreeBuilder> BVH_Tree;
 
 namespace RT {
-RenderSystem::RenderSystem(UUIDManager *um, WindowManager *wm, CameraSystem *cs,
-                           LightSystem *ls, AssetManager::DefaultAssets *da)
+RenderSystem::RenderSystem(std::shared_ptr<UUIDManager> um, WindowManager *wm,
+                           CameraSystem *cs, LightSystem *ls,
+                           AssetManager::DefaultAssets *da)
     : System{um}, _wm{wm}, _cs{cs}, _ls{ls}, _da{da} {
   LOG("created render system");
   init();

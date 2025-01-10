@@ -2,6 +2,7 @@
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
+#include <memory>
 #include <map>
 #include <string>
 
@@ -18,12 +19,12 @@ struct UUIDManager;
 struct IStorage {
   using uuid = boost::uuids::uuid;
 
-  explicit IStorage(UUIDManager *um) : _um{um} {}
+  explicit IStorage(std::shared_ptr<UUIDManager> um) : _um{um} {}
   virtual ~IStorage() = default;
   virtual const std::string get_name() const = 0;
 
 protected:
-  UUIDManager *_um;
+  std::shared_ptr<UUIDManager> _um;
 };
 
 /**

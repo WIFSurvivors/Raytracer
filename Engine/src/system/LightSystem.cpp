@@ -1,11 +1,12 @@
 #include "includes/system/LightSystem.hpp"
 #include "includes/UUIDManager.hpp"
 #include "includes/utility/Log.hpp"
+#include "includes/utility/VariadicTable.hpp"
 #include <format>
 #include <iomanip> // for std::setprecision
 
 namespace RT {
-LightSystem::LightSystem(UUIDManager *um) : System{um} {
+LightSystem::LightSystem(std::shared_ptr<UUIDManager> um) : System{um} {
   LOG(std::format("created {}", get_name()));
 }
 

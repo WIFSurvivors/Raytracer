@@ -19,7 +19,7 @@ struct Entity;
 struct EntityStorage : public Storage<Entity *> {
   using uuid = boost::uuids::uuid;
 
-  explicit EntityStorage(UUIDManager *um);
+  explicit EntityStorage(std::shared_ptr<UUIDManager> um);
 
   inline const std::string get_name() const final { return "Entity Storage"; }
 
