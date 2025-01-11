@@ -17,7 +17,7 @@ public class Gui
             String uuid1 = api.move_entity(thing, 0.0f, 2.0f, 0.0f);
             /*// Send second message*/
             String uuid2 = api.rotate_entity(thing, 180.0f, 45.0f, 45.0f);
-            string message1 = api.json_import("C:\\Users\\Spyros\\projects\\Raytracer\\Engine\\json\\JsonParser_DummyFile.json");
+            //string message1 = api.json_import("C:\\Users\\Spyros\\projects\\Raytracer\\Engine\\json\\JsonParser_DummyFile.json");
             /*//client.Close();*/
             /*string test = api.get_entity_options(thing);*/
             /*string message1 = api.get_child_entities(thing);*/

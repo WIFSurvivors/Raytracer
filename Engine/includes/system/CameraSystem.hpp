@@ -25,6 +25,11 @@ struct CameraSystem : public System<CameraComponent> {
 
   inline const std::string get_name() const final { return "Camera System"; }
 
+  /*
+   * Only allows you to remove non-main-camera components.
+   */
+  bool remove(uuid id) override;
+  void enforce_main_camera_deletion();
   void print() override;
 
 private:

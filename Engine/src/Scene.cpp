@@ -5,19 +5,20 @@
 #include <boost/json.hpp>
 #include <cassert>
 #include <format>
+#include <ostream>
 
 namespace RT {
 Scene::Scene(Engine *e)
-    : _render_system{_uuid_manager, e->get_window_manager(), &_camera_system,
-                     &_light_system, &_default_assets},
+    : /*_render_system{_uuid_manager, e->get_window_manager(), &_camera_system,
+                     &_light_system, &_default_assets},*/
       _root{create_root("root")} {}
 
 Scene::Scene(Engine *e, std::string title)
-    : _render_system{_uuid_manager, e->get_window_manager(), &_camera_system,
-                     &_light_system, &_default_assets},
+    : /*_render_system{_uuid_manager, e->get_window_manager(), &_camera_system,
+                     &_light_system, &_default_assets},*/
       _root{create_root("root")}, _title{title} {}
 
-Scene::~Scene() { _render_system.destroy(); }
+Scene::~Scene() { /*_render_system.destroy();*/ }
 
 std::shared_ptr<Entity> Scene::create_root(const std::string &name) {
   return _entity_storage.create_root_entity(name);
@@ -45,14 +46,54 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
   return _entity_storage.create_entity(name, id, parent);
 }
 
+bool Scene::remove(Entity *e) {
+  LOG(std::format("Trying to remove {} w/ {} children", e->get_name(),
+                  e->get_child_entities().size()));
+  // 1) Recursively call remove on children
+  for (auto &&ce : e->get_child_entities()) {
+    remove(ce.get());
+  }
+  // 2) Remove all components that are currently active on the removed entity
+  // from their systems.
+  e->remove_components(_uuid_manager.get());
+
+  return true;
+}
+
+bool Scene::remove(uuid id) {
+  auto e = _entity_storage.get_entity(id);
+  if (!e.has_value()) {
+    return true;
+  }
+  return remove(e.value());
+}
+
 void Scene::print() { _root->print(); }
 void Scene::print_system_data() {
   _uuid_manager->print();
   _asset_manager.print();
   _entity_storage.print();
-  _render_system.print();
+  // _render_system.print();
   _camera_system.print();
   _light_system.print();
+}
+
+void Scene::generate_test() {
+  _entity_storage.print();
+  _camera_system.print();
+  LOG(std::string(30, '*'));
+  {
+    auto e1 = create_entity("wawa1");
+    auto e2 = create_entity("wawa2");
+    auto c1 = _camera_system.create_component(e1.get());
+    auto c2 = _camera_system.create_component(e2.get());
+    _camera_system.remove(c1->get_uuid());
+    _camera_system.remove(c2->get_uuid());
+  }
+  LOG(std::string(30, '*'));
+  _entity_storage.print();
+  _camera_system.print();
+  // print_system_data();
 }
 
 void Scene::generate_sample_content() {
@@ -132,7 +173,7 @@ void Scene::generate_sample_content() {
   auto root_ptr = get_root().lock();
   auto asset1 = create_asset("./assets/cornell-box.obj");
   auto ComponentEntity1 = create_entity("ComponentEntity1", root_ptr);
-  _render_system.create_component(ComponentEntity1.get(), asset1);
+  // _render_system.create_component(ComponentEntity1.get(), asset1);
   //_render_system.create_component(root_ptr.get(), v3, u3);
 
   LOG_NEW_LINE();
@@ -163,6 +204,6 @@ void Scene::generate_sample_content() {
 void Scene::update(const FrameSnapshot &snapshot) {
   //   do things??
   //   _camera_system.sample_update_move_main_camera(timer.get_delta_time());
-  _render_system.update(snapshot);
+  // _render_system.update(snapshot);
 }
 } // namespace RT

@@ -78,15 +78,7 @@ bool EntityStorage::remove(uuid id) {
   return false;
 }
 
-bool EntityStorage::remove(Entity *e) {
-  auto it = std::find_if(_storage.begin(), _storage.end(),
-                         [e](const auto &val) { return val.second == e; });
-  if (it != _storage.end()) {
-    _storage.erase(it);
-    return true;
-  }
-  return false;
-}
+bool EntityStorage::remove(Entity *e) { return remove(e->get_uuid()); }
 
 void EntityStorage::print() {
   std::cout << "Entity Storage: " << std::endl;
