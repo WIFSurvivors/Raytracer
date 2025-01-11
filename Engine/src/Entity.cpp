@@ -58,6 +58,15 @@ bool Entity::remove_component(uuid id) {
   return false;
 }
 
+void Entity::remove_components(UUIDManager *um) {
+  for (auto it = _components.begin(); it != _components.end();) {
+    auto c_it = it;
+    um->remove((*it)->get_uuid());
+    it = _components.erase(
+        it); // might be weird because of the missing pointer underneath?
+  }
+}
+
 void Entity::add_child_entity(std::shared_ptr<Entity> e) {
   _child_entities.push_back(e);
 }

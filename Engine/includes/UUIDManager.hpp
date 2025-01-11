@@ -23,6 +23,8 @@ struct IStorage {
   virtual ~IStorage() = default;
   virtual const std::string get_name() const = 0;
 
+  virtual bool remove(uuid id) = 0;
+
 protected:
   std::shared_ptr<UUIDManager> _um;
 };
@@ -41,10 +43,10 @@ struct UUIDManager {
   inline IStorage *get_storage(uuid id) { return _uuid_storage_mapping[id]; }
 
   /**
-   * This only removes an entity from the storage. If the associated Componet
-   * oder Entity hasn't been removed before, it will not be accessible anymore!
+   * Removes UUID from Storage and executes the required clean-up inside the
+   * system.
    */
-  bool remove(uuid id); // TBD
+  bool remove(uuid id);
 
   void print();
 

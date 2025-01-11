@@ -56,8 +56,8 @@ template <is_base_of_component T> struct System : public IStorage {
    * Removes Component from container by uuid.
    * This will also remove it's link to it's entity.
    */
-  inline bool remove(uuid id) {
-    // Because each component is a unique_ptr, it will call deconstructor of
+  bool remove(uuid id) override {
+    // Because each component is a unique_ptr, it will call the deconstructor of
     // IComponent on destruction, which in turn will remove itself from it's
     // linked entity
     LOG(std::format("-- ! removing component with UUID {}",
