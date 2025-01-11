@@ -38,12 +38,6 @@ template <class T> struct Storage : public IStorage {
                                  : std::nullopt;
   }
 
-  /**
-   * Removes Object from container by uuid.
-   * This will also remove it's link to it's entity.
-   */
-  virtual bool remove(uuid id) = 0;
-
 protected:
   std::map<uuid, T> _storage;
 };

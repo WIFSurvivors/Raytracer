@@ -43,7 +43,10 @@ void UUIDManager::print() {
 }
 
 bool UUIDManager::remove(uuid id) {
-  throw NotImplementedError();
-  return false;
+  auto sys = get_storage(id);
+  if (sys != nullptr) { // uuid doesn't exist
+    return sys->remove(id);
+  }
+  return true;
 }
 } // namespace RT

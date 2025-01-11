@@ -1,4 +1,5 @@
 #include "includes/system/CameraSystem.hpp"
+#include "includes/system/System.hpp"
 #include "includes/utility/Log.hpp"
 #include "includes/utility/VariadicTable.hpp"
 #include <boost/uuid/uuid_io.hpp>
@@ -62,6 +63,23 @@ void CameraSystem::sample_update_move_main_camera(float t1) {
   auto dt_sin = std::sin(t1 * 2.5) * 10;
   pos.y = dt_sin;
   ent->set_local_position(pos);
+}
+
+bool CameraSystem::remove(uuid id) {
+  if (get_main_camera()->get_uuid() != id) { // if not main camera, remove
+    return System::remove(id);
+  }
+  LOG_WARN("TRYING TO REMOVE MAIN CAMERA -> FORBIDDEN");
+  // trying to remove main camera... that's FORBIDDEN
+  return false;
+}
+
+void CameraSystem::enforce_main_camera_deletion() {
+  if (!get_main_camera())
+    return;
+
+  LOG_WARN("DELETED MAIN CAMERA -> MAYBE BAD THINGS HAPPEN NOW");
+  System::remove(get_main_camera()->get_uuid());
 }
 
 void CameraSystem::print() {
