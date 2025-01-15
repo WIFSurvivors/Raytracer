@@ -146,9 +146,12 @@ struct TreeBuilder {
   std::vector<Triangle> inserted_triangles;
   std::vector<uint32_t> triIdxData;
   std::vector<Vec3Padded> vertex;
-  std::vector<Materials> mats;
 
+  std::vector<Materials> mats;
   std::vector<uint32_t> matIndx;
+
+  std::vector<Triangle> normals;
+  std::vector<uint32_t> normalIndx;
   int RenderEntities;
   std::vector<std::shared_ptr<MeshGallary>> gallary;
 
@@ -209,9 +212,13 @@ struct TreeBuilder {
     triangles.clear();
     mats.clear();
     matIndx.clear();
+	normals.clear();
+	normalIndx.clear();
     vertex.clear();
     inserted_triangles.clear();
     ssboData.clear();
+
+
 
     for (auto &obj : gallary) {
       for (auto &mesh : obj->_meshes) {
@@ -219,6 +226,7 @@ struct TreeBuilder {
         //mats.push_back(Materials(mesh.MeshMaterial.Kd,0.0f,mesh.MeshMaterial.Ka,0.0f,mesh.MeshMaterial.Ks,0.0f,mesh.MeshMaterial.d,mesh.MeshMaterial.illum,mesh.MeshMaterial.Ns,mesh.MeshMaterial.Ni));
 
 		mats.push_back(Materials(mesh.MeshMaterial.Kd,0.02f, mesh.MeshMaterial.Ka, mesh.MeshMaterial.Ni,mesh.MeshMaterial.Ks,mesh.MeshMaterial.d, mesh.MeshMaterial.illum,0.0f,0.0f,0.0f));
+		
 		std::cout << "NS: " << mesh.MeshMaterial.Ns << std::endl;
         for (int i = 0; i < mesh._indices.size(); i += 3) {
           Triangle tri{mesh._vertices[mesh._indices[i]],
