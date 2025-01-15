@@ -45,6 +45,7 @@
                         <MenuItem Name="mniAddRender" Header="Add Render" Tag="RenderMethod" Click="AddMenuClick" />
                         <MenuItem Name="mniAddLight" Header="Add Light" Tag="LightMethod" Click="AddMenuClick" />
                         <MenuItem Name="mniAddCamera" Header="Add Camera" Tag="CameraMethod" Click="AddMenuClick" />
+                        <MenuItem Name="mniAddEntity" Header="Add Entity" Tag="EntityMethod" Click="AddMenuClick" />
                     </MenuItem>
 
                     <MenuItem Header="Settings" Width="169">

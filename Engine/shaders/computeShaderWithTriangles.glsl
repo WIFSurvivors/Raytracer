@@ -394,8 +394,8 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
                 float attenuation = 1.0 / (distanceToLight * distanceToLight);
 
                 //bool isShadow = isInShadowTriangleAlt(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
-                bool isShadow = processBVH_Shadow(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
-                //bool isShadow = false;
+                //bool isShadow = processBVH_Shadow(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
+                bool isShadow = false;
                 if (!isShadow) {
                     float diffuse = max(dot(N, shadowRay), 0.0);
                     vec3 lighting = reflec_accumulation * light.color * materials[matIndex[index]].color * light.intensity * diffuse * attenuation;
@@ -421,7 +421,7 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
             color *= materials[matIndex[index]].d;
             hit = true;
         } else {
-            //color += reflec_accumulation * backgroundColor(currentRay.direction);
+            color += reflec_accumulation * backgroundColor(currentRay.direction);
         }
     }
     //if(!hit){color = vec3(1.0f,0.0f,0.0f);}

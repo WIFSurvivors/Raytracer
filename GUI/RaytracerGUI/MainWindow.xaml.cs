@@ -23,6 +23,8 @@ using System;
 using System.Reflection;
 using System.Windows.Controls.Primitives;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
+using System;
+using System.Windows.Forms;
 
 namespace RaytracerGUI
 {
@@ -156,6 +158,11 @@ namespace RaytracerGUI
 
                     case "mniAddCamera":
                         AddCameraComponent();
+                        tbxLog.AppendText($"{itemName} was clicked!\n");
+                        tbxLog.ScrollToEnd();
+                        break;
+                    case "mniAddEntity":
+                        AddEntity();
                         tbxLog.AppendText($"{itemName} was clicked!\n");
                         tbxLog.ScrollToEnd();
                         break;
@@ -1072,6 +1079,38 @@ namespace RaytracerGUI
             }
         }
 
+        private void AddEntity()
+        {
+            String name;
+            if (_ecsApi != null)
+            {
+                try
+                {
+                    // Open dialog to get the name
+                    var nameDialog = new NameInputDialog();
+                    if (nameDialog.ShowDialog() == true)
+                    {
+                        name = nameDialog.EntityName;
+
+                        // Proceed with entity creation
+                        string pathSentStatus = _ecsApi.create_entity(currentEntityUUID, name);
+                        tbxLog.AppendText("Render Component Added!\n");
+                        UpdateComponents(currentEntityUUID, null);
+                    }
+                    else
+                    {
+                        tbxLog.AppendText("Operation cancelled by the user.\n");
+                    }
+                }
+                catch (InvalidOperationException ex)
+                {
+                    tbxLog.AppendText($"Error: {ex.Message}\n");
+                }
+            }
+        }
+
+
+
         //Items
 
 
@@ -1093,6 +1132,10 @@ namespace RaytracerGUI
             tbxLog.AppendText("Captured!" + "\n");
 
         }
+
+
+
+        
     }
 
 }
