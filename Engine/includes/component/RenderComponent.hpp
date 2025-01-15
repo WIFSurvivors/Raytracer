@@ -129,9 +129,6 @@ struct RenderComponent : public IComponent {
       renderMesh.MeshMaterial = mesh.MeshMaterial;
 
       _meshes.push_back(renderMesh);
-	  std::cout << "Ns1: " << renderMesh.MeshMaterial.Ns << std::endl;
-	  std::cout << "Ni1: " << renderMesh.MeshMaterial.Ni << std::endl;
-	  std::cout << "Illum1: " << renderMesh.MeshMaterial.illum << std::endl;
     }
 
     #endif
@@ -156,7 +153,6 @@ struct RenderComponent : public IComponent {
                                  mesh.Indices.begin(), mesh.Indices.end());
       renderMesh.MeshMaterial = mesh.MeshMaterial;
       _meshes.push_back(renderMesh);
-	  std::cout << "Ns2: " << renderMesh.MeshMaterial.Ns << std::endl;
     }
     #endif
   }
@@ -179,21 +175,6 @@ struct RenderComponent : public IComponent {
       renderMesh.MeshMaterial = mesh.MeshMaterial;
       _meshes.push_back(renderMesh);
 
-      for (int i = 0; i < mesh.Indices.size(); i++) {
-        std::cout << "Triangle : " << i << std::endl;
-        std::cout << "\t v0(" << mesh.Vertices[i].Position.x << ","
-                  << mesh.Vertices[i].Position.y << ","
-                  << mesh.Vertices[i].Position.z << ")" << std::endl;
-        std::cout << "\t v1(" << mesh.Vertices[i + 1].Position.x << ","
-                  << mesh.Vertices[i + 1].Position.y << ","
-                  << mesh.Vertices[i + 1].Position.z << ")" << std::endl;
-        std::cout << "\t v2(" << mesh.Vertices[i + 2].Position.x << ","
-                  << mesh.Vertices[i + 2].Position.y << ","
-                  << mesh.Vertices[i + 2].Position.z << ")" << std::endl;
-      }
-
-
-	  std::cout << "Ns3: " << renderMesh.MeshMaterial.Ns << std::endl;
     }
     #endif
     _obj_asset->set_path(obj_path);
