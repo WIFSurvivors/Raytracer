@@ -275,7 +275,8 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   if (_cs && _cs->get_main_camera()) {
     _cameraPosition =
         _cs->get_main_camera()->get_entity()->get_world_position();
-    _cameraDirection = glm::vec3(0.0f, 8.0f, 4.0f);
+    //_cameraDirection = glm::vec3(0.0f, 8.0f, 4.0f);
+	_cameraDirection = _cs->get_main_camera()->get_entity()->get_world_rotation();
     _viewMatrix =
         glm::lookAt(_cameraPosition, _cameraDirection, glm::vec3(0, 1, 0));
 

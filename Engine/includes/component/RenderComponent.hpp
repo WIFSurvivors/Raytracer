@@ -102,7 +102,7 @@ struct RenderComponent : public IComponent {
   inline const AssetManager::Asset get_obj_asset() const { return *_obj_asset; }
 
   inline void set_obj_asset(AssetManager::Asset obj_asset) {
-    #if SHOW_UI
+#if SHOW_UI
     objl::Loader loader;
     loader.LoadFile(obj_asset.get_path().string());
 
@@ -123,24 +123,25 @@ struct RenderComponent : public IComponent {
         renderMesh._vertices.push_back(
 
             glm::vec3(vertex.Position.x, vertex.Position.y, vertex.Position.z));
+
+        renderMesh._normals.push_back(
+            glm::vec3(vertex.Normal.x, vertex.Normal.y, vertex.Normal.z));
       }
       renderMesh._indices.insert(renderMesh._indices.end(),
                                  mesh.Indices.begin(), mesh.Indices.end());
+	  
       renderMesh.MeshMaterial = mesh.MeshMaterial;
 
       _meshes.push_back(renderMesh);
-	  std::cout << "Ns1: " << renderMesh.MeshMaterial.Ns << std::endl;
-	  std::cout << "Ni1: " << renderMesh.MeshMaterial.Ni << std::endl;
-	  std::cout << "Illum1: " << renderMesh.MeshMaterial.illum << std::endl;
     }
 
-    #endif
+#endif
     _obj_asset = std::make_shared<AssetManager::Asset>(obj_asset);
   }
 
   inline void set_obj_asset(uuid obj_uuid) {
     _obj_asset->set_uuid(obj_uuid);
-    #if SHOW_UI
+#if SHOW_UI
     objl::Loader loader;
     loader.LoadFile(_obj_asset->get_path().string());
     _meshes.clear();
@@ -151,18 +152,20 @@ struct RenderComponent : public IComponent {
       for (const auto &vertex : mesh.Vertices) {
         renderMesh._vertices.push_back(
             glm::vec3(vertex.Position.x, vertex.Position.y, vertex.Position.z));
+
+        renderMesh._normals.push_back(
+            glm::vec3(vertex.Normal.x, vertex.Normal.y, vertex.Normal.z));
       }
       renderMesh._indices.insert(renderMesh._indices.end(),
                                  mesh.Indices.begin(), mesh.Indices.end());
       renderMesh.MeshMaterial = mesh.MeshMaterial;
       _meshes.push_back(renderMesh);
-	  std::cout << "Ns2: " << renderMesh.MeshMaterial.Ns << std::endl;
     }
-    #endif
+#endif
   }
   inline void set_obj_asset(std::filesystem::path obj_path) {
     objl::Loader loader;
-    #if SHOW_UI
+#if SHOW_UI
     loader.LoadFile(obj_path.string());
 
     _meshes.clear();
@@ -173,29 +176,16 @@ struct RenderComponent : public IComponent {
       for (const auto &vertex : mesh.Vertices) {
         renderMesh._vertices.push_back(
             glm::vec3(vertex.Position.x, vertex.Position.y, vertex.Position.z));
+
+        renderMesh._normals.push_back(
+            glm::vec3(vertex.Normal.x, vertex.Normal.y, vertex.Normal.z));
       }
       renderMesh._indices.insert(renderMesh._indices.end(),
                                  mesh.Indices.begin(), mesh.Indices.end());
       renderMesh.MeshMaterial = mesh.MeshMaterial;
       _meshes.push_back(renderMesh);
-
-      for (int i = 0; i < mesh.Indices.size(); i++) {
-        std::cout << "Triangle : " << i << std::endl;
-        std::cout << "\t v0(" << mesh.Vertices[i].Position.x << ","
-                  << mesh.Vertices[i].Position.y << ","
-                  << mesh.Vertices[i].Position.z << ")" << std::endl;
-        std::cout << "\t v1(" << mesh.Vertices[i + 1].Position.x << ","
-                  << mesh.Vertices[i + 1].Position.y << ","
-                  << mesh.Vertices[i + 1].Position.z << ")" << std::endl;
-        std::cout << "\t v2(" << mesh.Vertices[i + 2].Position.x << ","
-                  << mesh.Vertices[i + 2].Position.y << ","
-                  << mesh.Vertices[i + 2].Position.z << ")" << std::endl;
-      }
-
-
-	  std::cout << "Ns3: " << renderMesh.MeshMaterial.Ns << std::endl;
     }
-    #endif
+#endif
     _obj_asset->set_path(obj_path);
   }
 
@@ -256,9 +246,9 @@ private:
   std::vector<RenderComponentMesh> _meshes;
   int _nvertices = 0; // Number of vertices
 
-  std::vector<glm::vec2> _uv = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 0.0f},
-                                glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 0.0f},
-                                glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 1.0f}};
+  std::vector<glm::vec2> _uv = {
+      glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 0.0f}, glm::vec2{1.0f, 1.0f},
+      glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 1.0f}, glm::vec2 { 0.0f, 1.0f }};
 
   GLuint _textU;
   GLuint _modelU;

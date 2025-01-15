@@ -7,6 +7,7 @@
 
 struct RenderComponentMesh{
   std::vector<glm::vec3> _vertices;
+  std::vector<glm::vec3> _normals;
   std::vector<unsigned int> _indices;
   objl::Material MeshMaterial;
   

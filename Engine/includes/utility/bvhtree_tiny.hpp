@@ -218,7 +218,7 @@ struct TreeBuilder {
 
         //mats.push_back(Materials(mesh.MeshMaterial.Kd,0.0f,mesh.MeshMaterial.Ka,0.0f,mesh.MeshMaterial.Ks,0.0f,mesh.MeshMaterial.d,mesh.MeshMaterial.illum,mesh.MeshMaterial.Ns,mesh.MeshMaterial.Ni));
 
-		mats.push_back(Materials(mesh.MeshMaterial.Kd,0.05f, mesh.MeshMaterial.Ka, mesh.MeshMaterial.Ni,mesh.MeshMaterial.Ks,mesh.MeshMaterial.d, mesh.MeshMaterial.illum,0.0f,0.0f,0.0f));
+		mats.push_back(Materials(mesh.MeshMaterial.Kd,0.02f, mesh.MeshMaterial.Ka, mesh.MeshMaterial.Ni,mesh.MeshMaterial.Ks,mesh.MeshMaterial.d, mesh.MeshMaterial.illum,0.0f,0.0f,0.0f));
 		std::cout << "NS: " << mesh.MeshMaterial.Ns << std::endl;
         for (int i = 0; i < mesh._indices.size(); i += 3) {
           Triangle tri{mesh._vertices[mesh._indices[i]],
