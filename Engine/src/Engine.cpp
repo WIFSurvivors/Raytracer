@@ -68,6 +68,7 @@ void Engine::startLoop() {
   int sub_frames = 0;
 
   float frame_time, new_time;
+  bool _temp = true;
   while (!_wm.should_close()) {
     // update the difference of the previous and the new frame
     new_time = get_total_time();
@@ -95,6 +96,17 @@ void Engine::startLoop() {
 
       Log::get_instance().clear_buffer();
       // trigger this either on 1sec difference OR 10 log entries available???
+    }
+
+    // emulate change scene after 10 frames
+    if (_temp && frames > 60) { // 2 seconds
+      LOG("Engine::startLoop() THRESHHOLD GOT");
+      _temp = false;
+	  _scene->print_system_data();	  
+      auto new_s = std::make_unique<Scene>(this, "test :3");
+      change_scene(std::move(new_s));
+      _scene->generate_test();
+	  _scene->print_system_data();
     }
   }
 }

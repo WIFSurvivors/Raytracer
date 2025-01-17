@@ -36,9 +36,9 @@ public:
   void load_test_scene() {
     _scene = std::make_unique<Scene>(this);
     _scene->generate_test();
-    auto new_s = std::make_unique<Scene>(this);
-    change_scene(std::move(new_s));
-    _scene->generate_test();
+    // auto new_s = std::make_unique<Scene>(this);
+    // change_scene(std::move(new_s));
+    // _scene->generate_test();
   }
   void save_scene_as_json(std::filesystem::path p);
   void read_scene_from_json(std::filesystem::path p);
