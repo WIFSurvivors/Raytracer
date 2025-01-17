@@ -118,16 +118,18 @@ struct SSBONodes {
 struct Vec3Padded {
   glm::vec3 data;
   float pad;
+  glm::vec3 normal;
+  float pad0;
 };
 
 struct alignas(16) Materials {
-  glm::vec3 Kd;   // Diffuse Color
-  float Ns;  // Specular Exponent
-  glm::vec3 Ka;   // Ambient Color
-  float Ni;  // Optical Density
-  glm::vec3 Ks;   // Specular Color
-  float d;   // Dissolve
-  int illum; // Illumination
+  glm::vec3 Kd; // Diffuse Color
+  float Ns;     // Specular Exponent
+  glm::vec3 Ka; // Ambient Color
+  float Ni;     // Optical Density
+  glm::vec3 Ks; // Specular Color
+  float d;      // Dissolve
+  int illum;    // Illumination
   float pad0;
   float pad1;
   float pad2;
@@ -138,20 +140,29 @@ struct ObjectData {
   Materials material;
 };
 
+struct Vec3Hash {
+  size_t operator()(const glm::vec3 &v) const {
+    size_t h1 = std::hash<float>{}(v.x);
+    size_t h2 = std::hash<float>{}(v.y);
+    size_t h3 = std::hash<float>{}(v.z);
+    return h1 ^ (h2 << 1) ^ (h3 << 2);
+  }
+};
+
 struct TreeBuilder {
 
   tinybvh::BVH tree;
   std::vector<SSBONodes> ssboData;
   std::vector<Triangle> triangles;
   std::vector<Triangle> inserted_triangles;
-  std::vector<uint32_t> triIdxData;
-  std::vector<Vec3Padded> vertex;
+  std::vector<uint32_t> triIdxData; // Triangle Indices. Stores Indices of
+                                    // triangles triIdxData[5] = 32
+  std::vector<Vec3Padded> vertex;   // Vertices vertex[32+0/1/2] = triangle
 
   std::vector<Materials> mats;
   std::vector<uint32_t> matIndx;
 
-  std::vector<Triangle> normals;
-  std::vector<uint32_t> normalIndx;
+  std::unordered_map<glm::vec3, glm::vec3, Vec3Hash> vertexToNormal;
   int RenderEntities;
   std::vector<std::shared_ptr<MeshGallary>> gallary;
 
@@ -159,16 +170,16 @@ struct TreeBuilder {
 
   int get_numberOfTriangles() { return triangles.size(); }
 
-  //void update_gallary(MeshGallary &mesh_object) {
-  //  bool found = false;
-  //  for (auto &c : gallary) {
-  //    if (mesh_object.id == c.id) {
-  //      c._meshes.clear();
-  //      for (RenderComponentMesh &mesh : mesh_object._meshes) {
-  //        for (glm::vec3 &vertex : mesh._vertices) {
-  //          vertex = glm::vec3(mesh_object.model * glm::vec4(vertex, 1.0f));
-  //        }
-  //      }
+  // void update_gallary(MeshGallary &mesh_object) {
+  //   bool found = false;
+  //   for (auto &c : gallary) {
+  //     if (mesh_object.id == c.id) {
+  //       c._meshes.clear();
+  //       for (RenderComponentMesh &mesh : mesh_object._meshes) {
+  //         for (glm::vec3 &vertex : mesh._vertices) {
+  //           vertex = glm::vec3(mesh_object.model * glm::vec4(vertex, 1.0f));
+  //         }
+  //       }
 
   //      c._meshes = mesh_object._meshes;
   //      found = true;
@@ -188,21 +199,17 @@ struct TreeBuilder {
   //  }
   //}
 
-  //void new_gallary(MeshGallary &mesh_object) {
-  //  gallary.clear();
-  //  for (RenderComponentMesh &mesh : mesh_object._meshes) {
-  //    for (glm::vec3 &vertex : mesh._vertices) {
-  //      vertex = glm::vec3(mesh_object.model * glm::vec4(vertex, 1.0f));
-  //    }
-  //    gallary.push_back(mesh_object);
-  //  }
-  //}
-  
+  // void new_gallary(MeshGallary &mesh_object) {
+  //   gallary.clear();
+  //   for (RenderComponentMesh &mesh : mesh_object._meshes) {
+  //     for (glm::vec3 &vertex : mesh._vertices) {
+  //       vertex = glm::vec3(mesh_object.model * glm::vec4(vertex, 1.0f));
+  //     }
+  //     gallary.push_back(mesh_object);
+  //   }
+  // }
 
-
-  void setGallary(std::vector<std::shared_ptr<MeshGallary>> o){
-	gallary = o;
-  }
+  void setGallary(std::vector<std::shared_ptr<MeshGallary>> o) { gallary = o; }
   void loadData() {
 
     if (gallary.empty()) {
@@ -212,28 +219,38 @@ struct TreeBuilder {
     triangles.clear();
     mats.clear();
     matIndx.clear();
-	normals.clear();
-	normalIndx.clear();
     vertex.clear();
     inserted_triangles.clear();
     ssboData.clear();
-
-
+    vertexToNormal.clear();
 
     for (auto &obj : gallary) {
       for (auto &mesh : obj->_meshes) {
 
-        //mats.push_back(Materials(mesh.MeshMaterial.Kd,0.0f,mesh.MeshMaterial.Ka,0.0f,mesh.MeshMaterial.Ks,0.0f,mesh.MeshMaterial.d,mesh.MeshMaterial.illum,mesh.MeshMaterial.Ns,mesh.MeshMaterial.Ni));
+        // mats.push_back(Materials(mesh.MeshMaterial.Kd,0.0f,mesh.MeshMaterial.Ka,0.0f,mesh.MeshMaterial.Ks,0.0f,mesh.MeshMaterial.d,mesh.MeshMaterial.illum,mesh.MeshMaterial.Ns,mesh.MeshMaterial.Ni));
 
-		mats.push_back(Materials(mesh.MeshMaterial.Kd,0.02f, mesh.MeshMaterial.Ka, mesh.MeshMaterial.Ni,mesh.MeshMaterial.Ks,mesh.MeshMaterial.d, mesh.MeshMaterial.illum,0.0f,0.0f,0.0f));
+        mats.push_back(Materials(mesh.MeshMaterial.Kd, 0.02f,
+                                 mesh.MeshMaterial.Ka, mesh.MeshMaterial.Ni,
+                                 mesh.MeshMaterial.Ks, mesh.MeshMaterial.d,
+                                 mesh.MeshMaterial.illum, 0.0f, 0.0f, 0.0f));
 		
-		std::cout << "NS: " << mesh.MeshMaterial.Ns << std::endl;
+        std::cout << "NS: " << mesh.MeshMaterial.Ns << std::endl;
         for (int i = 0; i < mesh._indices.size(); i += 3) {
-          Triangle tri{mesh._vertices[mesh._indices[i]],
-                       mesh._vertices[mesh._indices[i + 1]],
-                       mesh._vertices[mesh._indices[i + 2]]};
+
+          glm::vec3 v0 = mesh._vertices[mesh._indices[i]];
+          glm::vec3 v1 = mesh._vertices[mesh._indices[i + 1]];
+          glm::vec3 v2 = mesh._vertices[mesh._indices[i + 2]];
+          glm::vec3 n0 = mesh._normals[mesh._indices[i]];
+          glm::vec3 n1 = mesh._normals[mesh._indices[i + 1]];
+          glm::vec3 n2 = mesh._normals[mesh._indices[i + 2]];
+
+          Triangle tri{v0, v1, v2};
           inserted_triangles.push_back(tri);
           matIndx.push_back(mats.size() - 1);
+
+          vertexToNormal[v0] = n0;
+          vertexToNormal[v1] = n1;
+          vertexToNormal[v2] = n2;
         }
       }
     }
@@ -249,8 +266,18 @@ struct TreeBuilder {
     if (tree.verts) { // Ensure verts is not null
       for (uint32_t i = 0; i < tree.triCount * 3; ++i) {
         const auto &v = tree.verts[i];
-        vertex.push_back(
-            Vec3Padded(glm::vec3(v.x, v.y, v.z), 0.0f)); // Convert to glm::vec3
+        glm::vec3 vert = glm::vec3(v.x, v.y, v.z);
+
+        auto iterator = vertexToNormal.find(vert);
+        if (iterator != vertexToNormal.end()) {
+
+          vertex.push_back(Vec3Padded(vert, 0.0f, vertexToNormal[vert],
+                                      0.0f)); // Convert to glm::vec3
+        } else {
+          std::cout << "OOps normal is gone\n";
+          vertex.push_back(
+              Vec3Padded(vert, 0.0f, glm::vec3(0.0f, 0.0f, 1.0f), 0.0f));
+        }
       }
     }
 

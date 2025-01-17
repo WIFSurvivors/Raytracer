@@ -91,8 +91,15 @@ layout(std430, binding = 5) buffer MaterialBuffer {
     Material materials[];
 };
 
+struct Vec3Padded {
+    vec3 data;
+    float pad;
+    vec3 normal;
+    float pad0;
+};
+
 layout(std430, binding = 4) buffer VertexBuffer {
-    vec3 trivertex[];
+    Vec3Padded trivertex[];
 };
 
 layout(std430, binding = 2) buffer TriIndexBuffer {
@@ -213,7 +220,7 @@ float intersectsTriangle(Triangle v, Ray r) {
 
 float intersectsTriangleAlt(int index, Ray r) {
     int verIndex = index * 3;
-    Triangle v = Triangle(trivertex[verIndex], trivertex[verIndex + 1], trivertex[verIndex + 2]);
+    Triangle v = Triangle(trivertex[verIndex].data, trivertex[verIndex + 1].data, trivertex[verIndex + 2].data);
     vec3 edge1 = v.v1 - v.v0;
     vec3 edge2 = v.v2 - v.v0; // All points of triangle are on the same plane
     vec3 normal = normalize(cross(edge2, edge1)); // meaning the normal Doted with any point that may lie on the plain should be 0
@@ -279,9 +286,9 @@ bvh_return processBVH(Ray currentRay) {
         if (currentNode.isLeaf == 1) {
             for (int i = 0; i < currentNode.count; ++i) {
                 int firstVertexIndex = triIdx[currentNode.start + i];
-                vec3 v00 = trivertex[firstVertexIndex * 3];
-                vec3 v11 = trivertex[firstVertexIndex * 3 + 1];
-                vec3 v22 = trivertex[firstVertexIndex * 3 + 2];
+                vec3 v00 = trivertex[firstVertexIndex * 3].data;
+                vec3 v11 = trivertex[firstVertexIndex * 3 + 1].data;
+                vec3 v22 = trivertex[firstVertexIndex * 3 + 2].data;
                 Triangle tri = Triangle(v00, v11, v22);
 
                 float temp = intersectsTriangle(tri, currentRay);
@@ -315,9 +322,9 @@ bool processBVH_Shadow(Ray currentRay, int originObject, float distance) {
             for (int i = 0; i < currentNode.count; ++i) {
                 if (currentNode.start + i == originObject) continue;
                 int firstVertexIndex = triIdx[currentNode.start + i];
-                vec3 v00 = trivertex[firstVertexIndex * 3];
-                vec3 v11 = trivertex[firstVertexIndex * 3 + 1];
-                vec3 v22 = trivertex[firstVertexIndex * 3 + 2];
+                vec3 v00 = trivertex[firstVertexIndex * 3].data;
+                vec3 v11 = trivertex[firstVertexIndex * 3 + 1].data;
+                vec3 v22 = trivertex[firstVertexIndex * 3 + 2].data;
                 Triangle tri = Triangle(v00, v11, v22);
 
                 float temp = intersectsTriangle(tri, currentRay);
@@ -352,6 +359,35 @@ bool isInShadowTriangleAlt(Ray r, int originObject, float distance) {
     return false;
 }
 
+//https://www.cs.cornell.edu/courses/cs4620/2019fa/slides/07.5rt-interp.pdf :: Folie 7
+//https://gamedev.stackexchange.com/questions/23743/whats-the-most-efficient-way-to-find-barycentric-coordinates
+vec3 bayecentricCalculation(vec3 intersectionPoint, vec3 v0, vec3 v1, vec3 v2) {
+    // Calculate the edges of the triangle
+    vec3 edge1 = v1 - v0;
+    vec3 edge2 = v2 - v0;
+
+    // Vector from v0 to the intersection point
+    vec3 vp = intersectionPoint - v0;
+
+    // Precompute dot products for the triangle
+    float d00 = dot(edge1, edge1);
+    float d01 = dot(edge1, edge2);
+    float d11 = dot(edge2, edge2);
+    float d20 = dot(vp, edge1);
+    float d21 = dot(vp, edge2);
+
+    // Compute the denominator of the barycentric coordinates
+    float denom = d00 * d11 - d01 * d01;
+
+    // Calculate barycentric coordinates
+    float v = (d11 * d20 - d01 * d21) / denom;
+    float w = (d00 * d21 - d01 * d20) / denom;
+    float u = 1.0 - v - w;
+
+    // Return the barycentric coordinates
+    return vec3(u, v, w);
+}
+
 vec3 backgroundColor(vec3 direction) {
     float t = 0.5 * (normalize(direction).y + 1.0);
     return mix(vec3(0.1, 0.1, 0.2), vec3(0.5, 0.7, 1.0), t); // Dark blue to light blue
@@ -376,10 +412,18 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
             vec3 sectionPoint = currentRay.origin + t * currentRay.direction;
 
             int v = triIdx[index] * 3;
-            vec3 edge1 = trivertex[v + 1] - trivertex[v];
-            vec3 edge2 = trivertex[v + 2] - trivertex[v];
-
-            vec3 N = normalize(cross(edge1, edge2));
+            vec3 v0 = trivertex[v].data;
+            vec3 v1 = trivertex[v + 1].data;
+            vec3 v2 = trivertex[v + 2].data;
+            //vec3 edge1 = trivertex[v + 1].data - trivertex[v].data;
+            //vec3 edge2 = trivertex[v + 2].data - trivertex[v].data;
+            vec3 baryCoords = bayecentricCalculation(sectionPoint, v0, v1, v2);
+            //vec3 N = normalize(cross(edge1, edge2));
+            vec3 N = normalize(
+                    baryCoords.x * trivertex[v].normal +
+                        baryCoords.y * trivertex[v + 1].normal +
+                        baryCoords.z * trivertex[v + 2].normal
+                );
             vec3 localColor = vec3(0.0);
             bool anyLightHit = false;
 
@@ -394,8 +438,8 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
                 float attenuation = 1.0 / (distanceToLight * distanceToLight);
 
                 //bool isShadow = isInShadowTriangleAlt(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
-                //bool isShadow = processBVH_Shadow(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
-                bool isShadow = false;
+                bool isShadow = processBVH_Shadow(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
+                //bool isShadow = false;
                 if (!isShadow) {
                     float diffuse = max(dot(N, shadowRay), 0.0);
                     vec3 lighting = reflec_accumulation * light.color * materials[matIndex[index]].color * light.intensity * diffuse * attenuation;
@@ -406,7 +450,7 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
             }
 
             color += localColor;
-            if (anyLightHit && length(reflec_accumulation) > 0.01) {
+            if (anyLightHit && length(reflec_accumulation) > 0.001) {
                 vec3 reflecDirection = reflect(currentRay.direction, N);
                 reflec_accumulation *= materials[matIndex[index]].reflection;
                 Ray nextRay = Ray(sectionPoint + 0.01 * N, reflecDirection, currentRay.depth + 1);
