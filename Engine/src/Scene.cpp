@@ -11,14 +11,21 @@ namespace RT {
 Scene::Scene(Engine *e)
     : /*_render_system{_uuid_manager, e->get_window_manager(), &_camera_system,
                      &_light_system, &_default_assets},*/
-      _root{create_root("root")} {}
+      _root{create_root("root")} {
+  LOG(std::format("NEW SCENE -> \"{}\" w/ ROOT UUID {}", _title,
+                  boost::uuids::to_string(_root->get_uuid())));
+}
 
 Scene::Scene(Engine *e, std::string title)
     : /*_render_system{_uuid_manager, e->get_window_manager(), &_camera_system,
                      &_light_system, &_default_assets},*/
-      _root{create_root("root")}, _title{title} {}
+      _root{create_root("root")}, _title{title} {
+  LOG(std::format("NEW SCENE -> \"{}\" w/ ROOT UUID {}", _title,
+                  boost::uuids::to_string(_root->get_uuid())));
+}
 
-Scene::~Scene() { /*_render_system.destroy();*/ }
+Scene::~Scene() { /*_render_system.destroy();*/
+}
 
 std::shared_ptr<Entity> Scene::create_root(const std::string &name) {
   return _entity_storage.create_root_entity(name);
@@ -79,8 +86,8 @@ void Scene::print_system_data() {
 }
 
 void Scene::generate_test() {
-  _entity_storage.print();
-  _camera_system.print();
+  //   _entity_storage.print();
+  //   _camera_system.print();
   LOG(std::string(30, '*'));
   {
     auto e1 = create_entity("wawa1");
@@ -91,8 +98,8 @@ void Scene::generate_test() {
     _camera_system.remove(c2->get_uuid());
   }
   LOG(std::string(30, '*'));
-  _entity_storage.print();
-  _camera_system.print();
+  //   _entity_storage.print();
+  //   _camera_system.print();
   // print_system_data();
 }
 
