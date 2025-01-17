@@ -229,7 +229,7 @@ struct TreeBuilder {
 
         // mats.push_back(Materials(mesh.MeshMaterial.Kd,0.0f,mesh.MeshMaterial.Ka,0.0f,mesh.MeshMaterial.Ks,0.0f,mesh.MeshMaterial.d,mesh.MeshMaterial.illum,mesh.MeshMaterial.Ns,mesh.MeshMaterial.Ni));
 
-        mats.push_back(Materials(mesh.MeshMaterial.Kd, 0.02f,
+        mats.push_back(Materials(mesh.MeshMaterial.Kd, 0.05f,
                                  mesh.MeshMaterial.Ka, mesh.MeshMaterial.Ni,
                                  mesh.MeshMaterial.Ks, mesh.MeshMaterial.d,
                                  mesh.MeshMaterial.illum, 0.0f, 0.0f, 0.0f));

@@ -443,7 +443,6 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
                 if (!isShadow) {
                     float diffuse = max(dot(N, shadowRay), 0.0);
                     vec3 lighting = reflec_accumulation * light.color * materials[matIndex[index]].color * light.intensity * diffuse * attenuation;
-
                     localColor += lighting;
                     anyLightHit = true;
                 }
