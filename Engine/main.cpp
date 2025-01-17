@@ -23,8 +23,8 @@ int main() {
 #endif
   try {
     RT::Engine engine{};
-    // engine.load_test_scene();
-    engine.load_sample_scene();
+    engine.load_test_scene();
+    // engine.load_sample_scene();
     // engine.read_scene_from_json("wawa.txt");
     engine.startLoop();
   } catch (std::exception &e) {
