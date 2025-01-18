@@ -17,8 +17,15 @@ template <class T> struct Storage : public IStorage {
   using uuid = boost::uuids::uuid;
 
   explicit Storage(std::shared_ptr<UUIDManager> um)
-      : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/ }
-  virtual ~Storage() = default;
+      : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/
+  }
+  ~Storage() override {
+    auto it = _storage.begin();
+    while (it != _storage.end()) {
+      _um->remove_without_system(it->first);
+      it = _storage.erase(it);
+    }
+  }
 
   inline virtual std::optional<uuid> get(T obj) {
     auto it =
