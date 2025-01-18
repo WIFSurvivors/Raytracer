@@ -14,7 +14,6 @@ struct GetComponentsCommand : public TcpCommand {
   std::string execute(RT::Engine *e) override;
   boost::json::array
   get_components_short(const std::vector<RT::IComponent *> &components);
-  std::string undo() override;
 
 private:
 };

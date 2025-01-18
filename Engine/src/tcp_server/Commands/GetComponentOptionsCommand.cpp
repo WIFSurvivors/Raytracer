@@ -81,4 +81,3 @@ std::string GetComponentOptions::execute(Engine *e) {
   return "Error";
 }
 
-std::string GetComponentOptions::undo() { throw NotImplementedError{}; }

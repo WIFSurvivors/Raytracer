@@ -4,11 +4,11 @@
 
 #define CREATE_COMPONENT_COMMAND "CreateComponent"
 
-struct CreateComponentCommand : public TcpCommand {
+struct CreateComponentCommand : public UndoableCommand {
   explicit CreateComponentCommand(uuid uuid, std::string type)
-      : TcpCommand(uuid), _type(type) {}
+      : UndoableCommand(uuid), _type(type) {}
   std::string execute(RT::Engine *e) override;
-  std::string undo() override;
+  std::string undo(RT::Engine *e) override;
 
   inline std::string get_type() const { return _type; }
   inline void set_type(std::string type) { _type = type; }

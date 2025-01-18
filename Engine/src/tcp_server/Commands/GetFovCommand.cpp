@@ -26,7 +26,4 @@ std::string GetFovCommand::execute(Engine *engine)
     return std::to_string(_fov);
 }
 
-std::string GetFovCommand::undo()
-{
-    throw NotImplementedError();
-}
+

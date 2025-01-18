@@ -6,7 +6,7 @@ using RT::Engine;
 struct TcpExecuter {
   TcpExecuter();
   std::string execute(TcpCommand *command, RT::Engine *engine);
-  std::string undo(TcpCommand *command);
+  std::string undo(UndoableCommand *command, RT::Engine *engine);
 
 private:
 };

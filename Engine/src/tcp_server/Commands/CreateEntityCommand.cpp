@@ -44,4 +44,4 @@ std::string CreateEntityCommand::execute(Engine *e) {
     return "Unknown exception occurred";
   }
 }
-std::string CreateEntityCommand::undo() { throw NotImplementedError{}; }
+std::string CreateEntityCommand::undo(RT::Engine *engine) { throw NotImplementedError{}; }
