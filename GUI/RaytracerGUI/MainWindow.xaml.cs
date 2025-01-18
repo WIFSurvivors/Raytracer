@@ -862,18 +862,31 @@ namespace RaytracerGUI
         {
             try
             {
-                string engineExeDirPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"..\Engine\");
+                string engineExeDirPath;
                 string rootDir = Directory.GetCurrentDirectory();
+
+#if DEBUG
+                // Running inside Visual Studio (Debug mode)
+                engineExeDirPath = System.IO.Path.Combine(rootDir, @"..\..\..\..\..\Engine\");
+                string engineExePath = System.IO.Path.Combine(engineExeDirPath, @"build\Engine.exe");
+                string workingDirectory = System.IO.Path.GetDirectoryName(engineExeDirPath);
+#else
+        // Running in Release mode (installed or direct execution)
+        engineExeDirPath = System.IO.Path.Combine(rootDir, @"..\Engine\");
+        string engineExePath = System.IO.Path.Combine(rootDir, @"Engine\Engine.exe");
+        string workingDirectory = rootDir;
+#endif
 
                 // Create the ProcessStartInfo
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
-                    FileName = rootDir  + @"\Engine\Engine.exe",
-                    WorkingDirectory = rootDir,  // Set the working directory
+                    FileName = engineExePath,
+                    WorkingDirectory = workingDirectory,  // Set the working directory
                     UseShellExecute = false,  // Optionally, to redirect input/output (if needed)
-                    CreateNoWindow = false,     // Optionally, run without a window
+                    CreateNoWindow = false,   // Optionally, run without a window
                     WindowStyle = ProcessWindowStyle.Minimized
                 };
+
                 Process.Start(startInfo);
             }
             catch (Exception ex)
