@@ -36,12 +36,16 @@ void CommandManager::push(std::unique_ptr<TcpCommand> command) {
 }
 
 void CommandManager::undo_command(int number) {
+  if(_undo_queue.empty()) {
+    _tcp_server->send_message("No commands to undo");
+    return;
+  }
   for (int i = 0; i < number; i++) {
     auto command = std::move(_undo_queue.front());
     auto msg = _executer.undo(std::move(command.get()), _engine);
-    _tcp_server->send_message(msg);
     _undo_queue.pop();
   }
+    _tcp_server->send_message("Undoing " + std::to_string(number) + " commands");
 }
 
 std::unique_ptr<TcpCommand> CommandManager::pop() {
