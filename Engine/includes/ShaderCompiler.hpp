@@ -37,6 +37,15 @@ struct Shader {
   }
 
   void activateShader() { glUseProgram(programID); }
+  void destroy(){
+	glDeleteProgram(programID);
+	for(const auto& shaderPair: shaderIDs){
+	  glDeleteShader(shaderPair.second);
+	}
+
+	shaderIDs.clear();
+
+  }
 
 private:
   template <typename... Args> void loadFiles(Args... paths) {
@@ -131,5 +140,8 @@ private:
 
     return success;
   }
+
+
+  
 };
 } // namespace RT

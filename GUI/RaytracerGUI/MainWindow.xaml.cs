@@ -520,54 +520,54 @@ namespace RaytracerGUI
                 switch (slider)
                 {
                     case "sldX":
-                        lblXMin.Content = minValue;
-                        lblXMed.Content = medValue;
-                        lblXMax.Content = maxValue;
+                        lblXMin.Content = minValue.ToString().Replace(".", ",");
+                        lblXMed.Content = medValue.ToString().Replace(".", ",");
+                        lblXMax.Content = maxValue.ToString().Replace(".", ",");
 
                         _entityOptionsBuilder.GetTextBox("traX")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(0);
                         break;
 
                     case "sldY":
-                        lblYMin.Content = minValue;
-                        lblYMed.Content = medValue;
-                        lblYMax.Content = maxValue;
+                        lblYMin.Content = minValue.ToString().Replace(".", ",");
+                        lblYMed.Content = medValue.ToString().Replace(".", ",");
+                        lblYMax.Content = maxValue.ToString().Replace(".", ",");
 
                         _entityOptionsBuilder.GetTextBox("traY")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(0);
                         break;
 
                     case "sldZ":
-                        lblZMin.Content = minValue;
-                        lblZMed.Content = medValue;
-                        lblZMax.Content = maxValue;
+                        lblZMin.Content = minValue.ToString().Replace(".", ",");
+                        lblZMed.Content = medValue.ToString().Replace(".", ",");
+                        lblZMax.Content = maxValue.ToString().Replace(".", ",");
 
                         _entityOptionsBuilder.GetTextBox("traZ")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(0);
                         break;
 
                     case "sldRx":
-                        lblRxMin.Content = minValue;
-                        lblRxMed.Content = medValue;
-                        lblRxMax.Content = maxValue;
+                        lblRxMin.Content = minValue.ToString().Replace(".", ",");
+                        lblRxMed.Content = medValue.ToString().Replace(".", ",");
+                        lblRxMax.Content = maxValue.ToString().Replace(".", ",");
 
                         _entityOptionsBuilder.GetTextBox("rotX")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(1);
                         break;
 
                     case "sldRy":
-                        lblRyMin.Content = minValue;
-                        lblRyMed.Content = medValue;
-                        lblRyMax.Content = maxValue;
+                        lblRyMin.Content = minValue.ToString().Replace(".", ",");
+                        lblRyMed.Content = medValue.ToString().Replace(".", ",");
+                        lblRyMax.Content = maxValue.ToString().Replace(".", ",");
 
                         _entityOptionsBuilder.GetTextBox("rotY")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(1);
                         break;
 
                     case "sldRz":
-                        lblRzMin.Content = minValue;
-                        lblRzMed.Content = medValue;
-                        lblRzMax.Content = maxValue;
+                        lblRzMin.Content = minValue.ToString().Replace(".", ",");
+                        lblRzMed.Content = medValue.ToString().Replace(".", ",");
+                        lblRzMax.Content = maxValue.ToString().Replace(".", ",");
 
                         _entityOptionsBuilder.GetTextBox("rotZ")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(1);
@@ -592,27 +592,27 @@ namespace RaytracerGUI
                         break;
 
                     case "sldSx":
-                        lblSxMin.Content = minValue;
-                        lblSxMed.Content = medValue;
-                        lblSxMax.Content = maxValue;
+                        lblSxMin.Content = minValue.ToString().Replace(".", ",");
+                        lblSxMed.Content = medValue.ToString().Replace(".", ",");
+                        lblSxMax.Content = maxValue.ToString().Replace(".", ",");
 
                         _entityOptionsBuilder.GetTextBox("scaX")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(3);
                         break;
 
                     case "sldSy":
-                        lblSyMin.Content = minValue;
-                        lblSyMed.Content = medValue;
-                        lblSyMax.Content = maxValue;
+                        lblSyMin.Content = minValue.ToString().Replace(".", ",");
+                        lblSyMed.Content = medValue.ToString().Replace(".", ",");
+                        lblSyMax.Content = maxValue.ToString().Replace(".", ",");
 
                         _entityOptionsBuilder.GetTextBox("scaY")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(3);
                         break;
 
                     case "sldSz":
-                        lblSzMin.Content = minValue;
-                        lblSzMed.Content = medValue;
-                        lblSzMax.Content = maxValue;
+                        lblSzMin.Content = minValue.ToString().Replace(".", ",");
+                        lblSzMed.Content = medValue.ToString().Replace(".", ",");
+                        lblSzMax.Content = maxValue.ToString().Replace(".", ",");
 
                         _entityOptionsBuilder.GetTextBox("scaZ")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(3);

@@ -99,7 +99,7 @@ private:
   std::unique_ptr<Canvas> _canvas;
   // GLuint mouseUniformID; // a bit cringe... but it stays here for now
   GLuint _ssbo_tree;
-  GLuint _ssbo_triangle;
+  //GLuint _ssbo_triangle;
   GLuint _ssbo_vertex;
   GLuint _ssbo_indices;
   GLuint _ssbo_mats;
