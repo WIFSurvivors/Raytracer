@@ -413,7 +413,6 @@ namespace RaytracerGUI
 
                     case "btnScreenshot":
                         TakeScreenshot();
-                        _ecsApi.undo(1);
                         break;
                 }
             }
