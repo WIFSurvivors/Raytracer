@@ -809,7 +809,7 @@ namespace RaytracerGUI
             {
                 try
                 {
-                    StartOtherExe("../../../../../Engine/Engine.exe");
+                    StartOtherExe("Engine.exe");
                     await Task.Delay(500);
                     _ecsApi = new EcsApi("127.0.0.1", 51234);
 
@@ -862,13 +862,14 @@ namespace RaytracerGUI
         {
             try
             {
-                string engineExeDirPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..\Engine\");
+                string engineExeDirPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"..\Engine\");
+                string rootDir = Directory.GetCurrentDirectory();
 
                 // Create the ProcessStartInfo
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
-                    FileName = engineExeDirPath + @"build\Engine.exe",
-                    WorkingDirectory = System.IO.Path.GetDirectoryName(engineExeDirPath),  // Set the working directory
+                    FileName = rootDir  + @"\Engine\Engine.exe",
+                    WorkingDirectory = rootDir,  // Set the working directory
                     UseShellExecute = false,  // Optionally, to redirect input/output (if needed)
                     CreateNoWindow = false,     // Optionally, run without a window
                     WindowStyle = ProcessWindowStyle.Minimized
