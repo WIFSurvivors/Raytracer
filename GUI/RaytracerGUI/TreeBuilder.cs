@@ -159,7 +159,7 @@ namespace RaytracerGUI
                             var textBox = new TextBox
                             {
                                 Name = textBoxName, // Set the name (e.g., "x", "y", "z") for reference
-                                Text = property.Value, // Set initial value
+                                Text = property.Value.Replace(".", ","), // Set initial value
                                 VerticalAlignment = VerticalAlignment.Center
                             };
                             _textBoxMapping[textBoxName] = textBox;
