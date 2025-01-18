@@ -179,7 +179,10 @@ namespace RaytracerGUI
                             propertyItem.IsExpanded = true;
 
                             // Simulate a TextChanged event
+                            _mainWindow.shouldUpdate = false;
                             SimulateTextChanged(textBox);
+                            _mainWindow.shouldUpdate = true;
+
                         }
 
                         rootItem.Items.Add(categoryItem);
