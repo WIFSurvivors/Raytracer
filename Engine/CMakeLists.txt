@@ -4,6 +4,8 @@ project(Engine VERSION 0.0.1 DESCRIPTION "Engine for TCP Server and Client in CP
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(TOPLEVEL "YES")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -static -static-libgcc -static-libstdc++")
+
 
 set(BOOST_INCLUDE_LIBRARIES thread filesystem system program_options asio date_time json uuid)
 set(BOOST_ENABLE_CMAKE ON)
@@ -169,5 +171,71 @@ message(STATUS "Copying shaders to: ${CMAKE_BINARY_DIR}/shaders")
 FOREACH(MY_RESOURCE_FILE ${SHADER_FILES})
   file(COPY ${MY_RESOURCE_FILE} DESTINATION ${CMAKE_BINARY_DIR}/shaders)
 ENDFOREACH()
+add_custom_target(build_csharp_gui
+    COMMAND dotnet publish -c Release -r win-x64 --self-contained true RaytracerGUI.csproj
+    WORKING_DIRECTORY C:/Users/Spyros/projects/Raytracer/GUI/RaytracerGUI
+    COMMENT "Building/publishing .NET GUI"
+)
+
+###
+# Install-Regeln
+###
+
+install(TARGETS ${PROJECT_NAME}
+    RUNTIME DESTINATION Engine 	
+    LIBRARY DESTINATION lib           
+    ARCHIVE DESTINATION lib           
+)
 
 
+install(DIRECTORY ${DEV_ASSETS_DIR}
+    DESTINATION .
+    
+)
+install(DIRECTORY ${DEV_SHADER_DIR}
+    DESTINATION .
+  
+)
+install(DIRECTORY ${DEV_JSON_DIR}
+    DESTINATION .
+  
+)
+
+install(DIRECTORY ${CMAKE_SOURCE_DIR}/log/
+	DESTINATION log
+)
+
+
+
+install(DIRECTORY
+   C:/Users/Spyros/projects/Raytracer/GUI/RaytracerGUI/bin/Release/net8.0-windows/win-x64/publish/
+    DESTINATION RaytracerGUI
+)
+
+
+###
+# CPACK-Konfiguration
+###
+include(InstallRequiredSystemLibraries)
+
+
+set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
+set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
+set(CPACK_PACKAGE_VENDOR "WIFSurvivors")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Installer for ${PROJECT_NAME}")
+set(CPACK_PACKAGE_CONTACT "...@...")
+
+set(CPACK_GENERATOR "NSIS")
+# used this source: https://stackoverflow.com/questions/14831739/how-do-i-add-a-start-menu-entry-for-a-text-file-in-cpack-ans-nsis
+SET( CPACK_NSIS_CREATE_ICONS_EXTRA 
+"
+CreateShortcut \\\"$INSTDIR\\\\Raytracer.lnk\\\" \\\"$INSTDIR\\\\RaytracerGUI\\\\RaytracerGUI.exe\\\"
+" )
+# Windows-spezifische Einstellungen (z. B. NSIS):
+set(CPACK_NSIS_DISPLAY_NAME "${PROJECT_NAME} Installer")
+set(CPACK_NSIS_HELP_LINK "https://github.com/WIFSurvivors/Raytracer")
+set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/WIFSurvivors/Raytracer")
+set(CPACK_NSIS_CONTACT "...@...")
+
+# Einbinden
+include(CPack)
