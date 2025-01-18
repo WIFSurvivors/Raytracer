@@ -20,6 +20,11 @@ struct EntityStorage : public Storage<Entity *> {
   using uuid = boost::uuids::uuid;
 
   explicit EntityStorage(std::shared_ptr<UUIDManager> um);
+  
+  ~EntityStorage() {
+    LOG(std::format("destroyed {}", get_name()));
+  }
+
 
   inline const std::string get_name() const final { return "Entity Storage"; }
 

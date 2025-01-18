@@ -14,6 +14,7 @@ namespace RT {
  */
 struct CameraSystem : public System<CameraComponent> {
   explicit CameraSystem(std::shared_ptr<UUIDManager> um);
+  virtual ~CameraSystem();
 
   CameraComponent *create_component(Entity *e, uuid id, float fov = 60.f);
   CameraComponent *create_component(Entity *e, float fov = 60.f);
@@ -29,10 +30,10 @@ struct CameraSystem : public System<CameraComponent> {
    * Only allows you to remove non-main-camera components.
    */
   bool remove(uuid id) override;
-  void enforce_main_camera_deletion();
   void print() override;
 
 private:
   CameraComponent *_main_camera = nullptr;
+  void enforce_main_camera_deletion();
 };
 } // namespace RT

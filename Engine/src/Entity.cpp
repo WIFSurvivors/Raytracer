@@ -6,6 +6,8 @@
 #include <memory>
 #include <string>
 #include <optional>
+#include <algorithm>
+#include <utility>
 
 namespace RT {
 Entity::Entity(const std::string &name, uuid id) : _name{name}, _uuid{id} {}
@@ -33,9 +35,39 @@ std::optional<IComponent *> Entity::get_component(uuid id) const {
   return std::make_optional<IComponent *>(*it);
 }
 
-void Entity::add_component(IComponent *c) {
+bool Entity::add_component(IComponent *c) {
   // maybe TODO? check if component already exists here
+  if (contains_component(c)) {
+    return false;
+  }
   _components.push_back(c);
+  return true;
+}
+
+std::optional<IComponent *> Entity::get_component(uuid id) {
+  auto it = std::find_if(_components.begin(), _components.end(),
+                         [id](IComponent *c) { return c->get_uuid() == id; });
+  if (it == _components.end()) {
+    return {};
+  }
+  return std::make_optional<IComponent *>(*it);
+}
+
+bool Entity::contains_component(IComponent *c) {
+  auto it = std::find(_components.begin(), _components.end(), c);
+  if (it == _components.end()) {
+    return false;
+  }
+  return true;
+}
+
+bool Entity::contains_component(uuid id) {
+  auto it = std::find_if(_components.begin(), _components.end(),
+                         [id](IComponent *c) { return c->get_uuid() == id; });
+  if (it == _components.end()) {
+    return false;
+  }
+  return true;
 }
 
 bool Entity::remove_component(IComponent *c) {
@@ -59,20 +91,32 @@ bool Entity::remove_component(uuid id) {
 }
 
 void Entity::remove_components(UUIDManager *um) {
-  for (auto it = _components.begin(); it != _components.end();) {
-    auto c_it = it;
-    um->remove((*it)->get_uuid());
-    it = _components.erase(
-        it); // might be weird because of the missing pointer underneath?
+  std::vector<uuid> to_remove;
+  std::transform(_components.begin(), _components.end(),
+                 std::back_inserter(to_remove),
+                 [](auto &c) { return c->get_uuid(); });
+  _components.clear();
+  for (auto id : to_remove) {
+    if (um->remove(id)) {
+    }
   }
 }
 
 void Entity::add_child_entity(std::shared_ptr<Entity> e) {
+  // TODO: check that 'e' doesn't have a parent....
   _child_entities.push_back(e);
 }
 
 bool Entity::remove_child_entity(std::shared_ptr<Entity> e) {
-  throw NotImplementedError{};
+  auto it = std::find(_child_entities.begin(), _child_entities.end(), e);
+  if (it != _child_entities.end()) {
+    _child_entities.erase(it);
+    return true;
+  }
+  return false;
+}
+bool Entity::remove_child_entity(Entity *e) {
+  return remove_child_entity(std::make_shared<Entity>(*e));
 }
 
 glm::vec3 Entity::get_world_position() const {

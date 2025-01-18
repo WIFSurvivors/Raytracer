@@ -17,6 +17,11 @@ CameraSystem::CameraSystem(std::shared_ptr<UUIDManager> um) : System{um} {
   LOG("created camera system");
 }
 
+CameraSystem::~CameraSystem() {
+  enforce_main_camera_deletion();
+  LOG(std::format("destroyed {}", get_name()));
+}
+
 CameraComponent *CameraSystem::create_component(Entity *e, uuid id, float fov) {
   LOG("create camera component");
   auto c = create_component_base(e, id);
@@ -70,7 +75,6 @@ bool CameraSystem::remove(uuid id) {
     return System::remove(id);
   }
   LOG_WARN("TRYING TO REMOVE MAIN CAMERA -> FORBIDDEN");
-  // trying to remove main camera... that's FORBIDDEN
   return false;
 }
 
@@ -78,7 +82,8 @@ void CameraSystem::enforce_main_camera_deletion() {
   if (!get_main_camera())
     return;
 
-  LOG_WARN("DELETED MAIN CAMERA -> MAYBE BAD THINGS HAPPEN NOW");
+  LOG_WARN("DELETED MAIN CAMERA! If this is not part of the Scene clean-up, "
+           "than bad things will most likely happen now!");
   System::remove(get_main_camera()->get_uuid());
 }
 

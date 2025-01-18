@@ -56,6 +56,10 @@ struct AssetManager : public Storage<fs::path> {
   explicit AssetManager(std::shared_ptr<UUIDManager> um) : Storage(um) {
     LOG(std::format("created {}", get_name()));
   }
+  
+  ~AssetManager() {
+    LOG(std::format("destroyed {}", get_name()));
+  }
 
   //   enum class Type { Shader, Material, Object, Unknown }; // maybe do this
 

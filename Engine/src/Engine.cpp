@@ -90,23 +90,26 @@ void Engine::startLoop() {
       // create snapshot here
       FrameSnapshot s(total_time, MS_PER_UPDATE, accumulated_time, frames,
                       sub_frames);
-      _scene->update(s);
-      _wm.swap_buffers();
+      if (_scene != nullptr) {
+        _scene->update(s);
+        _wm.swap_buffers();
+      }
       sub_frames = 0;
 
       Log::get_instance().clear_buffer();
       // trigger this either on 1sec difference OR 10 log entries available???
     }
 
-    // emulate change scene after 10 frames
+    // emulate change scene after 60 frames
     if (_temp && frames > 60) { // 2 seconds
       LOG("Engine::startLoop() THRESHHOLD GOT");
       _temp = false;
-	  _scene->print_system_data();	  
+      _scene->print_system_data();
+      _scene = nullptr;
       auto new_s = std::make_unique<Scene>(this, "test :3");
       change_scene(std::move(new_s));
       _scene->generate_test();
-	  _scene->print_system_data();
+      _scene->print_system_data();
     }
   }
 }
