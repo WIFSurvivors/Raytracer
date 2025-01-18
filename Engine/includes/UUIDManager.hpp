@@ -37,6 +37,7 @@ protected:
 struct UUIDManager {
   using uuid = boost::uuids::uuid;
   UUIDManager();
+  ~UUIDManager();
 
   bool add(uuid id, IStorage *s);
   uuid create(IStorage *s);
@@ -47,6 +48,12 @@ struct UUIDManager {
    * system.
    */
   bool remove(uuid id);
+  
+  /**
+   * Removes UUID from Storage. Call this, if the storage container is trying
+   * to remove the UUID itself. This will prevent cyclic calls! 
+   */
+  bool remove_without_system(uuid id);
 
   void print();
 

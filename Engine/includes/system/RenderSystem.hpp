@@ -45,6 +45,7 @@ struct RenderSystem : public System<RenderComponent> {
   RenderSystem(std::shared_ptr<UUIDManager> um, WindowManager *wm,
                CameraSystem *cs, LightSystem *ls,
                AssetManager::DefaultAssets *da);
+  ~RenderSystem();
 
   void init();
   void update(const FrameSnapshot &snapshot); // represents render

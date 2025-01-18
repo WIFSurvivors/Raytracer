@@ -23,7 +23,10 @@ struct Entity : public std::enable_shared_from_this<Entity>,
   inline const std::string &get_name() const { return _name; }
   inline void set_name(const std::string &name) { _name = name; }
 
-  void add_component(IComponent *c);
+  bool add_component(IComponent *c);
+  std::optional<IComponent*> get_component(uuid id);
+  bool contains_component(IComponent *c);
+  bool contains_component(uuid id);
   bool remove_component(IComponent *c);
   bool remove_component(uuid id);
   inline auto get_components() { return _components; }
@@ -34,6 +37,7 @@ struct Entity : public std::enable_shared_from_this<Entity>,
 
   void add_child_entity(std::shared_ptr<Entity> e);
   bool remove_child_entity(std::shared_ptr<Entity> e);
+  bool remove_child_entity(Entity* e);
 
   inline const std::vector<std::shared_ptr<Entity>> &
   get_child_entities() const {
