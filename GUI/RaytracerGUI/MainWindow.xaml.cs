@@ -31,6 +31,7 @@ namespace RaytracerGUI
     public partial class MainWindow : Window
     {
         private EcsApi? _ecsApi;
+        public bool shouldUpdate = true; 
         private string ReceivedEcsJsonString;
         private GLFWLoader loader;
         private IntPtr hWndParent;
@@ -54,6 +55,7 @@ namespace RaytracerGUI
         {
             InitializeComponent();
             this.Background = (Brush)Application.Current.Resources["WindowBackgroundColor"];
+            this.KeyDown += KeyDownCtrlZ;
 
         }
 
@@ -411,7 +413,6 @@ namespace RaytracerGUI
 
                     case "btnScreenshot":
                         TakeScreenshot();
-                        _ecsApi.undo(1);
                         break;
                 }
             }
@@ -451,14 +452,20 @@ namespace RaytracerGUI
                         x = (float)sldX.Value;
                         y = (float)sldY.Value;
                         z = (float)sldZ.Value;
-                        _ecsApi.move_entity(UUID, x, y, z);
+                        if (shouldUpdate)
+                        {
+                            _ecsApi.move_entity(UUID, x, y, z);
+                        }
                     }
                     else if (sliderType == 1)
                     {
                         x = (float)sldRx.Value;
                         y = (float)sldRy.Value;
                         z = (float)sldRz.Value;
-                        _ecsApi.rotate_entity(UUID, x, y, z);
+                        if (shouldUpdate)
+                        {
+                            _ecsApi.rotate_entity(UUID, x, y, z);
+                        }
                     }
                     else if (sliderType == 2)
                     {
@@ -470,7 +477,10 @@ namespace RaytracerGUI
                         x = (float)sldSx.Value;
                         y = (float)sldSy.Value;
                         z = (float)sldSz.Value;
-                        _ecsApi.scale_entity(UUID, x, y, z);
+                        if (shouldUpdate)
+                        {
+                            _ecsApi.scale_entity(UUID, x, y, z);
+                        }
                     }
 
                 }
@@ -1134,9 +1144,35 @@ namespace RaytracerGUI
 
         }
 
+        private void KeyDownCtrlZ(object sender, KeyEventArgs e)
+        {
+
+            if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                if (!connection)
+                {
+                    MessageBox.Show("No connection established. Please connect to the server first.",
+                                    "Connection Error",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
+                    return;
+                }
+                _ecsApi.undo(1);
+                if (!currentEntityUUID.Equals("uuid")) { 
+                UpdateEntitiesOptions(currentEntityUUID, null);
+                }
+            if (!currentComponentUUID.Equals("uuid"))
+            {
+                UpdateComponentsOptions(currentComponentUUID, null);
+            }
 
 
-        
+            }
+        }
+
+
+
+
     }
 
 }
