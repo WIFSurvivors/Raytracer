@@ -57,13 +57,19 @@ namespace RaytracerGUI
 
         }
 
-        //Menu clicks
+        /// <summary>
+        /// When a Option of the "File" Menu is clicked, this method is called and handles every interaction from the dropdown menus
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FileMenuClick(object sender, RoutedEventArgs e)
         {
+            //convert sender to type MenuItem
             MenuItem? clickedMenuItem = sender as MenuItem;
             OpenFileDialog openFileDialog;
             string filePath = "";
 
+            //check for click
             if (clickedMenuItem != null)
             {
                 // get variable name
@@ -72,6 +78,7 @@ namespace RaytracerGUI
 
                 switch (item)
                 {
+                    //Opens a file to be added to a render component
                     case "mniOpen":
                         tbxLog.AppendText(item + " was clicked! \n");
                         tbxLog.ScrollToEnd();
@@ -87,7 +94,7 @@ namespace RaytracerGUI
                             filePath = openFileDialog.FileName;
                         }
                         break;
-
+                    //Imorts the JSON Scene file and sends it to the ecsapi
                     case "mniImport":
                         tbxLog.AppendText(item + " was clicked! \n");
                         tbxLog.ScrollToEnd();
@@ -134,7 +141,11 @@ namespace RaytracerGUI
                 }
             }
         }
-
+        /// <summary>
+        /// When a Option of the "Add" Menu is clicked, this method is called and adds the corresponding 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddMenuClick(object sender, RoutedEventArgs e)
         {
             if (sender is MenuItem clickedMenuItem)
