@@ -407,7 +407,11 @@ void RenderSystem::destroy() {
   // _component->destroy();
 
   glDeleteVertexArrays(1, &_vao);
-
+  glDeleteBuffers(1, &_ssbo_mats);
+  glDeleteBuffers(1, &_ssbo_tree);
+  glDeleteBuffers(1, &_ssbo_vertex);
+  glDeleteBuffers(1, &_ssbo_indices);
+  glDeleteBuffers(1, &_ssbo_matsIDX);
   glfwTerminate();
 #endif
 }
