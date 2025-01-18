@@ -208,7 +208,7 @@ install(DIRECTORY ${CMAKE_SOURCE_DIR}/log/
 
 
 install(DIRECTORY
-   C:/Users/Spyros/projects/Raytracer/GUI/RaytracerGUI/bin/Release/net8.0-windows/win-x64/publish/
+   ../GUI/RaytracerGUI/bin/Release/net8.0-windows/win-x64/publish/
     DESTINATION RaytracerGUI
 )
 
