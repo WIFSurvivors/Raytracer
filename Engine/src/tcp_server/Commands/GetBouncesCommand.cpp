@@ -24,4 +24,3 @@ std::string GetBouncesCommand::execute(Engine *engine) {
   return std::to_string(render_system->get_bounces());
 }
 
-std::string GetBouncesCommand::undo() { throw NotImplementedError(); }

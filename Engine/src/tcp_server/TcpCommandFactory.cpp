@@ -19,6 +19,7 @@
 #include "includes/tcp_server/Commands/GetLogPath.hpp"
 #include "includes/tcp_server/Commands/GetFovCommand.hpp"
 #include "includes/tcp_server/Commands/SetFovCommand.hpp"
+#include "includes/tcp_server/Commands/UndoCommand.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/string_generator.hpp>
 #include <map>
@@ -110,6 +111,13 @@ TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
   else if (command_string.compare(SET_FOV_COMMAND) == 0) {
     LOG_TCP("Create SetFovCommand");
     return std::make_unique<SetFovCommand>(std::stof(parameters[0]));
+  }
+  else if (command_string.compare(UNDO_COMMAND) == 0) {
+    LOG_TCP("Create UndoCommand");
+    if(parameters.size() > 0) {
+      return std::make_unique<UndoCommand>(std::stoi(parameters[0]));
+    }
+    return std::make_unique<UndoCommand>();
   }
   else {
     LOG_ERROR("Command not found");

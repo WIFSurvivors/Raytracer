@@ -126,4 +126,11 @@ public class EcsApi
     {
         return _client.Send("GetFov");
     }
+
+    public string undo(int steps)
+    {
+        return _client.Send(String.Format(adjustSeparator("Undo null {0}"), steps));
+    }
+
+
 }

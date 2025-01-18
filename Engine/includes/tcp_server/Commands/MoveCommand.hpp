@@ -7,12 +7,12 @@
 
 class TcpCommand;
 
-class MoveCommand : public TcpCommand {
+class MoveCommand : public UndoableCommand {
 public:
   MoveCommand(uuid uuid, float new_x, float new_y, float new_z)
-      : TcpCommand(uuid), _new_position(new_x, new_y, new_z) {}
+      : UndoableCommand(uuid), _new_position(new_x, new_y, new_z) {}
   std::string execute(RT::Engine *engine) override;
-  std::string undo() override;
+  std::string undo(RT::Engine *e) override;
   inline glm::vec3 get_new_position() const { return _new_position; }
   inline void set_new_position(glm::vec3 new_position) {
     _new_position = new_position;

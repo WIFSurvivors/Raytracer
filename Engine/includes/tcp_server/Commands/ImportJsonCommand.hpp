@@ -8,7 +8,6 @@ class importJsonCommand : public TcpCommand {
 public:
   explicit importJsonCommand(std::string json_path) : _json_path(json_path) {}
   std::string execute(RT::Engine *engine) override;
-  std::string undo() override;
   inline std::string get_json_path() const { return _json_path; }
   inline void set_json_path(std::string json_path) { _json_path = json_path; }
 
