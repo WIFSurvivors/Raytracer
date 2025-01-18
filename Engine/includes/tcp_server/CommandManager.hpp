@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 #include <mutex>
+#include <stack>
 
 class TcpServer;
 
@@ -35,7 +36,7 @@ struct CommandManager {
 
 private:
   std::queue<std::unique_ptr<TcpCommand>> _command_queue{};
-  std::queue<std::unique_ptr<UndoableCommand>> _undo_queue{};
+  std::stack<std::unique_ptr<UndoableCommand>> _undo_queue{};
   TcpParser _parser{};
   TcpCommandFactory _factory{};
   TcpExecuter _executer{};

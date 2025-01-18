@@ -41,7 +41,7 @@ void CommandManager::undo_command(int number) {
     return;
   }
   for (int i = 0; i < number; i++) {
-    auto command = std::move(_undo_queue.front());
+    auto command = std::move(_undo_queue.top());
     auto msg = _executer.undo(std::move(command.get()), _engine);
     _undo_queue.pop();
   }
