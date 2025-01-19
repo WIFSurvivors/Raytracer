@@ -54,6 +54,12 @@ struct UUIDManager {
    * to remove the UUID itself. This will prevent cyclic calls! 
    */
   bool remove_without_system(uuid id);
+  
+  
+  inline const std::map<uuid, IStorage*>& get_storage() const {
+    return _uuid_storage_mapping;
+  }
+
 
   void print();
 
