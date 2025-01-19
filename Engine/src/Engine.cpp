@@ -54,7 +54,10 @@ void Engine::save_scene_as_json(std::filesystem::path p) {
   // std::cout << "RETURN:\n" << wawa << std::endl;
 }
 
-void Engine::change_scene(std::unique_ptr<Scene> s) { _scene = std::move(s); }
+void Engine::change_scene(std::unique_ptr<Scene> s) {
+  _scene = nullptr;
+  _scene = std::move(s);
+}
 
 void Engine::startLoop() {
   LOG("Engine::startLoop()");
