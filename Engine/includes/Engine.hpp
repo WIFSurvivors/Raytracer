@@ -9,9 +9,8 @@
 #include <chrono>
 
 #ifndef FRAME_RATE_HZ // can be set in cmake
-#define FRAME_RATE_HZ (30)
+#define FRAME_RATE_HZ (1)
 #endif
-constexpr float MS_PER_UPDATE = 1.f / FRAME_RATE_HZ;
 
 class TcpServer;
 
@@ -36,9 +35,9 @@ public:
   void load_test_scene() {
     _scene = std::make_unique<Scene>(this, "hewwo :3");
     _scene->generate_test();
-    // auto new_s = std::make_unique<Scene>(this);
-    // change_scene(std::move(new_s));
-    // _scene->generate_test();
+    auto new_s = std::make_unique<Scene>(this);
+    change_scene(std::move(new_s));
+    _scene->generate_test();
   }
   void save_scene_as_json(std::filesystem::path p);
   void read_scene_from_json(std::filesystem::path p);
@@ -56,6 +55,16 @@ public:
     return std::chrono::duration<float>(now - _start_time).count();
   }
 
+  inline float get_frame_rate(){
+	return _frame_rate;
+  }
+  
+  inline void set_frame_rate(float frame_rate){
+	 _frame_rate = frame_rate;
+	 _s_per_update = 1.f / _frame_rate;
+  }
+
+
 private:
   void init_server();
   void stop_server();
@@ -68,5 +77,8 @@ private:
   std::shared_ptr<TcpServer> _tcp_server;
 
   std::chrono::high_resolution_clock::time_point _start_time;
+
+  float _frame_rate = FRAME_RATE_HZ;
+  float _s_per_update = 1.f / _frame_rate;
 };
 } // namespace RT
