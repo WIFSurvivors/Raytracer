@@ -98,7 +98,7 @@ void Scene::generate_sample_content() {
   auto c2 = _light_system.create_component(e3.get());
   /*c2->set_color(0.8576f, 0.1f, 0.1f);*/
   c2->set_color(1.0f, 1.0f, 1.0f);
-  c2->set_intensity(1.f);
+  c2->set_intensity(0.6f);
 
   auto c3 = _light_system.create_component(e4.get());
   /*c3->set_color(0.1f, 0.96752f, 0.1f);*/
