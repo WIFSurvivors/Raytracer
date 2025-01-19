@@ -125,9 +125,13 @@ namespace RaytracerGUI
                             try
                             {
                                 // send JSON path
-                                string pathSentStatus = _ecsApi.json_import('"' + filePath + '"');
+                                string pathSentStatus = _ecsApi.json_import(filePath);
                                 tbxLog.AppendText("pathSentStatus : " + pathSentStatus);
 
+
+                                _entityBuilder = new TreeBuilder(trvEntities, this);
+                                ReceivedEcsJsonString = _ecsApi.get_root();
+                                _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
 
                             }
                             catch (InvalidOperationException ex)
@@ -184,10 +188,20 @@ namespace RaytracerGUI
                         tbxLog.ScrollToEnd();
                         break;
                     case "mniAddEntity":
-                        AddEntity();
-                        tbxLog.AppendText($"{itemName} was clicked!\n");
-                        tbxLog.ScrollToEnd();
-                        break;
+                        try
+                        {
+                            AddEntity();
+                            tbxLog.AppendText($"{itemName} was clicked!\n");
+                            tbxLog.ScrollToEnd();
+                            ReceivedEcsJsonString = _ecsApi.get_root();
+                            _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
+                            break;
+                        }
+                        catch (Exception ex)
+                        {
+                            tbxLog.AppendText("Adding Entity failed with Exception: " + ex.Message);
+                            break;
+                        }
                 }
             }
         }

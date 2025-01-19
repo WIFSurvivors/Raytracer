@@ -44,6 +44,11 @@ namespace tcp_client
                 Console.WriteLine("ArgumentNullException: {0}", e);
                 return "ArgumentNullException";
             }
+            catch (System.InvalidOperationException e)
+            {
+                Console.WriteLine("ArgumentNullException: {0}", e);
+                return "ArgumentNullException";
+            }
 
         }
     }
