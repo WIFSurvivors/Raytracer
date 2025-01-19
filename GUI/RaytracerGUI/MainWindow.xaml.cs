@@ -25,6 +25,7 @@ using System.Windows.Controls.Primitives;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 using System;
 using System.Windows.Forms;
+using Xceed.Wpf.Toolkit.Primitives;
 
 namespace RaytracerGUI
 {
@@ -52,6 +53,9 @@ namespace RaytracerGUI
         string deleteUUID = "uuid";
         public string rootUUID = "uuid";
 
+        RoutedPropertyChangedEventArgs<object> currentEntityEvent;
+
+             
 
         public MainWindow()
         {
@@ -664,8 +668,8 @@ namespace RaytracerGUI
                 int newValue = (int)e.NewValue;
                 try
                 {
-                    // string? result = _ecsApi.set_frame_rate(newValue); 
-                    // tbxLog.AppendText(result + "\n");
+                    string? result = _ecsApi.set_frame_rate(newValue); 
+                    tbxLog.AppendText(result + "\n");
                 }
                 catch (Exception ex)
                 {
@@ -862,16 +866,15 @@ namespace RaytracerGUI
                     _entityBuilder = new TreeBuilder(trvEntities, this);
                     _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
 
-                    if (int.TryParse(_ecsApi.get_bounces(), out int value))
+                    if (int.TryParse(_ecsApi.get_bounces(), out int bounces))
                     {
-                        nudBounces.Value = value;
+                        nudBounces.Value = bounces;
                     }
 
-                    /*
-                    if (int.TryParse(_ecsApi.get_frame_rate(), out int value))
+                    if (int.TryParse(_ecsApi.get_frame_rate(), out int fps))
                     {
-                        nudFrameRate.Value = value;
-                    }*/
+                        nudFrameRate.Value = fps;
+                    }
 
                 }
                 catch (InvalidOperationException ex)
@@ -959,6 +962,7 @@ namespace RaytracerGUI
 
                     currentEntityUUID = uuid;
                     deleteUUID = uuid;
+                    currentEntityEvent = e;
 
                     UpdateEntities(uuid, e);
                     UpdateEntitiesOptions(uuid, e);
@@ -1247,20 +1251,50 @@ namespace RaytracerGUI
                     return;
                 }
 
-                try { 
-                if (deleteUUID.Equals(currentEntityUUID))
-                {
-                    currentEntityUUID = _ecsApi.remove_entity(deleteUUID);
-                    deleteUUID = "uuid";
-                    UpdateEntities(currentEntityUUID, null);
-                }
-                if (deleteUUID.Equals(currentComponentUUID))
-                {
-                    _ecsApi.remove_component(deleteUUID);
-                    currentComponentUUID = "uuid";
-                    deleteUUID = "uuid";
-                    UpdateEntities(currentEntityUUID, null);
-                }
+                try {
+
+                    
+
+                    if (deleteUUID.Equals(currentEntityUUID))
+                    {
+                        _ecsApi.remove_entity(deleteUUID);
+                        deleteUUID = "uuid";
+                        
+                        foreach (TreeViewItem item in trvEntities.Items)
+                        {
+                            if (item.Tag is TreeItemData tagData)
+                            {
+                                string uuid = tagData.UUID;
+
+                                if (uuid.Equals(rootUUID))
+                                {
+                                    item.Focus();
+                                    item.IsSelected = true;
+                                }
+                            }
+                        }
+                    }
+                    if (deleteUUID.Equals(currentComponentUUID))
+                    {
+                        _ecsApi.remove_component(deleteUUID);
+                        currentComponentUUID = "uuid";
+                        deleteUUID = "uuid";
+
+                        foreach (TreeViewItem item in trvEntities.Items)
+                        {
+                            if (item.Tag is TreeItemData tagData)
+                            {
+                                string uuid = tagData.UUID;
+
+                                if (uuid.Equals(rootUUID))
+                                {
+                                    item.Focus();
+                                    item.IsSelected = true;
+                                }
+                            }
+                        }
+
+                    }
                 }
                 catch(Exception ex) { 
                     tbxLog.AppendText(ex.ToString());
