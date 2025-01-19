@@ -82,13 +82,13 @@ void Engine::startLoop() {
     _wm.update_input();
 
     // process ECS once per tick (FRAME_RATE_HZ)
-    while (accumulated_time >= MS_PER_UPDATE) {
+    while (accumulated_time >= _s_per_update) {
       frames++;
-      total_time += MS_PER_UPDATE;
-      accumulated_time -= MS_PER_UPDATE;
+      total_time += _s_per_update;
+      accumulated_time -= _s_per_update;
 
       // create snapshot here
-      FrameSnapshot s(total_time, MS_PER_UPDATE, accumulated_time, frames,
+      FrameSnapshot s(total_time, _s_per_update, accumulated_time, frames,
                       sub_frames);
       if (_scene != nullptr) {
         _scene->update(s);
