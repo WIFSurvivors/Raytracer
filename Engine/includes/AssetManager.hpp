@@ -56,33 +56,34 @@ struct AssetManager : public Storage<fs::path> {
   explicit AssetManager(std::shared_ptr<UUIDManager> um) : Storage(um) {
     LOG(std::format("created {}", get_name()));
   }
-  
-  ~AssetManager() {
-    LOG(std::format("destroyed {}", get_name()));
-  }
+
+  ~AssetManager() { LOG(std::format("destroyed {}", get_name())); }
 
   //   enum class Type { Shader, Material, Object, Unknown }; // maybe do this
 
   struct Asset {
     Asset(AssetManager *am, fs::path path) : _am{am} { set_path(path); }
-
     Asset(AssetManager *am, uuid id, fs::path path) : _am{am} { set(id, path); }
 
-    // Type type;
-    uuid _uuid = boost::uuids::nil_uuid();
-    fs::path _path;
-
-    void set(uuid id, fs::path path) { _am->set(id, path); }
+    void set(uuid id, fs::path path) {
+      LOG(std::format("Try adding Asset \"{}\" ({})", path.string(),
+                      boost::uuids::to_string(id)));
+      _am->set(id, path);
+    }
 
     bool set_uuid(uuid id) {
       // check if uuid is known on manager
       // -> if not in manager, this uuid is invalid
       auto opath = _am->get(id);
       if (!opath.has_value()) {
+        LOG_ERROR(std::format("UUID ({}) doesn't exist yet",
+                              boost::uuids::to_string(id)));
         return false;
       }
       _uuid = id;
       _path = opath.value();
+      LOG(std::format("Asset \"{}\" ({}) exists", _path.string(),
+                      boost::uuids::to_string(_uuid)));
       return true;
     }
 
@@ -93,6 +94,8 @@ struct AssetManager : public Storage<fs::path> {
       auto oid = _am->get(path);
       if (oid.has_value()) { // path already exists
         _uuid = oid.value();
+        LOG(std::format("Asset \"{}\" ({}) exists", path.string(),
+                        boost::uuids::to_string(_uuid)));
       } else { // path doesn't exists -> create a new one
         auto id = _am->create(path);
         _uuid = id;
@@ -101,18 +104,12 @@ struct AssetManager : public Storage<fs::path> {
     }
 
     fs::path get_path() const { return _path; }
-
-    // set_uuid()
-    // -> _am->get_instance().get_uuid() -> true: good
-    //                                   -> false: error
-
-    // set_path()
-    // -> _am->get_instance().get_path() -> true: replace uuid here
-    //                                   -> false: create new uuid in AM
-    // get_path() -> abs
+    uuid get_uuid() const { return _uuid; }
 
   private:
     AssetManager *_am;
+	uuid _uuid = boost::uuids::nil_uuid();
+    fs::path _path;
   };
 
   struct DefaultAssets {
@@ -131,7 +128,9 @@ struct AssetManager : public Storage<fs::path> {
       LOG_WARN(std::format("ID \"{}\" already exists!! This can result in "
                            "inconsistent behaviour!!",
                            boost::uuids::to_string(id)));
-    }
+    }	
+    LOG(std::format("added new path \"{}\" with UUID \"{}\"", path.string(),
+                    boost::uuids::to_string(id)));
     _um->add(id, this);
     _storage[id] = path;
   }
