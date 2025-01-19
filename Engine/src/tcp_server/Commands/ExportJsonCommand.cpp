@@ -7,6 +7,12 @@ using RT::Log;
 using RT::Engine;
 
 std::string ExportJsonCommand::execute(Engine *engine) {
-  return "ExportJsonCommand executed but empty";
+  try {
+    engine->save_scene_as_json(_json_path);
+  } catch (const std::exception &e) {
+    std::cerr << e.what() << '\n';
+    return e.what();
+  }
+  return "Scene exported on path: " + _json_path;
 }
 

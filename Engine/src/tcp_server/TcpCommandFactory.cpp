@@ -20,6 +20,10 @@
 #include "includes/tcp_server/Commands/GetFovCommand.hpp"
 #include "includes/tcp_server/Commands/SetFovCommand.hpp"
 #include "includes/tcp_server/Commands/UndoCommand.hpp"
+#include "includes/tcp_server/Commands/RemoveComponent.hpp"
+#include "includes/tcp_server/Commands/SetFrameRate.hpp"
+#include "includes/tcp_server/Commands/GetFrameRate.hpp"
+#include "includes/tcp_server/Commands/RemoveEntity.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/string_generator.hpp>
 #include <map>
@@ -118,6 +122,22 @@ TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
       return std::make_unique<UndoCommand>(std::stoi(parameters[0]));
     }
     return std::make_unique<UndoCommand>();
+  }
+  else if (command_string.compare(REMOVE_COMPONENT_COMMAND) == 0) {
+    LOG_TCP("Create RemoveComponentCommand");
+    return std::make_unique<RemoveComponent>(_uuid);
+  }
+  else if (command_string.compare(SET_FRAME_RATE_COMMAND) == 0) {
+    LOG_TCP("Create SetFrameRateCommand");
+    return std::make_unique<SetFrameRate>(std::stoi(parameters[0]));
+  }
+  else if (command_string.compare(GET_FRAME_RATE_COMMAND) == 0) {
+    LOG_TCP("Create GetFrameRateCommand");
+    return std::make_unique<GetFrameRate>();
+  }
+  else if (command_string.compare(REMOVE_ENTITY_COMMAND) == 0) {
+    LOG_TCP("Create RemoveEntityCommand");
+    return std::make_unique<RemoveEntity>(_uuid);
   }
   else {
     LOG_ERROR("Command not found");

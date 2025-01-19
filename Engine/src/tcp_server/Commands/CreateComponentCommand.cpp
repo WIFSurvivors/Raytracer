@@ -90,4 +90,40 @@ std::string CreateComponentCommand::execute(Engine *e) {
     return "Unknown exception occurred";
   }
 }
-std::string CreateComponentCommand::undo(RT::Engine *engine) { throw NotImplementedError{}; }
+std::string CreateComponentCommand::undo(RT::Engine *engine) {
+   try {
+    auto scene = engine->get_scene();
+    if (!scene) {
+      LOG_ERROR("Scene is null");
+      return "Scene is null";
+    }
+    uuid _uuid = this->get_uuid();
+    auto uuid_manager = scene->get_uuid_manager();
+    if (!uuid_manager) {
+      LOG_ERROR("UUIDManager is null");
+      return "UUIDManager is null";
+    }
+    auto system = uuid_manager->get_storage(_uuid);
+    if (!system) {
+      LOG_ERROR(std::format("Entity not found for UUID: {}",
+                            boost::uuids::to_string(_uuid)));
+      return "Entity not found";
+    }
+    auto success = system->remove(_uuid);
+    if (!success) {
+      LOG_ERROR("Entity could not be created.");
+      return "Entity could not be created.";
+    }
+    return "Entity removed";
+
+  } catch (const std::bad_alloc &e) {
+    LOG_ERROR(std::format("Memory allocation failed: {}", e.what()));
+    return "Memory allocation failed";
+  } catch (const std::exception &e) {
+    LOG_ERROR(std::format("Exception: {}", e.what()));
+    return "Exception occurred";
+  } catch (...) {
+    LOG_ERROR("Unknown exception occurred");
+    return "Unknown exception occurred";
+  }
+ }
