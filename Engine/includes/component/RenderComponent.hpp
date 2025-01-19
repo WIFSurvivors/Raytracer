@@ -105,6 +105,7 @@ struct RenderComponent : public IComponent {
 #if SHOW_UI
     objl::Loader loader;
 	if(!loader.LoadFile(obj_asset.get_path().string())){
+		LOG_ERROR("invalid .obj file");
 		return;
 	}
 
