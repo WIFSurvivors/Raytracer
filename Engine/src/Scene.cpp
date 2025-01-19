@@ -59,6 +59,7 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
 bool Scene::remove(Entity *e) {
   LOG(std::format("Trying to remove {} w/ {} children", e->get_name(),
                   e->get_child_entities().size()));
+
   // 0) Removing root is not allowed
   if (e == get_root().lock().get()) {
     LOG_ERROR(std::format("Removal of {} not allowed!!", e->get_name()));
@@ -72,14 +73,21 @@ bool Scene::remove(Entity *e) {
         LOG_ERROR(std::format("Removal of {} failed", e->get_name()));
       }
     }
-    e->get_child_entities().clear(); // remove all children
+    // remove all children, should do nothing in theory
+    e->get_child_entities().clear();
   }
 
   // 2) Remove all components that are currently active on the removed entity
   // from their systems.
   e->remove_components(_uuid_manager.get());
 
-  // 3) Finally, remove the selected entity from storage container
+  // 3) Remove entity from it's parent
+  if (auto parent = e->get_parent_entity().lock();
+      parent->remove_child_entity(e)) {
+    LOG_ERROR(std::format("Removal of {} failed", e->get_name()));
+  }
+
+  // 4) Finally, remove the selected entity from storage container
   _entity_storage.remove(e);
   return true;
 }
@@ -114,9 +122,11 @@ void Scene::generate_test() {
              "UUID Manager doesn't have 4 uuids");
       assert(_entity_storage.get_storage().size() == 1 &&
              "Entity Storage doesn't have 1 entity");
+      assert(_root->get_child_entities().size() == 0 && "Root has >0 entities");
       auto e = create_entity("camera");
       assert(_entity_storage.get_storage().size() == 2 &&
              "Entity Storage doesn't have 2 entity");
+      assert(_root->get_child_entities().size() == 1 && "Root has >1 entities");
       auto c = _camera_system.create_component(e.get());
       assert(_camera_system.get_components().size() == 1 &&
              "Camera Syteme doesn't have 1 component");
@@ -163,6 +173,8 @@ void Scene::generate_test() {
     {
       LOG_TEST("==[START] DELETING ENTITY WITH LIGHT COMPONENT (UUID VERSION)");
       auto test_entity_count = _entity_storage.get_storage().size();
+      auto test_root_children_count = _root->get_child_entities().size();
+      LOG(std::format("Expected Child count: {}", test_root_children_count));
       auto e = create_entity("light test #2").get();
       auto l = _light_system.create_component(e);
       assert(_light_system.get_components().size() == 1 &&
@@ -174,6 +186,8 @@ void Scene::generate_test() {
              "Light System doesn't have 0 components");
       assert(_entity_storage.get_storage().size() == test_entity_count &&
              "Entity Storage doesn't represent the previous state");
+      assert(_root->get_child_entities().size() == test_root_children_count &&
+             "Root doesn't represent the previous state");
       LOG_TEST(
           "==[SUCCESS] DELETING ENTITY WITH LIGHT COMPONENT (UUID VERSION)");
     }
@@ -181,6 +195,7 @@ void Scene::generate_test() {
     {
       LOG_TEST("==[START] DELETING ENTITY WITH LIGHT COMPONENT (PTR VERSION)");
       auto test_entity_count = _entity_storage.get_storage().size();
+      auto test_root_children_count = _root->get_child_entities().size();
       auto e = create_entity("light test #3").get();
       auto l = _light_system.create_component(e);
       assert(_light_system.get_components().size() == 1 &&
@@ -192,6 +207,8 @@ void Scene::generate_test() {
              "Light System doesn't have 0 components");
       assert(_entity_storage.get_storage().size() == test_entity_count &&
              "Entity Storage doesn't represent the previous state");
+      assert(_root->get_child_entities().size() == test_root_children_count &&
+             "Root doesn't represent the previous state");
       LOG_TEST(
           "==[SUCCESS] DELETING ENTITY WITH LIGHT COMPONENT (PTR VERSION)");
     }
@@ -218,6 +235,7 @@ void Scene::generate_test() {
       LOG_TEST(
           "==[START] DELETING ENTITY WITH RENDER COMPONENT (UUID VERSION)");
       auto test_entity_count = _entity_storage.get_storage().size();
+      auto test_root_children_count = _root->get_child_entities().size();
       auto e = create_entity("render test #2").get();
       auto a = create_asset("./assets/cornell-box.obj");
       auto r = _render_system.create_component(e, a);
@@ -230,6 +248,8 @@ void Scene::generate_test() {
              "Render System doesn't have 0 components");
       assert(_entity_storage.get_storage().size() == test_entity_count &&
              "Entity Storage doesn't represent the previous state");
+      assert(_root->get_child_entities().size() == test_root_children_count &&
+             "Root doesn't represent the previous state");
       LOG_TEST(
           "==[SUCCESS] DELETING ENTITY WITH RENDER COMPONENT (UUID VERSION)");
     }
@@ -237,6 +257,7 @@ void Scene::generate_test() {
     {
       LOG_TEST("==[START] DELETING ENTITY WITH RENDER COMPONENT (PTR VERSION)");
       auto test_entity_count = _entity_storage.get_storage().size();
+      auto test_root_children_count = _root->get_child_entities().size();
       auto e = create_entity("render test #3").get();
       auto a = create_asset("./assets/cornell-box.obj");
       auto r = _render_system.create_component(e, a);
@@ -249,6 +270,8 @@ void Scene::generate_test() {
              "Render System doesn't have 0 components");
       assert(_entity_storage.get_storage().size() == test_entity_count &&
              "Entity Storage doesn't represent the previous state");
+      assert(_root->get_child_entities().size() == test_root_children_count &&
+             "Root doesn't represent the previous state");
       LOG_TEST(
           "==[SUCCESS] DELETING ENTITY WITH RENDER COMPONENT (PTR VERSION)");
     }

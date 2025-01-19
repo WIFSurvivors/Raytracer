@@ -108,15 +108,18 @@ void Entity::add_child_entity(std::shared_ptr<Entity> e) {
 }
 
 bool Entity::remove_child_entity(std::shared_ptr<Entity> e) {
-  auto it = std::find(_child_entities.begin(), _child_entities.end(), e);
-  if (it != _child_entities.end()) {
-    _child_entities.erase(it);
-    return true;
-  }
-  return false;
+  return remove_child_entity(e.get());
 }
+
 bool Entity::remove_child_entity(Entity *e) {
-  return remove_child_entity(std::make_shared<Entity>(*e));
+  auto it = std::find_if(_child_entities.begin(), _child_entities.end(),
+                         [e](auto e_ptr) { return e_ptr.get() == e; });
+
+  if (it == _child_entities.end()) {
+    return false;
+  }
+  _child_entities.erase(it);
+  return true;
 }
 
 glm::vec3 Entity::get_world_position() const {
