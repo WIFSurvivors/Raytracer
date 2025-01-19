@@ -35,6 +35,10 @@ template <class T> struct Storage : public IStorage {
       return {};
     return std::make_optional<uuid>(it->first);
   }
+  
+  inline const std::map<uuid, T>& get_storage() const {
+    return _storage;
+  }
 
   /**
    * Get Object stored in this system. Will return std::nullopt when UUID is
