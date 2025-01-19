@@ -76,7 +76,7 @@ struct Triangle {
 
 struct Material {
     vec3 Kd; // Diffuse Color
-    float reflection;
+    float Ns;
     vec3 Ka; // Ambient Color
     float Ni; // optical density
     vec3 Ks; // Specular Color
@@ -340,7 +340,8 @@ bool processBVH_Shadow(Ray currentRay, int originObject, float distance) {
         }
     }
 
-    if (t > 0.0 && t < distance) return true;
+    //if (t > 0.0 && t < distance) return true;
+	if(distance <= t && t <=1) return true;
     return false;
 }
 
@@ -436,6 +437,12 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
                 Light light = emitter[lIndex];
 
                 vec3 shadowRay = normalize(light.position - sectionPoint);
+                float distanceToLight = length(light.position - sectionPoint);
+				Ray toLighRay = Ray(sectionPoint, shadowRay, currentRay.depth+1);
+				bool isShadow = processBVH_Shadow(toLighRay, index, 0.00000001);
+
+				if(isShadow) continue;
+				
                 vec3 reflecDirection = reflect(currentRay.direction, N);
                 //float distanceToLight = length(light.position - sectionPoint);
                 //float attenuation = 1.0 / (distanceToLight * distanceToLight);
@@ -447,7 +454,7 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
                 // specular += materials[matIndex[index]].Ks * dot(currentRay.direction, sectionPoint) * attenuation; // pow(..., currentRay.depth)
                 vec3 R = reflect(-shadowRay, N); // Reflection vector
                 vec3 V = normalize(cameraPos - sectionPoint);
-                float spec = pow(max(0.0, dot(R, V)), material.reflection);
+                float spec = pow(max(0.0, dot(R, V)), material.Ns);
                 specular += material.Ks * spec * light.color * light.intensity;
 
                 //bool isShadow = isInShadowTriangleAlt(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
