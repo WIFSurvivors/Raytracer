@@ -135,7 +135,7 @@ int stackTop = 0;
 const int BVH_STACK_SIZE = 128;
 int bvh_stack[BVH_STACK_SIZE];
 int bvhStackTop = 0;
-vec3 ambientLightColor = vec3(0.0);
+vec3 ambientLightColor = vec3(0.03);
 /*********************************************************************************/
 // STACK OPERATIONS
 
@@ -409,7 +409,7 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
         if (t >= 0.0 && index != -1) {
 
             // Intersection point & normal
-            vec3 sectionPoint = currentRay.origin + t * currentRay.direction;
+            vec3 sectionPoint = currentRay.origin + t * normalize(currentRay.direction);
 
             int v = triIdx[index] * 3;
             vec3 v0 = trivertex[v].data;
@@ -417,35 +417,38 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
             vec3 v2 = trivertex[v + 2].data;
             vec3 edge1 = trivertex[v + 1].data - trivertex[v].data;
             vec3 edge2 = trivertex[v + 2].data - trivertex[v].data;
-            vec3 baryCoords = bayecentricCalculation(sectionPoint, v0, v1, v2);
-            vec3 N = normalize(
-                    baryCoords.x * trivertex[v].normal +
-                        baryCoords.y * trivertex[v + 1].normal +
-                        baryCoords.z * trivertex[v + 2].normal
-                );
+            //vec3 baryCoords = bayecentricCalculation(sectionPoint, v0, v1, v2);
+            // vec3 N = normalize(
+            //         baryCoords.x * trivertex[v].normal +
+            //             baryCoords.y * trivertex[v + 1].normal +
+            //             baryCoords.z * trivertex[v + 2].normal
+            //     );
 
-            N = normalize(cross(edge1, edge2));
+            vec3 N = normalize(cross(edge1, edge2));
             bool anyLightHit = false;
             vec3 localColor = vec3(0.0);
             vec3 diffuse = vec3(0.0);
             vec3 specular = vec3(0.0);
+			vec3 amb = vec3(0.0);
+            Material material = materials[matIndex[index]];
 
             for (int lIndex = 0; lIndex < ls_active_light_sources; lIndex++) {
                 Light light = emitter[lIndex];
 
                 vec3 shadowRay = normalize(light.position - sectionPoint);
                 vec3 reflecDirection = reflect(currentRay.direction, N);
-                float distanceToLight = length(light.position - sectionPoint);
-                float attenuation = 1.0 / (distanceToLight * distanceToLight);
-                bool isShadow = processBVH_Shadow(Ray(sectionPoint + 0.001, shadowRay, currentRay.depth), index, distanceToLight);
+                //float distanceToLight = length(light.position - sectionPoint);
+                //float attenuation = 1.0 / (distanceToLight * distanceToLight);
+                //bool isShadow = processBVH_Shadow(Ray(sectionPoint + 0.001, shadowRay, currentRay.depth), index, distanceToLight);
                 // if (dot(N, shadowRay) >= 0) { // check if front or back face
 
-                if (dot(N, shadowRay) >= 0) { // check if front or back face
-                    diffuse += materials[matIndex[index]].Kd * dot(N, shadowRay) * attenuation;
-                    // specular += materials[matIndex[index]].Ks * dot(currentRay.direction, sectionPoint) * attenuation; // pow(..., currentRay.depth)
-
-                    anyLightHit = true;
-                }
+                float diff = max(0.0, dot(N, shadowRay));
+                diffuse += material.Kd * diff * light.color * light.intensity;
+                // specular += materials[matIndex[index]].Ks * dot(currentRay.direction, sectionPoint) * attenuation; // pow(..., currentRay.depth)
+                vec3 R = reflect(-shadowRay, N); // Reflection vector
+                vec3 V = normalize(cameraPos - sectionPoint);
+                float spec = pow(max(0.0, dot(R, V)), material.reflection);
+                specular += material.Ks * spec * light.color * light.intensity;
 
                 //bool isShadow = isInShadowTriangleAlt(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
                 // bool isShadow = processBVH_Shadow(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
@@ -461,24 +464,24 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
             // bool anyLightHit = false;
 
             // Ambient Lighting
-            vec3 ambient = materials[matIndex[index]].Ka * ambientLightColor;
+            vec3 ambient = material.Ka * ambientLightColor;
             localColor += ambient + diffuse + specular;
 
             color += localColor;
-            if (anyLightHit) {
-                vec3 reflecDirection = reflect(currentRay.direction, N);
-                // reflec_accumulation *= materials[matIndex[index]].reflection;
-                Ray nextRay = Ray(sectionPoint + 0.001, reflecDirection, currentRay.depth + 1);
-                push(nextRay);
-            }
-
-            if (materials[matIndex[index]].illum == 4) {
-                vec3 refractDirection = refract(currentRay.direction, N, materials[matIndex[index]].Ni);
-                Ray refractRay = Ray(sectionPoint - 0.01 * N, refractDirection, currentRay.depth + 1);
-                push(refractRay);
-            }
-            // color *= materials[matIndex[index]].d;
-            hit = true;
+            // if (anyLightHit) {
+            //     vec3 reflecDirection = reflect(currentRay.direction, N);
+            //     // reflec_accumulation *= materials[matIndex[index]].reflection;
+            //     Ray nextRay = Ray(sectionPoint + 0.001, reflecDirection, currentRay.depth + 1);
+            //     push(nextRay);
+            // }
+            //
+            // if (materials[matIndex[index]].illum == 4) {
+            //     vec3 refractDirection = refract(currentRay.direction, N, materials[matIndex[index]].Ni);
+            //     Ray refractRay = Ray(sectionPoint - 0.01 * N, refractDirection, currentRay.depth + 1);
+            //     push(refractRay);
+            // }
+            // // color *= materials[matIndex[index]].d;
+            // hit = true;
         } else {
             // color += reflec_accumulation * backgroundColor(currentRay.direction);
         }
