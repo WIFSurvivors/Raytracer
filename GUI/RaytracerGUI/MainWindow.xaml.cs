@@ -1247,19 +1247,23 @@ namespace RaytracerGUI
                     return;
                 }
 
-
+                try { 
                 if (deleteUUID.Equals(currentEntityUUID))
                 {
-                    //currentEntityUUID = _ecsApi.remove_entity(deleteUUID);
-                    deleteUUID = "UUID";
+                    currentEntityUUID = _ecsApi.remove_entity(deleteUUID);
+                    deleteUUID = "uuid";
                     UpdateEntities(currentEntityUUID, null);
                 }
                 if (deleteUUID.Equals(currentComponentUUID))
                 {
-                    //_ecsApi.remove_component(deleteUUID);
-                    currentComponentUUID = "UUID";
-                    deleteUUID = "UUID";
+                    _ecsApi.remove_component(deleteUUID);
+                    currentComponentUUID = "uuid";
+                    deleteUUID = "uuid";
                     UpdateEntities(currentEntityUUID, null);
+                }
+                }
+                catch(Exception ex) { 
+                    tbxLog.AppendText(ex.ToString());
                 }
                 return;
 
