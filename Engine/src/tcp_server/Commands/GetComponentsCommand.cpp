@@ -43,6 +43,8 @@ std::string GetComponentsCommand::execute(Engine *e) {
     }
 
     auto components_json = get_components_short(components);
+      set_successfull(true);
+
     return boost::json::serialize(components_json);
 
   } catch (const std::bad_alloc &e) {

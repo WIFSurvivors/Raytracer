@@ -19,6 +19,10 @@ set(TCP_COMMANDS_SOURCES
     SetFovCommand.cpp
     GetFovCommand.cpp
     UndoCommand.cpp
+    GetFrameRate.cpp
+    SetFrameRate.cpp
+    RemoveEntity.cpp
+    RemoveComponent.cpp
 )
 list(TRANSFORM TCP_COMMANDS_SOURCES PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
 set(TCP_COMMANDS_SOURCES ${TCP_COMMANDS_SOURCES} PARENT_SCOPE)

@@ -23,7 +23,7 @@ std::string SetBouncesCommand::execute(Engine *engine) {
   }
   _old_bounces = render_system->get_bounces();
   render_system->set_bounces(_bounces);
-
+        set_successfull(true);
   return "Bounces set to " + std::to_string(_bounces);
 }
 

@@ -50,8 +50,9 @@ namespace RaytracerGUI
                             Name = jsonRoot.name,
                             Children = jsonRoot.children_count
                         }
+                        
                     };
-
+                    _mainWindow.rootUUID = jsonRoot.uuid;
                     CreateChildItems(jsonRoot, rootItem);
                     TreeView.Items.Add(rootItem);
                     ToolTipService.SetToolTip(rootItem, jsonRoot.uuid);

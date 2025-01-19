@@ -38,6 +38,8 @@ std::string GetComponentOptions::execute(Engine *e) {
         std::string json_msg = boost::json::serialize(
             component->to_json()["component_options"]); // SORRY SPYRO :C
         LOG(json_msg);
+          set_successfull(true);
+
         return json_msg;
       }
     } else if (auto render_system = dynamic_cast<RenderSystem *>(system)) {
@@ -48,6 +50,8 @@ std::string GetComponentOptions::execute(Engine *e) {
         std::string json_msg = boost::json::serialize(
             component->to_json()["component_options"]); // SORRY SPYRO :C
         LOG(json_msg);
+          set_successfull(true);
+
         return json_msg;
       }
     } else if (auto simple_system = dynamic_cast<SimpleSystem *>(system)) {
@@ -58,6 +62,8 @@ std::string GetComponentOptions::execute(Engine *e) {
         std::string json_msg = boost::json::serialize(
             component->to_json()["component_options"]); // SORRY SPYRO :C
         LOG(json_msg);
+          set_successfull(true);
+
         return json_msg;
       }
     } else if (auto light_system = dynamic_cast<LightSystem *>(system)) {
@@ -68,6 +74,7 @@ std::string GetComponentOptions::execute(Engine *e) {
         std::string json_msg = boost::json::serialize(
             component->to_json()["component_options"]); // SORRY SPYRO :C
         LOG(json_msg);
+          set_successfull(true);
         return json_msg;
       }
     } else {
