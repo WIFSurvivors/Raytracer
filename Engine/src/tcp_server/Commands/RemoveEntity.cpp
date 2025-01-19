@@ -33,8 +33,8 @@ std::string RemoveEntity::execute(Engine *e) {
     }
     auto success = scene->remove(_uuid);
     if (!success) {
-      LOG_ERROR("Entity could not be created.");
-      return "Entity could not be created.";
+      LOG_ERROR("Entity could not be removed.");
+      return "Entity could not be removed.";
     }
       set_successfull(true);
 

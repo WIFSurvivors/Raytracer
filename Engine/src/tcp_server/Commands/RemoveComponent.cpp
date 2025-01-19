@@ -27,18 +27,18 @@ std::string RemoveComponent::execute(Engine *e) {
     }
     auto system = uuid_manager->get_storage(_uuid);
     if (!system) {
-      LOG_ERROR(std::format("Entity not found for UUID: {}",
+      LOG_ERROR(std::format("System not found for UUID: {}",
                             boost::uuids::to_string(_uuid)));
-      return "Entity not found";
+      return "System not found";
     }
     auto success = system->remove(_uuid);
     if (!success) {
-      LOG_ERROR("Entity could not be created.");
-      return "Entity could not be created.";
+      LOG_ERROR("Component could not be removed.");
+      return "Component could not be removed.";
     }
       set_successfull(true);
 
-    return "Entity removed";
+    return "Component removed";
 
   } catch (const std::bad_alloc &e) {
     LOG_ERROR(std::format("Memory allocation failed: {}", e.what()));
