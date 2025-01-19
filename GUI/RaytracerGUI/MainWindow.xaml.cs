@@ -851,6 +851,17 @@ namespace RaytracerGUI
                     _entityBuilder = new TreeBuilder(trvEntities, this);
                     _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
 
+                    if (int.TryParse(_ecsApi.get_bounces(), out int value))
+                    {
+                        nudBounces.Value = value;
+                    }
+
+                    /*
+                    if (int.TryParse(_ecsApi.get_frame_rate(), out int value))
+                    {
+                        nudFrameRate.Value = value;
+                    }*/
+
                 }
                 catch (InvalidOperationException ex)
                 {
