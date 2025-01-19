@@ -83,7 +83,7 @@ bool Scene::remove(Entity *e) {
 
   // 3) Remove entity from it's parent
   if (auto parent = e->get_parent_entity().lock();
-      parent->remove_child_entity(e)) {
+      !parent->remove_child_entity(e)) {
     LOG_ERROR(std::format("Removal of {} failed", e->get_name()));
   }
 
