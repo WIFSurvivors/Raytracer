@@ -274,8 +274,6 @@ void Scene::generate_sample_content() {
 
 // currently only tell the render system to update itself
 void Scene::update(const FrameSnapshot &snapshot) {
-  //   do things??
-  //   _camera_system.sample_update_move_main_camera(timer.get_delta_time());
-  // _render_system.update(snapshot);
+   _render_system.update(snapshot);
 }
 } // namespace RT

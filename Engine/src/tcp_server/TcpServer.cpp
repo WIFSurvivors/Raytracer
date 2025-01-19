@@ -48,10 +48,10 @@ void TcpServer::send_message(std::string message) {
 void TcpServer::read_message() {
   auto self(shared_from_this());
   _socket.async_read_some(
-      boost::asio::buffer(_buffer),
+      boost::asio::buffer(_read_buffer),
       [this, self](const boost::system::error_code &error, std::size_t length) {
         if (!error && !_is_stopped) {
-          std::string msg(_buffer.data(), length);
+          std::string msg(_read_buffer.data(), length);
           LOG_TCP("Data received: " + msg);
           auto command_decoded = _command_manager.decode_command(msg);
           auto command = _command_manager.create_command(*command_decoded);
