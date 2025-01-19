@@ -3,6 +3,7 @@
 #include <boost/uuid/uuid_io.hpp>
 #include <iostream>
 #include <cassert>
+#include <stdexcept>
 
 namespace RT {
 IComponent::IComponent(uuid id, Entity *e, std::string name)
@@ -10,7 +11,9 @@ IComponent::IComponent(uuid id, Entity *e, std::string name)
   // has to be rewritten for windows apparently?
   // https://en.cppreference.com/w/cpp/error/assert
   assert(e != nullptr && "Entity is a nullptr");
-  e->add_component(this);
+  if(!e->add_component(this)){
+	throw std::invalid_argument{"Entity already possess "};
+  }
 }
 
 IComponent::~IComponent() {

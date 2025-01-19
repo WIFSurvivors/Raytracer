@@ -11,10 +11,12 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <locale>
 
 namespace RT {
 inline std::string format_float(float value) {
   std::ostringstream out;
+  out.imbue(std::locale{"C"}); // enforce default (english) decimal point style
   out << std::fixed << std::setprecision(3) << value;
   return out.str();
 }
