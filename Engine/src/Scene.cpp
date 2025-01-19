@@ -9,16 +9,16 @@
 
 namespace RT {
 Scene::Scene(Engine *e)
-    : /*_render_system{_uuid_manager, e->get_window_manager(), &_camera_system,
-                     &_light_system, &_default_assets},*/
+    : _render_system{_uuid_manager, e->get_window_manager(), &_camera_system,
+                     &_light_system, &_default_assets},
       _root{create_root("root")} {
   LOG(std::format("NEW SCENE -> \"{}\" w/ ROOT UUID {}", _title,
                   boost::uuids::to_string(_root->get_uuid())));
 }
 
 Scene::Scene(Engine *e, std::string title)
-    : /*_render_system{_uuid_manager, e->get_window_manager(), &_camera_system,
-                     &_light_system, &_default_assets},*/
+    : _render_system{_uuid_manager, e->get_window_manager(), &_camera_system,
+                     &_light_system, &_default_assets},
       _root{create_root("root")}, _title{title} {
   LOG(std::format("**CREATE** SCENE -> \"{}\" w/ ROOT UUID {}", _title,
                   boost::uuids::to_string(_root->get_uuid())));
@@ -59,7 +59,6 @@ bool Scene::remove(Entity *e) {
   LOG(std::format("Trying to remove {} w/ {} children", e->get_name(),
                   e->get_child_entities().size()));
   // 1) Recursively call remove on children
-  LOG("1)");
   if (e->get_child_entities().size() > 0) {
     for (auto &&ce : e->get_child_entities()) {
       if (!remove(ce.get())) {
@@ -71,11 +70,9 @@ bool Scene::remove(Entity *e) {
 
   // 2) Remove all components that are currently active on the removed entity
   // from their systems.
-  LOG("2)");
   e->remove_components(_uuid_manager.get());
 
   // 3) Finally, remove the selected entity from storage container
-  LOG("3)");
   _entity_storage.remove(e);
   return true;
 }
@@ -103,34 +100,53 @@ void Scene::generate_test() {
   //   _camera_system.print();
   LOG(std::string(30, '*'));
   {
-    LOG("=================START TEST SEQUENCE=================");
-    auto e1 = create_entity("wawa1");
-    auto e2 = create_entity("wawa2");
-    auto e3 = create_entity("wawa3");
-    auto e4 = create_entity("wawa4");
+    {
+      LOG("== START TEST SEQUENCE");
+      auto e = create_entity("camera :3");
+      auto c = _camera_system.create_component(e.get());
+      e->set_local_position(0.f, +8.f, 15.f);
+    }
 
-    auto c1 = _camera_system.create_component(e1.get());
+    {
+      LOG("*== DELETING LIGHT COMPONENT");
+      auto e = create_entity("light test #1");
+      auto l = _light_system.create_component(e.get());
+      assert(_light_system.get_components().size() == 1 &&
+             "Light System doesn't have 1 component");
+      assert(e->get_components().size() == 1 &&
+             "Entity doesn't have 1 component");
+	  auto s = _uuid_manager->get_storage(l->get_uuid());
+      s->remove(l->get_uuid());
+      assert(_light_system.get_components().size() == 0 &&
+             "Light System doesn't have 0 components");
+      assert(e->get_components().size() == 0 &&
+             "Entity doesn't have 0 components");
+      _entity_storage.print();
+      _light_system.print();
+    }
 
-    LOG("******************** DELETING LIGHT COMPONENT ***************");
-    auto l1 = _light_system.create_component(e2.get());
-    _light_system.print();
-    _light_system.remove(l1->get_uuid());
-    _light_system.print();
-    // passed ?
+    {
+      LOG("== DELETING ENTITY WITH LIGHT COMPONENT (UUID VERSION) ");
+      auto e = create_entity("light test #2");
+      auto l = _light_system.create_component(e.get());
+      _light_system.print();
+      this->remove(e->get_uuid());
+      _light_system.print();
+    }
 
-    LOG("******************** DELETING ENTITY WITH LIGHT COMPONENT (UUID "
-        "VERSION) ***************");
-    auto l2 = _light_system.create_component(e3.get());
-    _light_system.print();
-    remove(e3->get_uuid());
-    _light_system.print();
+    {
+      LOG("== DELETING ENTITY WITH LIGHT COMPONENT (PTR VERSION) ");
+      auto e = create_entity("wawa4");
+      auto l = _light_system.create_component(e.get());
+      _light_system.print();
+      this->remove(e.get());
+      _light_system.print();
+    }
 
-    LOG("******************** DELETING ENTITY WITH LIGHT COMPONENT (PTR "
-        "VERSION) ***************");
-    auto l3 = _light_system.create_component(e4.get());
-    _light_system.print();
-    remove(e4.get());
-    _light_system.print();
+    LOG("******************** DELETING RENDER COMPONENT ***************");
+    auto e5 = create_entity("wawa5");
+    auto asset1 = create_asset("./assets/cornell-box.obj");
+    auto r1 = _render_system.create_component(e5.get(), asset1);
 
     /*auto c2 = _camera_system.create_component(e2.get());
     auto c3 = _camera_system.create_component(e1.get());
@@ -229,8 +245,8 @@ void Scene::generate_sample_content() {
   auto root_ptr = get_root().lock();
   auto asset1 = create_asset("./assets/cornell-box.obj");
   auto ComponentEntity1 = create_entity("ComponentEntity1", root_ptr);
-  // _render_system.create_component(ComponentEntity1.get(), asset1);
-  //_render_system.create_component(root_ptr.get(), v3, u3);
+  _render_system.create_component(ComponentEntity1.get(), asset1);
+  //   _render_system.create_component(root_ptr.get(), v3, u3);
 
   LOG_NEW_LINE();
   LOG(std::string(100, '*'));

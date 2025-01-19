@@ -34,7 +34,7 @@ public:
     _scene->generate_sample_content();
   }
   void load_test_scene() {
-    _scene = std::make_unique<Scene>(this);
+    _scene = std::make_unique<Scene>(this, "hewwo :3");
     _scene->generate_test();
     // auto new_s = std::make_unique<Scene>(this);
     // change_scene(std::move(new_s));
