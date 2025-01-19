@@ -307,8 +307,20 @@ namespace RaytracerGUI
             {
                 foreach (var kvp in componentOptions)
                 {
+                    var key = kvp.Key;
+                    var value = kvp.Value;
+
                     // Add key-value pairs to the ListBox
-                    _jsonKeyValuePairs.Add(new JsonKeyValue { Key = kvp.Key, Value = kvp.Value });
+                    var jsonKeyValue = new JsonKeyValue { Key = key, Value = value };
+
+                    // Check if the key includes "path"
+                    if (key.Contains("path", StringComparison.OrdinalIgnoreCase))
+                    {
+                        jsonKeyValue.IsPath = true; // Mark as a path entry
+                    }
+
+                    // Add key-value pairs to the ListBox
+                    _jsonKeyValuePairs.Add(jsonKeyValue);
                 }
 
             _componentOptionsListbox.ItemsSource = _jsonKeyValuePairs;

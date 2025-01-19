@@ -55,7 +55,7 @@ namespace RaytracerGUI
 
         RoutedPropertyChangedEventArgs<object> currentEntityEvent;
 
-             
+
 
         public MainWindow()
         {
@@ -86,21 +86,7 @@ namespace RaytracerGUI
 
                 switch (item)
                 {
-                    //Opens a file to be added to a render component
-                    case "mniOpen":
-                        tbxLog.AppendText(item + " was clicked! \n");
-
-                        openFileDialog = new OpenFileDialog
-                        {
-                            Filter = "OBJ and MTL Files (*.obj;*.mtl)|*.obj;*.mtl",
-                            Title = "Select a .obj or .mtl file"
-                        };
-
-                        if (openFileDialog.ShowDialog() == true)
-                        {
-                            filePath = openFileDialog.FileName;
-                        }
-                        break;
+                   
                     //Imorts the JSON Scene file and sends it to the ecsapi
                     case "mniImport":
                         tbxLog.AppendText(item + " was clicked! \n");
@@ -109,7 +95,7 @@ namespace RaytracerGUI
                         {
                             Filter = "JSON File (*.json)|*.json",
                             Title = "Select a JSON Scene file",
-                            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads"
+                            //InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads"
                         };
 
                         if (openFileDialog.ShowDialog() == true)
@@ -682,7 +668,7 @@ namespace RaytracerGUI
                 int newValue = (int)e.NewValue;
                 try
                 {
-                    string? result = _ecsApi.set_frame_rate(newValue); 
+                    string? result = _ecsApi.set_frame_rate(newValue);
                     tbxLog.AppendText(result + "\n");
                 }
                 catch (Exception ex)
@@ -803,7 +789,7 @@ namespace RaytracerGUI
                 // Get the TextBox and its DataContext (the bound JsonKeyValue object)
                 if (sender is TextBox textBox && textBox.DataContext is JsonKeyValue keyValue)
                 {
-                    // Call your desired function
+
                     OnComponentsTextboxValueChanged(keyValue.Key, textBox.Text);
                 }
             }
@@ -1265,15 +1251,16 @@ namespace RaytracerGUI
                     return;
                 }
 
-                try {
+                try
+                {
 
-                    
+
 
                     if (deleteUUID.Equals(currentEntityUUID))
                     {
                         _ecsApi.remove_entity(deleteUUID);
                         deleteUUID = "uuid";
-                        
+
                         foreach (TreeViewItem item in trvEntities.Items)
                         {
                             if (item.Tag is TreeItemData tagData)
@@ -1310,7 +1297,8 @@ namespace RaytracerGUI
 
                     }
                 }
-                catch(Exception ex) { 
+                catch (Exception ex)
+                {
                     tbxLog.AppendText(ex.ToString());
                 }
                 return;
@@ -1318,6 +1306,30 @@ namespace RaytracerGUI
             }
 
         }
-    }
 
+
+        private void OnBrowseButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is JsonKeyValue jsonKeyValue)
+            {
+                OpenFileDialog openFileDialog;
+
+                openFileDialog = new OpenFileDialog
+                {
+                    Filter = "OBJ and MTL Files (*.obj;*.mtl)|*.obj;*.mtl",
+                    Title = "Select a .obj or .mtl file"
+                };
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    jsonKeyValue.Path = openFileDialog.FileName;
+                    jsonKeyValue.Value = openFileDialog.FileName; // Update the value as well
+
+                    // Manually call the method after the text update (file path)
+                    OnComponentsTextboxValueChanged(jsonKeyValue.Key, openFileDialog.FileName);
+                }
+            }
+        }
+
+    }
 }
