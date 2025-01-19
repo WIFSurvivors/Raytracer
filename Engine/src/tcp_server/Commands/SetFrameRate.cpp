@@ -13,6 +13,7 @@ std::string SetFrameRate::execute(Engine *engine) {
   }
   _old_frame_rate = engine->get_frame_rate();
     engine->set_frame_rate(_frame_rate);
+          set_successfull(true);
   return "FrameRate set to " + std::to_string(static_cast<int>(_old_frame_rate));
 }
 

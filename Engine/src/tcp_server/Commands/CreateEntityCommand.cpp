@@ -31,6 +31,7 @@ std::string CreateEntityCommand::execute(Engine *e) {
       LOG_ERROR("Entity could not be created.");
       return "Entity could not be created.";
     }
+          set_successfull(true);
     return "Entity created";
 
   } catch (const std::bad_alloc &e) {

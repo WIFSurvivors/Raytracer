@@ -43,6 +43,7 @@ std::string ScaleCommand::execute(Engine *engine) {
       "ScaleCommand executed on" + boost::uuids::to_string(_uuid) +
       "with new x y z: " + glm::to_string(entity->get_local_scale());
   LOG_ERROR(msg);
+        set_successfull(true);
   return msg;
 }
 std::string ScaleCommand::undo(RT::Engine * engine) { 

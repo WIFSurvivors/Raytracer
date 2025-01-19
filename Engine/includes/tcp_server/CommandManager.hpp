@@ -36,7 +36,7 @@ struct CommandManager {
 
 private:
   std::queue<std::unique_ptr<TcpCommand>> _command_queue{};
-  std::stack<std::unique_ptr<UndoableCommand>> _undo_queue{};
+  std::stack<std::unique_ptr<UndoableCommand>> _undo_stack{};
   TcpParser _parser{};
   TcpCommandFactory _factory{};
   TcpExecuter _executer{};

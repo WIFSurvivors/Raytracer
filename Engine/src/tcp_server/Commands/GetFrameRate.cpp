@@ -11,6 +11,8 @@ std::string GetFrameRate::execute(Engine *engine) {
     LOG_ERROR("Engine is null");
     return "Engine is null";
   }
+    set_successfull(true);
+
   return std::to_string(static_cast<int>(engine->get_frame_rate()));
 }
 
