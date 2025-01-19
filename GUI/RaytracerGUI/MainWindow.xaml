@@ -52,11 +52,11 @@
                     <MenuItem Header="Settings" Width="169">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5">
                             <TextBlock Text="Bounces:" VerticalAlignment="Center" FontWeight="Bold" Foreground="White" Margin="0,0,5,0" />
-                            <xctk:IntegerUpDown Name="nudBounces" Minimum="0" Maximum="20" Value="4" Width="40" HorizontalAlignment="Right" ValueChanged="nudBounces_ValueChanged"/>
+                            <xctk:IntegerUpDown Name="nudBounces" Minimum="0" Maximum="20" Value="1" Width="40" HorizontalAlignment="Right" ValueChanged="nudBounces_ValueChanged"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Margin="5">
                             <TextBlock Text="FPS:" VerticalAlignment="Center" FontWeight="Bold" Foreground="White" Margin="0,0,5,0" />
-                            <xctk:IntegerUpDown Name="nudFrameRate" Minimum="0" Maximum="20" Value="4" Width="40" HorizontalAlignment="Right" ValueChanged="nudFrameRate_ValueChanged"/>
+                            <xctk:IntegerUpDown Name="nudFrameRate" Minimum="0" Maximum="20" Value="1" Width="40" HorizontalAlignment="Right" ValueChanged="nudFrameRate_ValueChanged"/>
                         </StackPanel>
                     </MenuItem>
                 </Menu>
