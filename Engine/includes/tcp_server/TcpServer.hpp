@@ -26,7 +26,7 @@ private:
   boost::asio::io_context _io_context{};
   boost::asio::ip::tcp::acceptor _acceptor;
   boost::asio::ip::tcp::socket _socket;
-  std::array<char, 1024> _buffer;
+  std::array<char, 4096> _read_buffer;
   std::thread _server_thread;
   bool _is_stopped;
   RT::Engine *_engine;

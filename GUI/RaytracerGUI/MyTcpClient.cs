@@ -1,6 +1,7 @@
 using System;
 using System.Net.Sockets;
 using System.Text;
+using System.Windows;
 //The socket was taken from the distributed Systems course at THU 
 namespace tcp_client
 {
@@ -23,7 +24,7 @@ namespace tcp_client
                 Console.WriteLine("Sent: {0}", message);
 
                 // Receive response
-                data = new Byte[512];
+                data = new Byte[4096];
                 String responseData = String.Empty;
                 Int32 bytes = stream.Read(data, 0, data.Length);
                 responseData = Encoding.ASCII.GetString(data, 0, bytes);

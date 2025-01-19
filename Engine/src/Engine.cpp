@@ -101,16 +101,16 @@ void Engine::startLoop() {
     }
 
     // emulate change scene after 60 frames
-    if (_temp && frames > 60) { // 2 seconds
-      LOG("Engine::startLoop() THRESHHOLD GOT");
-      _temp = false;
-      _scene->print_system_data();
-      _scene = nullptr;
-      auto new_s = std::make_unique<Scene>(this, "test :3");
-      change_scene(std::move(new_s));
-      _scene->generate_test();
-      _scene->print_system_data();
-    }
+   //if (_temp && frames > 60) { // 2 seconds
+   //  LOG("Engine::startLoop() THRESHHOLD GOT");
+   //  _temp = false;
+   //  _scene->print_system_data();
+   //  _scene = nullptr;
+   //  auto new_s = std::make_unique<Scene>(this, "test :3");
+   //  change_scene(std::move(new_s));
+   //  _scene->generate_test();
+   //  _scene->print_system_data();
+   //}
   }
 }
 } // namespace RT

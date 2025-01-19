@@ -843,7 +843,7 @@ namespace RaytracerGUI
                 try
                 {
                     StartOtherExe("Engine.exe");
-                    await Task.Delay(500);
+                    await Task.Delay(1000);
                     _ecsApi = new EcsApi("127.0.0.1", 51234);
 
                     // initial root-request
