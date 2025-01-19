@@ -6,6 +6,7 @@
 #include <cassert>
 #include <format>
 #include <ostream>
+#include <random>
 
 namespace RT {
 Scene::Scene(Engine *e)
@@ -58,6 +59,12 @@ std::shared_ptr<Entity> Scene::create_entity(const std::string &name, uuid id,
 bool Scene::remove(Entity *e) {
   LOG(std::format("Trying to remove {} w/ {} children", e->get_name(),
                   e->get_child_entities().size()));
+  // 0) Removing root is not allowed
+  if (e == get_root().lock().get()) {
+    LOG_ERROR(std::format("Removal of {} not allowed!!", e->get_name()));
+    return false;
+  }
+
   // 1) Recursively call remove on children
   if (e->get_child_entities().size() > 0) {
     for (auto &&ce : e->get_child_entities()) {
@@ -90,82 +97,188 @@ void Scene::print_system_data() {
   _uuid_manager->print();
   _asset_manager.print();
   _entity_storage.print();
-  // _render_system.print();
+  _render_system.print();
   _camera_system.print();
   _light_system.print();
 }
 
 void Scene::generate_test() {
-  //   _entity_storage.print();
-  //   _camera_system.print();
+  LOG(std::string(30, '*'));
+  LOG(std::string(30, '*'));
   LOG(std::string(30, '*'));
   {
+    LOG_TEST("===== START TEST SEQUENCE ====");
     {
-      LOG("== START TEST SEQUENCE");
-      auto e = create_entity("camera :3");
+      LOG_TEST("==[START] INIT");
+      assert(_uuid_manager->get_storage().size() == (3 + 1) &&
+             "UUID Manager doesn't have 4 uuids");
+      assert(_entity_storage.get_storage().size() == 1 &&
+             "Entity Storage doesn't have 1 entity");
+      auto e = create_entity("camera");
+      assert(_entity_storage.get_storage().size() == 2 &&
+             "Entity Storage doesn't have 2 entity");
       auto c = _camera_system.create_component(e.get());
+      assert(_camera_system.get_components().size() == 1 &&
+             "Camera Syteme doesn't have 1 component");
       e->set_local_position(0.f, +8.f, 15.f);
+      LOG_TEST("==[SUCCESS] INIT SUCCESSFULL");
     }
 
     {
-      LOG("*== DELETING LIGHT COMPONENT");
-      auto e = create_entity("light test #1");
-      auto l = _light_system.create_component(e.get());
+      LOG_TEST("==[START] ROOT DELETION PREVENTED");
+      auto root = this->get_root().lock().get();
+      this->remove(root->get_uuid());
+      assert(root != nullptr && "Root entity has been deleted!!");
+      LOG_TEST("==[SUCCESS] ROOT DELETION PREVENTED");
+    }
+
+    {
+      LOG_TEST("==[START] MAIN CAMERA DELETION PREVENTED");
+      auto c = _camera_system.get_main_camera();
+      assert(c != nullptr && "Camera Syteme doesn't have a main camera");
+      _camera_system.remove(
+          c->get_uuid()); // this will not be successfull -> THIS IS INTENDED
+      assert(_camera_system.get_components().size() == 1 &&
+             "Camera Syteme doesn't have 1 component");
+      LOG_TEST("==[SUCCESS] MAIN CAMERA DELETION PREVENTED");
+    }
+
+    {
+      LOG_TEST("==[START] DELETING LIGHT COMPONENT");
+      auto e = create_entity("light test #1").get();
+      auto l = _light_system.create_component(e);
       assert(_light_system.get_components().size() == 1 &&
              "Light System doesn't have 1 component");
       assert(e->get_components().size() == 1 &&
              "Entity doesn't have 1 component");
-	  auto s = _uuid_manager->get_storage(l->get_uuid());
+      auto s = _uuid_manager->get_storage(l->get_uuid());
       s->remove(l->get_uuid());
       assert(_light_system.get_components().size() == 0 &&
              "Light System doesn't have 0 components");
       assert(e->get_components().size() == 0 &&
              "Entity doesn't have 0 components");
-      _entity_storage.print();
-      _light_system.print();
+      LOG_TEST("==[SUCCESS] DELETING LIGHT COMPONENT");
     }
 
     {
-      LOG("== DELETING ENTITY WITH LIGHT COMPONENT (UUID VERSION) ");
-      auto e = create_entity("light test #2");
-      auto l = _light_system.create_component(e.get());
-      _light_system.print();
+      LOG_TEST("==[START] DELETING ENTITY WITH LIGHT COMPONENT (UUID VERSION)");
+      auto test_entity_count = _entity_storage.get_storage().size();
+      auto e = create_entity("light test #2").get();
+      auto l = _light_system.create_component(e);
+      assert(_light_system.get_components().size() == 1 &&
+             "Light System doesn't have 1 component");
+      assert(e->get_components().size() == 1 &&
+             "Entity doesn't have 1 component");
       this->remove(e->get_uuid());
-      _light_system.print();
+      assert(_light_system.get_components().size() == 0 &&
+             "Light System doesn't have 0 components");
+      assert(_entity_storage.get_storage().size() == test_entity_count &&
+             "Entity Storage doesn't represent the previous state");
+      LOG_TEST(
+          "==[SUCCESS] DELETING ENTITY WITH LIGHT COMPONENT (UUID VERSION)");
     }
 
     {
-      LOG("== DELETING ENTITY WITH LIGHT COMPONENT (PTR VERSION) ");
-      auto e = create_entity("wawa4");
-      auto l = _light_system.create_component(e.get());
-      _light_system.print();
-      this->remove(e.get());
-      _light_system.print();
+      LOG_TEST("==[START] DELETING ENTITY WITH LIGHT COMPONENT (PTR VERSION)");
+      auto test_entity_count = _entity_storage.get_storage().size();
+      auto e = create_entity("light test #3").get();
+      auto l = _light_system.create_component(e);
+      assert(_light_system.get_components().size() == 1 &&
+             "Light System doesn't have 1 component");
+      assert(e->get_components().size() == 1 &&
+             "Entity doesn't have 1 component");
+      this->remove(e);
+      assert(_light_system.get_components().size() == 0 &&
+             "Light System doesn't have 0 components");
+      assert(_entity_storage.get_storage().size() == test_entity_count &&
+             "Entity Storage doesn't represent the previous state");
+      LOG_TEST(
+          "==[SUCCESS] DELETING ENTITY WITH LIGHT COMPONENT (PTR VERSION)");
     }
 
-    LOG("******************** DELETING RENDER COMPONENT ***************");
-    auto e5 = create_entity("wawa5");
-    auto asset1 = create_asset("./assets/cornell-box.obj");
-    auto r1 = _render_system.create_component(e5.get(), asset1);
+    {
+      LOG_TEST("==[START] DELETING RENDER COMPONENT");
+      auto e = create_entity("render test #1").get();
+      auto a = create_asset("./assets/cornell-box.obj");
+      auto r = _render_system.create_component(e, a);
+      assert(_render_system.get_components().size() == 1 &&
+             "Render System doesn't have 1 component");
+      assert(e->get_components().size() == 1 &&
+             "Entity doesn't have 1 component");
+      auto s = _uuid_manager->get_storage(r->get_uuid());
+      s->remove(r->get_uuid());
+      assert(_render_system.get_components().size() == 0 &&
+             "Render System doesn't have 0 components");
+      assert(e->get_components().size() == 0 &&
+             "Entity doesn't have 0 components");
+      LOG_TEST("==[SUCCESS] DELETING RENDER COMPONENT");
+    }
 
-    /*auto c2 = _camera_system.create_component(e2.get());
-    auto c3 = _camera_system.create_component(e1.get());
+    {
+      LOG_TEST(
+          "==[START] DELETING ENTITY WITH RENDER COMPONENT (UUID VERSION)");
+      auto test_entity_count = _entity_storage.get_storage().size();
+      auto e = create_entity("render test #2").get();
+      auto a = create_asset("./assets/cornell-box.obj");
+      auto r = _render_system.create_component(e, a);
+      assert(_render_system.get_components().size() == 1 &&
+             "Render System doesn't have 1 component");
+      assert(e->get_components().size() == 1 &&
+             "Entity doesn't have 1 component");
+      this->remove(e->get_uuid());
+      assert(_render_system.get_components().size() == 0 &&
+             "Render System doesn't have 0 components");
+      assert(_entity_storage.get_storage().size() == test_entity_count &&
+             "Entity Storage doesn't represent the previous state");
+      LOG_TEST(
+          "==[SUCCESS] DELETING ENTITY WITH RENDER COMPONENT (UUID VERSION)");
+    }
 
-    _camera_system.print();
-    _camera_system.remove(c1->get_uuid());
-    _camera_system.remove(c3->get_uuid());
-    _camera_system.print();
+    {
+      LOG_TEST("==[START] DELETING ENTITY WITH RENDER COMPONENT (PTR VERSION)");
+      auto test_entity_count = _entity_storage.get_storage().size();
+      auto e = create_entity("render test #3").get();
+      auto a = create_asset("./assets/cornell-box.obj");
+      auto r = _render_system.create_component(e, a);
+      assert(_render_system.get_components().size() == 1 &&
+             "Render System doesn't have 1 component");
+      assert(e->get_components().size() == 1 &&
+             "Entity doesn't have 1 component");
+      this->remove(e);
+      assert(_render_system.get_components().size() == 0 &&
+             "Render System doesn't have 0 components");
+      assert(_entity_storage.get_storage().size() == test_entity_count &&
+             "Entity Storage doesn't represent the previous state");
+      LOG_TEST(
+          "==[SUCCESS] DELETING ENTITY WITH RENDER COMPONENT (PTR VERSION)");
+    }
 
-    auto l3 = _light_system.create_component(e2.get());
+    {
+      LOG_TEST("==[START] RANDOMIZED Y-POSIION VISUAL TEST");
+      // Create a random device and use it to seed the random number generator
+      std::random_device rd;
+      std::mt19937 gen(rd()); // Mersenne Twister engine
+      // Define the range [-15, 0]
+      std::uniform_real_distribution<> dis(-15.0, 0.0);
+      // Generate a random float
+      float random_float = dis(gen);
 
-
-    // remove(e1.get());
-        _light_system.print();*/
+      auto e = create_entity("randomized y-position visual test").get();
+      e->set_local_position(0.f, random_float, 0.f);
+      auto a = create_asset("./assets/default.obj");
+      auto r = _render_system.create_component(e, a);
+      assert(_render_system.get_components().size() == 1 &&
+             "Render System doesn't have 1 component");
+      assert(e->get_components().size() == 1 &&
+             "Entity doesn't have 1 component");
+      LOG_TEST("==[SUCCESS] RANDOMIZED Y-POSIION VISUAL TEST");
+    }
+    LOG_TEST("===== FINISHED TEST SEQUENCE ====");
   }
+  print_system_data();
   LOG(std::string(30, '*'));
-  //   _entity_storage.print();
-  //   _camera_system.print();
-  // print_system_data();
+  LOG(std::string(30, '*'));
+  LOG(std::string(30, '*'));
 }
 
 void Scene::generate_sample_content() {
@@ -177,17 +290,17 @@ void Scene::generate_sample_content() {
 
   auto a = create_asset("test");
 
-  LOG(std::format("1) Asset {} {}", a._path.string(),
-                  boost::uuids::to_string(a._uuid)));
+  LOG(std::format("1) Asset {} {}", a.get_path().string(),
+                  boost::uuids::to_string(a.get_uuid())));
   auto b = create_asset("test");
-  LOG(std::format("2) Asset {} {}", b._path.string(),
-                  boost::uuids::to_string(b._uuid)));
+  LOG(std::format("2) Asset {} {}", b.get_path().string(),
+                  boost::uuids::to_string(b.get_uuid())));
   AssetManager::Asset c{&_asset_manager, "test"};
-  LOG(std::format("3) Asset {} {}", c._path.string(),
-                  boost::uuids::to_string(c._uuid)));
+  LOG(std::format("3) Asset {} {}", c.get_path().string(),
+                  boost::uuids::to_string(c.get_uuid())));
   AssetManager::Asset d{&_asset_manager, "test2"};
-  LOG(std::format("4) Asset {} {}", d._path.string(),
-                  boost::uuids::to_string(d._uuid)));
+  LOG(std::format("4) Asset {} {}", d.get_path().string(),
+                  boost::uuids::to_string(d.get_uuid())));
 
   LOG_NEW_LINE();
   LOG(std::string(100, '*'));
@@ -206,7 +319,7 @@ void Scene::generate_sample_content() {
 
   // =================== CAMERA =====================
   auto c1 = _camera_system.create_component(e1.get(), 60.f);
-  c1->get_entity()->set_local_rotation(0.0f,7.0f,0.0f);
+  c1->get_entity()->set_local_rotation(0.0f, 7.0f, 0.0f);
   // =================== LIGHT =====================
   auto c2 = _light_system.create_component(e3.get());
   /*c2->set_color(0.8576f, 0.1f, 0.1f);*/
@@ -274,6 +387,6 @@ void Scene::generate_sample_content() {
 
 // currently only tell the render system to update itself
 void Scene::update(const FrameSnapshot &snapshot) {
-   _render_system.update(snapshot);
+  _render_system.update(snapshot);
 }
 } // namespace RT
