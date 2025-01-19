@@ -78,7 +78,7 @@ TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
     return std::make_unique<GetChildEntitiesCommand>(_uuid);
   } else if (command_string.compare(IMPORT_JSON_COMMAND) == 0) {
     LOG_TCP("Create ImportJsonCommand");
-    return std::make_unique<importJsonCommand>(parameters[0]);
+    return std::make_unique<ImportJsonCommand>(parameters[0]);
   } else if (command_string.compare(GET_COMPONENTS_COMMAND) == 0) {
     LOG_TCP("Create GetComponentsCommand");
     return std::make_unique<GetComponentsCommand>(_uuid);

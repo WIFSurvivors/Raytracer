@@ -23,7 +23,7 @@ std::string SetFovCommand::execute(Engine *engine)
     }
     _old_fov = camera_system->get_main_camera()->get_fov();
     camera_system->get_main_camera()->set_fov(_fov);
-
+          set_successfull(true);
     return "FOV set to " + std::to_string(_fov);
 }
 

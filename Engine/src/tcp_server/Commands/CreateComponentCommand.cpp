@@ -74,6 +74,7 @@ std::string CreateComponentCommand::execute(Engine *e) {
         LOG_ERROR("Component could not be created.");
         return "Component could not be created.";
       }
+      set_successfull(true);
       return "Component created";
     } else {
       LOG_ERROR(std::format("Component type not found: {}", _type));

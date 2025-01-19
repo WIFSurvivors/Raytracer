@@ -36,6 +36,8 @@ std::string RemoveComponent::execute(Engine *e) {
       LOG_ERROR("Entity could not be created.");
       return "Entity could not be created.";
     }
+      set_successfull(true);
+
     return "Entity removed";
 
   } catch (const std::bad_alloc &e) {

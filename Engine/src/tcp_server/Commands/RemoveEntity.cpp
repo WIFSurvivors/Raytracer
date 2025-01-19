@@ -20,18 +20,25 @@ std::string RemoveEntity::execute(Engine *e) {
       return "Scene is null";
     }
     uuid _uuid = this->get_uuid();
-    auto parent = scene->get_entity(_uuid);
-    if (!parent.has_value()) {
+    auto entity = scene->get_entity(_uuid);
+    if (!entity.has_value()) {
       LOG_ERROR(std::format("Entity not found for UUID: {}",
                             boost::uuids::to_string(_uuid)));
       return "Entity not found";
+    }
+    auto parent = entity.value()->get_parent_entity().lock();
+    if (!parent) {
+      LOG_ERROR("Parent is null");
+      return "Parent is null";
     }
     auto success = scene->remove(_uuid);
     if (!success) {
       LOG_ERROR("Entity could not be created.");
       return "Entity could not be created.";
     }
-    return "Entity removed";
+      set_successfull(true);
+
+    return boost::uuids::to_string(parent->get_uuid());
 
   } catch (const std::bad_alloc &e) {
     LOG_ERROR(std::format("Memory allocation failed: {}", e.what()));

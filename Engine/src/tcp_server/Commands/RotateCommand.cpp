@@ -43,6 +43,7 @@ std::string RotateCommand::execute(Engine *engine) {
       "RotateCommand executed on" + boost::uuids::to_string(_uuid) +
       "with new x y z: " + glm::to_string(entity->get_local_rotation());
   LOG(msg);
+        set_successfull(true);
   return msg;
 }
 std::string RotateCommand::undo(RT::Engine *engine) { 

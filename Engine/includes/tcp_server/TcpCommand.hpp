@@ -18,8 +18,11 @@ struct TcpCommand {
   virtual std::string execute(RT::Engine *engine) = 0;
   inline uuid get_uuid() const { return _uuid; }
   inline void set_uuid(uuid id) { _uuid = id; }
+  inline bool is_successfull() const { return _successfull; }
+  inline void set_successfull(bool success) { _successfull = success; }
 
 private:
+  bool _successfull = false;
   uuid _uuid;
   std::map<std::string, std::string> _previous_state;
 };
@@ -27,7 +30,7 @@ private:
 struct UndoableCommand : public TcpCommand {
   using TcpCommand::TcpCommand; 
 
-  virtual std::string undo(RT::Engine *engine) = 0; 
+  virtual std::string undo(RT::Engine *engine) = 0;
 
 };
 

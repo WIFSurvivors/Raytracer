@@ -43,6 +43,8 @@ std::string GetRootCommand::execute(Engine *engine) {
         return msg;
       }
       boost::json::object root_json = root_entity->to_json();
+        set_successfull(true);
+
       return boost::json::serialize(root_json);
     } else {
       std::string msg = "Root entity is null";

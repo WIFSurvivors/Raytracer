@@ -13,6 +13,7 @@ std::string ExportJsonCommand::execute(Engine *engine) {
     std::cerr << e.what() << '\n';
     return e.what();
   }
+  set_successfull(true);
   return "Scene exported on path: " + _json_path;
 }
 

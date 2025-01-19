@@ -41,6 +41,7 @@ std::string MoveCommand::execute(Engine *engine) {
       "MoveCommand executed on " + boost::uuids::to_string(_uuid) +
       " with new x y z: " + glm::to_string(entity->get_local_position());
   LOG(msg);
+        set_successfull(true);
   return msg;
 }
 std::string MoveCommand::undo(RT::Engine *engine) { auto scene = engine->get_scene();

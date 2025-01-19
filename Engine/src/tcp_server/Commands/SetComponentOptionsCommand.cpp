@@ -39,6 +39,7 @@ std::string SetComponentOptions::execute(Engine *e) {
           _old_obj = component->to_json()["component_options"].as_object();
           component->set_from_json(this->get_obj());
           LOG("CameraComponent updated");
+                set_successfull(true);
           return "CameraComponent updated";
         } catch (const std::exception &e) {
           std::cerr << e.what() << '\n';
@@ -54,6 +55,7 @@ std::string SetComponentOptions::execute(Engine *e) {
           _old_obj = component->to_json()["component_options"].as_object();
           component->set_from_json(this->get_obj());
           LOG("RenderComponent updated");
+                set_successfull(true);
           return "RenderComponent updated";
         } catch (const std::exception &e) {
           std::cerr << e.what() << '\n';
@@ -69,6 +71,7 @@ std::string SetComponentOptions::execute(Engine *e) {
           _old_obj = component->to_json()["component_options"].as_object();  
           component->set_from_json(this->get_obj());
           LOG("SimpleComponent updated");
+                set_successfull(true);
           return "SimpleComponent updated";
         } catch (const std::exception &e) {
           std::cerr << e.what() << '\n';
@@ -84,6 +87,7 @@ std::string SetComponentOptions::execute(Engine *e) {
           _old_obj = component->to_json()["component_options"].as_object();
           component->set_from_json(this->get_obj());
           LOG("LightComponent updated");
+                set_successfull(true);
           return "LightComponent updated";
         } catch (const std::exception &e) {
           std::cerr << e.what() << '\n';
