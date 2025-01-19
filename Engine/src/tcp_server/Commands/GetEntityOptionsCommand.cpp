@@ -49,4 +49,3 @@ std::string GetEntityOptionsCommand::execute(Engine *e) {
     return "Unknown exception occurred";
   }
 }
-std::string GetEntityOptionsCommand::undo() { throw NotImplementedError{}; }

@@ -10,6 +10,7 @@
 #include <iostream>
 #include <string>
 #include <mutex>
+#include <stack>
 
 class TcpServer;
 
@@ -29,11 +30,13 @@ struct CommandManager {
   auto inline create_command(ParsedTcpCommand parsed_command) {
     return _factory.create_command(parsed_command);
   }
+  void undo_command(int number);
   void execute_command();
   ~CommandManager() = default;
 
 private:
   std::queue<std::unique_ptr<TcpCommand>> _command_queue{};
+  std::stack<std::unique_ptr<UndoableCommand>> _undo_queue{};
   TcpParser _parser{};
   TcpCommandFactory _factory{};
   TcpExecuter _executer{};

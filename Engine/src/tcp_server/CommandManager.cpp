@@ -1,6 +1,7 @@
 #include "includes/tcp_server/CommandManager.hpp"
 #include "includes/tcp_server/TcpServer.hpp"
 #include "includes/utility/NotImplementedError.hpp"
+#include "includes/tcp_server/Commands/UndoCommand.hpp"
 #include <format>
 
 using RT::Log;
@@ -12,7 +13,16 @@ void CommandManager::execute_command() {
   if (command == nullptr) {
     return;
   }
+  if(auto undo_c = dynamic_cast<UndoCommand*>(command.get())) { 
+    undo_command(undo_c->get_number());
+    return;
+  }
   auto msg = _executer.execute(command.get(), _engine);
+  auto undoable_command = dynamic_cast<UndoableCommand*>(command.get());
+  if (undoable_command) {
+    _undo_queue.push(std::unique_ptr<UndoableCommand>(undoable_command));
+    command.release();
+  }
   LOG_TCP(std::format("Command from queue received. Currently in Queue: {0}",
                       _command_queue.size()));
   if (msg.compare("0") != 0) {
@@ -23,6 +33,19 @@ void CommandManager::execute_command() {
 
 void CommandManager::push(std::unique_ptr<TcpCommand> command) {
   _command_queue.push(std::move(command));
+}
+
+void CommandManager::undo_command(int number) {
+  if(_undo_queue.empty()) {
+    _tcp_server->send_message("No commands to undo");
+    return;
+  }
+  for (int i = 0; i < number; i++) {
+    auto command = std::move(_undo_queue.top());
+    auto msg = _executer.undo(std::move(command.get()), _engine);
+    _undo_queue.pop();
+  }
+    _tcp_server->send_message("Undoing " + std::to_string(number) + " commands");
 }
 
 std::unique_ptr<TcpCommand> CommandManager::pop() {

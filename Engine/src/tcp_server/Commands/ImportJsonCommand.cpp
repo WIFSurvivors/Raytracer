@@ -28,4 +28,3 @@ std::string importJsonCommand::execute(Engine *engine) {
   }
   return "Scene loaded";
 }
-std::string importJsonCommand::undo() { throw NotImplementedError{}; }

@@ -31,6 +31,7 @@ namespace RaytracerGUI
     public partial class MainWindow : Window
     {
         private EcsApi? _ecsApi;
+        public bool shouldUpdate = true;
         private string ReceivedEcsJsonString;
         private GLFWLoader loader;
         private IntPtr hWndParent;
@@ -48,12 +49,15 @@ namespace RaytracerGUI
 
         string currentEntityUUID = "uuid";
         string currentComponentUUID = "uuid";
+        string deleteUUID = "uuid";
+        public string rootUUID = "uuid";
 
 
         public MainWindow()
         {
             InitializeComponent();
             this.Background = (Brush)Application.Current.Resources["WindowBackgroundColor"];
+            this.KeyDown += generalKeyDown;
 
         }
 
@@ -81,7 +85,6 @@ namespace RaytracerGUI
                     //Opens a file to be added to a render component
                     case "mniOpen":
                         tbxLog.AppendText(item + " was clicked! \n");
-                        tbxLog.ScrollToEnd();
 
                         openFileDialog = new OpenFileDialog
                         {
@@ -97,7 +100,6 @@ namespace RaytracerGUI
                     //Imorts the JSON Scene file and sends it to the ecsapi
                     case "mniImport":
                         tbxLog.AppendText(item + " was clicked! \n");
-                        tbxLog.ScrollToEnd();
 
                         openFileDialog = new OpenFileDialog
                         {
@@ -131,9 +133,14 @@ namespace RaytracerGUI
                         }
                         break;
 
+                    case "mniHelp":
+                        tbxLog.AppendText(item + " was clicked! \n");
+                        MessageBox.Show("ctrl+z = undo last undoable command \n" +
+                            "del = remove selected entity/component ");
+                        break;
+
                     case "mniExit":
                         tbxLog.AppendText(item + " was clicked! \n");
-                        tbxLog.ScrollToEnd();
                         Application.Current.Shutdown(0);
                         break;
 
@@ -372,7 +379,7 @@ namespace RaytracerGUI
                         {
                             gridButtons.Visibility = Visibility.Collapsed;
                         }
-                        else 
+                        else
                         {
                             gridSliders.Visibility = Visibility.Collapsed;
                             gridButtons.Visibility = Visibility.Visible;
@@ -388,8 +395,8 @@ namespace RaytracerGUI
                                 gridZoom.Visibility = Visibility.Collapsed;
                                 lblZoom.Visibility = Visibility.Collapsed;
 
-                                gridSx.Visibility = Visibility.Visible;  
-                                gridSy.Visibility = Visibility.Visible;  
+                                gridSx.Visibility = Visibility.Visible;
+                                gridSy.Visibility = Visibility.Visible;
                                 gridSz.Visibility = Visibility.Visible;
                                 lblSca.Visibility = Visibility.Visible;
 
@@ -428,7 +435,7 @@ namespace RaytracerGUI
         }
 
 
-       
+
 
         private void SliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -461,14 +468,20 @@ namespace RaytracerGUI
                         x = (float)sldX.Value;
                         y = (float)sldY.Value;
                         z = (float)sldZ.Value;
-                        _ecsApi.move_entity(UUID, x, y, z);
+                        if (shouldUpdate)
+                        {
+                            _ecsApi.move_entity(UUID, x, y, z);
+                        }
                     }
                     else if (sliderType == 1)
                     {
                         x = (float)sldRx.Value;
                         y = (float)sldRy.Value;
                         z = (float)sldRz.Value;
-                        _ecsApi.rotate_entity(UUID, x, y, z);
+                        if (shouldUpdate)
+                        {
+                            _ecsApi.rotate_entity(UUID, x, y, z);
+                        }
                     }
                     else if (sliderType == 2)
                     {
@@ -480,7 +493,10 @@ namespace RaytracerGUI
                         x = (float)sldSx.Value;
                         y = (float)sldSy.Value;
                         z = (float)sldSz.Value;
-                        _ecsApi.scale_entity(UUID, x, y, z);
+                        if (shouldUpdate)
+                        {
+                            _ecsApi.scale_entity(UUID, x, y, z);
+                        }
                     }
 
                 }
@@ -633,6 +649,23 @@ namespace RaytracerGUI
                 {
                     string? result = _ecsApi.set_bounces(newValue);
                     tbxLog.AppendText(result + "\n");
+                }
+                catch (Exception ex)
+                {
+                    tbxLog.AppendText("\n Exception fired" + "\n\n\n" + ex);
+                }
+            }
+        }
+
+        private void nudFrameRate_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue != null && _ecsApi != null)
+            {
+                int newValue = (int)e.NewValue;
+                try
+                {
+                    // string? result = _ecsApi.set_frame_rate(newValue); 
+                    // tbxLog.AppendText(result + "\n");
                 }
                 catch (Exception ex)
                 {
@@ -809,7 +842,7 @@ namespace RaytracerGUI
             {
                 try
                 {
-                    StartOtherExe("../../../../../Engine/Engine.exe");
+                    StartOtherExe("Engine.exe");
                     await Task.Delay(500);
                     _ecsApi = new EcsApi("127.0.0.1", 51234);
 
@@ -862,17 +895,31 @@ namespace RaytracerGUI
         {
             try
             {
-                string engineExeDirPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..\Engine\");
+                string engineExeDirPath;
+                string rootDir = Directory.GetCurrentDirectory();
+
+#if DEBUG
+                // Running inside Visual Studio (Debug mode)
+                engineExeDirPath = System.IO.Path.Combine(rootDir, @"..\..\..\..\..\Engine\");
+                string engineExePath = System.IO.Path.Combine(engineExeDirPath, @"build\Engine.exe");
+                string workingDirectory = System.IO.Path.GetDirectoryName(engineExeDirPath);
+#else
+        // Running in Release mode (installed or direct execution)
+        engineExeDirPath = System.IO.Path.Combine(rootDir, @"..\Engine\");
+        string engineExePath = System.IO.Path.Combine(rootDir, @"Engine\Engine.exe");
+        string workingDirectory = rootDir;
+#endif
 
                 // Create the ProcessStartInfo
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
-                    FileName = engineExeDirPath + @"build\Engine.exe",
-                    WorkingDirectory = System.IO.Path.GetDirectoryName(engineExeDirPath),  // Set the working directory
+                    FileName = engineExePath,
+                    WorkingDirectory = workingDirectory,  // Set the working directory
                     UseShellExecute = false,  // Optionally, to redirect input/output (if needed)
-                    CreateNoWindow = false,     // Optionally, run without a window
+                    CreateNoWindow = false,   // Optionally, run without a window
                     WindowStyle = ProcessWindowStyle.Minimized
                 };
+
                 Process.Start(startInfo);
             }
             catch (Exception ex)
@@ -900,6 +947,7 @@ namespace RaytracerGUI
                     //tbxLog.AppendText($"{header} was clicked with UUID: {uuid}, Name: {name}, Children: {childrenCount}\n");
 
                     currentEntityUUID = uuid;
+                    deleteUUID = uuid;
 
                     UpdateEntities(uuid, e);
                     UpdateEntitiesOptions(uuid, e);
@@ -971,6 +1019,7 @@ namespace RaytracerGUI
                     string name = tagData.Name;       // Access Name
 
                     currentComponentUUID = uuid;
+                    deleteUUID = uuid;
 
                     UpdateComponentsOptions(uuid, e);
                 }
@@ -1131,7 +1180,7 @@ namespace RaytracerGUI
 
             try
             {
-            
+
                 GdiCapture.CaptureWindow(loader.hWndGLFW, "screenshot.png");
             }
             catch (System.InvalidOperationException e)
@@ -1144,9 +1193,68 @@ namespace RaytracerGUI
 
         }
 
+        private void generalKeyDown(object sender, KeyEventArgs e)
+        {
+
+            if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                if (!connection)
+                {
+                    MessageBox.Show("No connection established. Please connect to the server first.",
+                                    "Connection Error",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
+                    return;
+                }
+
+                _ecsApi.undo(1);
+
+                if (!currentEntityUUID.Equals("uuid"))
+                {
+                    UpdateEntitiesOptions(currentEntityUUID, null);
+                }
+                if (!currentComponentUUID.Equals("uuid"))
+                {
+                    UpdateComponentsOptions(currentComponentUUID, null);
+                }
+                return;
+            }
+
+            if (e.Key == Key.Delete)
+            {
+                if (deleteUUID.Equals("uuid"))
+                {
+                    return;
+                }
+
+                if (deleteUUID.Equals(rootUUID))
+                {
+                    MessageBox.Show("Root cannot be deleted!",
+                                    "Invalid UUID",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
+                    return;
+                }
 
 
-        
+                if (deleteUUID.Equals(currentEntityUUID))
+                {
+                    //currentEntityUUID = _ecsApi.remove_entity(deleteUUID);
+                    deleteUUID = "UUID";
+                    UpdateEntities(currentEntityUUID, null);
+                }
+                if (deleteUUID.Equals(currentComponentUUID))
+                {
+                    //_ecsApi.remove_component(deleteUUID);
+                    currentComponentUUID = "UUID";
+                    deleteUUID = "UUID";
+                    UpdateEntities(currentEntityUUID, null);
+                }
+                return;
+
+            }
+
+        }
     }
 
 }

@@ -17,7 +17,10 @@
 # Ignore all local history of files
 .history
 .ionide
-
+Engine/Engine/
+Engine/RaytracerGUI/
+Engine/include/
+Engine/lib/
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode
 **/build/*
 **/.cache/*

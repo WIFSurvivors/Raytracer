@@ -6,11 +6,11 @@
 #define SCALE_COMMAND "ScaleCommand"
 
 
-struct ScaleCommand : public TcpCommand {
+struct ScaleCommand : public UndoableCommand {
   ScaleCommand(uuid uuid, float new_x, float new_y, float new_z)
-      : TcpCommand(uuid), _new_scaling(new_x, new_y, new_z) {}
+      : UndoableCommand(uuid), _new_scaling(new_x, new_y, new_z) {}
   std::string execute(RT::Engine *engine) override;
-  std::string undo() override;
+  std::string undo(RT::Engine *e) override;
   inline glm::vec3 get_new_scaling() const { return _new_scaling; }
   inline void set_new_scaling(glm::vec3 new_scaling) {
     _new_scaling = new_scaling;

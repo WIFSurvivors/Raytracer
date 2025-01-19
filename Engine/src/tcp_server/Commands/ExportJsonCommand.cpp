@@ -10,4 +10,3 @@ std::string ExportJsonCommand::execute(Engine *engine) {
   return "ExportJsonCommand executed but empty";
 }
 
-std::string ExportJsonCommand::undo() { throw NotImplementedError(); }

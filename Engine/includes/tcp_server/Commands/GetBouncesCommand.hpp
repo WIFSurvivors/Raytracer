@@ -7,7 +7,6 @@ class GetBouncesCommand : public TcpCommand {
 public:
   GetBouncesCommand() {}
   std::string execute(RT::Engine *engine) override;
-  std::string undo() override;
 
 private:
 };

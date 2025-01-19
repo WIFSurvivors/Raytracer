@@ -7,7 +7,6 @@
 struct GetChildEntitiesCommand : public TcpCommand {
   explicit GetChildEntitiesCommand(uuid uuid) : TcpCommand(uuid) {}
   std::string execute(RT::Engine *e) override;
-  std::string undo() override;
 
 private:
 };

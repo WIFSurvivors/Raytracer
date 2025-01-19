@@ -66,4 +66,3 @@ boost::json::array GetComponentsCommand::get_components_short(
   return arr;
 }
 
-std::string GetComponentsCommand::undo() { throw NotImplementedError{}; }

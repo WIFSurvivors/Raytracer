@@ -50,8 +50,9 @@ namespace RaytracerGUI
                             Name = jsonRoot.name,
                             Children = jsonRoot.children_count
                         }
+                        
                     };
-
+                    _mainWindow.rootUUID = jsonRoot.uuid;
                     CreateChildItems(jsonRoot, rootItem);
                     TreeView.Items.Add(rootItem);
                     ToolTipService.SetToolTip(rootItem, jsonRoot.uuid);
@@ -179,7 +180,10 @@ namespace RaytracerGUI
                             propertyItem.IsExpanded = true;
 
                             // Simulate a TextChanged event
+                            _mainWindow.shouldUpdate = false;
                             SimulateTextChanged(textBox);
+                            _mainWindow.shouldUpdate = true;
+
                         }
 
                         rootItem.Items.Add(categoryItem);

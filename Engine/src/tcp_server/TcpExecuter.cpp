@@ -14,6 +14,10 @@ std::string TcpExecuter::execute(TcpCommand *command, Engine *engine) {
   return return_value;
 }
 
-std::string TcpExecuter::undo(TcpCommand *command) {
-  throw NotImplementedError();
+std::string TcpExecuter::undo(UndoableCommand *command, Engine *engine) {
+  if (command == nullptr) {
+    LOG_TCP("Undo command is null");
+    return "Error: Undo command is null";
+  }
+  return command->undo(engine);
 }

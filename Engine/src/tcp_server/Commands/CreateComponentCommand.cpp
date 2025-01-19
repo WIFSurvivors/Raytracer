@@ -90,4 +90,4 @@ std::string CreateComponentCommand::execute(Engine *e) {
     return "Unknown exception occurred";
   }
 }
-std::string CreateComponentCommand::undo() { throw NotImplementedError{}; }
+std::string CreateComponentCommand::undo(RT::Engine *engine) { throw NotImplementedError{}; }
