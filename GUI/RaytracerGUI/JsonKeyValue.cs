@@ -7,6 +7,10 @@ using System.Threading.Tasks;
 
 namespace RaytracerGUI
 {
+    /// <summary>
+    /// Stores the Listbox values for the ComponentOptions. 
+    /// Includes information if the option is a path a and handles the propertychanged event
+    /// </summary>
     public class JsonKeyValue : INotifyPropertyChanged
     {
         private string _key;
@@ -42,6 +46,9 @@ namespace RaytracerGUI
             }
         }
 
+        /// <summary>
+        /// only filled when isPath = true from the Treebuilder
+        /// </summary>
         private string _path;
         public string Path
         {
@@ -53,6 +60,9 @@ namespace RaytracerGUI
             }
         }
 
+        /// <summary>
+        /// When the path is changed this Method is called (as set in the MainWindow.xaml)
+        /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string propertyName)
         {

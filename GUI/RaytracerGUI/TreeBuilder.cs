@@ -1,4 +1,4 @@
-﻿﻿using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -11,28 +11,55 @@ using System.Xml.Linq;
 
 namespace RaytracerGUI
 {
+    /// <summary>
+    /// TreeBuilder is responsible for constructing and managing TreeViews 
+    /// within the application. It can populate trees from various data 
+    /// sources including JSON strings and entity options.
+    /// </summary>
     class TreeBuilder
     {
+        public TreeView? TreeView { get; private set; }
         private readonly MainWindow _mainWindow;
         private System.Windows.Controls.ListBox? _componentOptionsListbox;
         private Dictionary<string, TextBox> _textBoxMapping = new Dictionary<string, TextBox>();
         public ObservableCollection<JsonKeyValue> _jsonKeyValuePairs = new ObservableCollection<JsonKeyValue>();
 
 
-        public TreeView? TreeView { get; private set; }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TreeBuilder"/> class 
+        /// with a reference to the main application window and a ListBox for component options.
+        /// </summary>
+        /// <param name="mainWindow">The main window of the application.</param>
+        /// <param name="componentOptionsListbox">The ListBox displaying component options.</param>
         public TreeBuilder(MainWindow mainWindow, ListBox componentOptionsListbox)
         {
             _mainWindow = mainWindow;
             _componentOptionsListbox = componentOptionsListbox;
         }
 
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TreeBuilder"/> class 
+        /// with a specified TreeView and a reference to the main application window.
+        /// </summary>
+        /// <param name="treeView">The TreeView to populate.</param>
+        /// <param name="mainWindow">The main window of the application.</param>
         public TreeBuilder(TreeView treeView, MainWindow mainWindow)
         {
             TreeView = treeView;
             _mainWindow = mainWindow;
         }
 
+
+        /// <summary>
+        /// Builds a TreeView structure based on the provided JSON string.
+        /// </summary>
+        /// <param name="jsonString">A JSON-formatted string representing the tree structure.</param>
+        /// <exception cref="JsonException">Thrown if the JSON is invalid or cannot be deserialized.</exception>
+        /// <remarks>
+        /// This method clears the existing TreeView content, parses the JSON, 
+        /// and creates a hierarchical structure of items.
+        /// </remarks>
         public void BuildTreeFromJson(string jsonString)
         {
             try
@@ -50,7 +77,7 @@ namespace RaytracerGUI
                             Name = jsonRoot.name,
                             Children = jsonRoot.children_count
                         }
-                        
+
                     };
                     _mainWindow.rootUUID = jsonRoot.uuid;
                     CreateChildItems(jsonRoot, rootItem);
@@ -64,6 +91,12 @@ namespace RaytracerGUI
             }
         }
 
+
+        /// <summary>
+        /// Recursively creates child TreeView items from the given ECS entity node.
+        /// </summary>
+        /// <param name="ecsNode">The parent entity node containing child nodes.</param>
+        /// <param name="parentItem">The parent TreeView item to which children are added.</param>
         public void CreateChildItems(EcsEntityNode ecsNode, TreeViewItem parentItem)
         {
             if (ecsNode.children != null && ecsNode.children.Count > 0)
@@ -109,6 +142,14 @@ namespace RaytracerGUI
         }
 
 
+        /// <summary>
+        /// Builds a TreeView structure based on entity options provided as a JSON string.
+        /// </summary>
+        /// <param name="jsonString">A JSON-formatted string containing entity options.</param>
+        /// <remarks>
+        /// Each option category is represented as a TreeView item containing editable 
+        /// TextBox elements for individual properties.
+        /// </remarks>
         public void BuildTreeFromEntityOptions(string jsonString)
         {
             TreeView.Items.Clear();
@@ -150,7 +191,7 @@ namespace RaytracerGUI
                             var propertyItem = new TreeViewItem
                             {
                                 Header = $"{property.Key}: ",
-                                Tag = property.Key // Store the property key for easy reference
+                                Tag = property.Key 
                             };
 
 
@@ -166,7 +207,6 @@ namespace RaytracerGUI
                             _textBoxMapping[textBoxName] = textBox;
 
                             // Handle TextChanged event to update value when user edits it
-                            //textBox.TextChanged += _mainWindow.TextBox_TextChanged;
                             // Attach KeyDown and LostFocus event handlers
                             textBox.KeyDown += TextBox_KeyDown;
                             textBox.LostFocus += TextBox_LostFocus;
@@ -202,6 +242,14 @@ namespace RaytracerGUI
             }
         }
 
+
+        /// <summary>
+        /// Finds the first parent of a specified type in the visual tree.
+        /// </summary>
+        /// <typeparam name="T">The type of the parent to find.</typeparam>
+        /// <param name="child">The starting point for the search.</param>
+        /// <returns>The first parent of type T, or null if none is found.</returns>
+
         private T FindParent<T>(DependencyObject child) where T : DependencyObject
         {
             DependencyObject parent = VisualTreeHelper.GetParent(child);
@@ -213,19 +261,34 @@ namespace RaytracerGUI
             return FindParent<T>(parent);
         }
 
+
+        /// <summary>
+        /// Retrieves a TextBox by its key from the internal mapping.
+        /// </summary>
+        /// <param name="key">The key associated with the desired TextBox.</param>
+        /// <returns>The corresponding TextBox if found; otherwise, null.</returns>
         public TextBox? GetTextBox(string key)
         {
             return _textBoxMapping.TryGetValue(key, out var textBox) ? textBox : null;
         }
 
-        // Simulate a TextChanged event for a TextBox
+
+        /// <summary>
+        /// Simulates a TextChanged event for a given TextBox.
+        /// </summary>
+        /// <param name="textBox">The TextBox for which the event is simulated.</param>
         private void SimulateTextChanged(TextBox textBox)
         {
             var textChangedEventArgs = new TextChangedEventArgs(TextBox.TextChangedEvent, UndoAction.None);
             _mainWindow.TextBox_TextChanged(textBox, textChangedEventArgs);
         }
 
-        // Handle the Enter key press
+
+        /// <summary>
+        /// Handles the KeyDown event for a TextBox, processing changes when Enter is pressed.
+        /// </summary>
+        /// <param name="sender">The source TextBox.</param>
+        /// <param name="e">The KeyEventArgs containing event data.</param>
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (sender is TextBox textBox && e.Key == Key.Enter)
@@ -235,7 +298,12 @@ namespace RaytracerGUI
             }
         }
 
-        // Handle the LostFocus event
+
+        /// <summary>
+        /// Handles the LostFocus event for a TextBox, processing changes when the TextBox loses focus.
+        /// </summary>
+        /// <param name="sender">The source TextBox.</param>
+        /// <param name="e">The RoutedEventArgs containing event data.</param>
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             if (sender is TextBox textBox)
@@ -244,7 +312,11 @@ namespace RaytracerGUI
             }
         }
 
-        // Common method to process the change
+
+        /// <summary>
+        /// Processes changes to a TextBox value, updating logs and triggering change handlers.
+        /// </summary>
+        /// <param name="textBox">The TextBox that was modified.</param>
         private void ProcessTextBoxChange(TextBox textBox)
         {
             // Log and process the change
@@ -258,6 +330,14 @@ namespace RaytracerGUI
             _mainWindow.TextBox_TextChanged(textBox, textChangedEventArgs);
         }
 
+
+        /// <summary>
+        /// Builds a TreeView structure from a list of ECS components provided as a JSON string.
+        /// </summary>
+        /// <param name="jsonString">A JSON-formatted string representing ECS components.</param>
+        /// <remarks>
+        /// Each component is represented as a TreeView item under a root node.
+        /// </remarks>
         public void BuildTreeFromComponents(string jsonString)
         {
             TreeView.Items.Clear();
@@ -296,6 +376,15 @@ namespace RaytracerGUI
             }
         }
 
+
+        /// <summary>
+        /// Populates a ListBox with key-value pairs extracted from component options 
+        /// provided as a JSON string.
+        /// </summary>
+        /// <param name="jsonString">A JSON-formatted string containing component options.</param>
+        /// <remarks>
+        /// Entries containing "path" in their key are marked as path entries.
+        /// </remarks>
         public void BuildTreeFromComponentOptions(string jsonString)
         {
             _jsonKeyValuePairs.Clear();
@@ -323,7 +412,7 @@ namespace RaytracerGUI
                     _jsonKeyValuePairs.Add(jsonKeyValue);
                 }
 
-            _componentOptionsListbox.ItemsSource = _jsonKeyValuePairs;
+                _componentOptionsListbox.ItemsSource = _jsonKeyValuePairs;
             }
 
             else
@@ -332,12 +421,21 @@ namespace RaytracerGUI
             }
 
         }
+
+
+        /// <summary>
+        /// Creates a JSON string from the current contents of the ListBox.
+        /// </summary>
+        /// <returns>A JSON-formatted string representing the ListBox contents.</returns>
+        /// <remarks>
+        /// Logs a message if the ListBox is empty.
+        /// </remarks>
         public string CreateJsonFromListBox()
         {
             if (_jsonKeyValuePairs == null || _jsonKeyValuePairs.Count == 0)
             {
                 _mainWindow.tbxLog.AppendText("No data in ListBox to create JSON.\n");
-                return ""; 
+                return "";
             }
 
             // Create a dictionary from the key-value pairs
@@ -346,7 +444,7 @@ namespace RaytracerGUI
             // Serialize the dictionary to a JSON string
             string jsonString = JsonSerializer.Serialize(dictionary, new JsonSerializerOptions
             {
-                WriteIndented = true // Optional: makes the JSON output readable
+                WriteIndented = true 
             });
 
             return jsonString;
@@ -354,4 +452,4 @@ namespace RaytracerGUI
     }
 
 
-    }
+}

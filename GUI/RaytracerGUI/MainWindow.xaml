@@ -62,7 +62,7 @@
                 </Menu>
             </Grid>
             
-            <!--Everything below Menu -->
+            <!--Treeview Grid -->
             <Grid VerticalAlignment="Stretch" Grid.Row="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
