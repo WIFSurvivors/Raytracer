@@ -86,7 +86,8 @@ BigJsonReader::read_from_json(const std::filesystem::path filePath,
 
   auto asset_manager = new_scene->get_asset_manager();
   auto o_resources = data.get_resources();
-  std::cout << "PARSING RESOURCES " << "\n";
+  std::cout << "PARSING RESOURCES "
+            << "\n";
   if (o_resources.has_value()) {
     auto resources = o_resources.value();
     for (auto &&r : resources) {
@@ -123,8 +124,7 @@ BigJsonReader::read_from_json(const std::filesystem::path filePath,
   //     return component_count != 0;
   //   };
 
-  std::cout << "PARSING ENTITIES "
-            << "\n";
+  std::cout << "PARSING ENTITIES\n";
   // if there is only one camera, it will automatically be deemed the main one
   bool has_found_camera = false;
   auto o_entities = data.get_entity();
@@ -212,15 +212,15 @@ BigJsonReader::read_from_json(const std::filesystem::path filePath,
           auto camera = new_scene->get_camera_system()->create_component(
               new_entity.get());
 
-		  if(json_cc.get_fov().has_value()){
-			camera->set_fov(json_cc.get_fov().value());
-		  }		  
-		  if(json_cc.get_far_clip().has_value()){
-			camera->set_far(json_cc.get_far_clip().value());
-		  }		  
-		  if(json_cc.get_near_clip().has_value()){
-			camera->set_near(json_cc.get_near_clip().value());
-		  }
+          if (json_cc.get_fov().has_value()) {
+            camera->set_fov(json_cc.get_fov().value());
+          }
+          if (json_cc.get_far_clip().has_value()) {
+            camera->set_far(json_cc.get_far_clip().value());
+          }
+          if (json_cc.get_near_clip().has_value()) {
+            camera->set_near(json_cc.get_near_clip().value());
+          }
 
           json_cc.get_aspect_ratio(); // that's weird...
         }
