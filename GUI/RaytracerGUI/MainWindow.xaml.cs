@@ -53,7 +53,6 @@ namespace RaytracerGUI
         string deleteUUID = "uuid";
         public string rootUUID = "uuid";
 
-        RoutedPropertyChangedEventArgs<object> currentEntityEvent;
 
 
 
@@ -75,6 +74,7 @@ namespace RaytracerGUI
             //convert sender to type MenuItem
             MenuItem? clickedMenuItem = sender as MenuItem;
             OpenFileDialog openFileDialog;
+            SaveFileDialog saveFileDialog;
             string filePath = "";
 
             //check for click
@@ -82,15 +82,12 @@ namespace RaytracerGUI
             {
                 // get variable name
                 string item = clickedMenuItem.Name;
-
+                //tbxLog.AppendText(item + " was clicked! \n");
 
                 switch (item)
                 {
-                   
                     //Imports the JSON Scene file and sends it to the ecsapi
                     case "mniImport":
-                        tbxLog.AppendText(item + " was clicked! \n");
-
                         openFileDialog = new OpenFileDialog
                         {
                             Filter = "JSON File (*.json)|*.json",
@@ -122,24 +119,25 @@ namespace RaytracerGUI
                             }
                             catch (InvalidOperationException ex)
                             {
-                                //TODO
+                                tbxLog.AppendText(ex.ToString());
                             }
                         }
                         break;
+
 
                     case "mniExport":
                             //todo
                         break;
 
+
                     case "mniHelp":
-                        tbxLog.AppendText(item + " was clicked! \n");
                         MessageBox.Show("ctrl+z = undo last undoable command \n" +
                             "del = remove selected entity/component \n \n" +
                             "click on \"obj_path\" or \"mat_path\" to select an new .obj/.mtl-file");
                         break;
 
+
                     case "mniExit":
-                        tbxLog.AppendText(item + " was clicked! \n");
                         Application.Current.Shutdown(0);
                         break;
 
@@ -158,32 +156,25 @@ namespace RaytracerGUI
             {
                 // Der Name des angeklickten Menüelements wird verwendet
                 string itemName = clickedMenuItem.Name;
+                //tbxLog.AppendText($"{itemName} was clicked!\n");
 
                 switch (itemName)
                 {
                     case "mniAddRender":
                         AddRenderComponent();
-                        tbxLog.AppendText($"{itemName} was clicked!\n");
-                        tbxLog.ScrollToEnd();
                         break;
 
                     case "mniAddLight":
                         AddLightComponent();
-                        tbxLog.AppendText($"{itemName} was clicked!\n");
-                        tbxLog.ScrollToEnd();
                         break;
 
                     case "mniAddCamera":
                         AddCameraComponent();
-                        tbxLog.AppendText($"{itemName} was clicked!\n");
-                        tbxLog.ScrollToEnd();
                         break;
                     case "mniAddEntity":
                         try
                         {
                             AddEntity();
-                            tbxLog.AppendText($"{itemName} was clicked!\n");
-                            tbxLog.ScrollToEnd();
                             ReceivedEcsJsonString = _ecsApi.get_root();
                             _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
                             break;
@@ -218,8 +209,7 @@ namespace RaytracerGUI
                 // get variable name
                 string button = clickedButton.Name;
 
-                tbxLog.AppendText(button + " was clicked! \n");
-                tbxLog.ScrollToEnd();
+                //tbxLog.AppendText(button + " was clicked! \n");
 
                 switch (button)
                 {
