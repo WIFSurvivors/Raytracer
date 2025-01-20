@@ -54,13 +54,14 @@ struct Scene {
   std::shared_ptr<Entity> create_entity(const std::string &name, uuid id,
                                         std::shared_ptr<Entity> parent);
 
-  //   bool remove(Entity* e);
-  //   bool remove(uuid id);
+  bool remove(Entity *e);
+  bool remove(uuid id);
 
   void print();
   void print_system_data();
 
   void generate_sample_content();
+  void generate_test();
 
   void update(const FrameSnapshot &snapshot);
 
@@ -85,8 +86,7 @@ private:
   SimpleSystem _simple_system{_uuid_manager};
   CameraSystem _camera_system{_uuid_manager};
   LightSystem _light_system{_uuid_manager};
-  RenderSystem
-      _render_system; // has a extensive constructor which depend on Engine
+  RenderSystem _render_system;
 
   std::shared_ptr<Entity> _root;
 };

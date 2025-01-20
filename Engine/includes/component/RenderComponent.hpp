@@ -104,7 +104,10 @@ struct RenderComponent : public IComponent {
   inline void set_obj_asset(AssetManager::Asset obj_asset) {
 #if SHOW_UI
     objl::Loader loader;
-    loader.LoadFile(obj_asset.get_path().string());
+	if(!loader.LoadFile(obj_asset.get_path().string())){
+		LOG_ERROR("invalid .obj file");
+		return;
+	}
 
     std::vector<glm::vec3> vertices;
 

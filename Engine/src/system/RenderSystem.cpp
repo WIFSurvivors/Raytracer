@@ -39,8 +39,12 @@ RenderSystem::RenderSystem(std::shared_ptr<UUIDManager> um, WindowManager *wm,
                            CameraSystem *cs, LightSystem *ls,
                            AssetManager::DefaultAssets *da)
     : System{um}, _wm{wm}, _cs{cs}, _ls{ls}, _da{da} {
-  LOG("created render system");
+  LOG(std::format("created {}", get_name()));
   init();
+}
+
+RenderSystem::~RenderSystem(){
+  LOG(std::format("destroy {}", get_name()));
 }
 
 void RenderSystem::init() {

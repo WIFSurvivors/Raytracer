@@ -2,6 +2,7 @@
 #include "boost/json/array.hpp"
 #include "includes/Engine.hpp"
 #include "includes/Entity.hpp"
+#include "includes/system/System.hpp"
 #include "includes/component/Component.hpp"
 #include <algorithm>
 #include <format>
@@ -9,8 +10,8 @@
 #include <string>
 #include "includes/utility/NotImplementedError.hpp"
 
-using RT::Log;
 using RT::Engine;
+using RT::Log;
 
 std::string GetComponentsCommand::execute(Engine *e) {
   try {
@@ -42,7 +43,9 @@ std::string GetComponentsCommand::execute(Engine *e) {
       return msg;
     }
 
-    auto components_json = get_components_short(components);
+    auto components_json = get_components_short(scene, components);
+    set_successfull(true);
+
     return boost::json::serialize(components_json);
 
   } catch (const std::bad_alloc &e) {
@@ -59,10 +62,27 @@ std::string GetComponentsCommand::execute(Engine *e) {
 }
 
 boost::json::array GetComponentsCommand::get_components_short(
-    const std::vector<RT::IComponent *> &components) {
+    RT::Scene *s, const std::vector<uuid> &components) {
   boost::json::array arr;
   std::for_each(components.begin(), components.end(),
-                [&arr](const auto &c) { arr.push_back(c->to_json_short()); });
+                [s, &arr](const auto &id) {
+                  auto sto = s->get_uuid_manager()->get_storage(id);
+
+                  if (auto sys = dynamic_cast<RT::CameraSystem *>(sto)) {
+                    auto c = sys->get_component(id);
+                    if (c.has_value())
+                      arr.push_back(c.value()->to_json_short());
+
+                  } else if (auto sys = dynamic_cast<RT::LightSystem *>(sto)) {
+                    auto c = sys->get_component(id);
+                    if (c.has_value())
+                      arr.push_back(c.value()->to_json_short());
+
+                  } else if (auto sys = dynamic_cast<RT::RenderSystem *>(sto)) {
+                    auto c = sys->get_component(id);
+                    if (c.has_value())
+                      arr.push_back(c.value()->to_json_short());
+                  }
+                });
   return arr;
 }
-

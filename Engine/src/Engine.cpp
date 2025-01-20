@@ -54,7 +54,10 @@ void Engine::save_scene_as_json(std::filesystem::path p) {
   // std::cout << "RETURN:\n" << wawa << std::endl;
 }
 
-void Engine::change_scene(std::unique_ptr<Scene> s) { _scene = std::move(s); }
+void Engine::change_scene(std::unique_ptr<Scene> s) {
+  _scene = nullptr;
+  _scene = std::move(s);
+}
 
 void Engine::startLoop() {
   LOG("Engine::startLoop()");
@@ -68,6 +71,7 @@ void Engine::startLoop() {
   int sub_frames = 0;
 
   float frame_time, new_time;
+  bool _temp = true;
   while (!_wm.should_close()) {
     // update the difference of the previous and the new frame
     new_time = get_total_time();
@@ -81,21 +85,35 @@ void Engine::startLoop() {
     _wm.update_input();
 
     // process ECS once per tick (FRAME_RATE_HZ)
-    while (accumulated_time >= MS_PER_UPDATE) {
+    while (accumulated_time >= _s_per_update) {
       frames++;
-      total_time += MS_PER_UPDATE;
-      accumulated_time -= MS_PER_UPDATE;
+      total_time += _s_per_update;
+      accumulated_time -= _s_per_update;
 
       // create snapshot here
-      FrameSnapshot s(total_time, MS_PER_UPDATE, accumulated_time, frames,
+      FrameSnapshot s(total_time, _s_per_update, accumulated_time, frames,
                       sub_frames);
-      _scene->update(s);
-      _wm.swap_buffers();
+      if (_scene != nullptr) {
+        _scene->update(s);
+        _wm.swap_buffers();
+      }
       sub_frames = 0;
 
       Log::get_instance().clear_buffer();
       // trigger this either on 1sec difference OR 10 log entries available???
     }
+
+    // emulate change scene after 60 frames
+   //if (_temp && frames > 60) { // 2 seconds
+   //  LOG("Engine::startLoop() THRESHHOLD GOT");
+   //  _temp = false;
+   //  _scene->print_system_data();
+   //  _scene = nullptr;
+   //  auto new_s = std::make_unique<Scene>(this, "test :3");
+   //  change_scene(std::move(new_s));
+   //  _scene->generate_test();
+   //  _scene->print_system_data();
+   //}
   }
 }
 } // namespace RT

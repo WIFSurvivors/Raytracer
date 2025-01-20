@@ -25,6 +25,7 @@ using System.Windows.Controls.Primitives;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
 using System;
 using System.Windows.Forms;
+using Xceed.Wpf.Toolkit.Primitives;
 
 namespace RaytracerGUI
 {
@@ -51,6 +52,9 @@ namespace RaytracerGUI
         string currentComponentUUID = "uuid";
         string deleteUUID = "uuid";
         public string rootUUID = "uuid";
+
+        RoutedPropertyChangedEventArgs<object> currentEntityEvent;
+
 
 
         public MainWindow()
@@ -82,21 +86,7 @@ namespace RaytracerGUI
 
                 switch (item)
                 {
-                    //Opens a file to be added to a render component
-                    case "mniOpen":
-                        tbxLog.AppendText(item + " was clicked! \n");
-
-                        openFileDialog = new OpenFileDialog
-                        {
-                            Filter = "OBJ and MTL Files (*.obj;*.mtl)|*.obj;*.mtl",
-                            Title = "Select a .obj or .mtl file"
-                        };
-
-                        if (openFileDialog.ShowDialog() == true)
-                        {
-                            filePath = openFileDialog.FileName;
-                        }
-                        break;
+                   
                     //Imorts the JSON Scene file and sends it to the ecsapi
                     case "mniImport":
                         tbxLog.AppendText(item + " was clicked! \n");
@@ -105,7 +95,7 @@ namespace RaytracerGUI
                         {
                             Filter = "JSON File (*.json)|*.json",
                             Title = "Select a JSON Scene file",
-                            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads"
+                            //InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads"
                         };
 
                         if (openFileDialog.ShowDialog() == true)
@@ -121,9 +111,13 @@ namespace RaytracerGUI
                             try
                             {
                                 // send JSON path
-                                string pathSentStatus = _ecsApi.json_import('"' + filePath + '"');
+                                string pathSentStatus = _ecsApi.json_import(filePath);
                                 tbxLog.AppendText("pathSentStatus : " + pathSentStatus);
 
+
+                                _entityBuilder = new TreeBuilder(trvEntities, this);
+                                ReceivedEcsJsonString = _ecsApi.get_root();
+                                _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
 
                             }
                             catch (InvalidOperationException ex)
@@ -180,10 +174,20 @@ namespace RaytracerGUI
                         tbxLog.ScrollToEnd();
                         break;
                     case "mniAddEntity":
-                        AddEntity();
-                        tbxLog.AppendText($"{itemName} was clicked!\n");
-                        tbxLog.ScrollToEnd();
-                        break;
+                        try
+                        {
+                            AddEntity();
+                            tbxLog.AppendText($"{itemName} was clicked!\n");
+                            tbxLog.ScrollToEnd();
+                            ReceivedEcsJsonString = _ecsApi.get_root();
+                            _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
+                            break;
+                        }
+                        catch (Exception ex)
+                        {
+                            tbxLog.AppendText("Adding Entity failed with Exception: " + ex.Message);
+                            break;
+                        }
                 }
             }
         }
@@ -664,8 +668,8 @@ namespace RaytracerGUI
                 int newValue = (int)e.NewValue;
                 try
                 {
-                    // string? result = _ecsApi.set_frame_rate(newValue); 
-                    // tbxLog.AppendText(result + "\n");
+                    string? result = _ecsApi.set_frame_rate(newValue);
+                    tbxLog.AppendText(result + "\n");
                 }
                 catch (Exception ex)
                 {
@@ -785,7 +789,7 @@ namespace RaytracerGUI
                 // Get the TextBox and its DataContext (the bound JsonKeyValue object)
                 if (sender is TextBox textBox && textBox.DataContext is JsonKeyValue keyValue)
                 {
-                    // Call your desired function
+
                     OnComponentsTextboxValueChanged(keyValue.Key, textBox.Text);
                 }
             }
@@ -843,7 +847,7 @@ namespace RaytracerGUI
                 try
                 {
                     StartOtherExe("Engine.exe");
-                    await Task.Delay(500);
+                    await Task.Delay(1000);
                     _ecsApi = new EcsApi("127.0.0.1", 51234);
 
                     // initial root-request
@@ -862,16 +866,15 @@ namespace RaytracerGUI
                     _entityBuilder = new TreeBuilder(trvEntities, this);
                     _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
 
-                    if (int.TryParse(_ecsApi.get_bounces(), out int value))
+                    if (int.TryParse(_ecsApi.get_bounces(), out int bounces))
                     {
-                        nudBounces.Value = value;
+                        nudBounces.Value = bounces;
                     }
 
-                    /*
-                    if (int.TryParse(_ecsApi.get_frame_rate(), out int value))
+                    if (int.TryParse(_ecsApi.get_frame_rate(), out int fps))
                     {
-                        nudFrameRate.Value = value;
-                    }*/
+                        nudFrameRate.Value = fps;
+                    }
 
                 }
                 catch (InvalidOperationException ex)
@@ -959,6 +962,7 @@ namespace RaytracerGUI
 
                     currentEntityUUID = uuid;
                     deleteUUID = uuid;
+                    currentEntityEvent = e;
 
                     UpdateEntities(uuid, e);
                     UpdateEntitiesOptions(uuid, e);
@@ -1247,25 +1251,85 @@ namespace RaytracerGUI
                     return;
                 }
 
+                try
+                {
 
-                if (deleteUUID.Equals(currentEntityUUID))
-                {
-                    //currentEntityUUID = _ecsApi.remove_entity(deleteUUID);
-                    deleteUUID = "UUID";
-                    UpdateEntities(currentEntityUUID, null);
+
+
+                    if (deleteUUID.Equals(currentEntityUUID))
+                    {
+                        _ecsApi.remove_entity(deleteUUID);
+                        deleteUUID = "uuid";
+
+                        foreach (TreeViewItem item in trvEntities.Items)
+                        {
+                            if (item.Tag is TreeItemData tagData)
+                            {
+                                string uuid = tagData.UUID;
+
+                                if (uuid.Equals(rootUUID))
+                                {
+                                    item.Focus();
+                                    item.IsSelected = true;
+                                }
+                            }
+                        }
+                    }
+                    if (deleteUUID.Equals(currentComponentUUID))
+                    {
+                        _ecsApi.remove_component(deleteUUID);
+                        currentComponentUUID = "uuid";
+                        deleteUUID = "uuid";
+
+                        foreach (TreeViewItem item in trvEntities.Items)
+                        {
+                            if (item.Tag is TreeItemData tagData)
+                            {
+                                string uuid = tagData.UUID;
+
+                                if (uuid.Equals(rootUUID))
+                                {
+                                    item.Focus();
+                                    item.IsSelected = true;
+                                }
+                            }
+                        }
+
+                    }
                 }
-                if (deleteUUID.Equals(currentComponentUUID))
+                catch (Exception ex)
                 {
-                    //_ecsApi.remove_component(deleteUUID);
-                    currentComponentUUID = "UUID";
-                    deleteUUID = "UUID";
-                    UpdateEntities(currentEntityUUID, null);
+                    tbxLog.AppendText(ex.ToString());
                 }
                 return;
 
             }
 
         }
-    }
 
+
+        private void OnBrowseButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is JsonKeyValue jsonKeyValue)
+            {
+                OpenFileDialog openFileDialog;
+
+                openFileDialog = new OpenFileDialog
+                {
+                    Filter = "OBJ and MTL Files (*.obj;*.mtl)|*.obj;*.mtl",
+                    Title = "Select a .obj or .mtl file"
+                };
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    jsonKeyValue.Path = openFileDialog.FileName;
+                    jsonKeyValue.Value = openFileDialog.FileName; // Update the value as well
+
+                    // Manually call the method after the text update (file path)
+                    OnComponentsTextboxValueChanged(jsonKeyValue.Key, openFileDialog.FileName);
+                }
+            }
+        }
+
+    }
 }

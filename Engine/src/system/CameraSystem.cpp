@@ -1,4 +1,5 @@
 #include "includes/system/CameraSystem.hpp"
+#include "includes/system/System.hpp"
 #include "includes/utility/Log.hpp"
 #include "includes/utility/VariadicTable.hpp"
 #include <boost/uuid/uuid_io.hpp>
@@ -14,6 +15,11 @@
 namespace RT {
 CameraSystem::CameraSystem(std::shared_ptr<UUIDManager> um) : System{um} {
   LOG("created camera system");
+}
+
+CameraSystem::~CameraSystem() {
+  enforce_main_camera_deletion();
+  LOG(std::format("destroyed {}", get_name()));
 }
 
 CameraComponent *CameraSystem::create_component(Entity *e, uuid id, float fov) {
@@ -62,6 +68,23 @@ void CameraSystem::sample_update_move_main_camera(float t1) {
   auto dt_sin = std::sin(t1 * 2.5) * 10;
   pos.y = dt_sin;
   ent->set_local_position(pos);
+}
+
+bool CameraSystem::remove(uuid id) {
+  if (get_main_camera()->get_uuid() != id) { // if not main camera, remove
+    return System::remove(id);
+  }
+  LOG_WARN("TRYING TO REMOVE MAIN CAMERA -> FORBIDDEN");
+  return false;
+}
+
+void CameraSystem::enforce_main_camera_deletion() {
+  if (!get_main_camera())
+    return;
+
+  LOG_WARN("DELETED MAIN CAMERA! If this is not part of the Scene clean-up, "
+           "than bad things will most likely happen now!");
+  System::remove(get_main_camera()->get_uuid());
 }
 
 void CameraSystem::print() {

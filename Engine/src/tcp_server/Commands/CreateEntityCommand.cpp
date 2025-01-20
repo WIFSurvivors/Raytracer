@@ -31,6 +31,7 @@ std::string CreateEntityCommand::execute(Engine *e) {
       LOG_ERROR("Entity could not be created.");
       return "Entity could not be created.";
     }
+          set_successfull(true);
     return "Entity created";
 
   } catch (const std::bad_alloc &e) {
@@ -44,4 +45,35 @@ std::string CreateEntityCommand::execute(Engine *e) {
     return "Unknown exception occurred";
   }
 }
-std::string CreateEntityCommand::undo(RT::Engine *engine) { throw NotImplementedError{}; }
+std::string CreateEntityCommand::undo(RT::Engine *engine) { 
+  try {
+    auto scene = engine->get_scene();
+    if (!scene) {
+      LOG_ERROR("Scene is null");
+      return "Scene is null";
+    }
+    uuid _uuid = this->get_uuid();
+    auto parent = scene->get_entity(_uuid);
+    if (!parent.has_value()) {
+      LOG_ERROR(std::format("Entity not found for UUID: {}",
+                            boost::uuids::to_string(_uuid)));
+      return "Entity not found";
+    }
+    auto success = scene->remove(_uuid);
+    if (!success) {
+      LOG_ERROR("Entity could not be created.");
+      return "Entity could not be created.";
+    }
+    return "Entity removed";
+
+  } catch (const std::bad_alloc &e) {
+    LOG_ERROR(std::format("Memory allocation failed: {}", e.what()));
+    return "Memory allocation failed";
+  } catch (const std::exception &e) {
+    LOG_ERROR(std::format("Exception: {}", e.what()));
+    return "Exception occurred";
+  } catch (...) {
+    LOG_ERROR("Unknown exception occurred");
+    return "Unknown exception occurred";
+  }
+  }

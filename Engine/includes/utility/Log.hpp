@@ -23,6 +23,7 @@ namespace RT {
 #define LOG_WARN(msg) Log::get_instance().print(msg, Log::Level::Warn);
 #define LOG(msg) Log::get_instance().print(msg, Log::Level::Message);
 #define LOG_DEBUG(msg) Log::get_instance().print(msg, Log::Level::Debug);
+#define LOG_TEST(msg) Log::get_instance().print(msg, Log::Level::Test);
 #define LOG_TCP(msg) Log::get_instance().print(msg, Log::Level::Tcp);
 #define LOG_FRAME_DATA(msg)                                                    \
   Log::get_instance().print(msg, Log::Level::FrameData);
@@ -38,12 +39,13 @@ struct Log {
   }
 
   enum class Level {
-    Error = 1,
-    Warn = 2,
-    Message = 3,
-    Debug = 4,
-    Tcp = 5,
-    FrameData = 6
+    Error,
+    Warn,
+    Message,
+    Debug,
+	Test,
+    Tcp,
+    FrameData
   };
 
 private:

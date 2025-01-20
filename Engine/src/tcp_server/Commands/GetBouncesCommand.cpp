@@ -21,6 +21,8 @@ std::string GetBouncesCommand::execute(Engine *engine) {
     LOG_ERROR("RenderSystem is null");
     return "RenderSystem is null";
   }
+    set_successfull(true);
+
   return std::to_string(render_system->get_bounces());
 }
 

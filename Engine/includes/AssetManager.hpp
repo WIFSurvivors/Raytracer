@@ -57,58 +57,59 @@ struct AssetManager : public Storage<fs::path> {
     LOG(std::format("created {}", get_name()));
   }
 
+  ~AssetManager() { LOG(std::format("destroyed {}", get_name())); }
+
   //   enum class Type { Shader, Material, Object, Unknown }; // maybe do this
 
   struct Asset {
     Asset(AssetManager *am, fs::path path) : _am{am} { set_path(path); }
-
     Asset(AssetManager *am, uuid id, fs::path path) : _am{am} { set(id, path); }
 
-    // Type type;
-    uuid _uuid = boost::uuids::nil_uuid();
-    fs::path _path;
-
-    void set(uuid id, fs::path path) { _am->set(id, path); }
+    void set(uuid id, fs::path path) {
+      LOG(std::format("Try adding Asset \"{}\" ({})", path.string(),
+                      boost::uuids::to_string(id)));
+      _am->set(id, path);
+    }
 
     bool set_uuid(uuid id) {
       // check if uuid is known on manager
       // -> if not in manager, this uuid is invalid
       auto opath = _am->get(id);
       if (!opath.has_value()) {
+        LOG_ERROR(std::format("UUID ({}) doesn't exist yet",
+                              boost::uuids::to_string(id)));
         return false;
       }
       _uuid = id;
       _path = opath.value();
+      LOG(std::format("Asset \"{}\" ({}) exists", _path.string(),
+                      boost::uuids::to_string(_uuid)));
       return true;
     }
 
-    /**
-     *
-     */
-    void set_path(fs::path path) {
+    bool set_path(fs::path path) {
       auto oid = _am->get(path);
       if (oid.has_value()) { // path already exists
         _uuid = oid.value();
+        LOG(std::format("Asset \"{}\" ({}) exists", path.string(),
+                        boost::uuids::to_string(_uuid)));
       } else { // path doesn't exists -> create a new one
         auto id = _am->create(path);
-        _uuid = id;
+        if (!id.has_value())
+          return false;
+        _uuid = id.value();
       }
       _path = path;
+      return true;
     }
 
     fs::path get_path() const { return _path; }
-
-    // set_uuid()
-    // -> _am->get_instance().get_uuid() -> true: good
-    //                                   -> false: error
-
-    // set_path()
-    // -> _am->get_instance().get_path() -> true: replace uuid here
-    //                                   -> false: create new uuid in AM
-    // get_path() -> abs
+    uuid get_uuid() const { return _uuid; }
 
   private:
     AssetManager *_am;
+    uuid _uuid = boost::uuids::nil_uuid();
+    fs::path _path;
   };
 
   struct DefaultAssets {
@@ -121,23 +122,35 @@ struct AssetManager : public Storage<fs::path> {
     Asset obj;
   };
 
-  inline void set(uuid id, fs::path path) {
+  inline bool set(uuid id, fs::path path) {
+    if (!can_open_file(path)) {
+      LOG_ERROR(std::format("cannot open path \"{}\"", path.string()));
+      return false;
+    }
+
     auto opath = get(id);
     if (opath.has_value()) {
       LOG_WARN(std::format("ID \"{}\" already exists!! This can result in "
                            "inconsistent behaviour!!",
                            boost::uuids::to_string(id)));
     }
+    LOG(std::format("added new path \"{}\" with UUID \"{}\"", path.string(),
+                    boost::uuids::to_string(id)));
     _um->add(id, this);
     _storage[id] = path;
+    return true;
   }
 
-  inline uuid create(fs::path path) {
+  inline std::optional<uuid> create(fs::path path) {
+    if (!can_open_file(path)) {
+      LOG_ERROR(std::format("cannot open path \"{}\"", path.string()));
+      return {};
+    }
     auto id = _um->create(this);
     LOG(std::format("added new path \"{}\" with UUID \"{}\"", path.string(),
                     boost::uuids::to_string(id)));
     _storage[id] = path;
-    return id;
+    return std::make_optional<uuid>(id);
   }
 
   bool remove(uuid id) override { return false; };
@@ -156,5 +169,16 @@ struct AssetManager : public Storage<fs::path> {
 
 private:
   // map<uuid, path> _storage; // part of base class
+
+  bool can_open_file(const fs::path path) {
+    auto p = fs::absolute(path).string();
+    std::ifstream file(p); // Try to open the file in read mode
+    if (file.is_open()) {
+      file.close(); // Close the file if it was successfully opened
+      return true;
+    }
+    LOG_ERROR(std::format("ERROR PATH: {}", p));
+    return false;
+  }
 };
 } // namespace RT

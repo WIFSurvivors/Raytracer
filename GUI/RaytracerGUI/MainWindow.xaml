@@ -1,4 +1,5 @@
 ﻿<Window x:Class="RaytracerGUI.MainWindow"
+        
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -20,6 +21,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="512"/>
@@ -34,7 +36,6 @@
             <Grid VerticalAlignment="Center" Grid.Row="0">
                 <Menu VerticalAlignment="Top">
                     <MenuItem Header="File" Width="170">
-                        <MenuItem Name="mniOpen" Header="Open" Click="FileMenuClick"/>
                         <MenuItem Name="mniSave" Header="Save" Click="FileMenuClick"/>
                         <MenuItem Name="mniImport" Header="Import Scene" Click="FileMenuClick"/>
                         <MenuItem Name="mniExport" Header="Export Scene" Click="FileMenuClick"/>
@@ -94,6 +95,10 @@
                                     <TextBlock Text="{Binding Key}" Width="150" Margin="5,0,10,0" VerticalAlignment="Center" />
                                     <!-- Editable TextBox for Value -->
                                     <TextBox Text="{Binding Value, UpdateSourceTrigger=PropertyChanged}" Width="200" Margin="5" VerticalAlignment="Center" PreviewKeyDown="TextBoxComponentOptions_PreviewKeyDown"/>
+                                    <Button Content="Browse" 
+                        Visibility="{Binding IsPath, Converter={StaticResource BoolToVisibilityConverter}}" 
+                        Click="OnBrowseButtonClick" 
+                        DataContext="{Binding}" Width="200"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
