@@ -214,34 +214,36 @@ namespace RaytracerGUI
                 // Der Name des angeklickten Menüelements wird verwendet
                 string itemName = clickedMenuItem.Name;
                 //tbxLog.AppendText($"{itemName} was clicked!\n");
-
-                switch (itemName)
+                if (!currentEntityUUID.Equals("uuid"))
                 {
-                    case "mniAddRender":
-                        AddRenderComponent();
-                        break;
-
-                    case "mniAddLight":
-                        AddLightComponent();
-                        break;
-
-                    case "mniAddCamera":
-                        AddCameraComponent();
-                        break;
-
-                    case "mniAddEntity":
-                        try
-                        {
-                            AddEntity();
-                            ReceivedEcsJsonString = _ecsApi.get_root();
-                            _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
+                    switch (itemName)
+                    {
+                        case "mniAddRender":
+                            AddRenderComponent();
                             break;
-                        }
-                        catch (Exception ex)
-                        {
-                            tbxLog.AppendText("Adding Entity failed with Exception: " + ex.Message);
+
+                        case "mniAddLight":
+                            AddLightComponent();
                             break;
-                        }
+
+                        case "mniAddCamera":
+                            AddCameraComponent();
+                            break;
+
+                        case "mniAddEntity":
+                            try
+                            {
+                                AddEntity();
+                                ReceivedEcsJsonString = _ecsApi.get_root();
+                                _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
+                                break;
+                            }
+                            catch (Exception ex)
+                            {
+                                tbxLog.AppendText("Adding Entity failed with Exception: " + ex.Message);
+                                break;
+                            }
+                    }
                 }
             }
         }
