@@ -248,6 +248,31 @@ namespace RaytracerGUI
             }
         }
 
+        private void SettingsMenuClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem clickedMenuItem && _ecsApi != null)
+            {
+                // Der Name des angeklickten Menüelements wird verwendet
+                string itemName = clickedMenuItem.Name;
+                //tbxLog.AppendText($"{itemName} was clicked!\n");
+
+                    switch (itemName)
+                    {
+                        case "mniPrintECS":
+                        try
+                        {
+                            _ecsApi.print_table();
+                            
+                        }
+                        catch (Exception ex)
+                        {
+                            tbxLog.AppendText("Exception thrown: " + ex);
+                        }
+                        break;
+                }
+            }
+        }
+
 
 
         //Button clicks
