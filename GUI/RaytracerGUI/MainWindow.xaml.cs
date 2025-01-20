@@ -1271,18 +1271,37 @@ namespace RaytracerGUI
 
         private void TakeScreenshot()
         {
+            SaveFileDialog saveFileDialog;
+            string filePath = "";
 
+            saveFileDialog = new SaveFileDialog
+            {
+                Filter = "PNG File (*.png)|*.png",
+                Title = "Save PNG Image file",
+                FileName = "image.png"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                filePath = saveFileDialog.FileName;
+                tbxLog.AppendText("PNG saved at: " + filePath + "\n");
+            }
+
+            if (filePath.Equals(""))
+            {
+                return;
+            }
             try
             {
-
-                GdiCapture.CaptureWindow(loader.hWndGLFW, "screenshot.png");
+                GdiCapture.CaptureWindow(loader.hWndGLFW, filePath);
+                Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
             }
             catch (System.InvalidOperationException e)
             {
                 MessageBox.Show("Capturing failed!" + "\n" + e.Message);
                 return;
             }
-
+            
             tbxLog.AppendText("Captured!" + "\n");
 
         }

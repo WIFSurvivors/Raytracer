@@ -138,39 +138,6 @@ set(DEV_JSON_DIR "${CMAKE_CURRENT_SOURCE_DIR}/json")
 # get_target_property(EXECUTABLE_PATH ${PROJECT_NAME} RUNTIME_OUTPUT_DIRECTORY)
 message(STATUS "Executable will be placed at: ${CMAKE_BINARY_DIR}")
 
-file(GLOB_RECURSE
-    JSON_FILES
-    RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} 
-    CONFIGURE_DEPENDS
-    ${DEV_JSON_DIR}/*)
-  
-  message(STATUS "Copying json to: ${CMAKE_BINARY_DIR}/json")
-  FOREACH(MY_RESOURCE_FILE ${JSON_FILES})
-    file(COPY ${MY_RESOURCE_FILE} DESTINATION ${CMAKE_BINARY_DIR}/json)
-  ENDFOREACH()
-
-
-  file(GLOB_RECURSE
-  ASSET_FILES
-  RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} 
-  CONFIGURE_DEPENDS
-  ${DEV_ASSETS_DIR}/*)
-  
-message(STATUS "Copying assets to: ${CMAKE_BINARY_DIR}/assets")
-FOREACH(MY_RESOURCE_FILE ${ASSET_FILES})
-  file(COPY ${MY_RESOURCE_FILE} DESTINATION ${CMAKE_BINARY_DIR}/assets)
-ENDFOREACH()
-
-file(GLOB_RECURSE
-  SHADER_FILES
-  RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} 
-  CONFIGURE_DEPENDS
-  ${DEV_SHADER_DIR}/*)
-
-message(STATUS "Copying shaders to: ${CMAKE_BINARY_DIR}/shaders")
-FOREACH(MY_RESOURCE_FILE ${SHADER_FILES})
-  file(COPY ${MY_RESOURCE_FILE} DESTINATION ${CMAKE_BINARY_DIR}/shaders)
-ENDFOREACH()
 add_custom_target(build_csharp_gui
     COMMAND dotnet publish -c Release -r win-x64 --self-contained true RaytracerGUI.csproj
     WORKING_DIRECTORY C:/Users/Spyros/projects/Raytracer/GUI/RaytracerGUI
@@ -216,6 +183,9 @@ install(DIRECTORY
 ###
 # CPACK-Konfiguration
 ###
+if (WIN32)
+add_dependencies(${PROJECT_NAME} build_csharp_gui)
+endif()
 include(InstallRequiredSystemLibraries)
 
 
@@ -226,11 +196,16 @@ set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Installer for ${PROJECT_NAME}")
 set(CPACK_PACKAGE_CONTACT "...@...")
 
 set(CPACK_GENERATOR "NSIS")
+set(CPACK_NSIS_MODIFY_PATH OFF)      
+set(CPACK_NSIS_INSTALL_ROOT "$PROFILE")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "Raytracer")
 # used this source: https://stackoverflow.com/questions/14831739/how-do-i-add-a-start-menu-entry-for-a-text-file-in-cpack-ans-nsis
 SET( CPACK_NSIS_CREATE_ICONS_EXTRA 
 "
 CreateShortcut \\\"$INSTDIR\\\\Raytracer.lnk\\\" \\\"$INSTDIR\\\\RaytracerGUI\\\\RaytracerGUI.exe\\\"
+ CreateShortcut \\\"$DESKTOP\\\\Raytracer.lnk\\\" \\\"$INSTDIR\\\\Raytracer.lnk\\\"
 " )
+set(CPACK_NSIS_EXECUTIONLEVEL "user")
 # Windows-spezifische Einstellungen (z. B. NSIS):
 set(CPACK_NSIS_DISPLAY_NAME "${PROJECT_NAME} Installer")
 set(CPACK_NSIS_HELP_LINK "https://github.com/WIFSurvivors/Raytracer")
