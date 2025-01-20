@@ -18,19 +18,19 @@ struct Entity : public std::enable_shared_from_this<Entity>,
 
   inline std::shared_ptr<Entity> get_ptr() { return shared_from_this(); }
 
-  std::optional<IComponent *> get_component(uuid id) const;
 
   inline const std::string &get_name() const { return _name; }
   inline void set_name(const std::string &name) { _name = name; }
 
   bool add_component(IComponent *c);
-  std::optional<IComponent*> get_component(uuid id);
+  /*std::optional<uuid> get_component(uuid id) const;
+  std::optional<uuid> get_component(uuid id);*/
   bool contains_component(IComponent *c);
   bool contains_component(uuid id);
   bool remove_component(IComponent *c);
   bool remove_component(uuid id);
   inline auto get_components() { return _components; }
-  void remove_components(UUIDManager *um);
+  bool remove_components(UUIDManager *um);
 
   inline bool has_Updated() { return _updated; }
   inline void did_update() { _updated = false; }
@@ -121,7 +121,7 @@ private:
 
   std::weak_ptr<Entity> _parent{};
   std::vector<std::shared_ptr<Entity>> _child_entities{};
-  std::vector<IComponent *> _components{};
+  std::vector<uuid> _components{};
 };
 
 struct Entity::make_shared_enabler : public Entity {

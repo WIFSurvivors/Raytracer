@@ -25,45 +25,49 @@ std::shared_ptr<Entity> Entity::create(const std::string &name, uuid id,
   return e;
 }
 
-std::optional<IComponent *> Entity::get_component(uuid id) const {
+bool Entity::add_component(IComponent *c) {
+  if (c == nullptr)
+    return false;
+
+  auto id = c->get_uuid();
+  if (contains_component(id)) {
+    return false;
+  }
+  _components.push_back(id);
+  return true;
+}
+
+/*std::optional<uuid> Entity::get_component(uuid id) const {
   auto it = std::find_if(_components.begin(), _components.end(),
-                         [id](IComponent *c) { return c->get_uuid() == id; });
+                         [id](uuid c_id) { return c_id == id; });
 
   if (it == _components.end())
     return std::nullopt; // same as "return {};"
 
-  return std::make_optional<IComponent *>(*it);
+  return std::make_optional<uuid>(*it);
 }
 
-bool Entity::add_component(IComponent *c) {
-  // maybe TODO? check if component already exists here
-  if (contains_component(c)) {
-    return false;
-  }
-  _components.push_back(c);
-  return true;
-}
-
-std::optional<IComponent *> Entity::get_component(uuid id) {
+std::optional<uuid> Entity::get_component(uuid id) {
   auto it = std::find_if(_components.begin(), _components.end(),
-                         [id](IComponent *c) { return c->get_uuid() == id; });
+                         [id](uuid c_id) { return c_id == id; });
+
   if (it == _components.end()) {
     return {};
   }
   return std::make_optional<IComponent *>(*it);
-}
+}*/
 
 bool Entity::contains_component(IComponent *c) {
-  auto it = std::find(_components.begin(), _components.end(), c);
-  if (it == _components.end()) {
+  if (c == nullptr)
     return false;
-  }
+
+  contains_component(c->get_uuid());
   return true;
 }
 
 bool Entity::contains_component(uuid id) {
   auto it = std::find_if(_components.begin(), _components.end(),
-                         [id](IComponent *c) { return c->get_uuid() == id; });
+                         [id](uuid c_id) { return c_id == id; });
   if (it == _components.end()) {
     return false;
   }
@@ -71,18 +75,16 @@ bool Entity::contains_component(uuid id) {
 }
 
 bool Entity::remove_component(IComponent *c) {
-  auto it = std::find(_components.begin(), _components.end(), c);
-  if (it != _components.end()) {
-    // ?? set component owner to none ??
-    _components.erase(it);
-    return true;
-  }
-  return false;
+  if (c == nullptr)
+    return false;
+
+  remove_component(c->get_uuid());
+  return true;
 }
 
 bool Entity::remove_component(uuid id) {
   auto it = std::find_if(_components.begin(), _components.end(),
-                         [id](IComponent *c) { return c->get_uuid() == id; });
+                         [id](uuid c_id) { return c_id == id; });
   if (it != _components.end()) {
     _components.erase(it);
     return true;
@@ -90,17 +92,77 @@ bool Entity::remove_component(uuid id) {
   return false;
 }
 
-void Entity::remove_components(UUIDManager *um) {
-  std::vector<uuid> to_remove;
-  std::transform(_components.begin(), _components.end(),
-                 std::back_inserter(to_remove),
-                 [](auto &c) { return c->get_uuid(); });
-  _components.clear();
-  for (auto id : to_remove) {
-    if (um->remove(id)) {
+bool Entity::remove_components(UUIDManager *um) {
+  bool success = true;
+  LOG_ERROR(std::format("size: {}", _components.size()));
+  for (int i = _components.size() - 1; i >= 0; --i) {
+    LOG_ERROR(std::format("i: {}", i));
+    // LOG_ERROR(std::format("{}", boost::uuids::to_string(_components[i])));
+    if (!um->remove(_components[i])) {
+      //   LOG_ERROR(std::format("{}", "awaw"));
+      success = false;
+      continue;
     }
+    _components.erase(_components.begin() + i);
   }
+  //   for (auto it = _components.begin(); it != _components.end();) {
+  //     LOG_ERROR(std::format("{}", boost::uuids::to_string(*it)));
+  //     if (!um->remove(*it)) {
+  //       // LOG_ERROR(std::format("{}", "awaw"));
+  //       success = false;
+  //       ++it;
+  //     } else {
+  //       it = _components.erase(it);
+  //     }
+  //   }
+  return success;
 }
+
+// 1) turn pointer list into index+uuid+is_valid list
+//   std::vector<std::tuple<int, uuid, bool>> to_remove;
+//   std::transform(_components.begin(), _components.end(),
+//                  std::back_inserter(to_remove),
+//                  [i = 0](auto &c) mutable -> std::tuple<int, uuid, bool> {
+//                    LOG(std::format("mapped: ({}, {})", i,
+//                                    boost::uuids::to_string(c->get_uuid())));
+//                    return {i++, c->get_uuid(), true};
+//                  });
+//   LOG("WA");
+//   // 2) check if uuid is allowed to be removed
+//   std::vector<bool> valid_deletions;
+//   for (auto it = to_remove.begin(); it != to_remove.end();) {
+//     if (!um->remove(std::get<1>(*it))) {
+//       LOG_ERROR(std::format(
+//           "invalid component ({}) deletion on entity \"{}\"({})",
+//           boost::uuids::to_string(std::get<1>(*it)), this->get_name(),
+//           boost::uuids::to_string(this->get_uuid())));
+//       std::get<2>(*it) = false;
+//       //   valid_deletions[it->first] = false;
+//       ++it;
+//       continue;
+//     }
+//     // valid_deletions[it->first] = true;
+//     it = to_remove.erase(it);
+//     // ++it;
+//   }
+//   LOG("WB");
+//   std::for_each(to_remove.begin(), to_remove.end(), [](auto &thing) {
+//     LOG(std::format("VALID?? {} {} {}", std::get<0>(thing),
+//                     boost::uuids::to_string(std::get<1>(thing)),
+//                     std::get<2>(thing)));
+//   });
+//   LOG("WC");
+//   for (size_t i = to_remove.size(); i >= 0; --i) {
+//     if (std::get<2>(to_remove[i]) == true) {
+//       _components.erase(_components.begin() + i);
+//     }
+//   }
+//   LOG("WD");
+//   // if any value is
+//   return !std::any_of(valid_deletions.begin(), valid_deletions.end(),
+//                       [](bool t) { return t == false; });
+// return true;
+// }
 
 void Entity::add_child_entity(std::shared_ptr<Entity> e) {
   // TODO: check that 'e' doesn't have a parent....

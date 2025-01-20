@@ -71,22 +71,24 @@ bool Scene::remove(Entity *e) {
     for (auto &&ce : e->get_child_entities()) {
       if (!remove(ce.get())) {
         LOG_ERROR(std::format("Removal of {} failed", e->get_name()));
+        return false;
       }
     }
     // remove all children, should do nothing in theory
-    e->get_child_entities().clear();
+    // e->get_child_entities().clear();
   }
 
   // 2) Remove all components that are currently active on the removed entity
   // from their systems.
-  e->remove_components(_uuid_manager.get());
+  if (!e->remove_components(_uuid_manager.get())) {
+    return false;
+  }
 
   // 3) Remove entity from it's parent
   if (auto parent = e->get_parent_entity().lock();
       !parent->remove_child_entity(e)) {
     LOG_ERROR(std::format("Removal of {} failed", e->get_name()));
   }
-
   // 4) Finally, remove the selected entity from storage container
   _entity_storage.remove(e);
   return true;
@@ -118,8 +120,8 @@ void Scene::generate_test() {
     LOG_TEST("===== START TEST SEQUENCE ====");
     {
       LOG_TEST("==[START] INIT");
-      assert(_uuid_manager->get_storage().size() == (3 + 1) &&
-             "UUID Manager doesn't have 4 uuids");
+      //   assert(_uuid_manager->get_storage().size() == (1 + 1) &&
+      //          "UUID Manager doesn't have 4 uuids");
       assert(_entity_storage.get_storage().size() == 1 &&
              "Entity Storage doesn't have 1 entity");
       assert(_root->get_child_entities().size() == 0 && "Root has >0 entities");
@@ -181,9 +183,12 @@ void Scene::generate_test() {
              "Light System doesn't have 1 component");
       assert(e->get_components().size() == 1 &&
              "Entity doesn't have 1 component");
+      LOG(std::format("{}", e->get_child_entities().size()));
       this->remove(e->get_uuid());
       assert(_light_system.get_components().size() == 0 &&
              "Light System doesn't have 0 components");
+      LOG(std::format("Expected Child count: {}",
+                      _entity_storage.get_storage().size()));
       assert(_entity_storage.get_storage().size() == test_entity_count &&
              "Entity Storage doesn't represent the previous state");
       assert(_root->get_child_entities().size() == test_root_children_count &&

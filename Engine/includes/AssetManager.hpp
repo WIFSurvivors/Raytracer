@@ -87,10 +87,7 @@ struct AssetManager : public Storage<fs::path> {
       return true;
     }
 
-    /**
-     *
-     */
-    void set_path(fs::path path) {
+    bool set_path(fs::path path) {
       auto oid = _am->get(path);
       if (oid.has_value()) { // path already exists
         _uuid = oid.value();
@@ -98,9 +95,12 @@ struct AssetManager : public Storage<fs::path> {
                         boost::uuids::to_string(_uuid)));
       } else { // path doesn't exists -> create a new one
         auto id = _am->create(path);
-        _uuid = id;
+        if (!id.has_value())
+          return false;
+        _uuid = id.value();
       }
       _path = path;
+      return true;
     }
 
     fs::path get_path() const { return _path; }
@@ -108,7 +108,7 @@ struct AssetManager : public Storage<fs::path> {
 
   private:
     AssetManager *_am;
-	uuid _uuid = boost::uuids::nil_uuid();
+    uuid _uuid = boost::uuids::nil_uuid();
     fs::path _path;
   };
 
@@ -122,25 +122,35 @@ struct AssetManager : public Storage<fs::path> {
     Asset obj;
   };
 
-  inline void set(uuid id, fs::path path) {
+  inline bool set(uuid id, fs::path path) {
+    if (!can_open_file(path)) {
+      LOG_ERROR(std::format("cannot open path \"{}\"", path.string()));
+      return false;
+    }
+
     auto opath = get(id);
     if (opath.has_value()) {
       LOG_WARN(std::format("ID \"{}\" already exists!! This can result in "
                            "inconsistent behaviour!!",
                            boost::uuids::to_string(id)));
-    }	
+    }
     LOG(std::format("added new path \"{}\" with UUID \"{}\"", path.string(),
                     boost::uuids::to_string(id)));
     _um->add(id, this);
     _storage[id] = path;
+    return true;
   }
 
-  inline uuid create(fs::path path) {
+  inline std::optional<uuid> create(fs::path path) {
+    if (!can_open_file(path)) {
+      LOG_ERROR(std::format("cannot open path \"{}\"", path.string()));
+      return {};
+    }
     auto id = _um->create(this);
     LOG(std::format("added new path \"{}\" with UUID \"{}\"", path.string(),
                     boost::uuids::to_string(id)));
     _storage[id] = path;
-    return id;
+    return std::make_optional<uuid>(id);
   }
 
   bool remove(uuid id) override { return false; };
@@ -159,5 +169,16 @@ struct AssetManager : public Storage<fs::path> {
 
 private:
   // map<uuid, path> _storage; // part of base class
+
+  bool can_open_file(const fs::path path) {
+    auto p = fs::absolute(path).string();
+    std::ifstream file(p); // Try to open the file in read mode
+    if (file.is_open()) {
+      file.close(); // Close the file if it was successfully opened
+      return true;
+    }
+    LOG_ERROR(std::format("ERROR PATH: {}", p));
+    return false;
+  }
 };
 } // namespace RT
