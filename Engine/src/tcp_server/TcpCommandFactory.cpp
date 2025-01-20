@@ -24,6 +24,7 @@
 #include "includes/tcp_server/Commands/SetFrameRate.hpp"
 #include "includes/tcp_server/Commands/GetFrameRate.hpp"
 #include "includes/tcp_server/Commands/RemoveEntity.hpp"
+#include "includes/tcp_server/Commands/PrintTable.hpp"
 #include <boost/uuid/uuid_io.hpp>
 #include <boost/uuid/string_generator.hpp>
 #include <map>
@@ -138,6 +139,10 @@ TcpCommandFactory::create_command(ParsedTcpCommand parsed_command) {
   else if (command_string.compare(REMOVE_ENTITY_COMMAND) == 0) {
     LOG_TCP("Create RemoveEntityCommand");
     return std::make_unique<RemoveEntity>(_uuid);
+  }
+  else if (command_string.compare(PRINT_TABLE_COMMAND) == 0) {
+    LOG_TCP("Create PrintTableCommand");
+    return std::make_unique<PrintTable>();
   }
   else {
     LOG_ERROR("Command not found");

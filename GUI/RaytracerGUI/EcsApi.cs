@@ -287,4 +287,14 @@ public class EcsApi
     {
         return _client.Send(string.Format(adjustSeparator("Undo null {0}"), steps));
     }
+
+    /// <summary>
+    /// Print the ECS table.
+    /// </summary>
+    /// 
+    /// <returns>The response from the server.</returns>
+    public string print_table()
+    {
+        return _client.Send("PrintTable");
+    }
 }
