@@ -99,10 +99,8 @@ void RenderComponent::update(const FrameSnapshot &snapshot) {
 
 void RenderComponent::destroy() {
 #if SHOW_UI
-  glDisableVertexAttribArray(0);
-  glDisableVertexAttribArray(1);
-  glDeleteBuffers(1, &_vbo);
-  glDeleteBuffers(1, &_uvVBO);
+    _vertices.clear();
+        _meshes.clear();
 #endif
 }
 

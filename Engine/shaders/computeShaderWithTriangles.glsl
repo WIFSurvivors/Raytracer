@@ -444,14 +444,14 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
             vec3 v2 = trivertex[v + 2].data;
             vec3 edge1 = trivertex[v + 1].data - trivertex[v].data;
             vec3 edge2 = trivertex[v + 2].data - trivertex[v].data;
-            //vec3 baryCoords = bayecentricCalculation(sectionPoint, v0, v1, v2);
-            // vec3 N = normalize(
-            //         baryCoords.x * trivertex[v].normal +
-            //             baryCoords.y * trivertex[v + 1].normal +
-            //             baryCoords.z * trivertex[v + 2].normal
-            //     );
+            vec3 baryCoords = bayecentricCalculation(sectionPoint, v0, v1, v2);
+            vec3 N = normalize(
+                    baryCoords.x * trivertex[v].normal +
+                        baryCoords.y * trivertex[v + 1].normal +
+                        baryCoords.z * trivertex[v + 2].normal
+                );
 
-            vec3 N = normalize(cross(edge1, edge2));
+            // vec3 N = normalize(cross(edge1, edge2));
             bool anyLightHit = false;
             vec3 localColor = vec3(0.0);
             vec3 diffuse = vec3(0.0);
@@ -486,6 +486,8 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
             vec3 ambient = material.Ka * ambientLightColor;
             localColor += ambient + diffuse + specular;
             color += localColor;
+
+            color *= 0.7;
 
             if (length(reflec_accumulation) <= 0.01) continue;
             vec3 reflecDirection = reflect(currentRay.direction, N);

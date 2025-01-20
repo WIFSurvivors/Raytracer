@@ -85,6 +85,7 @@ struct RenderSystem : public System<RenderComponent> {
   // void render();
   // std::unique_ptr<RenderComponent> _component;
   void print() override;
+  bool remove(uuid id) override;
   void update_galary(std::shared_ptr<MeshGallary> mesh_object);
 
 private:
@@ -133,6 +134,8 @@ private:
 
   std::unique_ptr<Shader> _compute;
   std::vector<std::shared_ptr<MeshGallary>> gallary;
+
+  bool _loadData;
 #endif
 };
 } // namespace RT

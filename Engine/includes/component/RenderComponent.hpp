@@ -132,7 +132,7 @@ struct RenderComponent : public IComponent {
       }
       renderMesh._indices.insert(renderMesh._indices.end(),
                                  mesh.Indices.begin(), mesh.Indices.end());
-	  
+
       renderMesh.MeshMaterial = mesh.MeshMaterial;
 
       _meshes.push_back(renderMesh);
