@@ -1,8 +1,13 @@
 #pragma once
 #include <string>
 #include <vector>
-
+/// @brief Parsed command from a tcp message.
+/// The parsed command contains the command string, the uuid and the parameters.
 struct ParsedTcpCommand {
+  /// @brief Constructor for the parsed command.
+  /// @param command The command string.
+  /// @param uuid The uuid of the command.
+  /// @param parameters The parameters of the command.
   ParsedTcpCommand(std::string command, std::string uuid,
                    std::vector<std::string> parameters)
       : command(command), uuid(uuid), parameters(parameters) {}
