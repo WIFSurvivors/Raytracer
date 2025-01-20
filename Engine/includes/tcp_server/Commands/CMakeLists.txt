@@ -23,6 +23,7 @@ set(TCP_COMMANDS_HEADERS
     SetFrameRate.hpp
     RemoveEntity.hpp
     RemoveComponent.hpp
+    PrintTable.hpp
 )
 
 list(TRANSFORM TCP_COMMANDS_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")
