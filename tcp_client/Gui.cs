@@ -13,10 +13,10 @@ public class Gui
             EcsApi api = new EcsApi(host, port);
             // Send first message
             string thing = uuid;
-            //String uuid1 = api.move_entity(thing, 0.055f, 2.0f, 0.0f);
+            //String uuid1 = api.move_entity(thing, 0.0f, 0.0f, -30.0f);
             /*// Send second message*/
-            //String uuid2 = api.scale_entity(thing, 0.5f, 0.55f, 0.55f);
-            //String uuid3 = api.rotate_entity(thing, 0.5f, 0.55f, 0.55f);
+            //String uuid2 = api.scale_entity(thing, 0.1f, 0.1f, 0.1f);
+            String uuid3 = api.rotate_entity(thing, 45.0f, 0.0f, 0.0f);
             //string test23 = api.undo(3);
             //string test = api.get_entity_options(thing);
             //string message1 = api.json_import("C:\\Users\\Spyros\\projects\\Raytracer\\Engine\\json\\JsonParser_DummyFile.json");

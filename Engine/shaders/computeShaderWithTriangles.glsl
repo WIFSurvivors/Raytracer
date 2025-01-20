@@ -75,8 +75,8 @@ struct Triangle {
 // };
 
 struct Material {
-    vec3 color; // Diffuse Color
-    float reflection;
+    vec3 Kd; // Diffuse Color
+    float Ns;
     vec3 Ka; // Ambient Color
     float Ni; // optical density
     vec3 Ks; // Specular Color
@@ -114,6 +114,7 @@ struct Ray {
     vec3 origin;
     vec3 direction;
     int depth;
+    float Ni_current;
 };
 
 struct Light {
@@ -161,7 +162,7 @@ Ray pop() {
         return stack[stackTop];
     }
     // Return a dummy ray if the stack is empty
-    return Ray(vec3(0.0), vec3(0.0), -1);
+    return Ray(vec3(0.0), vec3(0.0), -1, 1.0);
 }
 
 int popb() {
@@ -340,7 +341,8 @@ bool processBVH_Shadow(Ray currentRay, int originObject, float distance) {
         }
     }
 
-    if (t > 0.0 && t < distance) return true;
+    //if (t > 0.0 && t < distance) return true;
+    if (distance <= t && t <= 1) return true;
     return false;
 }
 
@@ -392,6 +394,31 @@ vec3 backgroundColor(vec3 direction) {
     float t = 0.5 * (normalize(direction).y + 1.0);
     return mix(vec3(0.1, 0.1, 0.2), vec3(0.5, 0.7, 1.0), t); // Dark blue to light blue
 }
+
+float FresnelReflectAmount(float n1, float n2, vec3 normal, vec3 incident, vec3 Ks)
+{
+    float OBJECT_REFLECTIVITY = 0.01;
+    // Schlick aproximation
+    float r0 = (n1 - n2) / (n1 + n2);
+    r0 *= r0;
+    float cosX = -dot(normal, incident);
+    if (n1 > n2)
+    {
+        float n = n1 / n2;
+        float sinT2 = n * n * (1.0 - cosX * cosX);
+        // Total internal reflection
+        if (sinT2 > 1.0)
+            return 1.0;
+        cosX = sqrt(1.0 - sinT2);
+    }
+    float x = 1.0 - cosX;
+    float ret = r0 + (1.0 - r0) * x * x * x * x * x;
+
+    // adjust reflect multiplier for object reflectivity
+    ret = (OBJECT_REFLECTIVITY + (1.0 - OBJECT_REFLECTIVITY) * ret);
+    return ret;
+}
+
 // Actual Raytrace Function
 vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
     vec3 color = vec3(0.0);
@@ -409,60 +436,62 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
         if (t >= 0.0 && index != -1) {
 
             // Intersection point & normal
-            vec3 sectionPoint = currentRay.origin + t * currentRay.direction;
+            vec3 sectionPoint = currentRay.origin + t * normalize(currentRay.direction);
 
             int v = triIdx[index] * 3;
             vec3 v0 = trivertex[v].data;
             vec3 v1 = trivertex[v + 1].data;
             vec3 v2 = trivertex[v + 2].data;
-            //vec3 edge1 = trivertex[v + 1].data - trivertex[v].data;
-            //vec3 edge2 = trivertex[v + 2].data - trivertex[v].data;
-            vec3 baryCoords = bayecentricCalculation(sectionPoint, v0, v1, v2);
-            //vec3 N = normalize(cross(edge1, edge2));
-            vec3 N = normalize(
-                    baryCoords.x * trivertex[v].normal +
-                        baryCoords.y * trivertex[v + 1].normal +
-                        baryCoords.z * trivertex[v + 2].normal
-                );
-            vec3 localColor = vec3(0.0);
-            bool anyLightHit = false;
+            vec3 edge1 = trivertex[v + 1].data - trivertex[v].data;
+            vec3 edge2 = trivertex[v + 2].data - trivertex[v].data;
+            //vec3 baryCoords = bayecentricCalculation(sectionPoint, v0, v1, v2);
+            // vec3 N = normalize(
+            //         baryCoords.x * trivertex[v].normal +
+            //             baryCoords.y * trivertex[v + 1].normal +
+            //             baryCoords.z * trivertex[v + 2].normal
+            //     );
 
-            // Ambient Lighting
-            vec3 ambient = materials[matIndex[index]].Ka * ambientLightColor;
-            color += ambient;
+            vec3 N = normalize(cross(edge1, edge2));
+            bool anyLightHit = false;
+            vec3 localColor = vec3(0.0);
+            vec3 diffuse = vec3(0.0);
+            vec3 specular = vec3(0.0);
+            vec3 amb = vec3(0.0);
+            Material material = materials[matIndex[index]];
+
             for (int lIndex = 0; lIndex < ls_active_light_sources; lIndex++) {
                 Light light = emitter[lIndex];
 
                 vec3 shadowRay = normalize(light.position - sectionPoint);
                 float distanceToLight = length(light.position - sectionPoint);
-                float attenuation = 1.0 / (distanceToLight * distanceToLight);
+                Ray toLighRay = Ray(sectionPoint, shadowRay, currentRay.depth + 1, currentRay.Ni_current);
+                bool isShadow = processBVH_Shadow(toLighRay, index, 0.00000001);
 
-                //bool isShadow = isInShadowTriangleAlt(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
-                bool isShadow = processBVH_Shadow(Ray(sectionPoint + 0.01 * N, shadowRay, currentRay.depth), index, distanceToLight);
-                //bool isShadow = false;
-                if (!isShadow) {
-                    float diffuse = max(dot(N, shadowRay), 0.0);
-                    vec3 lighting = reflec_accumulation * light.color * materials[matIndex[index]].color * light.intensity * diffuse * attenuation;
-                    localColor += lighting;
-                    anyLightHit = true;
-                }
+                if (isShadow) continue;
+
+                // Blinn–Phong BRDF
+                float diffuseIntensity = max(0, dot(N, shadowRay));
+                diffuse += diffuseIntensity * material.Kd * light.color * light.intensity * reflec_accumulation;
+
+                vec3 viewDir = normalize(-sectionPoint);
+                vec3 H = normalize(shadowRay + viewDir);
+                float specularIntensity = pow(max(0, dot(N, H)), material.Ns);
+                // vec3 reflecDirection = reflect(currentRay.direction, N);
+                specular += specularIntensity * material.Ks * light.color * light.intensity;
             }
 
+            // bool anyLightHit = false;
+
+            // Ambient Lighting
+            vec3 ambient = material.Ka * ambientLightColor;
+            localColor += ambient + diffuse + specular;
             color += localColor;
-            if (anyLightHit && length(reflec_accumulation) > 0.001) {
-                vec3 reflecDirection = reflect(currentRay.direction, N);
-                reflec_accumulation *= materials[matIndex[index]].reflection;
-                Ray nextRay = Ray(sectionPoint + 0.01 * N, reflecDirection, currentRay.depth + 1);
-                push(nextRay);
-            }
 
-            if (materials[matIndex[index]].illum == 4) {
-                vec3 refractDirection = refract(currentRay.direction, N, materials[matIndex[index]].Ni);
-                Ray refractRay = Ray(sectionPoint - 0.01 * N, refractDirection, currentRay.depth + 1);
-                push(refractRay);
-            }
-            color *= materials[matIndex[index]].d;
-            hit = true;
+            if (length(reflec_accumulation) <= 0.01) continue;
+            vec3 reflecDirection = reflect(currentRay.direction, N);
+            Ray nextRay = Ray(sectionPoint + 0.0001 * reflecDirection, reflecDirection, currentRay.depth + 1, currentRay.Ni_current);
+            reflec_accumulation *= FresnelReflectAmount(currentRay.Ni_current, material.Ni, N, currentRay.direction, material.Ks);
+            push(nextRay);
         } else {
             color += reflec_accumulation * backgroundColor(currentRay.direction);
         }
@@ -511,7 +540,7 @@ void main() {
     vec3 rayDirWorld = normalize(vec3(inverse(View) * rayEye));
 
     //vec3 rayDirection = normalize(rayPixel.xyz - rayOrigin);
-    Ray r = Ray(rayOrigin, rayDirWorld, 0);
+    Ray r = Ray(rayOrigin, rayDirWorld, 0, 1.0);
     //imageStore(textureOutput, pixelCoords, vec4(rayDirWorld, 1.0));
     imageStore(textureOutput, pixelCoords, rayColor(r));
 }

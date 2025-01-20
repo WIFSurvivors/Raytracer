@@ -229,11 +229,13 @@ struct TreeBuilder {
 
         // mats.push_back(Materials(mesh.MeshMaterial.Kd,0.0f,mesh.MeshMaterial.Ka,0.0f,mesh.MeshMaterial.Ks,0.0f,mesh.MeshMaterial.d,mesh.MeshMaterial.illum,mesh.MeshMaterial.Ns,mesh.MeshMaterial.Ni));
 
-        mats.push_back(Materials(mesh.MeshMaterial.Kd, 0.05f,
+        mats.push_back(Materials(mesh.MeshMaterial.Kd, mesh.MeshMaterial.Ns,
                                  mesh.MeshMaterial.Ka, mesh.MeshMaterial.Ni,
                                  mesh.MeshMaterial.Ks, mesh.MeshMaterial.d,
                                  mesh.MeshMaterial.illum, 0.0f, 0.0f, 0.0f));
-		
+
+		//mats.push_back(Materials(glm::vec3(0.8,0.8,0.8),0.0,glm::vec3(0.2,0.2,0.2),1.0f,glm::vec3(1.0f),1.0f,2, 0.0f,0.0f,0.0f));
+
         std::cout << "NS: " << mesh.MeshMaterial.Ns << std::endl;
         for (int i = 0; i < mesh._indices.size(); i += 3) {
 

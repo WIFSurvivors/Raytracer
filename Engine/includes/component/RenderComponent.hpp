@@ -136,6 +136,8 @@ struct RenderComponent : public IComponent {
       renderMesh.MeshMaterial = mesh.MeshMaterial;
 
       _meshes.push_back(renderMesh);
+	  std::cout << "FRICKING NS: " << renderMesh.MeshMaterial.Ns << std::endl;
+	  std::cout << "FRICKING Illum: " << renderMesh.MeshMaterial.illum<< std::endl;
     }
 
 #endif
