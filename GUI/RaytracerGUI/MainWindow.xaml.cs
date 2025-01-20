@@ -88,28 +88,31 @@ namespace RaytracerGUI
                 {
                     //Imports the JSON Scene file and sends it to the ecsapi
                     case "mniImport":
-                        openFileDialog = new OpenFileDialog
-                        {
-                            Filter = "JSON File (*.json)|*.json",
-                            Title = "Select a JSON Scene file",
-                            //InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads"
-                        };
 
-                        if (openFileDialog.ShowDialog() == true)
+                        if (_ecsApi != null && connection)
                         {
-                            filePath = openFileDialog.FileName;
-                            tbxLog.AppendText("ScenePath : " + filePath);
+                            openFileDialog = new OpenFileDialog
+                            {
+                                Filter = "JSON File (*.json)|*.json",
+                                Title = "Select a JSON Scene file"
+                            };
 
-                        }
+                            if (openFileDialog.ShowDialog() == true)
+                            {
+                                filePath = openFileDialog.FileName;
+                                tbxLog.AppendText("ImportScenePath : " + filePath + "\n");
+                            }
 
-                        if (_ecsApi != null && !filePath.Equals(""))
-                        {
+                            if (filePath.Equals(""))
+                            {
+                                return;
+                            }
 
                             try
                             {
                                 // send JSON path
                                 string pathSentStatus = _ecsApi.json_import(filePath);
-                                tbxLog.AppendText("pathSentStatus : " + pathSentStatus);
+                                tbxLog.AppendText("pathSentStatus : " + pathSentStatus + "\n");
 
 
                                 _entityBuilder = new TreeBuilder(trvEntities, this);
@@ -122,12 +125,66 @@ namespace RaytracerGUI
                                 tbxLog.AppendText(ex.ToString());
                             }
                         }
+                        else
+                        {
+                            MessageBox.Show("No active connection!", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
                         break;
 
 
+
+                    //Selects the export path + file name and sends it to the ecsapi
                     case "mniExport":
-                            //todo
+
+                        if (_ecsApi != null && connection)
+                        {
+                            saveFileDialog = new SaveFileDialog
+                            {
+                                Filter = "JSON File (*.json)|*.json",
+                                Title = "Save JSON Scene file",
+                                FileName = "scene.json"
+                            };
+
+                            if (saveFileDialog.ShowDialog() == true)
+                            {
+                                filePath = saveFileDialog.FileName;
+                                tbxLog.AppendText("ExportScenePath : " + filePath + "\n");
+                            }
+
+                            if (filePath.Equals(""))
+                            {
+                                return;
+                            }
+
+                            try
+                            {
+                                // send export path + file name
+                                string pathSentStatus = _ecsApi.export_Json(filePath);
+                                tbxLog.AppendText("pathSentStatus : " + pathSentStatus + "\n");
+
+                                // checks if export was successful
+                                if (pathSentStatus.Contains("Scene exported on path:"))
+                                {
+                                    MessageBox.Show(pathSentStatus, "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+                                }
+                                else
+                                {
+                                    MessageBox.Show(pathSentStatus, "Export Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                }
+
+                            }
+                            catch (InvalidOperationException ex)
+                            {
+                                tbxLog.AppendText(ex.ToString());
+                            }
+                            
+                        }
+                        else
+                        {
+                            MessageBox.Show("No active connection!", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
                         break;
+
 
 
                     case "mniHelp":
@@ -171,6 +228,7 @@ namespace RaytracerGUI
                     case "mniAddCamera":
                         AddCameraComponent();
                         break;
+
                     case "mniAddEntity":
                         try
                         {
@@ -957,7 +1015,6 @@ namespace RaytracerGUI
 
                     currentEntityUUID = uuid;
                     deleteUUID = uuid;
-                    currentEntityEvent = e;
 
                     UpdateEntities(uuid, e);
                     UpdateEntitiesOptions(uuid, e);
