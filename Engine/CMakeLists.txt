@@ -140,7 +140,7 @@ message(STATUS "Executable will be placed at: ${CMAKE_BINARY_DIR}")
 
 add_custom_target(build_csharp_gui
     COMMAND dotnet publish -c Release -r win-x64 --self-contained true RaytracerGUI.csproj
-    WORKING_DIRECTORY C:/Users/Spyros/projects/Raytracer/GUI/RaytracerGUI
+    WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/../GUI/RaytracerGUI"
     COMMENT "Building/publishing .NET GUI"
 )
 
