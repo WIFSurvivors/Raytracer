@@ -87,7 +87,7 @@ namespace RaytracerGUI
                 switch (item)
                 {
                    
-                    //Imorts the JSON Scene file and sends it to the ecsapi
+                    //Imports the JSON Scene file and sends it to the ecsapi
                     case "mniImport":
                         tbxLog.AppendText(item + " was clicked! \n");
 
@@ -105,7 +105,7 @@ namespace RaytracerGUI
 
                         }
 
-                        if (_ecsApi != null)
+                        if (_ecsApi != null && !filePath.Equals(""))
                         {
 
                             try
@@ -127,10 +127,15 @@ namespace RaytracerGUI
                         }
                         break;
 
+                    case "mniExport":
+                            //todo
+                        break;
+
                     case "mniHelp":
                         tbxLog.AppendText(item + " was clicked! \n");
                         MessageBox.Show("ctrl+z = undo last undoable command \n" +
-                            "del = remove selected entity/component ");
+                            "del = remove selected entity/component \n \n" +
+                            "click on \"obj_path\" or \"mat_path\" to select an new .obj/.mtl-file");
                         break;
 
                     case "mniExit":
