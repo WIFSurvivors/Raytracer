@@ -220,7 +220,6 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   // static bool loadData = false;
   std::vector<std::shared_ptr<MeshGallary>> temp_holder;
   for (auto &&c : _components) {
-      std::cout << _components.size() << std::endl;
     if (c.second->get_entity()->has_Updated() || _loadData) {
       glm::vec3 scaleVector = c.second->get_entity()->get_local_scale();
       glm::vec3 translationVector =
@@ -262,7 +261,6 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
 
   if (_loadData) {
 
-      LOG("IM UPDATING AAAAAAAAAAAAAAAAAAAAAAAAA");
     BVH_Tree = std::make_unique<TreeBuilder>();
     gallary.clear();
     for (auto &object : temp_holder) {
@@ -512,15 +510,8 @@ void RenderSystem::update_galary(std::shared_ptr<MeshGallary> mesh_object) {
 }
 
 bool RenderSystem::remove(uuid id) {
-    LOG("IM WANT TO UPDATE AAAAAAAAAAAAAAAAAAAAAAAAA");
     _loadData = true;
-    bool temp = System::remove(id);
-    if(temp) {
-        LOG("UGABUNGAAAAAAAAAAA");
-    } else {
-        LOG("SGAHSGHAGSHGAHSGAHGSH");
-    }
-    return temp;
+    return System::remove(id);
 }
 
 } // namespace RT
