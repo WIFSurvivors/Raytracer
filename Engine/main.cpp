@@ -23,12 +23,11 @@ int main() {
 #endif
   try {
     RT::Engine engine{};
-    // engine.load_test_scene();
+    engine.load_test_scene();
     // engine.load_sample_scene();
-    engine.read_scene_from_json("./json/JsonParser_DummyFile.json");
-	engine.save_current_scene_as_json("./json/JsonParser_DummyFile_copy.json");
+    // engine.read_scene_from_json("./json/JsonParser_DummyFile.json");
+	// engine.save_current_scene_as_json("./json/JsonParser_DummyFile_copy.json");
     // engine.read_scene_from_json("./json/JsonParser_DummyFile_copy.json");
-	// engine.load_test_scene();
     engine.startLoop();
   } catch (std::exception &e) {
     LOG_ERROR("App crashed!!!!");
