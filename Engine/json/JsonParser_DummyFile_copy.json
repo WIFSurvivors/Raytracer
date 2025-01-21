@@ -3,6 +3,16 @@
     {
       "Translation": {
         "position": {
+          "x": -5.0,
+          "y": 0.0,
+          "z": 5.0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 90.0,
+          "z": 25.0
+        },
+        "scale": {
           "x": 2.5,
           "y": 1.0,
           "z": 1.0
@@ -10,16 +20,26 @@
       },
       "components": {
         "RenderComponent": {
-          "matUUID": "5d2dd8a0-06a9-4e0b-a271-9aeb2d12abbc",
-          "objUUID": "3a1f774b-98d2-408f-bfaa-72a91e2ef346"
+          "matUUID": "3fc0e960-ec56-4aa9-a97c-25e90ff5c737",
+          "objUUID": "25838b95-efac-4a60-a2bc-095ea8876af6"
         }
       },
       "name": "cube",
-      "uuid": "920c08c2-0973-48f6-9c45-6457952f7311"
+      "uuid": "64601c4f-bfd7-49a2-aaab-0cd4c118aec1"
     },
     {
       "Translation": {
         "position": {
+          "x": 5.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
           "x": 1.0,
           "y": 1.0,
           "z": 1.0
@@ -27,16 +47,26 @@
       },
       "components": {
         "RenderComponent": {
-          "matUUID": "5d2dd8a0-06a9-4e0b-a271-9aeb2d12abbc",
-          "objUUID": "3a1f774b-98d2-408f-bfaa-72a91e2ef346"
+          "matUUID": "3fc0e960-ec56-4aa9-a97c-25e90ff5c737",
+          "objUUID": "4d5a3dd5-5b97-40d5-9589-f5f9db068cb0"
         }
       },
       "name": "sphere",
-      "uuid": "16d1cf8f-4179-4d25-a300-d8fdbecbdcc5"
+      "uuid": "1c39c95f-e795-4274-9e63-1b5a950ae264"
     },
     {
       "Translation": {
         "position": {
+          "x": 0.0,
+          "y": 50.0,
+          "z": 0.0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
           "x": 1.0,
           "y": 1.0,
           "z": 1.0
@@ -52,11 +82,21 @@
         }
       },
       "name": "sun",
-      "uuid": "02bde71d-1ad0-485e-9851-b6096b67e572"
+      "uuid": "d4ef836c-325d-4ba9-9c68-56eba49c6aa3"
     },
     {
       "Translation": {
         "position": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 15.0
+        },
+        "rotation": {
+          "x": 0.0,
+          "y": 0.0,
+          "z": 0.0
+        },
+        "scale": {
           "x": 1.0,
           "y": 1.0,
           "z": 1.0
@@ -70,7 +110,7 @@
         }
       },
       "name": "main_camera",
-      "uuid": "72032aa8-ad3f-423b-9d45-c6320f874588"
+      "uuid": "936e5ede-7c3e-4424-b523-585dcfe695fa"
     }
   ],
   "metadata": {
@@ -82,16 +122,16 @@
       "uuid": "25838b95-efac-4a60-a2bc-095ea8876af6"
     },
     {
-      "path": "./assets/default.obj",
-      "uuid": "3a1f774b-98d2-408f-bfaa-72a91e2ef346"
+      "path": "./assets/default.mtl",
+      "uuid": "3fc0e960-ec56-4aa9-a97c-25e90ff5c737"
     },
     {
       "path": "C:\\git\\WIFSurvivors-Raytracer\\Engine\\assets\\sphere.obj",
       "uuid": "4d5a3dd5-5b97-40d5-9589-f5f9db068cb0"
     },
     {
-      "path": "./assets/default.mtl",
-      "uuid": "5d2dd8a0-06a9-4e0b-a271-9aeb2d12abbc"
+      "path": "./assets/default.obj",
+      "uuid": "9c67540e-7c74-4ff8-a587-ba41486a6c3f"
     }
   ]
 }
