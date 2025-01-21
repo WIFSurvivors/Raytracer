@@ -102,7 +102,6 @@ bool Scene::remove(uuid id) {
   return remove(e.value());
 }
 
-void Scene::print() { _root->print(); }
 void Scene::print_system_data() {
   _uuid_manager->print();
   _asset_manager.print();
@@ -112,7 +111,7 @@ void Scene::print_system_data() {
   _light_system.print();
 }
 
-void Scene::generate_test() {
+void Scene::generate_test_scene() {
   LOG(std::string(30, '*'));
   LOG(std::string(30, '*'));
   LOG(std::string(30, '*'));
@@ -120,8 +119,6 @@ void Scene::generate_test() {
     LOG_TEST("===== START TEST SEQUENCE ====");
     {
       LOG_TEST("==[START] INIT");
-      //   assert(_uuid_manager->get_storage().size() == (1 + 1) &&
-      //          "UUID Manager doesn't have 4 uuids");
       assert(_entity_storage.get_storage().size() == 1 &&
              "Entity Storage doesn't have 1 entity");
       assert(_root->get_child_entities().size() == 0 && "Root has >0 entities");
@@ -309,111 +306,8 @@ void Scene::generate_test() {
   LOG(std::string(30, '*'));
 }
 
-void Scene::generate_sample_content() {
-  print_system_data();
-
-  LOG_NEW_LINE();
-  LOG(std::string(100, '*'));
-  LOG_NEW_LINE();
-
-  auto a = create_asset("test");
-
-  LOG(std::format("1) Asset {} {}", a.get_path().string(),
-                  boost::uuids::to_string(a.get_uuid())));
-  auto b = create_asset("test");
-  LOG(std::format("2) Asset {} {}", b.get_path().string(),
-                  boost::uuids::to_string(b.get_uuid())));
-  AssetManager::Asset c{&_asset_manager, "test"};
-  LOG(std::format("3) Asset {} {}", c.get_path().string(),
-                  boost::uuids::to_string(c.get_uuid())));
-  AssetManager::Asset d{&_asset_manager, "test2"};
-  LOG(std::format("4) Asset {} {}", d.get_path().string(),
-                  boost::uuids::to_string(d.get_uuid())));
-
-  LOG_NEW_LINE();
-  LOG(std::string(100, '*'));
-  LOG_NEW_LINE();
-
-  // =================== ENTITIES =====================
-  auto e1 = create_entity("camera");
-  e1->set_local_position(glm::vec3{0.f, +8.f, 15.f});
-  auto e2 = create_entity("light sources");
-  auto e3 = create_entity("light red", e2);
-  e3->set_local_position(glm::vec3{0.0, 3.0, -3.0});
-  auto e4 = create_entity("light green", e2);
-  e4->set_local_position(glm::vec3{0, -5, 5});
-  auto e5 = create_entity("light blue", e2);
-  e5->set_local_position(glm::vec3{0, 0, 5});
-
-  // =================== CAMERA =====================
-  auto c1 = _camera_system.create_component(e1.get(), 60.f);
-  c1->get_entity()->set_local_rotation(0.0f, 7.0f, 0.0f);
-  // =================== LIGHT =====================
-  auto c2 = _light_system.create_component(e3.get());
-  /*c2->set_color(0.8576f, 0.1f, 0.1f);*/
-  c2->set_color(1.0f, 1.0f, 1.0f);
-  c2->set_intensity(0.6f);
-
-  auto c3 = _light_system.create_component(e4.get());
-  /*c3->set_color(0.1f, 0.96752f, 0.1f);*/
-  c3->set_color(1.0f, 1.0f, 1.0f);
-  c3->set_intensity(0.f);
-
-  auto c4 = _light_system.create_component(e5.get());
-  /*c4->set_color(0.1f, 0.1f, 1.f);*/
-  c4->set_color(1.0f, 1.0f, 1.0f);
-  c4->set_intensity(0.f);
-
-  // =================== RENDER =====================
-  std::vector<glm::vec3> v1 = {
-      glm::vec3{-1.0f, -1.0f, 0.0f}, glm::vec3{1.0f, -1.0f, 0.0f},
-      glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, -1.0f, 0.0f},
-      glm::vec3{1.0f, 1.0f, 0.0f},   glm::vec3{-1.0f, 1.0f, 0.0f}};
-  std::vector<glm::vec3> v2 = {glm::vec3{-1.0f, -1.0f, 0.0f},
-                               glm::vec3{1.0f, -1.0f, 0.0f},
-                               glm::vec3{1.0f, 1.0f, 0.0f}};
-  std::vector<glm::vec3> v3 = {glm::vec3{-1.0f, -1.0f, 0.0f},
-                               glm::vec3{1.0f, 1.0f, 0.0f},
-                               glm::vec3{-1.0f, 1.0f, 0.0f}};
-  std::vector<glm::vec2> u1 = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 0.0f},
-                               glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 0.0f},
-                               glm::vec2{1.0f, 1.0f}, glm::vec2{0.0f, 1.0f}};
-  std::vector<glm::vec2> u2 = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 0.0f},
-                               glm::vec2{1.0f, 1.0f}};
-  std::vector<glm::vec2> u3 = {glm::vec2{0.0f, 0.0f}, glm::vec2{1.0f, 1.0f},
-                               glm::vec2{0.0f, 1.0f}};
-
-  auto root_ptr = get_root().lock();
-  auto asset1 = create_asset("./assets/cornell-box.obj");
-  auto ComponentEntity1 = create_entity("ComponentEntity1", root_ptr);
-  _render_system.create_component(ComponentEntity1.get(), asset1);
-  //   _render_system.create_component(root_ptr.get(), v3, u3);
-
-  LOG_NEW_LINE();
-  LOG(std::string(100, '*'));
-  LOG_NEW_LINE();
-
-  // =================== SAMPLE MANIPULATION =====================
-
-  auto sys = _uuid_manager->get_storage(c1->get_uuid());
-  auto csys = static_cast<CameraSystem *>(sys);
-  auto occ = csys->get_component(c1->get_uuid());
-  if (occ.has_value()) {
-    auto cc = occ.value();
-    cc->get_fov(); // ... do something with component ...
-    LOG("YAY");
-  }
-
-  LOG(boost::json::serialize(c1->to_json()));
-
-  LOG_NEW_LINE();
-  LOG(std::string(100, '*'));
-  LOG_NEW_LINE();
-
-  print_system_data();
-}
-
 // currently only tell the render system to update itself
+// other system have no use for per-frame updates
 void Scene::update(const FrameSnapshot &snapshot) {
   _render_system.update(snapshot);
 }

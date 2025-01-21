@@ -34,46 +34,52 @@ void Engine::stop_server() {
   }
 }
 
+void Engine::load_test_scene() {
+  _scene = std::make_unique<Scene>(this, "hewwo :3");
+  _scene->generate_test_scene();
+  auto new_s = std::make_unique<Scene>(this);
+  change_scene(std::move(new_s));
+  _scene->generate_test_scene();
+}
+
 bool Engine::read_scene_from_json(std::filesystem::path p) {
-  BigJson j;
-  auto s = j.read_from_json(p, this);
+  auto s = BigJson{}.read_from_json(p, this);
   if (s.has_value()) {
     change_scene(std::move(s.value()));
   } else {
     LOG_ERROR("Scene could not be loaded");
-    // throw std::runtime_error("Scene could not be loaded");
     return false;
   }
   return true;
 }
 
 bool Engine::save_current_scene_as_json(std::filesystem::path p) {
-  BigJson j;
-  if(!j.write_to_json(p, get_scene())){
+  if (!BigJson{}.write_to_json(p, get_scene())) {
     LOG_ERROR("Scene could not be saved");
-	return false;
+    return false;
   }
   return true;
 }
 
 void Engine::change_scene(std::unique_ptr<Scene> s) {
+  // ensure active scene is destroyed first
   _scene = nullptr;
+
   _scene = std::move(s);
 }
 
 void Engine::startLoop() {
   LOG("Engine::startLoop()");
+
+  // Time data to keep track of
   float total_time = 0.f, accumulated_time = 0.f;
   float current_time = get_total_time();
-
   // frame represent updates to the scene itself, which occur in the inner loop
   int frames = 0;
-
   // sub-frames represent each iteration of the outer loop
   int sub_frames = 0;
 
   float frame_time, new_time;
-  bool _temp = true;
   while (!_wm.should_close()) {
     // update the difference of the previous and the new frame
     new_time = get_total_time();
@@ -86,15 +92,19 @@ void Engine::startLoop() {
     _tcp_server->execute_command();
     _wm.update_input();
 
-    // process ECS once per tick (FRAME_RATE_HZ)
+    // process ECS once per tick (_s_per_update = 1/FRAME_RATE_HZ)
+    // note: accumulated_time is increasing by a large magnitude faster!
     while (accumulated_time >= _s_per_update) {
       frames++;
       total_time += _s_per_update;
       accumulated_time -= _s_per_update;
 
-      // create snapshot here
+      // create snapshot here -> this can be used for extensive per frame
+      // debugging!
       FrameSnapshot s(total_time, _s_per_update, accumulated_time, frames,
                       sub_frames);
+
+      // scene should never be a nullptr!
       if (_scene != nullptr) {
         _scene->update(s);
         _wm.swap_buffers();
@@ -102,20 +112,7 @@ void Engine::startLoop() {
       sub_frames = 0;
 
       Log::get_instance().clear_buffer();
-      // trigger this either on 1sec difference OR 10 log entries available???
     }
-
-    // emulate change scene after 60 frames
-    // if (_temp && frames > 60) { // 2 seconds
-    //   LOG("Engine::startLoop() THRESHHOLD GOT");
-    //   _temp = false;
-    //   _scene->print_system_data();
-    //   _scene = nullptr;
-    //   auto new_s = std::make_unique<Scene>(this, "test :3");
-    //   change_scene(std::move(new_s));
-    //   _scene->generate_test();
-    //   _scene->print_system_data();
-    // }
   }
 }
 } // namespace RT

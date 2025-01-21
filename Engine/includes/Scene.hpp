@@ -25,6 +25,8 @@ struct Scene {
 
   /**
    * Construct a default scene and the required system, managers and so on.
+   * Scene data can be filled from anywhere, but usually from BigJSON or TCPServer.
+   * Root entity is the only thing, that exist for every scene.
    */
   explicit Scene(Engine *e);
   Scene(Engine *e, std::string title);
@@ -44,7 +46,6 @@ struct Scene {
   inline std::optional<Entity *> get_entity(uuid id) {
     return _entity_storage.get(id);
   }
-
   std::optional<Entity *> operator[](uuid id) { return get_entity(id); }
 
   std::shared_ptr<Entity> create_entity(const std::string &name);
@@ -57,12 +58,8 @@ struct Scene {
   bool remove(Entity *e);
   bool remove(uuid id);
 
-  void print();
-  void print_system_data();
-
-  void generate_sample_content();
-  void generate_test();
-
+  // Ddvance the scene by updating every system.
+  // This is currently only the render system.
   void update(const FrameSnapshot &snapshot);
 
   inline AssetManager::Asset create_asset(std::filesystem::path p) {
@@ -72,6 +69,9 @@ struct Scene {
   inline AssetManager::Asset create_asset(uuid id, std::filesystem::path p) {
     return AssetManager::Asset(get_asset_manager(), id, p);
   }
+  
+  void generate_test_scene();
+  void print_system_data();
 
 private:
   std::shared_ptr<Entity> create_root(const std::string &name);

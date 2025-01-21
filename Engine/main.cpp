@@ -22,12 +22,9 @@ int main() {
   LOG("=== APP STARTED | UI=OFF ===")
 #endif
   try {
+	// Create Engine, load default scene and then start main loop
     RT::Engine engine{};
-    engine.load_test_scene();
-    // engine.load_sample_scene();
-    // engine.read_scene_from_json("./json/JsonParser_DummyFile.json");
-	// engine.save_current_scene_as_json("./json/JsonParser_DummyFile_copy.json");
-    // engine.read_scene_from_json("./json/JsonParser_DummyFile_copy.json");
+	engine.read_scene_from_json("./json/JsonDefault.json");
     engine.startLoop();
   } catch (std::exception &e) {
     LOG_ERROR("App crashed!!!!");

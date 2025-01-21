@@ -28,17 +28,7 @@ public:
   Engine();
   virtual ~Engine();
 
-  void load_sample_scene() {
-    _scene = std::make_unique<Scene>(this);
-    _scene->generate_sample_content();
-  }
-  void load_test_scene() {
-    _scene = std::make_unique<Scene>(this, "hewwo :3");
-    _scene->generate_test();
-    auto new_s = std::make_unique<Scene>(this);
-    change_scene(std::move(new_s));
-    _scene->generate_test();
-  }
+  void load_test_scene();
   bool save_current_scene_as_json(std::filesystem::path p);
   bool read_scene_from_json(std::filesystem::path p);
   void startLoop();
