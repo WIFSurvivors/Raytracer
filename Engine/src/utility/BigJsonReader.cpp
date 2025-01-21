@@ -385,12 +385,12 @@ BigJson::read_from_json(const std::filesystem::path filePath, Engine *engine) {
               new_entity.get());
 
           if (json_rc.get_obj_uuid().has_value()) {
-            // LOG_WARN(std::format(
-            //     ".obj UUID {} found but not applied to render component",
-            //     json_rc.get_obj_uuid().value()))
             rc->set_obj_asset(util::to_uuid(json_rc.get_obj_uuid().value()));
+          }
+		  if (json_rc.get_mat_uuid().has_value()) {
             rc->set_mtl_asset(util::to_uuid(json_rc.get_mat_uuid().value()));
           }
+
         }
       }
     }
