@@ -258,7 +258,7 @@ BigJson::read_from_json(const std::filesystem::path filePath, Engine *engine) {
 
       LOG(std::format("PARSING TRANSLATION FOR {}", name));
       std::shared_ptr<Entity> new_entity = nullptr;
-      if (has_uuid) {
+      if (!has_uuid) {
         new_entity = new_scene->create_entity(name);
       } else {
         auto u = util::to_uuid(e.get_uuid().value());
@@ -388,7 +388,8 @@ BigJson::read_from_json(const std::filesystem::path filePath, Engine *engine) {
             // LOG_WARN(std::format(
             //     ".obj UUID {} found but not applied to render component",
             //     json_rc.get_obj_uuid().value()))
-            rc->set_obj_asset(util::to_uuid(json_rc.get_mat_uuid().value()));
+            rc->set_obj_asset(util::to_uuid(json_rc.get_obj_uuid().value()));
+            rc->set_mtl_asset(util::to_uuid(json_rc.get_mat_uuid().value()));
           }
         }
       }
