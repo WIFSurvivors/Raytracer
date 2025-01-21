@@ -29,7 +29,7 @@ void CommandManager::execute_command() {
   auto msg = _executer.execute(command.get(), _engine);
   // Check if the command was successfull
   if(!command->is_successfull()) {
-    _tcp_server->send_message("Command failed: " + msg);
+    _tcp_server->send_message("- ERROR - " + msg);
     return;
   }
   // If the command is a remove command or the scene is changed, clear the undo stack for consistency

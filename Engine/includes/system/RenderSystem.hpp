@@ -135,7 +135,7 @@ private:
   std::unique_ptr<Shader> _compute;
   std::vector<std::shared_ptr<MeshGallary>> gallary;
 
-  bool _loadData;
 #endif
+bool _loadData;
 };
 } // namespace RT
