@@ -34,24 +34,26 @@ void Engine::stop_server() {
   }
 }
 
-void Engine::read_scene_from_json(std::filesystem::path p) {
-  //,std::unique_ptr<Scene> s
-  BigJsonReader j;
+bool Engine::read_scene_from_json(std::filesystem::path p) {
+  BigJson j;
   auto s = j.read_from_json(p, this);
   if (s.has_value()) {
     change_scene(std::move(s.value()));
   } else {
     LOG_ERROR("Scene could not be loaded");
-    throw std::runtime_error("Scene could not be loaded");
+    // throw std::runtime_error("Scene could not be loaded");
+    return false;
   }
+  return true;
 }
 
-void Engine::save_scene_as_json(std::filesystem::path p) {
-  BigJsonReader j;
-  // j.read();
-
-  // auto wawa = j.to_json(_scene);
-  // std::cout << "RETURN:\n" << wawa << std::endl;
+bool Engine::save_current_scene_as_json(std::filesystem::path p) {
+  BigJson j;
+  if(!j.write_to_json(p, get_scene())){
+    LOG_ERROR("Scene could not be saved");
+	return false;
+  }
+  return true;
 }
 
 void Engine::change_scene(std::unique_ptr<Scene> s) {
@@ -104,16 +106,16 @@ void Engine::startLoop() {
     }
 
     // emulate change scene after 60 frames
-   //if (_temp && frames > 60) { // 2 seconds
-   //  LOG("Engine::startLoop() THRESHHOLD GOT");
-   //  _temp = false;
-   //  _scene->print_system_data();
-   //  _scene = nullptr;
-   //  auto new_s = std::make_unique<Scene>(this, "test :3");
-   //  change_scene(std::move(new_s));
-   //  _scene->generate_test();
-   //  _scene->print_system_data();
-   //}
+    // if (_temp && frames > 60) { // 2 seconds
+    //   LOG("Engine::startLoop() THRESHHOLD GOT");
+    //   _temp = false;
+    //   _scene->print_system_data();
+    //   _scene = nullptr;
+    //   auto new_s = std::make_unique<Scene>(this, "test :3");
+    //   change_scene(std::move(new_s));
+    //   _scene->generate_test();
+    //   _scene->print_system_data();
+    // }
   }
 }
 } // namespace RT

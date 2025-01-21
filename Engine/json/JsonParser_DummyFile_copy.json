@@ -1,0 +1,97 @@
+{
+  "entity": [
+    {
+      "Translation": {
+        "position": {
+          "x": 2.5,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": {
+        "RenderComponent": {
+          "matUUID": "5d2dd8a0-06a9-4e0b-a271-9aeb2d12abbc",
+          "objUUID": "3a1f774b-98d2-408f-bfaa-72a91e2ef346"
+        }
+      },
+      "name": "cube",
+      "uuid": "920c08c2-0973-48f6-9c45-6457952f7311"
+    },
+    {
+      "Translation": {
+        "position": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": {
+        "RenderComponent": {
+          "matUUID": "5d2dd8a0-06a9-4e0b-a271-9aeb2d12abbc",
+          "objUUID": "3a1f774b-98d2-408f-bfaa-72a91e2ef346"
+        }
+      },
+      "name": "sphere",
+      "uuid": "16d1cf8f-4179-4d25-a300-d8fdbecbdcc5"
+    },
+    {
+      "Translation": {
+        "position": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": {
+        "LightComponent": {
+          "color": {
+            "b": 0.0,
+            "g": 255.0,
+            "r": 255.0
+          }
+        }
+      },
+      "name": "sun",
+      "uuid": "02bde71d-1ad0-485e-9851-b6096b67e572"
+    },
+    {
+      "Translation": {
+        "position": {
+          "x": 1.0,
+          "y": 1.0,
+          "z": 1.0
+        }
+      },
+      "components": {
+        "CameraComponent": {
+          "farClip": 1000.0,
+          "fov": 60.0,
+          "nearClip": 0.10000000149011612
+        }
+      },
+      "name": "main_camera",
+      "uuid": "72032aa8-ad3f-423b-9d45-c6320f874588"
+    }
+  ],
+  "metadata": {
+    "maxDepth": 5
+  },
+  "resources": [
+    {
+      "path": "C:\\git\\WIFSurvivors-Raytracer\\Engine\\assets\\cube.obj",
+      "uuid": "25838b95-efac-4a60-a2bc-095ea8876af6"
+    },
+    {
+      "path": "./assets/default.obj",
+      "uuid": "3a1f774b-98d2-408f-bfaa-72a91e2ef346"
+    },
+    {
+      "path": "C:\\git\\WIFSurvivors-Raytracer\\Engine\\assets\\sphere.obj",
+      "uuid": "4d5a3dd5-5b97-40d5-9589-f5f9db068cb0"
+    },
+    {
+      "path": "./assets/default.mtl",
+      "uuid": "5d2dd8a0-06a9-4e0b-a271-9aeb2d12abbc"
+    }
+  ]
+}

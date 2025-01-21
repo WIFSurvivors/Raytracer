@@ -108,24 +108,24 @@ public:
   virtual ~CameraComponent() = default;
 
 private:
-  std::optional<int64_t> fov;
-  std::optional<double> aspect_ratio;
-  std::optional<double> near_clip;
-  std::optional<int64_t> far_clip;
+  std::optional<float> fov;
+  std::optional<float> aspect_ratio;
+  std::optional<float> near_clip;
+  std::optional<float> far_clip;
 
 public:
-  std::optional<int64_t> get_fov() const { return fov; }
-  void set_fov(std::optional<int64_t> value) { this->fov = value; }
+  std::optional<float> get_fov() const { return fov; }
+  void set_fov(std::optional<float> value) { this->fov = value; }
 
-  std::optional<double> get_aspect_ratio() const { return aspect_ratio; }
-  void set_aspect_ratio(std::optional<double> value) {
+  std::optional<float> get_aspect_ratio() const { return aspect_ratio; }
+  void set_aspect_ratio(std::optional<float> value) {
     this->aspect_ratio = value;
   }
 
   std::optional<double> get_near_clip() const { return near_clip; }
   void set_near_clip(std::optional<double> value) { this->near_clip = value; }
 
-  std::optional<int64_t> get_far_clip() const { return far_clip; }
+  std::optional<float> get_far_clip() const { return far_clip; }
   void set_far_clip(std::optional<int64_t> value) { this->far_clip = value; }
 };
 
@@ -135,19 +135,19 @@ public:
   virtual ~Color() = default;
 
 private:
-  std::optional<int64_t> r;
-  std::optional<int64_t> g;
-  std::optional<int64_t> b;
+  std::optional<float> r;
+  std::optional<float> g;
+  std::optional<float> b;
 
 public:
-  std::optional<int64_t> get_r() const { return r; }
-  void set_r(std::optional<int64_t> value) { this->r = value; }
+  std::optional<float> get_r() const { return r; }
+  void set_r(std::optional<float> value) { this->r = value; }
 
-  std::optional<int64_t> get_g() const { return g; }
-  void set_g(std::optional<int64_t> value) { this->g = value; }
+  std::optional<float> get_g() const { return g; }
+  void set_g(std::optional<float> value) { this->g = value; }
 
-  std::optional<int64_t> get_b() const { return b; }
-  void set_b(std::optional<int64_t> value) { this->b = value; }
+  std::optional<float> get_b() const { return b; }
+  void set_b(std::optional<float> value) { this->b = value; }
 };
 
 class LightComponent {
@@ -156,12 +156,12 @@ public:
   virtual ~LightComponent() = default;
 
 private:
-  std::optional<double> intensity;
+  std::optional<float> intensity;
   std::optional<Color> color;
 
 public:
-  std::optional<double> get_intensity() const { return intensity; }
-  void set_intensity(std::optional<double> value) { this->intensity = value; }
+  std::optional<float> get_intensity() const { return intensity; }
+  void set_intensity(std::optional<float> value) { this->intensity = value; }
 
   std::optional<Color> get_color() const { return color; }
   void set_color(std::optional<Color> value) { this->color = value; }
@@ -227,19 +227,19 @@ public:
   virtual ~Position() = default;
 
 private:
-  std::optional<double> x;
-  std::optional<double> y;
-  std::optional<double> z;
+  std::optional<float> x;
+  std::optional<float> y;
+  std::optional<float> z;
 
 public:
-  std::optional<double> get_x() const { return x; }
-  void set_x(std::optional<double> value) { this->x = value; }
+  std::optional<float> get_x() const { return x; }
+  void set_x(std::optional<float> value) { this->x = value; }
 
-  std::optional<double> get_y() const { return y; }
-  void set_y(std::optional<double> value) { this->y = value; }
+  std::optional<float> get_y() const { return y; }
+  void set_y(std::optional<float> value) { this->y = value; }
 
-  std::optional<double> get_z() const { return z; }
-  void set_z(std::optional<double> value) { this->z = value; }
+  std::optional<float> get_z() const { return z; }
+  void set_z(std::optional<float> value) { this->z = value; }
 };
 
 class Translation {
@@ -298,17 +298,17 @@ public:
   virtual ~Metadata() = default;
 
 private:
-  std::optional<std::vector<double>> background_color;
+  std::optional<std::vector<float>> background_color;
   std::optional<bool> global_illumination;
   std::optional<std::string> render_mode;
   std::optional<int64_t> max_depth;
   std::optional<int64_t> samples_per_pixel;
 
 public:
-  std::optional<std::vector<double>> get_background_color() const {
+  std::optional<std::vector<float>> get_background_color() const {
     return background_color;
   }
-  void set_background_color(std::optional<std::vector<double>> value) {
+  void set_background_color(std::optional<std::vector<float>> value) {
     this->background_color = value;
   }
 
@@ -420,10 +420,10 @@ void from_json(const json &j, QuicktypeJson &x);
 void to_json(json &j, const QuicktypeJson &x);
 
 inline void from_json(const json &j, CameraComponent &x) {
-  x.set_fov(get_stack_optional<int64_t>(j, "fov"));
-  x.set_aspect_ratio(get_stack_optional<double>(j, "aspectRatio"));
-  x.set_near_clip(get_stack_optional<double>(j, "nearClip"));
-  x.set_far_clip(get_stack_optional<int64_t>(j, "farClip"));
+  x.set_fov(get_stack_optional<float>(j, "fov"));
+  x.set_aspect_ratio(get_stack_optional<float>(j, "aspectRatio"));
+  x.set_near_clip(get_stack_optional<float>(j, "nearClip"));
+  x.set_far_clip(get_stack_optional<float>(j, "farClip"));
 }
 
 inline void to_json(json &j, const CameraComponent &x) {
@@ -443,9 +443,9 @@ inline void to_json(json &j, const CameraComponent &x) {
 }
 
 inline void from_json(const json &j, Color &x) {
-  x.set_r(get_stack_optional<int64_t>(j, "r"));
-  x.set_g(get_stack_optional<int64_t>(j, "g"));
-  x.set_b(get_stack_optional<int64_t>(j, "b"));
+  x.set_r(get_stack_optional<float>(j, "r"));
+  x.set_g(get_stack_optional<float>(j, "g"));
+  x.set_b(get_stack_optional<float>(j, "b"));
 }
 
 inline void to_json(json &j, const Color &x) {
@@ -462,7 +462,7 @@ inline void to_json(json &j, const Color &x) {
 }
 
 inline void from_json(const json &j, LightComponent &x) {
-  x.set_intensity(get_stack_optional<double>(j, "intensity"));
+  x.set_intensity(get_stack_optional<float>(j, "intensity"));
   x.set_color(get_stack_optional<Color>(j, "color"));
 }
 
@@ -514,9 +514,9 @@ inline void to_json(json &j, const Components &x) {
 }
 
 inline void from_json(const json &j, Position &x) {
-  x.set_x(get_stack_optional<double>(j, "x"));
-  x.set_y(get_stack_optional<int64_t>(j, "y"));
-  x.set_z(get_stack_optional<int64_t>(j, "z"));
+  x.set_x(get_stack_optional<float>(j, "x"));
+  x.set_y(get_stack_optional<float>(j, "y"));
+  x.set_z(get_stack_optional<float>(j, "z"));
 }
 
 inline void to_json(json &j, const Position &x) {
@@ -576,7 +576,7 @@ inline void to_json(json &j, const Entity &x) {
 
 inline void from_json(const json &j, Metadata &x) {
   x.set_background_color(
-      get_stack_optional<std::vector<double>>(j, "backgroundColor"));
+      get_stack_optional<std::vector<float>>(j, "backgroundColor"));
   x.set_global_illumination(get_stack_optional<bool>(j, "globalIllumination"));
   x.set_render_mode(get_stack_optional<std::string>(j, "renderMode"));
   x.set_max_depth(get_stack_optional<int64_t>(j, "maxDepth"));
@@ -622,14 +622,12 @@ inline void to_json(json &j, const Resource &x) {
 }
 
 inline void from_json(const json &j, QuicktypeJson &x) {
-  std::cout << "niap!" << std::endl;
   x.set_entity(get_stack_optional<std::vector<Entity>>(j, "entity"));
   x.set_resources(get_stack_optional<std::vector<Resource>>(j, "resources"));
   x.set_metadata(get_stack_optional<Metadata>(j, "metadata"));
 }
 
 inline void to_json(json &j, const QuicktypeJson &x) {
-  std::cout << "pain!" << std::endl;
   j = json::object();
   if (x.get_entity()) {
     j["entity"] = x.get_entity();

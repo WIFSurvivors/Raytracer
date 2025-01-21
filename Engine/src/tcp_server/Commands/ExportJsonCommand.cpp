@@ -8,7 +8,7 @@ using RT::Engine;
 
 std::string ExportJsonCommand::execute(Engine *engine) {
   try {
-    engine->save_scene_as_json(_json_path);
+    engine->save_current_scene_as_json(_json_path);
   } catch (const std::exception &e) {
     std::cerr << e.what() << '\n';
     return e.what();

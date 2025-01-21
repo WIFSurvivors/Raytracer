@@ -2,7 +2,7 @@
     "entity": [
         {
             "name": "cube",
-            "uuid": "64601c4f-bfd7-49a2-aaab-0cd4c118aec1",
+            "uuid": "25834b95-efac-4a60-a2bc-095ea8876af6",
             "Translation": {
                 "position": {
                     "x": -5.0,
@@ -22,41 +22,30 @@
             },
             "components": {
                 "RenderComponent": {
-                    "objUUID": "25838b95-efac-4a60-a2bc-095ea8876af6",
-                    "matUUID": "cbcf3341-d2a2-4ff3-8a7c-40cf0b135bdb"
-                }
-            }
-        },
-        {
-            "name": "sphere",
-            "uuid": "1c39c95f-e795-4274-9e63-1b5a950ae264",
-            "Translation": {
-                "position": {
-                    "x": 5.0
-                }
-            },
-            "components": {
-                "RenderComponent": {
-                    "objUUID": "4d5a3dd5-5b97-40d5-9589-f5f9db068cb0",
-                    "matUUID": "cbcf3341-d2a2-4ff3-8a7c-40cf0b135bdb"
+                    "objUUID": "25838b95-efac-4a60-a2bc-095ea8876af6"
                 }
             }
         },
         {
             "name": "sun",
-            "uuid": "d4ef836c-325d-4ba9-9c68-56eba49c6aa3",
+            "uuid": "1c39c95f-e795-4274-9e63-1b5a950ae264",
             "Translation": {
                 "position": {
-                    "y": 50.0
+                    "x": 200,
+                    "y": 500,
+                    "z": -400
                 }
             },
             "components": {
+                "RenderComponent": {
+                    "objUUID": "4d5a3dd5-5b97-40d5-9589-f5f9db068cb0"
+                }, 
                 "LightComponent": {
-                    "intensity": 25.15,
+                    "intensity": 25000000.5,
                     "color": {
-                        "r": 255.0,
-                        "g": 255.0,
-                        "b": 0.0
+                        "r": 0.75,
+                        "g": 0.8,
+                        "b": 0.45
                     }
                 }
             }
@@ -69,17 +58,11 @@
                     "x": 0.0,
                     "y": 0.0,
                     "z": 15.0
-                },
-                "rotation": {
-                    "x": 0.0,
-                    "y": 0.0,
-                    "z": 0.0
                 }
             },
             "components": {
                 "CameraComponent": {
-                    "fov": 60.0,
-                    "aspectRatio": 1.77,
+                    "fov": 120.0,
                     "nearClip": 0.1,
                     "farClip": 1000.0
                 }
@@ -89,29 +72,19 @@
     "resources": [
         {
             "uuid": "25838b95-efac-4a60-a2bc-095ea8876af6",
-            "type": "obj",
             "path": "./assets/cube.obj"
         },
         {
             "uuid": "4d5a3dd5-5b97-40d5-9589-f5f9db068cb0",
-            "type": "obj",
             "path": "./assets/sphere.obj"
-        },
-        {
-            "uuid": "cbcf3341-d2a2-4ff3-8a7c-40cf0b135bdb",
-            "type": "mat",
-            "path": "./assets/wood.obj"
         }
     ],
     "metadata": {
-        "backgroundColor": [
-            0.1,
-            0.1,
-            0.1
-        ],
-        "globalIllumination": true, 
-        "renderMode": "pathtracing",
-        "maxDepth": 5,
-        "samplesPerPixel": 100
+        "backgroundColor": {
+            "r": 0.05,
+            "g": 0.05,
+            "b": 0.15
+        },
+        "bounces": 5
     }
 }

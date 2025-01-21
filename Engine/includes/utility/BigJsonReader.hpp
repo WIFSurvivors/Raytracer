@@ -6,17 +6,19 @@
 
 namespace RT {
 struct Scene;
-class BigJsonReader {
+class BigJson {
 public:
-  BigJsonReader() = default;
-  virtual ~BigJsonReader() = default;
-
-  void write_to_json(const std::filesystem::path filePath,
-                     std::unique_ptr<Scene> s);
+  BigJson() = default;
+  virtual ~BigJson() = default;
 
   std::optional<std::unique_ptr<Scene>>
   read_from_json(const std::filesystem::path filePath, Engine *engine);
 
+  bool write_to_json(const std::filesystem::path filePath, Scene *s);
+
 private:
+  std::string readFileToString(const std::filesystem::path filePath);
+  void write_string_to_path(const std::filesystem::path filePath,
+                         const std::string &content);
 };
 } // namespace RT

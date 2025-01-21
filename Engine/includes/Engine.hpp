@@ -39,8 +39,8 @@ public:
     change_scene(std::move(new_s));
     _scene->generate_test();
   }
-  void save_scene_as_json(std::filesystem::path p);
-  void read_scene_from_json(std::filesystem::path p);
+  bool save_current_scene_as_json(std::filesystem::path p);
+  bool read_scene_from_json(std::filesystem::path p);
   void startLoop();
 
   inline std::shared_ptr<UUIDManager> get_active_uuid_manager() {
