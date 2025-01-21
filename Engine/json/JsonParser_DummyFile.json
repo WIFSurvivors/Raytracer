@@ -96,11 +96,6 @@
             "uuid": "4d5a3dd5-5b97-40d5-9589-f5f9db068cb0",
             "type": "obj",
             "path": "./assets/sphere.obj"
-        },
-        {
-            "uuid": "cbcf3341-d2a2-4ff3-8a7c-40cf0b135bdb",
-            "type": "mat",
-            "path": "./assets/wood.obj"
         }
     ],
     "metadata": {
