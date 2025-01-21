@@ -95,13 +95,13 @@ bool BigJson::write_to_json(const std::filesystem::path filePath, Scene *s) {
     std::vector<quicktype::Entity> entities;
     for (auto &ent : root->get_child_entities()) {
       quicktype::Entity qtent{};
-      {
+      { // Name + UUID
         qtent.set_name(ent->get_name());
         qtent.set_uuid(util::to_string(ent->get_uuid()));
         LOG(std::format("-> Converted Entity to \"{}\" ({})",
                         qtent.get_name().value(), qtent.get_uuid().value()));
       }
-      {
+      { // Translation
         quicktype::Translation qttrans{};
 
         quicktype::Position qtpos{};
@@ -114,17 +114,17 @@ bool BigJson::write_to_json(const std::filesystem::path filePath, Scene *s) {
         qtrot.set_x(ent->get_local_rotation().x);
         qtrot.set_y(ent->get_local_rotation().y);
         qtrot.set_z(ent->get_local_rotation().z);
-        qttrans.set_position(qtrot);
+        qttrans.set_rotation(qtrot);
 
         quicktype::Position qtsca{};
         qtsca.set_x(ent->get_local_scale().x);
         qtsca.set_y(ent->get_local_scale().y);
         qtsca.set_z(ent->get_local_scale().z);
-        qttrans.set_position(qtsca);
+        qttrans.set_scale(qtsca);
 
         qtent.set_translation(qttrans);
       }
-      {
+      { // Components
         quicktype::Components qtcomp{};
         auto um = s->get_uuid_manager();
         for (auto &comp_uuid : ent->get_components()) {
