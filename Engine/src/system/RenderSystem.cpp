@@ -282,10 +282,27 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
     _cameraPosition =
         _cs->get_main_camera()->get_entity()->get_world_position();
     //_cameraDirection = glm::vec3(0.0f, 8.0f, 4.0f);
-	_cameraDirection = _cs->get_main_camera()->get_entity()->get_local_rotation();
-    _viewMatrix =
-        glm::lookAt(_cameraPosition, _cameraDirection, glm::vec3(0, 1, 0));
 
+    glm::vec3 cameraRotation = _cs->get_main_camera()->get_entity()->get_world_rotation();
+
+           glm::mat4 rotationMatrixX =
+               glm::rotate(glm::mat4(1.0f), glm::radians(cameraRotation.x),
+                           glm::vec3(1.0f, 0.0f, 0.0f));
+           glm::mat4 rotationMatrixY =
+               glm::rotate(glm::mat4(1.0f), glm::radians(cameraRotation.y),
+                           glm::vec3(0.0f, 1.0f, 0.0f));
+           glm::mat4 rotationMatrixZ =
+               glm::rotate(glm::mat4(1.0f), glm::radians(cameraRotation.z),
+                           glm::vec3(0.0f, 0.0f, 1.0f));
+           glm::mat4 rotationMatrix =
+               rotationMatrixZ * rotationMatrixY * rotationMatrixX;
+
+
+        glm::vec4 cameraDirection = rotationMatrix * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+        _cameraDirection = glm::vec3(cameraDirection.x, cameraDirection.y, cameraDirection.z);
+
+         _viewMatrix =
+             glm::lookAt(_cameraPosition, _cameraDirection, glm::vec3(0, 1, 0));
     auto s = _wm->get_screen_size();
     _projectionMatrix = glm::perspective(
         glm::radians(_cs->get_main_camera()->get_fov()),
