@@ -12,7 +12,7 @@
 using RT::Log;
 using RT::Engine;
 
-std::string importJsonCommand::execute(Engine *engine) {
+std::string ImportJsonCommand::execute(Engine *engine) {
   try {
     std::ifstream file(_json_path);
     if (!file.is_open()) {
@@ -26,6 +26,6 @@ std::string importJsonCommand::execute(Engine *engine) {
     std::cerr << e.what() << '\n';
     return e.what();
   }
+    set_successfull(true);
   return "Scene loaded";
 }
-std::string importJsonCommand::undo() { throw NotImplementedError{}; }

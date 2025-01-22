@@ -5,6 +5,7 @@
 using RT::Engine;
 using RT::Log;
 
-std::string GetLogPath::execute(Engine *engine) { return LOG_FILE_PATH; }
+std::string GetLogPath::execute(Engine *engine) { 
+      set_successfull(true);
+    return LOG_FILE_PATH; }
 
-std::string GetLogPath::undo() { throw NotImplementedError{}; }

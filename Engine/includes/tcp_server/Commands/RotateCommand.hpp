@@ -6,12 +6,12 @@
 #define ROTATE_COMMAND "RotateCommand"
 
 
-class RotateCommand : public TcpCommand {
+class RotateCommand : public UndoableCommand {
 public:
-  RotateCommand(uuid uuid, int new_x, int new_y, int new_z)
-      : TcpCommand(uuid), _new_rotation(new_x, new_y, new_z) {}
+  RotateCommand(uuid uuid, float new_x, float new_y, float new_z)
+      : UndoableCommand(uuid), _new_rotation(new_x, new_y, new_z) {}
   std::string execute(RT::Engine *engine) override;
-  std::string undo() override;
+  std::string undo(RT::Engine *e) override;
   inline glm::vec3 get_new_rotation() const { return _new_rotation; }
   inline void set_new_rotation(glm::vec3 new_rotation) {
     _new_rotation = new_rotation;

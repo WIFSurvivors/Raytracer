@@ -37,6 +37,7 @@ std::string GetEntityOptionsCommand::execute(Engine *e) {
     }
     auto entity_json =
         entity_options_to_json(std::make_shared<Entity>(*entity));
+    set_successfull(true);
     return boost::json::serialize(entity_json);
   } catch (const std::bad_alloc &e) {
     LOG_ERROR(std::format("Memory allocation failed: {}", e.what()));
@@ -49,4 +50,3 @@ std::string GetEntityOptionsCommand::execute(Engine *e) {
     return "Unknown exception occurred";
   }
 }
-std::string GetEntityOptionsCommand::undo() { throw NotImplementedError{}; }

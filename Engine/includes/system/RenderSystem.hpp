@@ -19,58 +19,30 @@
 #include <optional>
 
 namespace RT {
-struct FrameSnapshot;
-// #define SHOW_UI true
-
-/**
- *	RenderSystem class, that is resposible for:
- *	- ~~Window Managing~~
- *	- Rendering
- *	- ~~Input processing~~
- *
- *	TODO:
- *	- Differentiate between private and public members
- *	- Move responisbilities to separate classes
- *	- Change init
- *	- May be RAII?
- *	- ERROR system would be good
- *	- Resizing doesn't work
- *	 - Decide what happenes by resizing: scaling or viewport
- *	- Make RenderSystem abstract, so that we can implement children
- *	- Move Window function e.g to InputSystem???
- *	- Jeb, i dont know what to do: implement create_component()
- *	- Do we really need a separate class for shaders
- */
+struct FrameSnapshot; 
 struct RenderSystem : public System<RenderComponent> {
-  RenderSystem(UUIDManager *um, WindowManager *wm, CameraSystem *cs,
-               LightSystem *ls, AssetManager::DefaultAssets *da);
+  RenderSystem(std::shared_ptr<UUIDManager> um, WindowManager *wm,
+               CameraSystem *cs, LightSystem *ls,
+               AssetManager::DefaultAssets *da);
+  ~RenderSystem();
 
   void init();
   void update(const FrameSnapshot &snapshot); // represents render
   void destroy();
 
   RenderComponent *
-  create_component(Entity *e, std::optional<AssetManager::Asset> obj_asset = {},
-                   std::optional<AssetManager::Asset> mtl_asset = {},
-                   std::optional<AssetManager::Asset> shader_asset = {});
+  create_component(Entity *e, std::optional<AssetManager::Asset> obj_asset = {});
   RenderComponent *
   create_component(Entity *e, uuid id,
-                   std::optional<AssetManager::Asset> obj_asset = {},
-                   std::optional<AssetManager::Asset> mtl_asset = {},
-                   std::optional<AssetManager::Asset> shader_asset = {});
+                   std::optional<AssetManager::Asset> obj_asset = {});
   RenderComponent *
   create_component(Entity *e, const std::vector<glm::vec3> &vertices,
                    const std::vector<glm::vec2> &UV,
-                   std::optional<AssetManager::Asset> obj_asset = {},
-                   std::optional<AssetManager::Asset> mtl_asset = {},
-                   std::optional<AssetManager::Asset> shader_asset = {});
+                   std::optional<AssetManager::Asset> obj_asset = {});
   RenderComponent *
   create_component(Entity *e, uuid id, const std::vector<glm::vec3> &vertices,
                    const std::vector<glm::vec2> &UV,
-                   std::optional<AssetManager::Asset> obj_asset = {},
-                   std::optional<AssetManager::Asset> mtl_asset = {},
-                   std::optional<AssetManager::Asset> shader_asset = {});
-
+                   std::optional<AssetManager::Asset> obj_asset = {});
 
   inline void set_bounces(int bounce) { _bounces = bounce; }
   inline int get_bounces() const { return _bounces; }
@@ -84,7 +56,9 @@ struct RenderSystem : public System<RenderComponent> {
   // void render();
   // std::unique_ptr<RenderComponent> _component;
   void print() override;
+  bool remove(uuid id) override;
   void update_galary(std::shared_ptr<MeshGallary> mesh_object);
+
 private:
   WindowManager *_wm;
   CameraSystem *_cs;
@@ -98,13 +72,13 @@ private:
   std::unique_ptr<Canvas> _canvas;
   // GLuint mouseUniformID; // a bit cringe... but it stays here for now
   GLuint _ssbo_tree;
-  GLuint _ssbo_triangle;
+  //GLuint _ssbo_triangle;
   GLuint _ssbo_vertex;
   GLuint _ssbo_indices;
   GLuint _ssbo_mats;
   GLuint _ssbo_matsIDX;
   GLuint _vao;
-  
+
   glm::ivec2 _screen_size;
 
   glm::vec3 _cameraPosition;
@@ -113,7 +87,6 @@ private:
 
   glm::mat4 _viewMatrix;
   glm::mat4 _projectionMatrix;
-
 
   glm::mat4 _modelMatrix_Canvas = glm::mat4(1.0f);
   GLuint _timeU;
@@ -132,6 +105,8 @@ private:
 
   std::unique_ptr<Shader> _compute;
   std::vector<std::shared_ptr<MeshGallary>> gallary;
+
 #endif
+bool _loadData;
 };
 } // namespace RT

@@ -13,7 +13,12 @@ struct UUIDManager;
 struct FrameSnapshot;
 
 struct SimpleSystem : public System<SimpleComponent> {
-  explicit SimpleSystem(UUIDManager *um);
+  explicit SimpleSystem(std::shared_ptr<UUIDManager> um);
+  
+  ~SimpleSystem() {
+    LOG(std::format("destroyed {}", get_name()));
+  }
+
 
   SimpleComponent *create_component(Entity *e, int value);
   SimpleComponent *create_component(Entity *e, uuid id, int value);

@@ -21,12 +21,28 @@ std::string SetFovCommand::execute(Engine *engine)
         LOG_ERROR("RenderSystem is null");
         return "RenderSystem is null";
     }
+    _old_fov = camera_system->get_main_camera()->get_fov();
     camera_system->get_main_camera()->set_fov(_fov);
-
+          set_successfull(true);
     return "FOV set to " + std::to_string(_fov);
 }
 
-std::string SetFovCommand::undo()
+std::string SetFovCommand::undo(RT::Engine* engine)
 {
-    throw NotImplementedError();
+    if (!engine) {
+        LOG_ERROR("Engine is null");
+        return "Engine is null";
+    }
+    auto* scene = engine->get_scene();
+    if (!scene) {
+        LOG_ERROR("Scene is null");
+        return "Scene is null";
+    }
+    auto camera_system = scene->get_camera_system();
+    if (!camera_system) {
+        LOG_ERROR("RenderSystem is null");
+        return "RenderSystem is null";
+    }
+    camera_system->get_main_camera()->set_fov(_old_fov);
+    return "FOV set to " + std::to_string(_old_fov);
 }

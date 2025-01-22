@@ -25,12 +25,16 @@ struct Scene {
 
   /**
    * Construct a default scene and the required system, managers and so on.
+   * Scene data can be filled from anywhere, but usually from BigJSON or TCPServer.
+   * Root entity is the only thing, that exist for every scene.
    */
   explicit Scene(Engine *e);
   Scene(Engine *e, std::string title);
   virtual ~Scene();
 
-  inline UUIDManager *get_uuid_manager() { return &_uuid_manager; }
+  inline std::shared_ptr<UUIDManager> get_uuid_manager() {
+    return _uuid_manager;
+  }
   inline AssetManager *get_asset_manager() { return &_asset_manager; }
   inline EntityStorage *get_entity_storage() { return &_entity_storage; }
   inline RenderSystem *get_render_system() { return &_render_system; }
@@ -42,7 +46,6 @@ struct Scene {
   inline std::optional<Entity *> get_entity(uuid id) {
     return _entity_storage.get(id);
   }
-
   std::optional<Entity *> operator[](uuid id) { return get_entity(id); }
 
   std::shared_ptr<Entity> create_entity(const std::string &name);
@@ -52,14 +55,11 @@ struct Scene {
   std::shared_ptr<Entity> create_entity(const std::string &name, uuid id,
                                         std::shared_ptr<Entity> parent);
 
-  //   bool remove(Entity* e);
-  //   bool remove(uuid id);
+  bool remove(Entity *e);
+  bool remove(uuid id);
 
-  void print();
-  void print_system_data();
-
-  void generate_sample_content();
-
+  // Ddvance the scene by updating every system.
+  // This is currently only the render system.
   void update(const FrameSnapshot &snapshot);
 
   inline AssetManager::Asset create_asset(std::filesystem::path p) {
@@ -69,6 +69,9 @@ struct Scene {
   inline AssetManager::Asset create_asset(uuid id, std::filesystem::path p) {
     return AssetManager::Asset(get_asset_manager(), id, p);
   }
+  
+  void generate_test_scene();
+  void print_system_data();
 
 private:
   std::shared_ptr<Entity> create_root(const std::string &name);
@@ -76,15 +79,14 @@ private:
 
   std::string _title{"default"};
 
-  UUIDManager _uuid_manager{};
-  AssetManager _asset_manager{&_uuid_manager};
+  std::shared_ptr<UUIDManager> _uuid_manager = std::make_shared<UUIDManager>();
+  AssetManager _asset_manager{_uuid_manager};
   AssetManager::DefaultAssets _default_assets{&_asset_manager};
-  EntityStorage _entity_storage{&_uuid_manager};
-  SimpleSystem _simple_system{&_uuid_manager};
-  CameraSystem _camera_system{&_uuid_manager};
-  LightSystem _light_system{&_uuid_manager};
-  RenderSystem
-      _render_system; // has a extensive constructor which depend on Engine
+  EntityStorage _entity_storage{_uuid_manager};
+  SimpleSystem _simple_system{_uuid_manager};
+  CameraSystem _camera_system{_uuid_manager};
+  LightSystem _light_system{_uuid_manager};
+  RenderSystem _render_system;
 
   std::shared_ptr<Entity> _root;
 };

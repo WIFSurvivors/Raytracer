@@ -2,6 +2,7 @@
 
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>
+#include <memory>
 #include <map>
 #include <string>
 
@@ -18,12 +19,14 @@ struct UUIDManager;
 struct IStorage {
   using uuid = boost::uuids::uuid;
 
-  explicit IStorage(UUIDManager *um) : _um{um} {}
+  explicit IStorage(std::shared_ptr<UUIDManager> um) : _um{um} {}
   virtual ~IStorage() = default;
   virtual const std::string get_name() const = 0;
 
+  virtual bool remove(uuid id) = 0;
+
 protected:
-  UUIDManager *_um;
+  std::shared_ptr<UUIDManager> _um;
 };
 
 /**
@@ -34,16 +37,29 @@ protected:
 struct UUIDManager {
   using uuid = boost::uuids::uuid;
   UUIDManager();
+  ~UUIDManager();
 
   bool add(uuid id, IStorage *s);
   uuid create(IStorage *s);
   inline IStorage *get_storage(uuid id) { return _uuid_storage_mapping[id]; }
 
   /**
-   * This only removes an entity from the storage. If the associated Componet
-   * oder Entity hasn't been removed before, it will not be accessible anymore!
+   * Removes UUID from Storage and executes the required clean-up inside the
+   * system.
    */
-  bool remove(uuid id); // TBD
+  bool remove(uuid id);
+  
+  /**
+   * Removes UUID from Storage. Call this, if the storage container is trying
+   * to remove the UUID itself. This will prevent cyclic calls! 
+   */
+  bool remove_without_system(uuid id);
+  
+  
+  inline const std::map<uuid, IStorage*>& get_storage() const {
+    return _uuid_storage_mapping;
+  }
+
 
   void print();
 

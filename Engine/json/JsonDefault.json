@@ -5,19 +5,19 @@
             "uuid": "64601c4f-bfd7-49a2-aaab-0cd4c118aec1",
             "Translation": {
                 "position": {
-                    "x": -5,
-                    "y": 0,
-                    "z": 5
+                    "x": -5.0,
+                    "y": 0.0,
+                    "z": 5.0
                 },
                 "rotation": {
-                    "x": 0,
-                    "y": 90,
-                    "z": 25
+                    "x": 0.0,
+                    "y": 90.0,
+                    "z": 25.0
                 },
                 "scale": {
                     "x": 2.5,
-                    "y": 1,
-                    "z": 1
+                    "y": 1.0,
+                    "z": 1.0
                 }
             },
             "components": {
@@ -32,7 +32,7 @@
             "uuid": "1c39c95f-e795-4274-9e63-1b5a950ae264",
             "Translation": {
                 "position": {
-                    "x": 5
+                    "x": 5.0
                 }
             },
             "components": {
@@ -47,16 +47,16 @@
             "uuid": "d4ef836c-325d-4ba9-9c68-56eba49c6aa3",
             "Translation": {
                 "position": {
-                    "y": 50
+                    "y": 50.0
                 }
             },
             "components": {
                 "LightComponent": {
                     "intensity": 25.15,
                     "color": {
-                        "r": 255,
-                        "g": 255,
-                        "b": 0
+                        "r": 255.0,
+                        "g": 255.0,
+                        "b": 0.0
                     }
                 }
             }
@@ -66,22 +66,22 @@
             "uuid": "936e5ede-7c3e-4424-b523-585dcfe695fa",
             "Translation": {
                 "position": {
-                    "x": 0,
-                    "y": 0,
-                    "z": 15
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 15.0
                 },
                 "rotation": {
-                    "x": 0,
-                    "y": 0,
-                    "z": 0
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
                 }
             },
             "components": {
                 "CameraComponent": {
-                    "fov": 60,
+                    "fov": 60.0,
                     "aspectRatio": 1.77,
                     "nearClip": 0.1,
-                    "farClip": 1000
+                    "farClip": 1000.0
                 }
             }
         }
@@ -96,11 +96,6 @@
             "uuid": "4d5a3dd5-5b97-40d5-9589-f5f9db068cb0",
             "type": "obj",
             "path": "./assets/sphere.obj"
-        },
-        {
-            "uuid": "cbcf3341-d2a2-4ff3-8a7c-40cf0b135bdb",
-            "type": "mat",
-            "path": "./assets/wood.obj"
         }
     ],
     "metadata": {
@@ -109,7 +104,7 @@
             0.1,
             0.1
         ],
-        "globalIllumination": true,
+        "globalIllumination": true, 
         "renderMode": "pathtracing",
         "maxDepth": 5,
         "samplesPerPixel": 100

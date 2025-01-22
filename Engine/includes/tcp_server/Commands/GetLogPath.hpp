@@ -7,7 +7,6 @@
 struct GetLogPath : public TcpCommand {
   GetLogPath() {}
   std::string execute(RT::Engine *engine) override;
-  std::string undo() override;
 
 private:
 };

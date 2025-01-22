@@ -73,13 +73,13 @@ public class EcsApi
         String returnValue = _client.Send(String.Format(adjustSeparator("RotateCommand {0} {1} {2} {3}"), UUID, x, y, z));
         return "RotateEntity " + returnValue;
     }
-    public string delete_entity()
+    public string remove_entity(string UUID)
     {
-        return "DeleteEntity";
+        return _client.Send(String.Format(adjustSeparator("RemoveEntity {0}"), UUID));
     }
-    public string delete_component()
+    public string remove_component(string UUID)
     {
-        return "DeleteComponent";
+        return _client.Send(String.Format(adjustSeparator("RemoveComponent {0}"), UUID));
     }
 
     public string get_component_options(String UUID)
@@ -116,7 +116,15 @@ public class EcsApi
     {
         return _client.Send(String.Format(adjustSeparator("SetBounces null {0}"), bounces));
     }
+    public string set_frame_rate(int frame_rate)
+    {
+        return _client.Send(String.Format(adjustSeparator("SetFrameRate null {0}"), frame_rate));
+    }
 
+    public string get_frame_rate()
+    {
+        return _client.Send("GetFrameRate");
+    }
     public string set_fov(float fov)
     {
         return _client.Send(String.Format(adjustSeparator("SetFov null {0}"), fov));
@@ -125,5 +133,10 @@ public class EcsApi
     public string get_fov()
     {
         return _client.Send("GetFov");
+    }
+
+    public string undo(int steps)
+    {
+        return _client.Send(String.Format(adjustSeparator("Undo null {0}"), steps));
     }
 }

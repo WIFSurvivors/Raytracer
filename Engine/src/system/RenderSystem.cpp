@@ -35,11 +35,16 @@
 std::unique_ptr<TreeBuilder> BVH_Tree;
 
 namespace RT {
-RenderSystem::RenderSystem(UUIDManager *um, WindowManager *wm, CameraSystem *cs,
-                           LightSystem *ls, AssetManager::DefaultAssets *da)
+RenderSystem::RenderSystem(std::shared_ptr<UUIDManager> um, WindowManager *wm,
+                           CameraSystem *cs, LightSystem *ls,
+                           AssetManager::DefaultAssets *da)
     : System{um}, _wm{wm}, _cs{cs}, _ls{ls}, _da{da} {
-  LOG("created render system");
+  LOG(std::format("created {}", get_name()));
   init();
+}
+
+RenderSystem::~RenderSystem(){
+  LOG(std::format("destroy {}", get_name()));
 }
 
 void RenderSystem::init() {
@@ -105,42 +110,42 @@ void RenderSystem::init() {
   _ls_intensitiesU =
       glGetUniformLocation(_compute->programID, "ls_intensities");
 
-  /**************************************************************************/
-  std::vector<Triangle> triforce1 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
-  std::vector<Triangle> triforce2 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
-  std::vector<Triangle> triforce3 = createCube(glm::vec3{-2.0f, 0.0f, 0.0f});
-  std::vector<Triangle> triforce4 = createCube(glm::vec3{0.0f, 0.0f, -2.0f});
-  std::vector<Triangle> triforce5 = createCube(glm::vec3{0.0f, 2.0f, 0.0f});
-  std::vector<Materials> mats;
+  // /**************************************************************************/
+  // std::vector<Triangle> triforce1 = createCube(glm::vec3{0.0f, -2.0f, 0.0f});
+  // std::vector<Triangle> triforce2 = createCube(glm::vec3{2.0f, 0.0f, 0.0f});
+  // std::vector<Triangle> triforce3 = createCube(glm::vec3{-2.0f, 0.0f, 0.0f});
+  // std::vector<Triangle> triforce4 = createCube(glm::vec3{0.0f, 0.0f, -2.0f});
+  // std::vector<Triangle> triforce5 = createCube(glm::vec3{0.0f, 2.0f, 0.0f});
+  // std::vector<Materials> mats;
 
-  Materials Material1 = Materials{
-      glm::vec3(0.8f, 0.2f, 0.8f),
-      0.0f,
-  }; // Light gray, slightly reflective
-  Materials Material2 = Materials{glm::vec3(1.0f, 1.0f, 1.0f), 0.0f}; // White
-  Materials Material3 = Materials{
-      glm::vec3(0.8f, 0.2f, 0.2f),
-      0.0f,
-  }; // Bright red, more reflective
-  Materials Material4 = Materials{
-      glm::vec3(0.1f, 0.6f, 0.5f),
-      0.0f,
-  }; // Bright red, more reflective
-  Materials Material5 = Materials{
-      glm::vec3(0.0f, 0.6f, 0.9f),
-      0.0f,
-  }; // Bright red, more reflective
-  /**************************************************************************/
+  // Materials Material1 = Materials{
+  //     glm::vec3(0.8f, 0.2f, 0.8f),
+  //     0.0f,
+  // }; // Light gray, slightly reflective
+  // Materials Material2 = Materials{glm::vec3(1.0f, 1.0f, 1.0f), 0.0f}; // White
+  // Materials Material3 = Materials{
+  //     glm::vec3(0.8f, 0.2f, 0.2f),
+  //     0.0f,
+  // }; // Bright red, more reflective
+  // Materials Material4 = Materials{
+  //     glm::vec3(0.1f, 0.6f, 0.5f),
+  //     0.0f,
+  // }; // Bright red, more reflective
+  // Materials Material5 = Materials{
+  //     glm::vec3(0.0f, 0.6f, 0.9f),
+  //     0.0f,
+  // }; // Bright red, more reflective
+  // /**************************************************************************/
 
-  std::vector<ObjectData> data;
-  data.push_back(ObjectData(triforce1, Material1));
-  data.push_back(ObjectData(triforce2, Material2));
-  data.push_back(ObjectData(triforce3, Material3));
-  data.push_back(ObjectData(triforce4, Material4));
-  data.push_back(ObjectData(triforce5, Material5));
+  // std::vector<ObjectData> data;
+  // data.push_back(ObjectData(triforce1, Material1));
+  // data.push_back(ObjectData(triforce2, Material2));
+  // data.push_back(ObjectData(triforce3, Material3));
+  // data.push_back(ObjectData(triforce4, Material4));
+  // data.push_back(ObjectData(triforce5, Material5));
   BVH_Tree = std::make_unique<TreeBuilder>();
-  BVH_Tree->loadData(data);
-  BVH_Tree->prepareSSBOData();
+  // BVH_Tree->loadData(data);
+  // BVH_Tree->prepareSSBOData();
   //   builder.checkData(); // Debug statements
 
   LOG(std::format("SSBONodes size: {}", sizeof(SSBONodes)));
@@ -182,7 +187,7 @@ void RenderSystem::init() {
   /*             BVH_Tree->matIndx.size() * sizeof(uint32_t),*/
   /*             BVH_Tree->matIndx.data(), GL_STATIC_DRAW);*/
   /*glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 6, ssbo_matsIDX);*/
-  updateSSBOBuffers();
+  // updateSSBOBuffers();
   // DEBUG INFORMATION
   //
 
@@ -212,10 +217,10 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
   glClear(GL_COLOR_BUFFER_BIT);
   //  Calculation for the Camera
-  static bool loadData = false;
+  // static bool loadData = false;
   std::vector<std::shared_ptr<MeshGallary>> temp_holder;
   for (auto &&c : _components) {
-    if (c.second->get_entity()->has_Updated()) {
+    if (c.second->get_entity()->has_Updated() || _loadData) {
       glm::vec3 scaleVector = c.second->get_entity()->get_local_scale();
       glm::vec3 translationVector =
           c.second->get_entity()->get_local_position();
@@ -250,12 +255,14 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
       // BVH_Tree->update_gallary(object);
       c.second->get_entity()->did_update();
       std::cout << "UPDATED\n";
-      loadData = true;
+      _loadData = true;
     }
   }
 
-  if (loadData) {
+  if (_loadData) {
+
     BVH_Tree = std::make_unique<TreeBuilder>();
+    gallary.clear();
     for (auto &object : temp_holder) {
       update_galary(object);
     }
@@ -263,7 +270,7 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
     BVH_Tree->loadData();
     BVH_Tree->prepareSSBOData();
     updateSSBOBuffers();
-    loadData = false;
+    _loadData = false;
   }
 
   //  Setup compute shader
@@ -274,7 +281,8 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
   if (_cs && _cs->get_main_camera()) {
     _cameraPosition =
         _cs->get_main_camera()->get_entity()->get_world_position();
-    _cameraDirection = glm::vec3(0.0f, 8.0f, 4.0f);
+    //_cameraDirection = glm::vec3(0.0f, 8.0f, 4.0f);
+	_cameraDirection = _cs->get_main_camera()->get_entity()->get_local_rotation();
     _viewMatrix =
         glm::lookAt(_cameraPosition, _cameraDirection, glm::vec3(0, 1, 0));
 
@@ -330,73 +338,60 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
 }
 
 RenderComponent *RenderSystem::create_component(
-    Entity *e, std::optional<AssetManager::Asset> obj_asset,
-    std::optional<AssetManager::Asset> mtl_asset,
-    std::optional<AssetManager::Asset> shader_asset) {
+    Entity *e, std::optional<AssetManager::Asset> obj_asset) {
   LOG("create render component (a1)");
   auto c = create_component_base(e);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
-  c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
-                                               : _da->shader);
+
+  _loadData = true;
   return c;
 }
 
 RenderComponent *RenderSystem::create_component(
-    Entity *e, uuid id, std::optional<AssetManager::Asset> obj_asset,
-    std::optional<AssetManager::Asset> mtl_asset,
-    std::optional<AssetManager::Asset> shader_asset) {
+    Entity *e, uuid id, std::optional<AssetManager::Asset> obj_asset) {
   LOG("create render component (a2)");
   auto c = create_component_base(e, id);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
-  c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
-                                               : _da->shader);
+  _loadData = true;
   return c;
 }
 
 RenderComponent *RenderSystem::create_component(
     Entity *e, const std::vector<glm::vec3> &vertices,
     const std::vector<glm::vec2> &UV,
-    std::optional<AssetManager::Asset> obj_asset,
-    std::optional<AssetManager::Asset> mtl_asset,
-    std::optional<AssetManager::Asset> shader_asset) {
+    std::optional<AssetManager::Asset> obj_asset) {
   LOG("create render component (b1)");
   auto c = create_component_base(e);
   c->set_vertices(vertices);
   c->set_uv(UV);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
-  c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
-                                               : _da->shader);
 
   int programmID = 0;
 #if SHOW_UI
   programmID = _program->programID;
 #endif
   c->init(programmID);
+  _loadData = true;
   return c;
 }
 
 RenderComponent *RenderSystem::create_component(
     Entity *e, uuid id, const std::vector<glm::vec3> &vertices,
     const std::vector<glm::vec2> &UV,
-    std::optional<AssetManager::Asset> obj_asset,
-    std::optional<AssetManager::Asset> mtl_asset,
-    std::optional<AssetManager::Asset> shader_asset) {
+    std::optional<AssetManager::Asset> obj_asset) {
   LOG("create render component (b2)");
   auto c = create_component_base(e, id);
   c->set_vertices(vertices);
   c->set_uv(UV);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
-  c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
-                                               : _da->shader);
   int programmID = 0;
 #if SHOW_UI
   programmID = _program->programID;
 #endif
   c->init(programmID);
+
+
+  _loadData = true;
   return c;
 }
 
@@ -405,7 +400,11 @@ void RenderSystem::destroy() {
   // _component->destroy();
 
   glDeleteVertexArrays(1, &_vao);
-
+  glDeleteBuffers(1, &_ssbo_mats);
+  glDeleteBuffers(1, &_ssbo_tree);
+  glDeleteBuffers(1, &_ssbo_vertex);
+  glDeleteBuffers(1, &_ssbo_indices);
+  glDeleteBuffers(1, &_ssbo_matsIDX);
   glfwTerminate();
 #endif
 }
@@ -460,6 +459,7 @@ void RenderSystem::updateSSBOBuffers() {
 }
 
 void RenderSystem::update_galary(std::shared_ptr<MeshGallary> mesh_object) {
+  #if SHOW_UI
   bool found = false;
   for (auto &c : gallary) {
     if (mesh_object->id == c->id) {
@@ -486,6 +486,12 @@ void RenderSystem::update_galary(std::shared_ptr<MeshGallary> mesh_object) {
 
     gallary.push_back(mesh_object);
   }
+    #endif
+}
+
+bool RenderSystem::remove(uuid id) {
+    _loadData = true;
+    return System::remove(id);
 }
 
 } // namespace RT

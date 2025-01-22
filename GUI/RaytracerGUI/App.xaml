@@ -8,6 +8,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="GlobalStyles.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <local:BoolToClickableConverter x:Key="BoolToClickableConverter" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

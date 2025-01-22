@@ -25,6 +25,7 @@ std::string GetChildEntitiesCommand::execute(Engine *e) {
   }
   auto json_entity = entity.value()->to_json();
   std::cout << boost::json::serialize(json_entity) << std::endl;
+    set_successfull(true);
+
   return boost::json::serialize(json_entity);
 }
-std::string GetChildEntitiesCommand::undo() { throw NotImplementedError{}; }

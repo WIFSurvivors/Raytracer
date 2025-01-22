@@ -11,10 +11,12 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <locale>
 
 namespace RT {
 inline std::string format_float(float value) {
   std::ostringstream out;
+  out.imbue(std::locale{"C"}); // enforce default (english) decimal point style
   out << std::fixed << std::setprecision(3) << value;
   return out.str();
 }
@@ -57,7 +59,7 @@ inline boost::json::object entity_options_to_json(const std::shared_ptr<Entity>&
     loc_options["x"] = format_float(entity->get_local_position().x);
     loc_options["y"] = format_float(entity->get_local_position().y);
     loc_options["z"] = format_float(entity->get_local_position().z);
-    _options["Translation"] = std::move(loc_options);
+    _options["translation"] = std::move(loc_options);
     boost::json::object rotation;
     boost::json::object rot_options; 
     rot_options["x"] = format_float(entity->get_local_rotation().x);

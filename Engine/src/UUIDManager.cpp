@@ -9,6 +9,16 @@
 
 namespace RT {
 UUIDManager::UUIDManager() { LOG("created UUID Manager"); }
+UUIDManager::~UUIDManager() {
+  LOG(std::format("destroyed UUID Manager!! Elements not removed prior: {}",
+                  _uuid_storage_mapping.size()));
+				  
+  for (const auto &[id, sto] : _uuid_storage_mapping) {
+	std::cout << sto->get_name() << "|" << boost::uuids::to_string(id) << std::endl;
+	LOG(std::format("{}: {}", sto->get_name(), boost::uuids::to_string(id)));
+  } 
+  print();
+}
 
 bool UUIDManager::add(uuid id, IStorage *s) {
   if (_uuid_storage_mapping.contains(id)) {
@@ -43,7 +53,19 @@ void UUIDManager::print() {
 }
 
 bool UUIDManager::remove(uuid id) {
-  throw NotImplementedError();
-  return false;
+  auto sys = get_storage(id);
+  if (sys == nullptr) { // uuid doesn't exist
+    return false;
+  }
+  return sys->remove(id);
+}
+
+bool UUIDManager::remove_without_system(uuid id) {
+  if (_uuid_storage_mapping[id] == nullptr) {
+    return false;
+  }
+  _uuid_storage_mapping.erase(id);
+  LOG(std::format("removed uuid {}", boost::uuids::to_string(id)));
+  return true;
 }
 } // namespace RT

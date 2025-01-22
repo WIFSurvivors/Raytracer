@@ -12,9 +12,7 @@ using RT::IComponent;
 struct GetComponentsCommand : public TcpCommand {
   explicit GetComponentsCommand(uuid uuid) : TcpCommand(uuid) {}
   std::string execute(RT::Engine *e) override;
-  boost::json::array
-  get_components_short(const std::vector<RT::IComponent *> &components);
-  std::string undo() override;
+  boost::json::array get_components_short(RT::Scene *s, const std::vector<uuid> &components);
 
 private:
 };

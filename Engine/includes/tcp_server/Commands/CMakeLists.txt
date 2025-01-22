@@ -18,6 +18,12 @@ set(TCP_COMMANDS_HEADERS
     GetBouncesCommand.hpp
     SetFovCommand.hpp
     GetFovCommand.hpp
+    UndoCommand.hpp
+    GetFrameRate.hpp
+    SetFrameRate.hpp
+    RemoveEntity.hpp
+    RemoveComponent.hpp
+    PrintTable.hpp
 )
 
 list(TRANSFORM TCP_COMMANDS_HEADERS PREPEND "${CMAKE_CURRENT_SOURCE_DIR}/")

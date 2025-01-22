@@ -23,12 +23,16 @@ using System;
 using System.Reflection;
 using System.Windows.Controls.Primitives;
 using Xceed.Wpf.Toolkit.PropertyGrid.Attributes;
+using System;
+using System.Windows.Forms;
+using Xceed.Wpf.Toolkit.Primitives;
 
 namespace RaytracerGUI
 {
     public partial class MainWindow : Window
     {
         private EcsApi? _ecsApi;
+        public bool shouldUpdate = true;
         private string ReceivedEcsJsonString;
         private GLFWLoader loader;
         private IntPtr hWndParent;
@@ -46,85 +50,151 @@ namespace RaytracerGUI
 
         string currentEntityUUID = "uuid";
         string currentComponentUUID = "uuid";
+        string deleteUUID = "uuid";
+        public string rootUUID = "uuid";
+
+
 
 
         public MainWindow()
         {
             InitializeComponent();
             this.Background = (Brush)Application.Current.Resources["WindowBackgroundColor"];
+            this.KeyDown += generalKeyDown;
 
         }
 
-        //Menu clicks
+        /// <summary>
+        /// When a Option of the "File" Menu is clicked, this method is called and handles every interaction from the dropdown menus
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FileMenuClick(object sender, RoutedEventArgs e)
         {
+            //convert sender to type MenuItem
             MenuItem? clickedMenuItem = sender as MenuItem;
             OpenFileDialog openFileDialog;
+            SaveFileDialog saveFileDialog;
             string filePath = "";
 
+            //check for click
             if (clickedMenuItem != null)
             {
                 // get variable name
                 string item = clickedMenuItem.Name;
-
+                //tbxLog.AppendText(item + " was clicked! \n");
 
                 switch (item)
                 {
-                    case "mniOpen":
-                        tbxLog.AppendText(item + " was clicked! \n");
-                        tbxLog.ScrollToEnd();
-
-                        openFileDialog = new OpenFileDialog
-                        {
-                            Filter = "OBJ and MTL Files (*.obj;*.mtl)|*.obj;*.mtl",
-                            Title = "Select a .obj or .mtl file"
-                        };
-
-                        if (openFileDialog.ShowDialog() == true)
-                        {
-                            filePath = openFileDialog.FileName;
-                        }
-                        break;
-
+                    //Imports the JSON Scene file and sends it to the ecsapi
                     case "mniImport":
-                        tbxLog.AppendText(item + " was clicked! \n");
-                        tbxLog.ScrollToEnd();
 
-                        openFileDialog = new OpenFileDialog
+                        if (_ecsApi != null && connection)
                         {
-                            Filter = "JSON File (*.json)|*.json",
-                            Title = "Select a JSON Scene file",
-                            InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "\\Downloads"
-                        };
+                            openFileDialog = new OpenFileDialog
+                            {
+                                Filter = "JSON File (*.json)|*.json",
+                                Title = "Select a JSON Scene file"
+                            };
 
-                        if (openFileDialog.ShowDialog() == true)
-                        {
-                            filePath = openFileDialog.FileName;
-                            tbxLog.AppendText("ScenePath : " + filePath);
+                            if (openFileDialog.ShowDialog() == true)
+                            {
+                                filePath = openFileDialog.FileName;
+                                tbxLog.AppendText("ImportScenePath : " + filePath + "\n");
+                            }
 
-                        }
-
-                        if (_ecsApi != null)
-                        {
+                            if (filePath.Equals(""))
+                            {
+                                return;
+                            }
 
                             try
                             {
                                 // send JSON path
-                                string pathSentStatus = _ecsApi.json_import('"' + filePath + '"');
-                                tbxLog.AppendText("pathSentStatus : " + pathSentStatus);
+                                string pathSentStatus = _ecsApi.json_import(filePath);
+                                tbxLog.AppendText("pathSentStatus : " + pathSentStatus + "\n");
 
+
+                                _entityBuilder = new TreeBuilder(trvEntities, this);
+                                ReceivedEcsJsonString = _ecsApi.get_root();
+                                _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
 
                             }
                             catch (InvalidOperationException ex)
                             {
-                                //TODO
+                                tbxLog.AppendText(ex.ToString());
                             }
+                        }
+                        else
+                        {
+                            MessageBox.Show("No active connection!", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                         }
                         break;
 
+
+
+                    //Selects the export path + file name and sends it to the ecsapi
+                    case "mniExport":
+
+                        if (_ecsApi != null && connection)
+                        {
+                            saveFileDialog = new SaveFileDialog
+                            {
+                                Filter = "JSON File (*.json)|*.json",
+                                Title = "Save JSON Scene file",
+                                FileName = "scene.json"
+                            };
+
+                            if (saveFileDialog.ShowDialog() == true)
+                            {
+                                filePath = saveFileDialog.FileName;
+                                tbxLog.AppendText("ExportScenePath : " + filePath + "\n");
+                            }
+
+                            if (filePath.Equals(""))
+                            {
+                                return;
+                            }
+
+                            try
+                            {
+                                // send export path + file name
+                                string pathSentStatus = _ecsApi.export_Json(filePath);
+                                tbxLog.AppendText("pathSentStatus : " + pathSentStatus + "\n");
+
+                                // checks if export was successful
+                                if (pathSentStatus.Contains("Scene exported on path:"))
+                                {
+                                    MessageBox.Show(pathSentStatus, "Export Complete", MessageBoxButton.OK, MessageBoxImage.Information);
+                                }
+                                else
+                                {
+                                    MessageBox.Show(pathSentStatus, "Export Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                                }
+
+                            }
+                            catch (InvalidOperationException ex)
+                            {
+                                tbxLog.AppendText(ex.ToString());
+                            }
+                            
+                        }
+                        else
+                        {
+                            MessageBox.Show("No active connection!", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        }
+                        break;
+
+
+
+                    case "mniHelp":
+                        MessageBox.Show("ctrl+z = undo last undoable command \n" +
+                            "del = remove selected entity/component \n \n" +
+                            "click on \"obj_path\" or \"mat_path\" to select an new .obj/.mtl-file");
+                        break;
+
+
                     case "mniExit":
-                        tbxLog.AppendText(item + " was clicked! \n");
-                        tbxLog.ScrollToEnd();
                         Application.Current.Shutdown(0);
                         break;
 
@@ -132,32 +202,72 @@ namespace RaytracerGUI
                 }
             }
         }
-
+        /// <summary>
+        /// When a Option of the "Add" Menu is clicked, this method is called and adds the corresponding 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddMenuClick(object sender, RoutedEventArgs e)
         {
             if (sender is MenuItem clickedMenuItem)
             {
                 // Der Name des angeklickten Menüelements wird verwendet
                 string itemName = clickedMenuItem.Name;
-
-                switch (itemName)
+                //tbxLog.AppendText($"{itemName} was clicked!\n");
+                if (!currentEntityUUID.Equals("uuid"))
                 {
-                    case "mniAddRender":
-                        AddRenderComponent();
-                        tbxLog.AppendText($"{itemName} was clicked!\n");
-                        tbxLog.ScrollToEnd();
-                        break;
+                    switch (itemName)
+                    {
+                        case "mniAddRender":
+                            AddRenderComponent();
+                            break;
 
-                    case "mniAddLight":
-                        AddLightComponent();
-                        tbxLog.AppendText($"{itemName} was clicked!\n");
-                        tbxLog.ScrollToEnd();
-                        break;
+                        case "mniAddLight":
+                            AddLightComponent();
+                            break;
 
-                    case "mniAddCamera":
-                        AddCameraComponent();
-                        tbxLog.AppendText($"{itemName} was clicked!\n");
-                        tbxLog.ScrollToEnd();
+                        case "mniAddCamera":
+                            AddCameraComponent();
+                            break;
+
+                        case "mniAddEntity":
+                            try
+                            {
+                                AddEntity();
+                                ReceivedEcsJsonString = _ecsApi.get_root();
+                                _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
+                                break;
+                            }
+                            catch (Exception ex)
+                            {
+                                tbxLog.AppendText("Adding Entity failed with Exception: " + ex.Message);
+                                break;
+                            }
+                    }
+                }
+            }
+        }
+
+        private void SettingsMenuClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem clickedMenuItem && _ecsApi != null)
+            {
+                // Der Name des angeklickten Menüelements wird verwendet
+                string itemName = clickedMenuItem.Name;
+                //tbxLog.AppendText($"{itemName} was clicked!\n");
+
+                    switch (itemName)
+                    {
+                        case "mniPrintECS":
+                        try
+                        {
+                            _ecsApi.print_table();
+                            
+                        }
+                        catch (Exception ex)
+                        {
+                            tbxLog.AppendText("Exception thrown: " + ex);
+                        }
                         break;
                 }
             }
@@ -184,8 +294,7 @@ namespace RaytracerGUI
                 // get variable name
                 string button = clickedButton.Name;
 
-                tbxLog.AppendText(button + " was clicked! \n");
-                tbxLog.ScrollToEnd();
+                //tbxLog.AppendText(button + " was clicked! \n");
 
                 switch (button)
                 {
@@ -276,6 +385,8 @@ namespace RaytracerGUI
                         {
                             rotation = "zpos";
                             imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-zpos.png", UriKind.Relative));
+                            imgRotation.Width = 30;
+                            imgRotation.Height = 30;
                         }
                         else if (rotation == "zpos")
                         {
@@ -286,8 +397,11 @@ namespace RaytracerGUI
                         {
                             rotation = "xpos";
                             imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-xpos.png", UriKind.Relative));
+                            imgRotation.Width = 40;
+                            imgRotation.Height = 40;
                         }
                         break;
+
 
                     case "btnRz":
                         sldRz.Value += 10;
@@ -306,9 +420,6 @@ namespace RaytracerGUI
                             ColumnLog.Width = new GridLength(0);
                         }
 
-                        // TreeBuilder testing
-                        _entityBuilder = new TreeBuilder(trvEntities, this);
-                        _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
                         break;
 
                     case "btnToggleLog":
@@ -363,7 +474,34 @@ namespace RaytracerGUI
 
                         if (gridSliders.Visibility == Visibility.Visible)
                         {
-                            gridSliders.Visibility = Visibility.Collapsed;
+                            if (gridZoom.Visibility == Visibility.Visible)
+                            {
+                                gridZoom.Visibility = Visibility.Collapsed;
+                                lblZoom.Visibility = Visibility.Collapsed;
+
+                                gridSx.Visibility = Visibility.Visible;
+                                gridSy.Visibility = Visibility.Visible;
+                                gridSz.Visibility = Visibility.Visible;
+                                lblSca.Visibility = Visibility.Visible;
+
+                                // adapt column width for horizontal scaling sliders
+                                gridSliders.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+
+                            }
+                            else
+                            {
+                                gridSx.Visibility = Visibility.Collapsed;
+                                gridSy.Visibility = Visibility.Collapsed;
+                                gridSz.Visibility = Visibility.Collapsed;
+                                lblSca.Visibility = Visibility.Collapsed;
+
+                                gridZoom.Visibility = Visibility.Visible;
+                                lblZoom.Visibility = Visibility.Visible;
+
+                                // adapt column width for vertical zoom slider
+                                gridSliders.ColumnDefinitions[0].Width = new GridLength(128);
+
+                            }
                         }
                         else
                         {
@@ -381,7 +519,7 @@ namespace RaytracerGUI
         }
 
 
-       
+
 
         private void SliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -414,19 +552,35 @@ namespace RaytracerGUI
                         x = (float)sldX.Value;
                         y = (float)sldY.Value;
                         z = (float)sldZ.Value;
-                        _ecsApi.move_entity(UUID, x, y, z);
+                        if (shouldUpdate)
+                        {
+                            _ecsApi.move_entity(UUID, x, y, z);
+                        }
                     }
                     else if (sliderType == 1)
                     {
                         x = (float)sldRx.Value;
                         y = (float)sldRy.Value;
                         z = (float)sldRz.Value;
-                        _ecsApi.rotate_entity(UUID, x, y, z);
+                        if (shouldUpdate)
+                        {
+                            _ecsApi.rotate_entity(UUID, x, y, z);
+                        }
                     }
                     else if (sliderType == 2)
                     {
                         float zoom = (float)sldZoom.Value;
                         _ecsApi.set_fov(zoom);
+                    }
+                    else if (sliderType == 3)
+                    {
+                        x = (float)sldSx.Value;
+                        y = (float)sldSy.Value;
+                        z = (float)sldSz.Value;
+                        if (shouldUpdate)
+                        {
+                            _ecsApi.scale_entity(UUID, x, y, z);
+                        }
                     }
 
                 }
@@ -466,54 +620,54 @@ namespace RaytracerGUI
                 switch (slider)
                 {
                     case "sldX":
-                        lblXMin.Content = minValue;
-                        lblXMed.Content = medValue;
-                        lblXMax.Content = maxValue;
+                        lblXMin.Content = minValue.ToString().Replace(".", ",");
+                        lblXMed.Content = medValue.ToString().Replace(".", ",");
+                        lblXMax.Content = maxValue.ToString().Replace(".", ",");
 
                         _entityOptionsBuilder.GetTextBox("traX")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(0);
                         break;
 
                     case "sldY":
-                        lblYMin.Content = minValue;
-                        lblYMed.Content = medValue;
-                        lblYMax.Content = maxValue;
+                        lblYMin.Content = minValue.ToString().Replace(".", ",");
+                        lblYMed.Content = medValue.ToString().Replace(".", ",");
+                        lblYMax.Content = maxValue.ToString().Replace(".", ",");
 
                         _entityOptionsBuilder.GetTextBox("traY")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(0);
                         break;
 
                     case "sldZ":
-                        lblZMin.Content = minValue;
-                        lblZMed.Content = medValue;
-                        lblZMax.Content = maxValue;
+                        lblZMin.Content = minValue.ToString().Replace(".", ",");
+                        lblZMed.Content = medValue.ToString().Replace(".", ",");
+                        lblZMax.Content = maxValue.ToString().Replace(".", ",");
 
                         _entityOptionsBuilder.GetTextBox("traZ")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(0);
                         break;
 
                     case "sldRx":
-                        lblRxMin.Content = minValue;
-                        lblRxMed.Content = medValue;
-                        lblRxMax.Content = maxValue;
+                        lblRxMin.Content = minValue.ToString().Replace(".", ",");
+                        lblRxMed.Content = medValue.ToString().Replace(".", ",");
+                        lblRxMax.Content = maxValue.ToString().Replace(".", ",");
 
                         _entityOptionsBuilder.GetTextBox("rotX")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(1);
                         break;
 
                     case "sldRy":
-                        lblRyMin.Content = minValue;
-                        lblRyMed.Content = medValue;
-                        lblRyMax.Content = maxValue;
+                        lblRyMin.Content = minValue.ToString().Replace(".", ",");
+                        lblRyMed.Content = medValue.ToString().Replace(".", ",");
+                        lblRyMax.Content = maxValue.ToString().Replace(".", ",");
 
                         _entityOptionsBuilder.GetTextBox("rotY")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(1);
                         break;
 
                     case "sldRz":
-                        lblRzMin.Content = minValue;
-                        lblRzMed.Content = medValue;
-                        lblRzMax.Content = maxValue;
+                        lblRzMin.Content = minValue.ToString().Replace(".", ",");
+                        lblRzMed.Content = medValue.ToString().Replace(".", ",");
+                        lblRzMax.Content = maxValue.ToString().Replace(".", ",");
 
                         _entityOptionsBuilder.GetTextBox("rotZ")?.SetValue(TextBox.TextProperty, medValue.ToString());
                         SliderEcsApiUpdate(1);
@@ -536,6 +690,34 @@ namespace RaytracerGUI
 
                         SliderEcsApiUpdate(2);
                         break;
+
+                    case "sldSx":
+                        lblSxMin.Content = minValue.ToString().Replace(".", ",");
+                        lblSxMed.Content = medValue.ToString().Replace(".", ",");
+                        lblSxMax.Content = maxValue.ToString().Replace(".", ",");
+
+                        _entityOptionsBuilder.GetTextBox("scaX")?.SetValue(TextBox.TextProperty, medValue.ToString());
+                        SliderEcsApiUpdate(3);
+                        break;
+
+                    case "sldSy":
+                        lblSyMin.Content = minValue.ToString().Replace(".", ",");
+                        lblSyMed.Content = medValue.ToString().Replace(".", ",");
+                        lblSyMax.Content = maxValue.ToString().Replace(".", ",");
+
+                        _entityOptionsBuilder.GetTextBox("scaY")?.SetValue(TextBox.TextProperty, medValue.ToString());
+                        SliderEcsApiUpdate(3);
+                        break;
+
+                    case "sldSz":
+                        lblSzMin.Content = minValue.ToString().Replace(".", ",");
+                        lblSzMed.Content = medValue.ToString().Replace(".", ",");
+                        lblSzMax.Content = maxValue.ToString().Replace(".", ",");
+
+                        _entityOptionsBuilder.GetTextBox("scaZ")?.SetValue(TextBox.TextProperty, medValue.ToString());
+                        SliderEcsApiUpdate(3);
+                        break;
+
                 }
 
 
@@ -550,6 +732,23 @@ namespace RaytracerGUI
                 try
                 {
                     string? result = _ecsApi.set_bounces(newValue);
+                    tbxLog.AppendText(result + "\n");
+                }
+                catch (Exception ex)
+                {
+                    tbxLog.AppendText("\n Exception fired" + "\n\n\n" + ex);
+                }
+            }
+        }
+
+        private void nudFrameRate_ValueChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            if (e.NewValue != null && _ecsApi != null)
+            {
+                int newValue = (int)e.NewValue;
+                try
+                {
+                    string? result = _ecsApi.set_frame_rate(newValue);
                     tbxLog.AppendText(result + "\n");
                 }
                 catch (Exception ex)
@@ -616,13 +815,34 @@ namespace RaytracerGUI
                             SliderPreviewMouseUp(sldRz, null);
                             break;
 
-
                         case "zoom":
-                            sldX.Value = value;
-                            sldX.Minimum = value - sliderOffset;
-                            sldX.Maximum = value + sliderOffset;
-                            SliderPreviewMouseUp(sldX, null);
+                            sldZoom.Value = value;
+                            sldZoom.Minimum = value - sliderOffset;
+                            sldZoom.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldZoom, null);
                             break;
+
+                        case "scaX":
+                            sldSx.Value = value;
+                            sldSx.Minimum = value - sliderOffset;
+                            sldSx.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldSx, null);
+                            break;
+
+                        case "scaY":
+                            sldSy.Value = value;
+                            sldSy.Minimum = value - sliderOffset;
+                            sldSy.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldSy, null);
+                            break;
+
+                        case "scaZ":
+                            sldSz.Value = value;
+                            sldSz.Minimum = value - sliderOffset;
+                            sldSz.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldSz, null);
+                            break;
+
 
 
 
@@ -649,7 +869,7 @@ namespace RaytracerGUI
                 // Get the TextBox and its DataContext (the bound JsonKeyValue object)
                 if (sender is TextBox textBox && textBox.DataContext is JsonKeyValue keyValue)
                 {
-                    // Call your desired function
+
                     OnComponentsTextboxValueChanged(keyValue.Key, textBox.Text);
                 }
             }
@@ -706,8 +926,8 @@ namespace RaytracerGUI
             {
                 try
                 {
-                    StartOtherExe("../../../../../Engine/Engine.exe");
-                    await Task.Delay(500);
+                    StartOtherExe("Engine.exe");
+                    await Task.Delay(1000);
                     _ecsApi = new EcsApi("127.0.0.1", 51234);
 
                     // initial root-request
@@ -720,6 +940,21 @@ namespace RaytracerGUI
                     clickedButton.Foreground = Brushes.Black;
 
                     Window_Loaded(sender, e);
+
+
+                    // initial Treebuilding
+                    _entityBuilder = new TreeBuilder(trvEntities, this);
+                    _entityBuilder.BuildTreeFromJson(ReceivedEcsJsonString);
+
+                    if (int.TryParse(_ecsApi.get_bounces(), out int bounces))
+                    {
+                        nudBounces.Value = bounces;
+                    }
+
+                    if (int.TryParse(_ecsApi.get_frame_rate(), out int fps))
+                    {
+                        nudFrameRate.Value = fps;
+                    }
 
                 }
                 catch (InvalidOperationException ex)
@@ -754,17 +989,31 @@ namespace RaytracerGUI
         {
             try
             {
-                string engineExeDirPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), @"..\..\..\..\..\Engine\");
+                string engineExeDirPath;
+                string rootDir = Directory.GetCurrentDirectory();
+
+#if DEBUG
+                // Running inside Visual Studio (Debug mode)
+                engineExeDirPath = System.IO.Path.Combine(rootDir, @"..\..\..\..\..\Engine\");
+                string engineExePath = System.IO.Path.Combine(engineExeDirPath, @"build\Engine.exe");
+                string workingDirectory = System.IO.Path.GetDirectoryName(engineExeDirPath);
+#else
+        // Running in Release mode (installed or direct execution)
+        engineExeDirPath = System.IO.Path.Combine(rootDir, @"..\Engine\");
+        string engineExePath = System.IO.Path.Combine(rootDir, @"Engine\Engine.exe");
+        string workingDirectory = rootDir;
+#endif
 
                 // Create the ProcessStartInfo
                 ProcessStartInfo startInfo = new ProcessStartInfo
                 {
-                    FileName = engineExeDirPath + @"build\Engine.exe",
-                    WorkingDirectory = System.IO.Path.GetDirectoryName(engineExeDirPath),  // Set the working directory
+                    FileName = engineExePath,
+                    WorkingDirectory = workingDirectory,  // Set the working directory
                     UseShellExecute = false,  // Optionally, to redirect input/output (if needed)
-                    CreateNoWindow = false,     // Optionally, run without a window
+                    CreateNoWindow = false,   // Optionally, run without a window
                     WindowStyle = ProcessWindowStyle.Minimized
                 };
+
                 Process.Start(startInfo);
             }
             catch (Exception ex)
@@ -792,6 +1041,7 @@ namespace RaytracerGUI
                     //tbxLog.AppendText($"{header} was clicked with UUID: {uuid}, Name: {name}, Children: {childrenCount}\n");
 
                     currentEntityUUID = uuid;
+                    deleteUUID = uuid;
 
                     UpdateEntities(uuid, e);
                     UpdateEntitiesOptions(uuid, e);
@@ -863,6 +1113,7 @@ namespace RaytracerGUI
                     string name = tagData.Name;       // Access Name
 
                     currentComponentUUID = uuid;
+                    deleteUUID = uuid;
 
                     UpdateComponentsOptions(uuid, e);
                 }
@@ -982,27 +1233,201 @@ namespace RaytracerGUI
             }
         }
 
+        private void AddEntity()
+        {
+            String name;
+            if (_ecsApi != null)
+            {
+                try
+                {
+                    // Open dialog to get the name
+                    var nameDialog = new NameInputDialog();
+                    if (nameDialog.ShowDialog() == true)
+                    {
+                        name = nameDialog.EntityName;
+
+                        // Proceed with entity creation
+                        string pathSentStatus = _ecsApi.create_entity(currentEntityUUID, name);
+                        tbxLog.AppendText("Render Component Added!\n");
+                        UpdateComponents(currentEntityUUID, null);
+                    }
+                    else
+                    {
+                        tbxLog.AppendText("Operation cancelled by the user.\n");
+                    }
+                }
+                catch (InvalidOperationException ex)
+                {
+                    tbxLog.AppendText($"Error: {ex.Message}\n");
+                }
+            }
+        }
+
+
+
         //Items
 
 
 
         private void TakeScreenshot()
         {
+            SaveFileDialog saveFileDialog;
+            string filePath = "";
 
+            saveFileDialog = new SaveFileDialog
+            {
+                Filter = "PNG File (*.png)|*.png",
+                Title = "Save PNG Image file",
+                FileName = "image.png"
+            };
+
+            if (saveFileDialog.ShowDialog() == true)
+            {
+                filePath = saveFileDialog.FileName;
+                tbxLog.AppendText("PNG saved at: " + filePath + "\n");
+            }
+
+            if (filePath.Equals(""))
+            {
+                return;
+            }
             try
             {
-            
-                GdiCapture.CaptureWindow(loader.hWndGLFW, "screenshot.png");
+                GdiCapture.CaptureWindow(loader.hWndGLFW, filePath);
+                Process.Start(new ProcessStartInfo(filePath) { UseShellExecute = true });
             }
             catch (System.InvalidOperationException e)
             {
                 MessageBox.Show("Capturing failed!" + "\n" + e.Message);
                 return;
             }
-
+            
             tbxLog.AppendText("Captured!" + "\n");
 
         }
-    }
 
+        private void generalKeyDown(object sender, KeyEventArgs e)
+        {
+
+            if (e.Key == Key.Z && Keyboard.Modifiers == ModifierKeys.Control)
+            {
+                if (!connection)
+                {
+                    MessageBox.Show("No connection established. Please connect to the server first.",
+                                    "Connection Error",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
+                    return;
+                }
+
+                _ecsApi.undo(1);
+
+                if (!currentEntityUUID.Equals("uuid"))
+                {
+                    UpdateEntitiesOptions(currentEntityUUID, null);
+                }
+                if (!currentComponentUUID.Equals("uuid"))
+                {
+                    UpdateComponentsOptions(currentComponentUUID, null);
+                }
+                return;
+            }
+
+            if (e.Key == Key.Delete)
+            {
+                if (deleteUUID.Equals("uuid"))
+                {
+                    return;
+                }
+
+                if (deleteUUID.Equals(rootUUID))
+                {
+                    MessageBox.Show("Root cannot be deleted!",
+                                    "Invalid UUID",
+                                    MessageBoxButton.OK,
+                                    MessageBoxImage.Warning);
+                    return;
+                }
+
+                try
+                {
+
+
+
+                    if (deleteUUID.Equals(currentEntityUUID))
+                    {
+                        _ecsApi.remove_entity(deleteUUID);
+                        deleteUUID = "uuid";
+
+                        foreach (TreeViewItem item in trvEntities.Items)
+                        {
+                            if (item.Tag is TreeItemData tagData)
+                            {
+                                string uuid = tagData.UUID;
+
+                                if (uuid.Equals(rootUUID))
+                                {
+                                    item.Focus();
+                                    item.IsSelected = true;
+                                }
+                            }
+                        }
+                    }
+                    if (deleteUUID.Equals(currentComponentUUID))
+                    {
+                        _ecsApi.remove_component(deleteUUID);
+                        currentComponentUUID = "uuid";
+                        deleteUUID = "uuid";
+
+                        foreach (TreeViewItem item in trvEntities.Items)
+                        {
+                            if (item.Tag is TreeItemData tagData)
+                            {
+                                string uuid = tagData.UUID;
+
+                                if (uuid.Equals(rootUUID))
+                                {
+                                    item.Focus();
+                                    item.IsSelected = true;
+                                }
+                            }
+                        }
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    tbxLog.AppendText(ex.ToString());
+                }
+                return;
+
+            }
+
+        }
+
+
+        private void OnBrowseButtonClick(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is JsonKeyValue jsonKeyValue)
+            {
+                OpenFileDialog openFileDialog;
+
+                openFileDialog = new OpenFileDialog
+                {
+                    Filter = "OBJ and MTL Files (*.obj;*.mtl)|*.obj;*.mtl",
+                    Title = "Select a .obj or .mtl file"
+                };
+
+                if (openFileDialog.ShowDialog() == true)
+                {
+                    jsonKeyValue.Path = openFileDialog.FileName;
+                    jsonKeyValue.Value = openFileDialog.FileName; // Update the value as well
+
+                    // Manually call the method after the text update (file path)
+                    OnComponentsTextboxValueChanged(jsonKeyValue.Key, openFileDialog.FileName);
+                }
+            }
+        }
+
+    }
 }

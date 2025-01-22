@@ -13,7 +13,8 @@
 #include "glm/ext.hpp"
 
 namespace RT {
-EntityStorage::EntityStorage(UUIDManager *um) : Storage<Entity *>(um) {
+EntityStorage::EntityStorage(std::shared_ptr<UUIDManager> um)
+    : Storage<Entity *>(um) {
   LOG(std::format("created {}", get_name()));
 }
 
@@ -68,24 +69,13 @@ EntityStorage::create_entity(const std::string &name, uuid id,
 }
 
 bool EntityStorage::remove(uuid id) {
-  auto it = std::find_if(_storage.begin(), _storage.end(),
-                         [id](const auto &e) { return e.first == id; });
-  if (it != _storage.end()) {
-    _storage.erase(it);
-    return true;
-  }
-  return false;
+  if (!_storage.contains(id)) { return false; }
+  _um->remove_without_system(id);
+  _storage.erase(id);
+  return true;
 }
 
-bool EntityStorage::remove(Entity *e) {
-  auto it = std::find_if(_storage.begin(), _storage.end(),
-                         [e](const auto &val) { return val.second == e; });
-  if (it != _storage.end()) {
-    _storage.erase(it);
-    return true;
-  }
-  return false;
-}
+bool EntityStorage::remove(Entity *e) { return remove(e->get_uuid()); }
 
 void EntityStorage::print() {
   std::cout << "Entity Storage: " << std::endl;

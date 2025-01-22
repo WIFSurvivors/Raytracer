@@ -99,6 +99,8 @@ std::string Log::level_to_string(Level level) {
     return "MESSAGE";
   case Level::Debug:
     return "DEBUG";
+  case Level::Test:
+    return "TEST";
   case Level::Tcp:
     return "TCP";
   case Level::FrameData:
@@ -120,6 +122,8 @@ std::string Log::level_to_ansi_color(Level level) {
     return "\033[39m"; // default
   case Level::Debug:
     return "\033[96m"; // cyan
+  case Level::Test:
+    return "\033[92m"; // green
   case Level::Tcp:
     return "\033[92m"; // green
   case Level::FrameData:

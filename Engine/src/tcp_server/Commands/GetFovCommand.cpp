@@ -22,11 +22,9 @@ std::string GetFovCommand::execute(Engine *engine)
         return "RenderSystem is null";
     }
     float _fov = camera_system->get_main_camera()->get_fov();
+      set_successfull(true);
 
     return std::to_string(_fov);
 }
 
-std::string GetFovCommand::undo()
-{
-    throw NotImplementedError();
-}
+

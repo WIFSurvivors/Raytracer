@@ -9,4 +9,3 @@ std::string CloseRenderCommand::execute(Engine *e) {
   //   e->get_render_system()->destroy(); // decrepted
   return "Render System destroyed";
 }
-std::string CloseRenderCommand::undo() { throw NotImplementedError(); }

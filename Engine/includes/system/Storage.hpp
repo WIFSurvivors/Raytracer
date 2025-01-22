@@ -7,6 +7,7 @@
 #include <optional>
 #include <string>
 #include <map>
+#include <memory>
 
 namespace RT {
 /**
@@ -16,9 +17,16 @@ namespace RT {
 template <class T> struct Storage : public IStorage {
   using uuid = boost::uuids::uuid;
 
-  explicit Storage(UUIDManager *um)
-      : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/ }
-  virtual ~Storage() = default;
+  explicit Storage(std::shared_ptr<UUIDManager> um)
+      : IStorage(um) { /*LOG(std::format("created {}", get_name()));*/
+  }
+  ~Storage() override {
+    auto it = _storage.begin();
+    while (it != _storage.end()) {
+      _um->remove_without_system(it->first);
+      it = _storage.erase(it);
+    }
+  }
 
   inline virtual std::optional<uuid> get(T obj) {
     auto it =
@@ -27,6 +35,10 @@ template <class T> struct Storage : public IStorage {
     if (it == _storage.end())
       return {};
     return std::make_optional<uuid>(it->first);
+  }
+  
+  inline const std::map<uuid, T>& get_storage() const {
+    return _storage;
   }
 
   /**
@@ -37,12 +49,6 @@ template <class T> struct Storage : public IStorage {
     return _storage.contains(id) ? std::make_optional(_storage[id])
                                  : std::nullopt;
   }
-
-  /**
-   * Removes Object from container by uuid.
-   * This will also remove it's link to it's entity.
-   */
-  virtual bool remove(uuid id) = 0;
 
 protected:
   std::map<uuid, T> _storage;

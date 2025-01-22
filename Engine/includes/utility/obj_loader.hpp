@@ -136,9 +136,12 @@ struct Material {
   Material() {
     // name;
     Ns = 0.0f;
-    Ni = 0.0f;
-    d = 0.0f;
-    illum = 0;
+    Ni = 1.0f;
+    d = 1.0f;
+    illum = 2;
+	Ka = glm::vec3(0.2,0.2,0.2);
+	Kd = glm::vec3(0.8,0.8,0.8);
+	Ks = glm::vec3(1.0,1.0,1.0);
   }
 
   // Material Name
@@ -374,6 +377,7 @@ public:
   // or unable to be loaded return false
   inline bool LoadFile(std::string Path) {
     // If the file is not an .obj file return false
+	Path = trim(Path);
     if (Path.substr(Path.size() - 4, 4) != ".obj")
       return false;
 
@@ -564,13 +568,21 @@ public:
 
         // Generate a path to the material file
         std::vector<std::string> temp;
+        #ifdef _WIN32
+        algorithm::split(Path, temp, "\\");
+        #else
         algorithm::split(Path, temp, "/");
+        #endif
 
         std::string pathtomat = "";
 
         if (temp.size() != 1) {
           for (int i = 0; i < temp.size() - 1; i++) {
+            #ifdef _WIN32
+            pathtomat += temp[i] + "\\";
+            #else
             pathtomat += temp[i] + "/";
+            #endif
           }
         }
 
@@ -882,13 +894,21 @@ private:
         break;
     }
   }
+  // Function to trim leading and trailing spaces
+  inline std::string trim(const std::string &str) {
+    size_t first = str.find_first_not_of(" \t\n\r\f\v");
+    size_t last = str.find_last_not_of(" \t\n\r\f\v");
+    return (first == std::string::npos) ? ""
+                                        : str.substr(first, (last - first + 1));
+  }
 
   // Load Materials from .mtl file
   inline bool LoadMaterials(std::string path) {
+    std::cout << "THIS IS THE PATH: " << path << std::endl;
+	path = trim(path);
     // If the file is not a material file return false
     if (path.substr(path.size() - 4, path.size()) != ".mtl")
       return false;
-
     std::ifstream file(path);
 
     // If the file is not found return false
