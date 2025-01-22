@@ -1,6 +1,6 @@
 # WIFSurvivors Raytracer
 
-Welcome to the **WIFSurvivors Raytracer**, a self-designed raytracing engine built for experimentation and learning. This README provides a brief overview of the project, installation instructions, and usage details. For detailed documentation, refer to our [Wiki](https://github.com/WIFSurvivors/Raytracer/wiki).
+Welcome to the **WIFSurvivors Raytracer**, a self-designed raytracing engine built for experimentation and learning. This readme provides a brief overview of the project, installation instructions, and usage details. For detailed documentation, refer to our [Wiki](https://github.com/WIFSurvivors/Raytracer/wiki).
 
 ---
 ![GitHub Actions Status](https://img.shields.io/github/actions/workflow/status/WIFSurvivors/Raytracer/CI_WF.yml?branch=main)
@@ -31,7 +31,7 @@ For more details, visit:
 | GnuWin32               | 3.81            |
 | MSYS2                  | 20241208 or later |
 | CMake                  | 3.31.1          |
-| Visual Studio (VS Code)| 2022 Community  |
+| Visual Studio | 2022 Community  |
 
 Steps:
 1. Add `CMake` and `GnuWin32` to your system's PATH.
