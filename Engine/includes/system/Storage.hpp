@@ -7,6 +7,7 @@
 #include <optional>
 #include <string>
 #include <map>
+#include <memory>
 
 namespace RT {
 /**

@@ -5,12 +5,12 @@
 #include <string>
 #include <format>
 
+using RT::Log;  
 /*
  * Initializes Log system and then start Engine, which will take control for the
  * rest of the life time.
  */
 int main() {
-  using namespace RT;
   Log::get_instance().set_cout_log_level(Log::Level::Tcp);
   Log::get_instance().set_file_log_level(Log::Level::Tcp);
   Log::get_instance().init_file();

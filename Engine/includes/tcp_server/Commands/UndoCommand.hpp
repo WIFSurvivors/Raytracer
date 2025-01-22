@@ -4,6 +4,7 @@
 #include "includes/Engine.hpp"
 #include "includes/utility/Log.hpp"
 #include "includes/utility/NotImplementedError.hpp"
+#include <string>
 
 #define UNDO_COMMAND "Undo"
 
@@ -12,7 +13,7 @@ using RT::Log;
 class UndoCommand : public TcpCommand
 {
 public:
-    UndoCommand(int number = 0) : _number(number) {}
+    explicit UndoCommand(int number = 1) : _number(number) {}
     std::string execute(Engine *engine);
     int get_number() { return _number; }
     private:
