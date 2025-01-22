@@ -4,7 +4,7 @@ project(Engine VERSION 0.0.1 DESCRIPTION "Engine for TCP Server and Client in CP
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(TOPLEVEL "YES")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -static -static-libgcc -static-libstdc++")
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -static-libgcc -static-libstdc++")
 
 
 set(BOOST_INCLUDE_LIBRARIES thread filesystem system program_options asio date_time json uuid)
@@ -168,8 +168,7 @@ install(DIRECTORY ${DEV_JSON_DIR}
   
 )
 
-install(DIRECTORY ${CMAKE_SOURCE_DIR}/log/
-	DESTINATION log
+install(DIRECTORY	DESTINATION log
 )
 
 
