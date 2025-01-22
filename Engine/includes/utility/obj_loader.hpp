@@ -568,13 +568,21 @@ public:
 
         // Generate a path to the material file
         std::vector<std::string> temp;
+        #ifdef _WIN32
+        algorithm::split(Path, temp, "\\");
+        #else
         algorithm::split(Path, temp, "/");
+        #endif
 
         std::string pathtomat = "";
 
         if (temp.size() != 1) {
           for (int i = 0; i < temp.size() - 1; i++) {
+            #ifdef _WIN32
+            pathtomat += temp[i] + "\\";
+            #else
             pathtomat += temp[i] + "/";
+            #endif
           }
         }
 

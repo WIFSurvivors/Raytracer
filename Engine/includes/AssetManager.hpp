@@ -83,12 +83,8 @@ struct AssetManager : public Storage<fs::path> {
 
   struct DefaultAssets {
     explicit DefaultAssets(AssetManager *am)
-        : shader(am, get_relative_shader_folder_path() / "default_shader"),
-          mtl(am, get_relative_asset_folder_path() / "default.mtl"),
-          obj(am, get_relative_asset_folder_path() / "default.obj") {}
-    Asset shader;
-    Asset mtl;
-    Asset obj;
+        : obj(am, get_relative_asset_folder_path() / "cornell-box.obj") {}
+      Asset obj;
   };
 
   std::optional<fs::path> set(uuid id, fs::path path, bool no_copy = false);
