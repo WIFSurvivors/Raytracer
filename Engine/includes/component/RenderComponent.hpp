@@ -194,27 +194,7 @@ struct RenderComponent : public IComponent {
     _obj_asset->set_path(obj_path);
   }
 
-  inline const AssetManager::Asset get_mtl_asset() const { return *_mtl_asset; }
-  inline void set_mtl_asset(AssetManager::Asset mtl_asset) {
-    _mtl_asset = std::make_shared<AssetManager::Asset>(mtl_asset);
-  }
-  inline void set_mtl_asset(std::filesystem::path mtl_path) {
-    _mtl_asset->set_path(mtl_path);
-  }
-  inline void set_mtl_asset(uuid mtl_uuid) { _mtl_asset->set_uuid(mtl_uuid); }
 
-  inline const AssetManager::Asset get_shader_asset() const {
-    return *_shader_asset;
-  }
-  inline void set_shader_asset(AssetManager::Asset shader_asset) {
-    _shader_asset = std::make_shared<AssetManager::Asset>(shader_asset);
-  }
-  inline void set_shader_asset(std::filesystem::path shader_path) {
-    _shader_asset->set_path(shader_path);
-  }
-  inline void set_shader_asset(uuid shader_uuid) {
-    _shader_asset->set_uuid(shader_uuid);
-  }
 #if SHOW_UI
   inline std::vector<glm::vec3> get_vertices() { return _vertices; }
 #endif
@@ -236,8 +216,6 @@ private:
   GLuint _textureID;
   GLuint _uvVBO;
   std::shared_ptr<AssetManager::Asset> _obj_asset;
-  std::shared_ptr<AssetManager::Asset> _mtl_asset;
-  std::shared_ptr<AssetManager::Asset> _shader_asset;
 #if SHOW_UI
   glm::mat4 _translationMatrix;
   glm::mat4 _rotationMatrix;

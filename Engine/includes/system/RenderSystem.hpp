@@ -19,28 +19,7 @@
 #include <optional>
 
 namespace RT {
-struct FrameSnapshot;
-// #define SHOW_UI true
-
-/**
- *	RenderSystem class, that is resposible for:
- *	- ~~Window Managing~~
- *	- Rendering
- *	- ~~Input processing~~
- *
- *	TODO:
- *	- Differentiate between private and public members
- *	- Move responisbilities to separate classes
- *	- Change init
- *	- May be RAII?
- *	- ERROR system would be good
- *	- Resizing doesn't work
- *	 - Decide what happenes by resizing: scaling or viewport
- *	- Make RenderSystem abstract, so that we can implement children
- *	- Move Window function e.g to InputSystem???
- *	- Jeb, i dont know what to do: implement create_component()
- *	- Do we really need a separate class for shaders
- */
+struct FrameSnapshot; 
 struct RenderSystem : public System<RenderComponent> {
   RenderSystem(std::shared_ptr<UUIDManager> um, WindowManager *wm,
                CameraSystem *cs, LightSystem *ls,
@@ -52,26 +31,18 @@ struct RenderSystem : public System<RenderComponent> {
   void destroy();
 
   RenderComponent *
-  create_component(Entity *e, std::optional<AssetManager::Asset> obj_asset = {},
-                   std::optional<AssetManager::Asset> mtl_asset = {},
-                   std::optional<AssetManager::Asset> shader_asset = {});
+  create_component(Entity *e, std::optional<AssetManager::Asset> obj_asset = {});
   RenderComponent *
   create_component(Entity *e, uuid id,
-                   std::optional<AssetManager::Asset> obj_asset = {},
-                   std::optional<AssetManager::Asset> mtl_asset = {},
-                   std::optional<AssetManager::Asset> shader_asset = {});
+                   std::optional<AssetManager::Asset> obj_asset = {});
   RenderComponent *
   create_component(Entity *e, const std::vector<glm::vec3> &vertices,
                    const std::vector<glm::vec2> &UV,
-                   std::optional<AssetManager::Asset> obj_asset = {},
-                   std::optional<AssetManager::Asset> mtl_asset = {},
-                   std::optional<AssetManager::Asset> shader_asset = {});
+                   std::optional<AssetManager::Asset> obj_asset = {});
   RenderComponent *
   create_component(Entity *e, uuid id, const std::vector<glm::vec3> &vertices,
                    const std::vector<glm::vec2> &UV,
-                   std::optional<AssetManager::Asset> obj_asset = {},
-                   std::optional<AssetManager::Asset> mtl_asset = {},
-                   std::optional<AssetManager::Asset> shader_asset = {});
+                   std::optional<AssetManager::Asset> obj_asset = {});
 
   inline void set_bounces(int bounce) { _bounces = bounce; }
   inline int get_bounces() const { return _bounces; }

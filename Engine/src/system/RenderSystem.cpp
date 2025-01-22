@@ -338,30 +338,20 @@ void RenderSystem::update(const FrameSnapshot &snapshot) {
 }
 
 RenderComponent *RenderSystem::create_component(
-    Entity *e, std::optional<AssetManager::Asset> obj_asset,
-    std::optional<AssetManager::Asset> mtl_asset,
-    std::optional<AssetManager::Asset> shader_asset) {
+    Entity *e, std::optional<AssetManager::Asset> obj_asset) {
   LOG("create render component (a1)");
   auto c = create_component_base(e);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
-  c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
-                                               : _da->shader);
 
   _loadData = true;
   return c;
 }
 
 RenderComponent *RenderSystem::create_component(
-    Entity *e, uuid id, std::optional<AssetManager::Asset> obj_asset,
-    std::optional<AssetManager::Asset> mtl_asset,
-    std::optional<AssetManager::Asset> shader_asset) {
+    Entity *e, uuid id, std::optional<AssetManager::Asset> obj_asset) {
   LOG("create render component (a2)");
   auto c = create_component_base(e, id);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
-  c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
-                                               : _da->shader);
   _loadData = true;
   return c;
 }
@@ -369,17 +359,12 @@ RenderComponent *RenderSystem::create_component(
 RenderComponent *RenderSystem::create_component(
     Entity *e, const std::vector<glm::vec3> &vertices,
     const std::vector<glm::vec2> &UV,
-    std::optional<AssetManager::Asset> obj_asset,
-    std::optional<AssetManager::Asset> mtl_asset,
-    std::optional<AssetManager::Asset> shader_asset) {
+    std::optional<AssetManager::Asset> obj_asset) {
   LOG("create render component (b1)");
   auto c = create_component_base(e);
   c->set_vertices(vertices);
   c->set_uv(UV);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
-  c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
-                                               : _da->shader);
 
   int programmID = 0;
 #if SHOW_UI
@@ -393,17 +378,12 @@ RenderComponent *RenderSystem::create_component(
 RenderComponent *RenderSystem::create_component(
     Entity *e, uuid id, const std::vector<glm::vec3> &vertices,
     const std::vector<glm::vec2> &UV,
-    std::optional<AssetManager::Asset> obj_asset,
-    std::optional<AssetManager::Asset> mtl_asset,
-    std::optional<AssetManager::Asset> shader_asset) {
+    std::optional<AssetManager::Asset> obj_asset) {
   LOG("create render component (b2)");
   auto c = create_component_base(e, id);
   c->set_vertices(vertices);
   c->set_uv(UV);
   c->set_obj_asset(obj_asset.has_value() ? obj_asset.value() : _da->obj);
-  c->set_mtl_asset(mtl_asset.has_value() ? mtl_asset.value() : _da->mtl);
-  c->set_shader_asset(shader_asset.has_value() ? shader_asset.value()
-                                               : _da->shader);
   int programmID = 0;
 #if SHOW_UI
   programmID = _program->programID;

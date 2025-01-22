@@ -159,7 +159,6 @@ bool BigJson::write_to_json(const std::filesystem::path filePath, Scene *s) {
             if (o_c.has_value(); auto c = o_c.value()) {
               quicktype::RenderComponent qtrc{};
               qtrc.set_obj_uuid(util::to_string(c->get_obj_asset().get_uuid()));
-              qtrc.set_mat_uuid(util::to_string(c->get_mtl_asset().get_uuid()));
               qtcomp.set_render_component(qtrc);
             }
           }
@@ -386,9 +385,6 @@ BigJson::read_from_json(const std::filesystem::path filePath, Engine *engine) {
 
           if (json_rc.get_obj_uuid().has_value()) {
             rc->set_obj_asset(util::to_uuid(json_rc.get_obj_uuid().value()));
-          }
-		  if (json_rc.get_mat_uuid().has_value()) {
-            rc->set_mtl_asset(util::to_uuid(json_rc.get_mat_uuid().value()));
           }
 
         }

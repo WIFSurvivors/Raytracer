@@ -143,12 +143,10 @@ void RenderComponent::translate(glm::vec3 dir) {
 boost::json::object RenderComponent::to_json_details() const {
   boost::json::object obj;
   obj["obj_path"] = _obj_asset->get_path().string();
-  obj["mat_path"] = _mtl_asset->get_path().string();
   return obj;
 }
 
 void RenderComponent::set_from_json(boost::json::object obj) {
   set_obj_asset((obj["obj_path"].as_string().c_str()));
-  set_mtl_asset((obj["mat_path"].as_string().c_str()));
 }
 } // namespace RT
