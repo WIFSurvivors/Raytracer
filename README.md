@@ -2,10 +2,9 @@
 
 Welcome to the **WIFSurvivors Raytracer**, a self-designed raytracing engine built for experimentation and learning. This readme provides a brief overview of the project, installation instructions, and usage details. For detailed documentation, refer to our [Wiki](https://github.com/WIFSurvivors/Raytracer/wiki).
 
----
 ![GitHub Actions Status](https://img.shields.io/github/actions/workflow/status/WIFSurvivors/Raytracer/CI_WF.yml?branch=main)
 ![Latest Release](https://img.shields.io/github/v/release/WIFSurvivors/Raytracer?display_name=tag)
----
+
 
 
 ## Overview
