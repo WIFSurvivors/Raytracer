@@ -136,7 +136,7 @@ int stackTop = 0;
 const int BVH_STACK_SIZE = 128;
 int bvh_stack[BVH_STACK_SIZE];
 int bvhStackTop = 0;
-vec3 ambientLightColor = vec3(0.0);
+vec3 ambientLightColor = vec3(0.01);
 /*********************************************************************************/
 // STACK OPERATIONS
 
@@ -394,10 +394,13 @@ vec3 backgroundColor(vec3 direction) {
     float t = 0.5 * (normalize(direction).y + 1.0);
     return mix(vec3(0.1, 0.1, 0.2), vec3(0.5, 0.7, 1.0), t); // Dark blue to light blue
 }
-
+// https://blog.demofox.org/2017/01/09/raytracing-reflection-refraction-fresnel-total-internal-reflection-and-beers-law/
 float FresnelReflectAmount(float n1, float n2, vec3 normal, vec3 incident, vec3 Ks)
 {
-    float OBJECT_REFLECTIVITY = 0.01;
+	//https://en.wikipedia.org/wiki/Relative_luminance
+	//At this point i am experimenting and i looks good ?
+    float luminance = dot(Ks, vec3(0.2126, 0.7152, 0.0722));
+    float OBJECT_REFLECTIVITY = luminance;
     // Schlick aproximation
     float r0 = (n1 - n2) / (n1 + n2);
     r0 *= r0;
@@ -412,11 +415,12 @@ float FresnelReflectAmount(float n1, float n2, vec3 normal, vec3 incident, vec3 
         cosX = sqrt(1.0 - sinT2);
     }
     float x = 1.0 - cosX;
-    float ret = r0 + (1.0 - r0) * x * x * x * x * x;
+    float ret = r0 + (1.0 - r0) * pow(x, 5.0);
 
     // adjust reflect multiplier for object reflectivity
-    ret = (OBJECT_REFLECTIVITY + (1.0 - OBJECT_REFLECTIVITY) * ret);
-    return ret;
+    //ret = (OBJECT_REFLECTIVITY + (1.0 - OBJECT_REFLECTIVITY) * ret);
+    return ret* OBJECT_REFLECTIVITY;
+	//This looks beter just to multiply them?
 }
 
 // Actual Raytrace Function
@@ -451,7 +455,7 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
                         baryCoords.z * trivertex[v + 2].normal
                 );
 
-            // vec3 N = normalize(cross(edge1, edge2));
+            N = normalize(cross(edge1, edge2));
             bool anyLightHit = false;
             vec3 localColor = vec3(0.0);
             vec3 diffuse = vec3(0.0);
@@ -487,12 +491,13 @@ vec4 proccessRayBVHAlt(Ray r, Light emitter[emitterCount_max]) {
             localColor += ambient + diffuse + specular;
             color += localColor;
 
-            color *= 0.7;
+            //color *= 0.7;
 
-            if (length(reflec_accumulation) <= 0.01) continue;
+            //if (length(reflec_accumulation) <= 0.01) continue;
             vec3 reflecDirection = reflect(currentRay.direction, N);
             Ray nextRay = Ray(sectionPoint + 0.0001 * reflecDirection, reflecDirection, currentRay.depth + 1, currentRay.Ni_current);
             reflec_accumulation *= FresnelReflectAmount(currentRay.Ni_current, material.Ni, N, currentRay.direction, material.Ks);
+			if (length(reflec_accumulation) < 0.001) continue;
             push(nextRay);
         } else {
             color += reflec_accumulation * backgroundColor(currentRay.direction);
