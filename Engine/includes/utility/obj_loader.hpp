@@ -579,7 +579,7 @@ public:
         if (temp.size() != 1) {
           for (int i = 0; i < temp.size() - 1; i++) {
             #ifdef _WIN32
-            pathtomat += temp[i] + "\\";
+            pathtomat += temp[i] + "\\\\";
             #else
             pathtomat += temp[i] + "/";
             #endif

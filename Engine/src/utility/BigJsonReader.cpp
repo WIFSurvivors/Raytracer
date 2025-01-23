@@ -150,7 +150,7 @@ bool BigJson::write_to_json(const std::filesystem::path filePath, Scene *s) {
               color.set_b(c->get_color().b);
               qtlc.set_color(color);
 
-              qtlc.set_intensity(qtlc.get_intensity());
+              qtlc.set_intensity(1.1f);
 
               qtcomp.set_light_component(qtlc);
             }

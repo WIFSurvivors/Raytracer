@@ -42,6 +42,6 @@ protected:
 private:
   friend LightSystem;
   glm::vec3 _color = glm::vec3{1.f, 1.f, 1.f}; // RGB
-  float _intensity = 10.f;
+  float _intensity = 1.f;
 };
 } // namespace RT
