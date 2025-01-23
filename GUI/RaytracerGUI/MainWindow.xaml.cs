@@ -190,7 +190,7 @@ namespace RaytracerGUI
                     case "mniHelp":
                         MessageBox.Show("ctrl+z = undo last undoable command \n" +
                             "del = remove selected entity/component \n \n" +
-                            "click on \"obj_path\" or \"mat_path\" to select an new .obj/.mtl-file");
+                            "click on \"obj_path\" to select a new .obj - file");
                         break;
 
 
@@ -1414,8 +1414,8 @@ namespace RaytracerGUI
 
                 openFileDialog = new OpenFileDialog
                 {
-                    Filter = "OBJ and MTL Files (*.obj;*.mtl)|*.obj;*.mtl",
-                    Title = "Select a .obj or .mtl file"
+                    Filter = "OBJ Files (*.obj)|*.obj",
+                    Title = "Select a .obj file"
                 };
 
                 if (openFileDialog.ShowDialog() == true)
