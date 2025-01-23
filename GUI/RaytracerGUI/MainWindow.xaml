@@ -162,7 +162,7 @@
                         </Grid.ColumnDefinitions>
 
                         <Button Name="btnRotate" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" Margin="10" Click="generalButtonClick">
-                            <Image Name="imgRotation" Source="/images/arrow-rotate-xpos.png" Width="40" Height="40"/>
+                            <Image Name="imgRotation" Source="/images/rotate-ypos.png" Width="40" Height="40"/>
                         </Button>
                         <Button Name="btnLeft" Style="{StaticResource PrimaryButtonStyle}" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom"  Margin="10" Click="generalButtonClick">
                             <Image Source="/images/arrow-left.png" Width="40" Height="40"/>
@@ -202,7 +202,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
-                        <Label Name="lblZoom" Content="Zoom:" FontSize="14" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Visibility="Visible"/>
+                        <Label Name="lblFov" Content="FoV:" FontSize="14" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Visibility="Visible"/>
                         <Label Name="lblSca" Content="Scaling:" FontSize="14" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Visibility="Collapsed"/>
                         <Label Name="lblRot" Content="Rotation:" FontSize="14" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Center"/>
                         <Label Name="lblPos" Content="Position:" FontSize="14" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Center" />
@@ -345,16 +345,14 @@
                             </Grid>
                         </Grid>
 
-                        <!-- Slider Zoom -->
-                        <Grid Grid.Row="1"  Grid.RowSpan="3" Grid.Column="0" Margin="8" HorizontalAlignment="Center" Name="gridZoom" Visibility="Visible">
+                        <!-- Slider Fov -->
+                        <Grid Grid.Row="1"  Grid.RowSpan="3" Grid.Column="0" Margin="8" HorizontalAlignment="Center" Name="gridFov" Visibility="Visible">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <Slider Name="sldZoom" Style="{StaticResource PrimarySliderStyle}" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="50" Value="25" ValueChanged="SliderValueChanged" PreviewMouseUp="SliderPreviewMouseUp" Orientation="Vertical" Height="128" Width="24" />
-
-
+                            <Slider Name="sldFov" Style="{StaticResource PrimarySliderStyle}" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0" Maximum="50" Value="25" ValueChanged="SliderValueChanged" PreviewMouseUp="SliderPreviewMouseUp" Orientation="Vertical" Height="128" Width="24" />
 
                             <Grid Grid.Column="0">
                                 <Grid.RowDefinitions>
@@ -363,9 +361,9 @@
                                     <RowDefinition Height="*" />
                                 </Grid.RowDefinitions>
 
-                                <Label Name="lblZoomMin" Content="-" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2"/>
-                                <Label Name="lblZoomMed" Content="10" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" />
-                                <Label Name="lblZoomMax" Content="+" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="0" />
+                                <Label Name="lblFovMin" Content="-" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2"/>
+                                <Label Name="lblFovMed" Content="10" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1" />
+                                <Label Name="lblFovMax" Content="+" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="0" />
                             </Grid>
                         </Grid>
 

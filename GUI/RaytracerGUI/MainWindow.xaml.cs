@@ -44,7 +44,7 @@ namespace RaytracerGUI
         private TreeBuilder _componentOptionsBuilder;
 
         bool connection = false;
-        string rotation = "xpos";
+        string rotation = "ypos";
         bool textboxChange = false;
         int sliderOffset = 10;
 
@@ -369,34 +369,34 @@ namespace RaytracerGUI
                         if (rotation == "xpos")
                         {
                             rotation = "xneg";
-                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-xneg.png", UriKind.Relative));
+                            imgRotation.Source = new BitmapImage(new Uri("Images/rotate-xneg.png", UriKind.Relative));
                         }
                         else if (rotation == "xneg")
                         {
                             rotation = "ypos";
-                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-ypos.png", UriKind.Relative));
+                            imgRotation.Source = new BitmapImage(new Uri("Images/rotate-ypos.png", UriKind.Relative));
                         }
                         else if (rotation == "ypos")
                         {
                             rotation = "yneg";
-                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-yneg.png", UriKind.Relative));
+                            imgRotation.Source = new BitmapImage(new Uri("Images/rotate-yneg.png", UriKind.Relative));
                         }
                         else if (rotation == "yneg")
                         {
                             rotation = "zpos";
-                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-zpos.png", UriKind.Relative));
+                            imgRotation.Source = new BitmapImage(new Uri("Images/rotate-zpos.png", UriKind.Relative));
                             imgRotation.Width = 30;
                             imgRotation.Height = 30;
                         }
                         else if (rotation == "zpos")
                         {
                             rotation = "zneg";
-                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-zneg.png", UriKind.Relative));
+                            imgRotation.Source = new BitmapImage(new Uri("Images/rotate-zneg.png", UriKind.Relative));
                         }
                         else if (rotation == "zneg")
                         {
                             rotation = "xpos";
-                            imgRotation.Source = new BitmapImage(new Uri("Images/arrow-rotate-xpos.png", UriKind.Relative));
+                            imgRotation.Source = new BitmapImage(new Uri("Images/rotate-xpos.png", UriKind.Relative));
                             imgRotation.Width = 40;
                             imgRotation.Height = 40;
                         }
@@ -474,10 +474,10 @@ namespace RaytracerGUI
 
                         if (gridSliders.Visibility == Visibility.Visible)
                         {
-                            if (gridZoom.Visibility == Visibility.Visible)
+                            if (gridFov.Visibility == Visibility.Visible)
                             {
-                                gridZoom.Visibility = Visibility.Collapsed;
-                                lblZoom.Visibility = Visibility.Collapsed;
+                                gridFov.Visibility = Visibility.Collapsed;
+                                lblFov.Visibility = Visibility.Collapsed;
 
                                 gridSx.Visibility = Visibility.Visible;
                                 gridSy.Visibility = Visibility.Visible;
@@ -495,10 +495,10 @@ namespace RaytracerGUI
                                 gridSz.Visibility = Visibility.Collapsed;
                                 lblSca.Visibility = Visibility.Collapsed;
 
-                                gridZoom.Visibility = Visibility.Visible;
-                                lblZoom.Visibility = Visibility.Visible;
+                                gridFov.Visibility = Visibility.Visible;
+                                lblFov.Visibility = Visibility.Visible;
 
-                                // adapt column width for vertical zoom slider
+                                // adapt column width for vertical fov slider
                                 gridSliders.ColumnDefinitions[0].Width = new GridLength(128);
 
                             }
@@ -569,8 +569,8 @@ namespace RaytracerGUI
                     }
                     else if (sliderType == 2)
                     {
-                        float zoom = (float)sldZoom.Value;
-                        _ecsApi.set_fov(zoom);
+                        float fov = (float)sldFov.Value;
+                        _ecsApi.set_fov(fov);
                     }
                     else if (sliderType == 3)
                     {
@@ -673,7 +673,7 @@ namespace RaytracerGUI
                         SliderEcsApiUpdate(1);
                         break;
 
-                    case "sldZoom":
+                    case "sldFov":
                         if (changedSlider.Value < 10)
                         {
                             changedSlider.Value = 10;
@@ -686,7 +686,7 @@ namespace RaytracerGUI
                         changedSlider.Minimum = changedSlider.Value - 25;
                         changedSlider.Maximum = changedSlider.Value + 25;
                         medValue = Math.Round(changedSlider.Value, 0);
-                        lblZoomMed.Content = medValue;
+                        lblFovMed.Content = medValue;
 
                         SliderEcsApiUpdate(2);
                         break;
@@ -815,11 +815,11 @@ namespace RaytracerGUI
                             SliderPreviewMouseUp(sldRz, null);
                             break;
 
-                        case "zoom":
-                            sldZoom.Value = value;
-                            sldZoom.Minimum = value - sliderOffset;
-                            sldZoom.Maximum = value + sliderOffset;
-                            SliderPreviewMouseUp(sldZoom, null);
+                        case "fov":
+                            sldFov.Value = value;
+                            sldFov.Minimum = value - sliderOffset;
+                            sldFov.Maximum = value + sliderOffset;
+                            SliderPreviewMouseUp(sldFov, null);
                             break;
 
                         case "scaX":
