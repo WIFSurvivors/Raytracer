@@ -11,27 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="fonts\lucon.ttf" />
-    <None Remove="images\arrow-back.png" />
-    <None Remove="images\arrow-down.png" />
-    <None Remove="images\arrow-forward.png" />
-    <None Remove="images\arrow-left.png" />
-    <None Remove="images\arrow-right.png" />
-    <None Remove="images\arrow-rotate-x.png" />
-    <None Remove="images\arrow-rotate-xneg.png" />
-    <None Remove="images\arrow-rotate-xpos.png" />
-    <None Remove="images\arrow-rotate-y.png" />
-    <None Remove="images\arrow-rotate-yneg.png" />
-    <None Remove="images\arrow-rotate-ypos.png" />
-    <None Remove="images\arrow-rotate-z.png" />
-    <None Remove="images\arrow-rotate-zneg.png" />
-    <None Remove="images\arrow-rotate-zpos.png" />
-    <None Remove="images\arrow-up.png" />
-    <None Remove="images\preview.png" />
-    <None Remove="images\right-arrow.png" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Include="Raytracer.ico" />
   </ItemGroup>
 
@@ -49,14 +28,14 @@
     <Resource Include="images\arrow-forward.png" />
     <Resource Include="images\arrow-left.png" />
     <Resource Include="images\arrow-right.png" />
-    <Resource Include="images\arrow-rotate-xneg.png" />
-    <Resource Include="images\arrow-rotate-xpos.png" />
-    <Resource Include="images\arrow-rotate-yneg.png" />
-    <Resource Include="images\arrow-rotate-ypos.png" />
-    <Resource Include="images\arrow-rotate-zneg.png" />
-    <Resource Include="images\arrow-rotate-zpos.png" />
     <Resource Include="images\arrow-up.png" />
     <Resource Include="images\preview.png" />
+	<Resource Include="images\rotate-xneg.png" />
+	<Resource Include="images\rotate-xpos.png" />
+	<Resource Include="images\rotate-yneg.png" />
+	<Resource Include="images\rotate-ypos.png" />
+	<Resource Include="images\rotate-zneg.png" />
+	<Resource Include="images\rotate-zpos.png" />
   </ItemGroup>
 
 </Project>

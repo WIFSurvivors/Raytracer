@@ -28,7 +28,7 @@ std::optional<fs::path> AssetManager::set(uuid id, fs::path path,
     if (!new_path.has_value()) {
       return {};
     }
-    path = new_path.value();
+    path = fs::relative(new_path.value(), fs::canonical(fs::current_path()));
   }
 
   LOG(std::format("adding a new path \"{}\" with UUID \"{}\"", path.string(),
@@ -52,7 +52,7 @@ AssetManager::create(fs::path path, bool no_copy) {
     if (!new_path.has_value()) {
       return {};
     }
-    path = new_path.value();
+    path = fs::relative(new_path.value(), fs::canonical(fs::current_path()));
   }
 
   auto id = _um->create(this);
@@ -130,7 +130,7 @@ AssetManager::copy_file_to_subfolder(const fs::path &targetPath) {
                   fs::copy_options::overwrite_existing);
 
     // Calculate and return the relative path of the copied file
-    return fs::relative(destinationPath, exeDir).string();
+    return fs::relative(resolvedTargetPath, exeDir).string();
   } catch (const fs::filesystem_error &e) {
     std::cerr << "File copy failed: " << e.what() << std::endl;
     return {};

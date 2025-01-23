@@ -84,7 +84,7 @@ bool BigJson::write_to_json(const std::filesystem::path filePath, Scene *s) {
       r.set_path(asset.second.string());
       //   r.set_type("we don't have types :)");
       r.set_uuid(to_string(asset.first));
-	  res.push_back(r);
+      res.push_back(r);
     }
     qtjson.set_resources(res);
   }
@@ -150,7 +150,7 @@ bool BigJson::write_to_json(const std::filesystem::path filePath, Scene *s) {
               color.set_b(c->get_color().b);
               qtlc.set_color(color);
 
-              qtlc.set_intensity(qtlc.get_intensity());
+              qtlc.set_intensity(c->get_intensity());
 
               qtcomp.set_light_component(qtlc);
             }
@@ -236,8 +236,7 @@ BigJson::read_from_json(const std::filesystem::path filePath, Engine *engine) {
       std::cout << "-- TRYING TO ACCESS PATH " << abs_path.string() << "\n";
 
       if (!std::filesystem::exists(abs_path)) {
-        std::cerr << "!! FILE DOESN'T EXIST"
-                  << "\n";
+        std::cerr << "!! FILE DOESN'T EXIST" << "\n";
         continue;
       }
       auto u = util::to_uuid(id.value());
@@ -386,7 +385,6 @@ BigJson::read_from_json(const std::filesystem::path filePath, Engine *engine) {
           if (json_rc.get_obj_uuid().has_value()) {
             rc->set_obj_asset(util::to_uuid(json_rc.get_obj_uuid().value()));
           }
-
         }
       }
     }
