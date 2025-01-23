@@ -171,6 +171,14 @@ install(DIRECTORY ${DEV_JSON_DIR}
 install(DIRECTORY	DESTINATION log
 )
 
+install(FILES 
+    "C:/msys64/mingw64/bin/libwinpthread-1.dll"
+    "C:/msys64/mingw64/bin/libgcc_s_seh-1.dll"
+    "C:/msys64/mingw64/bin/libstdc++-6.dll"
+    DESTINATION Engine
+)
+
+
 
 
 install(DIRECTORY
@@ -186,7 +194,12 @@ if (WIN32)
 add_dependencies(${PROJECT_NAME} build_csharp_gui)
 endif()
 include(InstallRequiredSystemLibraries)
-
+set(CPACK_NSIS_EXTRA_INSTALL_COMMANDS "
+  SetOutPath \\\"$INSTDIR\\\\Engine\\\"
+  File \\\"${CMAKE_INSTALL_PREFIX}\\\\Engine\\\\libwinpthread-1.dll\\\"
+  File \\\"${CMAKE_INSTALL_PREFIX}\\\\Engine\\\\libgcc_s_seh-1.dll\\\"
+  File \\\"${CMAKE_INSTALL_PREFIX}\\\\Engine\\\\libstdc++-6.dll\\\"
+")
 
 set(CPACK_PACKAGE_NAME "${PROJECT_NAME}")
 set(CPACK_PACKAGE_VERSION "${PROJECT_VERSION}")
@@ -206,7 +219,7 @@ CreateShortcut \\\"$INSTDIR\\\\Raytracer.lnk\\\" \\\"$INSTDIR\\\\RaytracerGUI\\\
 " )
 set(CPACK_NSIS_EXECUTIONLEVEL "user")
 # Windows-spezifische Einstellungen (z. B. NSIS):
-set(CPACK_NSIS_DISPLAY_NAME "${PROJECT_NAME} Installer")
+set(CPACK_NSIS_DISPLAY_NAME "Raytracer")
 set(CPACK_NSIS_HELP_LINK "https://github.com/WIFSurvivors/Raytracer")
 set(CPACK_NSIS_URL_INFO_ABOUT "https://github.com/WIFSurvivors/Raytracer")
 set(CPACK_NSIS_CONTACT "...@...")
